@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<formula>
+    <round4>
+        <sqrt>
+            <add>
+                <pow2>
+                    <periodTimeValue>
+                        <meteringPointCode>111320300050080015</meteringPointCode>
+                        <parameterCode>A+</parameterCode>
+                        <rate>1</rate>
+                    </periodTimeValue>
+                </pow2>
+
+                <pow2>
+                    <periodTimeValue>
+                        <meteringPointCode>111320300050080015</meteringPointCode>
+                        <parameterCode>A-</parameterCode>
+                        <rate>1</rate>
+                    </periodTimeValue>
+                </pow2>
+            </add>
+        </sqrt>
+    </round4>
+</formula>
