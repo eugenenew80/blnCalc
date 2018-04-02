@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <add>
-    <pt mp="121420300070100018" param="A+" />
-    <pt mp="121420300070100019" param="A+" />
+    <number val="10" />
+    <number val="15" />
+    <subtract>
+        <number val="15" />
+        <number val="10" />
+    </subtract>
 </add>

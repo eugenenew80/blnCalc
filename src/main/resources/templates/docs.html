@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+    <head lang="ru">
+        <title>Демо Формулы ИС Биллинг</title>
+    </head>
+
+    <body>
+        <div class="container" layout:fragment="content">
+            <div class="row">
+                <h4 class="red-text">Бинарные операторы</h4>
+
+                <p class="caption">
+                    Бинарные операторы позволяют выполнить обработку двух или более арументов.
+                    Их можно комбинировать с другими бинарными и унарными операторами и вкладывать друг в друга.
+                    Уровень вложенности неогранчен.
+                </p>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>add</h4></li>
+                    <li class="collection-item">Сумма двух и более аргументов</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;add>
+    &lt;number val="10" />
+    &lt;number val="15" />
+&lt;/add></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 25</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>subtract</h4></li>
+                    <li class="collection-item">Вычитание из первого аргумента всех аргументов начиная с второго</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;subtract>
+    &lt;number val="15" />
+    &lt;number val="10" />
+&lt;/subtract></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 5</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>multiply</h4></li>
+                    <li class="collection-item">Произведение двух и более аргументов</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;multiply>
+    &lt;number val="15" />
+    &lt;number val="10" />
+&lt;/multiply></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 150</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>divide</h4></li>
+                    <li class="collection-item">Частное двух и более аргументов</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;divide>
+    &lt;number val="15" />
+    &lt;number val="10" />
+&lt;/divide></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 1.5</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>max</h4></li>
+                    <li class="collection-item">Максимальное значение из двух и более аргументов</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;max>
+    &lt;number val="15" />
+    &lt;number val="10" />
+&lt;/max></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 15</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>min</h4></li>
+                    <li class="collection-item">Минимальное значение из двух и более аргументов</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;min>
+    &lt;number val="15" />
+    &lt;number val="10" />
+&lt;/min></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 10</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>pow</h4></li>
+                    <li class="collection-item">Возведение в степень: первый аргумент - число, возводимое в степень, второй арумент - степень</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;pow>
+    &lt;number val="10" />
+    &lt;number val="3" />
+&lt;/pow></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 1000</li>
+                </ul>
+            </div>
+
+            <div class="row">
+                <h4 class="red-text">Унарные операторы</h4>
+                <p class="caption">
+                    Унарные операторы позволяют выполнить обработку одного арумента.
+                    Их можно комбинировать с другими бинарными и унарными операторами и вкладывать друг в друга.
+                    Уровень вложенности неогранчен.
+                </p>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>minus</h4></li>
+                    <li class="collection-item">Изменить знак аргумента на противоположный</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;minus>
+    &lt;number val="10" />
+&lt;/minus></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: -10</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>abs</h4></li>
+                    <li class="collection-item">Возвращает абсолютное значение аргумента</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;abs>
+    &lt;number val="-10" />
+&lt;/abs></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 10</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>ceil</h4></li>
+                    <li class="collection-item">Округляет аргумент до ближайшего верхнего целого</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;ceil>
+    &lt;number val="9.2" />
+&lt;/ceil></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 10</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>floor</h4></li>
+                    <li class="collection-item">Округляет аргумент до ближайшего нижнего целого</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;floor>
+    &lt;number val="9.2" />
+&lt;/floor></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 9</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>sqrt</h4></li>
+                    <li class="collection-item">Вычисляет квадратный корень аргумента</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;sqrt>
+    &lt;number val="9" />
+&lt;/sqrt></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 3</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>pow-2</h4></li>
+                    <li class="collection-item">Возводит аргумент в квадрат</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;pow-2>
+    &lt;number val="9" />
+&lt;/pow-2></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 81</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>sign</h4></li>
+                    <li class="collection-item">Возвращает знак аргумента</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;sign>
+    &lt;number val="-9" />
+&lt;/sign></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: -1</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>round</h4></li>
+                    <li class="collection-item">Округляет аргумент до целого числа</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;round>
+    &lt;number val="9.58767" />
+&lt;/round></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 10</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>round-1</h4></li>
+                    <li class="collection-item">Округляет аргумент до одного знака после запятой</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;round-1>
+    &lt;number val="9.58767" />
+&lt;/round-1></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 9.6</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>round-2</h4></li>
+                    <li class="collection-item">Округляет аргумент до двух знаков после запятой</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;round-2>
+    &lt;number val="9.58767" />
+&lt;/round-2></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 9.59</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>round-3</h4></li>
+                    <li class="collection-item">Округляет аргумент до трёх знаков после запятой</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;round-3>
+    &lt;number val="9.58767" />
+&lt;/round-3></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 9.588</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>round-4</h4></li>
+                    <li class="collection-item">Округляет аргумент до четырёх знаков после запятой</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;round-4>
+    &lt;number val="9.58767" />
+&lt;/round-4></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 9.5877</li>
+                </ul>
+            </div>
+
+        </div>
+    </body>
+</html>

@@ -16,6 +16,7 @@ import javax.script.ScriptEngine;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import java.io.File;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -45,8 +46,8 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
     }
 
     @Override
-    public Double calc(Path path, CalcContext context) throws Exception {
-        byte[] encoded = Files.readAllBytes(path);
+    public Double calc(File file, CalcContext context) throws Exception {
+        byte[] encoded = Files.readAllBytes(file.toPath());
         String str = new String(encoded, StandardCharsets.UTF_8);
         return calc(str, context);
     }

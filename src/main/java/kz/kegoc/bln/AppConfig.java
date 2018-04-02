@@ -85,11 +85,11 @@ public class AppConfig {
         Map<String, BinaryOperator<Operand>> operations = new HashMap<>();
         operations.put("add", add);
         operations.put("subtract", subtract);
-        operations.put("divide", divide);
         operations.put("multiply", multiply);
-        operations.put("pow", pow);
+        operations.put("divide", divide);
         operations.put("max", max);
         operations.put("min", min);
+        operations.put("pow", pow);
 
         return operations;
     }
@@ -155,13 +155,13 @@ public class AppConfig {
         operations.put("ceil", ceil);
         operations.put("floor", floor);
         operations.put("sqrt", sqrt);
-        operations.put("pow2", pow2);
+        operations.put("pow-2", pow2);
         operations.put("sign", sign);
         operations.put("round", round);
-        operations.put("round1", round1);
-        operations.put("round2", round2);
-        operations.put("round3", round3);
-        operations.put("round4", round4);
+        operations.put("round-1", round1);
+        operations.put("round-2", round2);
+        operations.put("round-3", round3);
+        operations.put("round-4", round4);
         return operations;
     }
 }
