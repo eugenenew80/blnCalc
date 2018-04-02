@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<js>
+    <src>Math.sqrt(Math.pow(a,2)+Math.pow(b,2))</src>
+    <params>
+        <param name="a"><pt mp="121420300070100018" param="A+" /></param>
+        <param name="b"><pt mp="121420300070100018" param="A-" /></param>
+    </params>
+</js>

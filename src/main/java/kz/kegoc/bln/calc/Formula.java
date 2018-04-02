@@ -37,7 +37,7 @@ public class Formula {
             .service(periodTimeValueService)
             .context(context)
             .rate(1d)
-            .meteringPointCode("111320300050080015");
+            .meteringPointCode("121420300070100018");
 
         UnaryExpression activePlus =
             ptOperandBuilder.parameterCode("A+")

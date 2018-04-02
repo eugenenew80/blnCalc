@@ -39,5 +39,4 @@ public class JavaScriptOperand implements Operand {
             .operator(operator)
             .build();
     }
-
 }
