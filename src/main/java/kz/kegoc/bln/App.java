@@ -22,6 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,8 +51,8 @@ public class App implements ApplicationListener<ApplicationReadyEvent> {
         context.setEnd(LocalDateTime.of(2018, 3, 29, 0, 0, 0));
 
         try {
-            File file = new File("C:/src/idea/bln/blnCalc/src/main/resources/formula/test3.xml");
-            Double result = formula.calc(file, context);
+            String fileName = "C:/src/idea/bln/blnCalc/src/main/resources/formula/test3.xml";
+            Double result = formula.calc(Paths.get(fileName), context);
             System.out.println(result);
         }
         catch (Exception e) {

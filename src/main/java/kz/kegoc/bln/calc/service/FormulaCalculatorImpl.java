@@ -10,16 +10,24 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+
 import javax.script.ScriptEngine;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
+
+import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,20 +39,34 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
     private final AtTimeValueService atTimeValueService;
 
     @Override
-    public Double calc(String formula, CalcContext context) {
-        return null;
+    public Double calc(String formula, CalcContext context) throws Exception {
+        Operand expression = compile(formula, context);
+        return expression.getValue();
     }
 
     @Override
-    public Double calc(File file, CalcContext context) throws Exception {
+    public Double calc(Path path, CalcContext context) throws Exception {
+        byte[] encoded = Files.readAllBytes(path);
+        String str = new String(encoded, StandardCharsets.UTF_8);
+        return calc(str, context);
+    }
+
+
+    private Expression compile(String formula, CalcContext context) throws Exception {
         DocumentBuilderFactory factory =DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(file);
-
+        Document document = builder.parse(new InputSource(new StringReader(formula)));
         Node node = document.getDocumentElement().getParentNode().getFirstChild();
-        Operand expression = buildExpression(node, context);
 
-        return expression.getValue();
+        Operand operand = buildExpression(node, context);
+
+        if (operand instanceof Expression)
+            return (Expression) operand;
+
+        return UnaryExpression.builder()
+            .operand(operand)
+            .operator(unaryOperators.get("nothing"))
+            .build();
     }
 
     private Operand buildExpression(Node node, CalcContext context) {
