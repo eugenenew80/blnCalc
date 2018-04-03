@@ -1,23 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html  ng-app="myApp" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout/default">
 
     <head lang="ru">
         <title>Демо Формулы ИС Биллинг</title>
     </head>
 
-    <body>
+    <body ng-controller="myCtrl">
         <div class="container" layout:fragment="content">
             <div class="row">
                 <form class="col s12">
                     <div class="row">
-                        <div class="input-field col s12">
-                            <textarea id="textarea1" class="materialize-textarea" rows="10"></textarea>
-                            <label for="textarea1">Введите формулу</label>
+                        <div class="s12">
+
+                            <label for="txtFormula">Введите формулу</label>
+                            <textarea id="txtFormula" ng-model="formula" ui-codemirror="true" ui-codemirror-opts="editorOptions"></textarea>
+                        </div>
+
+                        <div class="s12" style="margin-top: 5px;">
+                            <a id="btnCalc" class="waves-effect waves-light btn" ng-click="myFunc()">
+                                <i class="material-icons left">cloud</i>Вычислить
+                            </a>
+
+                            <ul class="collection with-header" ng-show="data">
+                                <li class="collection-header"><h4>Результат</h4></li>
+                                <li class="collection-item">{{data.result}}</li>
+                            </ul>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
+
+        <script layout:fragment="script">
+            var app = angular.module('myApp', ['ui.codemirror']);
+
+            app.config(function ($httpProvider) {
+                $httpProvider.defaults.headers.common["Accept"] = "application/json;charset=utf-8";
+            });
+
+            app.controller('myCtrl', function($scope, $http ) {
+
+                $scope.editorOptions = {
+                    lineWrapping : true,
+                    lineNumbers: true,
+                    mode: 'xml',
+                    matchTags: true
+                };
+
+                $scope.myFunc = function() {
+                    $scope.data = null;
+                    $http.post("/rest/formula/calc", { contentBase64: window.btoa(unescape(encodeURIComponent($scope.formula))) }, { headers: {'Content-Type': 'application/json;charset=utf-8' } })
+                        .then(function (response) {
+                            $scope.data = response.data;
+                        });
+                };
+            });
+        </script>
     </body>
 </html>

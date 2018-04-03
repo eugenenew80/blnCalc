@@ -14,10 +14,23 @@
 
     <profiles>
         <profile>
-            <id>localDev</id>
+            <id>dev</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+
+            <properties>
+                <driver>org.postgresql.Driver</driver>
+                <url>jdbc:oracle:thin:@10.9.50.151:1521:orcl12c</url>
+                <username>apps</username>
+                <password>apps</password>
+                <scripts>dev</scripts>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>localDev</id>
 
             <properties>
                 <driver>org.postgresql.Driver</driver>
@@ -135,6 +148,25 @@
             <groupId>org.webjars</groupId>
             <artifactId>material-design-icons</artifactId>
             <version>3.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>angularjs</artifactId>
+            <version>1.6.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>codemirror</artifactId>
+            <version>4.13</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>angular-ui-codemirror</artifactId>
+            <version>0.3.0</version>
         </dependency>
 
         <dependency>

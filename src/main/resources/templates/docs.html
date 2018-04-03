@@ -8,13 +8,76 @@
 
     <body>
         <div class="container" layout:fragment="content">
+
+            <div class="row">
+                <h4 class="red-text">Введение</h4>
+
+                <p class="caption">
+                    Формула - это выражение, написанное на специально разработанном для ИС Биллинг языке. Формула записывается на яхыке XML и поэтому,
+                    в ней используются такие элементы как тэги а атрибуты. Формула предназначена для гибкой настройки алгоритмов расчёта вычисляемых
+                    точек учёта, документов системы, отчётов и т.д. В формуле имеется три основных компонента: Функции, Бинарные операторы и
+                    Унарные операторы.
+                </p>
+            </div>
+
+            <div class="row">
+                <h4 class="red-text">Функции</h4>
+
+                <p class="caption">
+                    Функции - это выражения, результат вычисления которых, можно передавать Бинарным и Унарным операторам в качестве аргумента.
+                </p>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>number</h4></li>
+                    <li class="collection-item">Возвращает число, указанное в атрибуте val</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;number val="10" /></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 10</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>pt</h4></li>
+                    <li class="collection-item">Возвращает интегрированное значение: param - код параметра, mp - код точки учёта, rate - коэффициент</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;pt mp="121420300070100018" param="A+" rate="1" /></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: Приём активной электроэнергии по точке учёта с кодом 121420300070100018 за определённый период</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>at</h4></li>
+                    <li class="collection-item">Возвращает мгновенное значение: param - код параметра, mp - код точки учёта, rate - коэффициент</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;at mp="121420300070100018" param="A+" rate="1" /></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: Показания по приёму активной электроэнергии по точке учёта с кодом 121420300070100018 на определенную дату</li>
+                </ul>
+
+                <ul class="collection with-header">
+                    <li class="collection-header"><h4>js</h4></li>
+                    <li class="collection-item">Возвращает результат вычисления выражения на языке JavaScript. Входные параметры определяются внутри тэга params.
+                        В качестве входного параметра можно указать операнд любого типа, а также бинарный или унарный оператор.</li>
+                    <li class="collection-item">
+                        <pre><code class="language-markup">&lt;js>
+    &lt;src>Math.sqrt(Math.pow(a,2)+Math.pow(b,2))&lt;/src>
+    &lt;params>
+        &lt;param name="a">&lt;number val="3" />&lt;/param>
+        &lt;param name="b">&lt;number val="4" />&lt;/param>
+    &lt;/params>
+&lt;/js></code></pre>
+                    </li>
+                    <li class="collection-item">Результат: 5</li>
+                </ul>
+            </div>
+
             <div class="row">
                 <h4 class="red-text">Бинарные операторы</h4>
 
                 <p class="caption">
                     Бинарные операторы позволяют выполнить обработку двух или более арументов.
                     Их можно комбинировать с другими бинарными и унарными операторами и вкладывать друг в друга.
-                    Уровень вложенности неогранчен.
+                    Уровень вложенности неограничен.
                 </p>
 
                 <ul class="collection with-header">
