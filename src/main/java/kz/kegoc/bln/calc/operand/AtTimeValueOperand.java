@@ -14,13 +14,14 @@ import java.util.function.UnaryOperator;
 public class AtTimeValueOperand implements Operand {
     private final String meteringPointCode;
     private final String parameterCode;
+    private final String per;
     private final Double rate;
     private final AtTimeValueService service;
     private final CalcContext context;
 
     @Override
     public Double getValue() {
-        return rate*service.getValue(meteringPointCode, parameterCode, context);
+        return rate*service.getValue(meteringPointCode, parameterCode, per, context);
     }
 
     @Override

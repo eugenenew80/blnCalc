@@ -184,7 +184,10 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
 
         String mp = "";
         String param = "";
+        String per = "c";
         Double rate = 1d;
+        Byte start = 0;
+        Byte end = 23;
         for (int i=0; i<attributes.getLength(); i++) {
             String attrName = attributes.item(i).getNodeName();
             String attrValue = attributes.item(i).getNodeValue();
@@ -192,11 +195,17 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
                 case "mp":
                     mp = attrValue;
                     break;
-                case "param":
-                    param = attrValue;
+                case "per":
+                    per = attrValue;
                     break;
                 case "rate":
                     rate = Double.parseDouble(attrValue);
+                    break;
+                case "start":
+                    start = Byte.parseByte(attrValue);
+                    break;
+                case "end":
+                    end = Byte.parseByte(attrValue);
                     break;
             }
         }
@@ -204,7 +213,11 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
         return PeriodTimeValueOperand.builder()
             .meteringPointCode(mp)
             .parameterCode(param)
+            .parameterCode(param)
+            .per(per)
             .rate(rate)
+            .start(start)
+            .end(end)
             .service(periodTimeValueService)
             .context(context)
             .build();
@@ -215,6 +228,7 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
 
         String mp = "";
         String param = "";
+        String per = "e";
         Double rate = 1d;
         for (int i=0; i<attributes.getLength(); i++) {
             String attrName = attributes.item(i).getNodeName();
@@ -222,6 +236,9 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
             switch (attrName) {
                 case "mp":
                     mp = attrValue;
+                    break;
+                case "per":
+                    per = attrValue;
                     break;
                 case "param":
                     param = attrValue;
@@ -235,6 +252,7 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
         return  AtTimeValueOperand.builder()
             .meteringPointCode(mp)
             .parameterCode(param)
+            .per(per)
             .rate(rate)
             .service(atTimeValueService)
             .context(context)

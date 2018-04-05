@@ -15,6 +15,9 @@ public class PeriodTimeValueOperand implements Operand {
     private final String meteringPointCode;
     private final String parameterCode;
     private final Double rate;
+    private final String per;
+    private final Byte start;
+    private final Byte end;
     private final PeriodTimeValueService service;
     private final CalcContext context;
 

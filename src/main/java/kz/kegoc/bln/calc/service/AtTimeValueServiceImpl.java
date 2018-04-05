@@ -9,6 +9,9 @@ import kz.kegoc.bln.repo.MeteringPointRepo;
 import kz.kegoc.bln.repo.ParameterRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,17 +22,25 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
     private final ParameterRepo parameterRepo;
 
     @Override
-    public Double getValue(String meteringPointCode, String parameterCode, CalcContext context) {
+    public Double getValue(String meteringPointCode, String parameterCode, String per, CalcContext context) {
         MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
         Parameter parameter = parameterRepo.findByCodeAndParamType(parameterCode, "AT");
 
         if (meteringPoint == null && parameter == null)
             return 0d;
 
+        LocalDateTime dateTime;
+        if (per.equals("s"))
+            dateTime = context.getStart();
+        else if (per.equals("e"))
+            dateTime = context.getEnd();
+        else
+            dateTime = LocalDate.now().atStartOfDay();
+
         List<AtTimeValue> list = repo.findAllByMeteringPointIdAndParamIdAndMeteringDate(
             meteringPoint.getId(),
             parameter.getId(),
-            context.getDate()
+            dateTime
         );
 
         Double result = 0d;
