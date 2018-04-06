@@ -38,6 +38,8 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
     private final Map<String, UnaryOperator<Operand>> unaryOperators;
     private final PeriodTimeValueService periodTimeValueService;
     private final AtTimeValueService atTimeValueService;
+    private final PowerLineService powerLineService;
+    private final PowerTransformerService powerTransformerService;
 
     @Override
     public Double calc(String formula, CalcContext context) throws Exception {
@@ -152,6 +154,12 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
         if (node.getNodeName().equals("at"))
             return buildAtOperand(node, context);
 
+        if (node.getNodeName().equals("pl"))
+            return buildPowerLineOperand(node, context);
+
+        if (node.getNodeName().equals("ptf"))
+            return buildPowerTransformerOperand(node, context);
+
         if (node.getNodeName().equals("number"))
             return buildDoubleValueOperand(node, context);
 
@@ -184,10 +192,10 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
 
         String mp = "";
         String param = "";
-        String per = "c";
+        String interval = "c";
         Double rate = 1d;
-        Byte start = 0;
-        Byte end = 23;
+        Byte startHour = 0;
+        Byte endHour = 23;
         for (int i=0; i<attributes.getLength(); i++) {
             String attrName = attributes.item(i).getNodeName();
             String attrValue = attributes.item(i).getNodeValue();
@@ -198,17 +206,17 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
                 case "param":
                     param = attrValue;
                     break;
-                case "per":
-                    per = attrValue;
+                case "interval":
+                    interval = attrValue;
                     break;
                 case "rate":
                     rate = Double.parseDouble(attrValue);
                     break;
                 case "start":
-                    start = Byte.parseByte(attrValue);
+                    startHour = Byte.parseByte(attrValue);
                     break;
                 case "end":
-                    end = Byte.parseByte(attrValue);
+                    endHour = Byte.parseByte(attrValue);
                     break;
             }
         }
@@ -216,10 +224,10 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
         return PeriodTimeValueOperand.builder()
             .meteringPointCode(mp)
             .parameterCode(param)
-            .per(per)
+            .interval(interval)
             .rate(rate)
-            .start(start)
-            .end(end)
+            .startHour(startHour)
+            .endHour(endHour)
             .service(periodTimeValueService)
             .context(context)
             .build();
@@ -257,6 +265,64 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
             .per(per)
             .rate(rate)
             .service(atTimeValueService)
+            .context(context)
+            .build();
+    }
+
+    private Operand buildPowerLineOperand(Node node, CalcContext context) {
+        NamedNodeMap attributes = node.getAttributes();
+
+        Long id = null;
+        String code = "";
+        String attr = "";
+        for (int i=0; i<attributes.getLength(); i++) {
+            String attrName = attributes.item(i).getNodeName();
+            String attrValue = attributes.item(i).getNodeValue();
+            switch (attrName) {
+                case "code":
+                    code = attrValue;
+                    break;
+                case "attr":
+                    attr = attrValue;
+                    break;
+                case "id":
+                    id = Long.parseLong(attrValue);
+                    break;
+            }
+        }
+
+        return  PoweLineOperand.builder()
+            .id(id)
+            .code(code)
+            .attr(attr)
+            .service(powerLineService)
+            .context(context)
+            .build();
+    }
+
+    private Operand buildPowerTransformerOperand(Node node, CalcContext context) {
+        NamedNodeMap attributes = node.getAttributes();
+
+        Long id = null;
+        String code = "";
+        String attr = "";
+        for (int i=0; i<attributes.getLength(); i++) {
+            String attrName = attributes.item(i).getNodeName();
+            String attrValue = attributes.item(i).getNodeValue();
+            switch (attrName) {
+                case "id":
+                    id = Long.parseLong(attrValue);
+                    break;
+                case "attr":
+                    attr = attrValue;
+                    break;
+            }
+        }
+
+        return  PowerTransformerOperand.builder()
+            .id(id)
+            .attr(attr)
+            .service(powerTransformerService)
             .context(context)
             .build();
     }

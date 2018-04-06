@@ -10,7 +10,6 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 )
 @SpringBootApplication
 public class App  {
-
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
     }

@@ -2,28 +2,23 @@ package kz.kegoc.bln.calc.operand;
 
 import kz.kegoc.bln.calc.CalcContext;
 import kz.kegoc.bln.calc.expression.UnaryExpression;
-import kz.kegoc.bln.calc.service.PeriodTimeValueService;
+import kz.kegoc.bln.calc.service.PowerTransformerService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-
 import java.util.function.UnaryOperator;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PeriodTimeValueOperand implements Operand {
-    private final String meteringPointCode;
-    private final String parameterCode;
-    private final Double rate;
-    private final String interval;
-    private final Byte startHour;
-    private final Byte endHour;
-    private final PeriodTimeValueService service;
+public class PowerTransformerOperand implements Operand {
+    private final Long id;
+    private final String attr;
+    private final PowerTransformerService service;
     private final CalcContext context;
 
     @Override
     public Double getValue() {
-        return rate*service.getValue(meteringPointCode, parameterCode, interval, startHour, endHour, context);
+        return service.getNumberAttribute(id, attr, context);
     }
 
     @Override

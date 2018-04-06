@@ -25,9 +25,10 @@ public class FormulaRestController {
         byte[] contentAsBytes = Base64.decodeBase64(base64Dto.getContentBase64());
         String content = new String(contentAsBytes, Charset.forName("UTF-8"));
 
-        CalcContext context = new CalcContext();
-        context.setStart(LocalDateTime.of(2018, 4, 1, 0, 0, 0));
-        context.setEnd(LocalDateTime.of(2018, 4, 2, 0, 0, 0));
+        CalcContext context = CalcContext.builder()
+            .startDate(base64Dto.getStartDate().atStartOfDay())
+            .endDate(base64Dto.getEndDate().atStartOfDay().plusDays(1))
+            .build();
 
         Double result;
         try {

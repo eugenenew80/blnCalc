@@ -1,15 +1,13 @@
 package kz.kegoc.bln.calc;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
-@RequiredArgsConstructor
 @EqualsAndHashCode(of= {"start", "end", "date"})
-@Getter @Setter
+@Getter
+@Builder
 public class CalcContext {
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 }

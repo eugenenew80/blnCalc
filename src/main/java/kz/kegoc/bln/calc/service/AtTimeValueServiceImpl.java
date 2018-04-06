@@ -31,9 +31,9 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
 
         LocalDateTime dateTime;
         if (per.equals("s"))
-            dateTime = context.getStart();
+            dateTime = context.getStartDate();
         else if (per.equals("e"))
-            dateTime = context.getEnd();
+            dateTime = context.getEndDate();
         else
             dateTime = LocalDate.now().atStartOfDay();
 

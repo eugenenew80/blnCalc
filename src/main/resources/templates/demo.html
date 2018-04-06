@@ -12,11 +12,24 @@
                 <form class="col s12">
                     <div class="row">
                         <div class="s12">
-
                             <label for="txtFormula">Введите формулу</label>
                             <textarea id="txtFormula" ng-model="formula" ui-codemirror="true" ui-codemirror-opts="editorOptions"></textarea>
                         </div>
+                    </div>
 
+                    <div class="row">
+                        <div class="input-field col s3">
+                            <input id="startDate" type="text"  ng-model="context.startDate" />
+                            <label for="startDate" th:text="|Дата с|">Дата с</label>
+                        </div>
+
+                        <div class="input-field col s3">
+                            <input id="endDate" type="text"  ng-model="context.endDate" />
+                            <label for="endDate" th:text="|Дата по|">Дата с</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="s12" style="margin-top: 5px;">
                             <a id="btnCalc" class="waves-effect waves-light btn" ng-click="myFunc()">
                                 <i class="material-icons left">cloud</i>Вычислить
@@ -40,6 +53,8 @@
             });
 
             app.controller('myCtrl', function($scope, $http ) {
+                $scope.context = {
+                }
 
                 $scope.editorOptions = {
                     lineWrapping : true,
@@ -50,7 +65,9 @@
 
                 $scope.myFunc = function() {
                     $scope.data = null;
-                    $http.post("/rest/formula/calc", { contentBase64: window.btoa(unescape(encodeURIComponent($scope.formula))) }, { headers: {'Content-Type': 'application/json;charset=utf-8' } })
+                    $scope.context.contentBase64 = window.btoa(unescape(encodeURIComponent($scope.formula)));
+
+                    $http.post("/rest/formula/calc", $scope.context, { headers: {'Content-Type': 'application/json;charset=utf-8' } })
                         .then(function (response) {
                             $scope.data = response.data;
                         });
