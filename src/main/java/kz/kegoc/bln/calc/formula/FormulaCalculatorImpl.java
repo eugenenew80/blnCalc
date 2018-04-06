@@ -1,10 +1,11 @@
-package kz.kegoc.bln.calc.service;
+package kz.kegoc.bln.calc.formula;
 
 import kz.kegoc.bln.calc.CalcContext;
 import kz.kegoc.bln.calc.expression.BinaryExpression;
 import kz.kegoc.bln.calc.expression.Expression;
 import kz.kegoc.bln.calc.expression.UnaryExpression;
 import kz.kegoc.bln.calc.operand.*;
+import kz.kegoc.bln.calc.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -20,7 +21,6 @@ import java.io.File;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +40,7 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
     private final AtTimeValueService atTimeValueService;
     private final PowerLineService powerLineService;
     private final PowerTransformerService powerTransformerService;
+    private final ReactorService reactorService;
 
     @Override
     public Double calc(String formula, CalcContext context) throws Exception {
@@ -154,11 +155,14 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
         if (node.getNodeName().equals("at"))
             return buildAtOperand(node, context);
 
-        if (node.getNodeName().equals("pl"))
+        if (node.getNodeName().equals("li"))
             return buildPowerLineOperand(node, context);
 
-        if (node.getNodeName().equals("ptf"))
+        if (node.getNodeName().equals("tr"))
             return buildPowerTransformerOperand(node, context);
+
+        if (node.getNodeName().equals("re"))
+            return buildReactorOperand(node, context);
 
         if (node.getNodeName().equals("number"))
             return buildDoubleValueOperand(node, context);
@@ -304,7 +308,6 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
         NamedNodeMap attributes = node.getAttributes();
 
         Long id = null;
-        String code = "";
         String attr = "";
         for (int i=0; i<attributes.getLength(); i++) {
             String attrName = attributes.item(i).getNodeName();
@@ -323,6 +326,33 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
             .id(id)
             .attr(attr)
             .service(powerTransformerService)
+            .context(context)
+            .build();
+    }
+
+
+    private Operand buildReactorOperand(Node node, CalcContext context) {
+        NamedNodeMap attributes = node.getAttributes();
+
+        Long id = null;
+        String attr = "";
+        for (int i=0; i<attributes.getLength(); i++) {
+            String attrName = attributes.item(i).getNodeName();
+            String attrValue = attributes.item(i).getNodeValue();
+            switch (attrName) {
+                case "id":
+                    id = Long.parseLong(attrValue);
+                    break;
+                case "attr":
+                    attr = attrValue;
+                    break;
+            }
+        }
+
+        return  ReactorOperand.builder()
+            .id(id)
+            .attr(attr)
+            .service(reactorService)
             .context(context)
             .build();
     }

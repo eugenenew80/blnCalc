@@ -1,7 +1,7 @@
 package kz.kegoc.bln.controller.rest;
 
 import kz.kegoc.bln.calc.CalcContext;
-import kz.kegoc.bln.calc.service.FormulaCalculator;
+import kz.kegoc.bln.calc.formula.FormulaCalculator;
 import kz.kegoc.bln.controller.rest.dto.Base64Dto;
 import kz.kegoc.bln.controller.rest.dto.ResultDto;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor

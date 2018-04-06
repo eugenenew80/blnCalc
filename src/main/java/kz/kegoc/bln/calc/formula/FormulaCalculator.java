@@ -1,4 +1,4 @@
-package kz.kegoc.bln.calc.service;
+package kz.kegoc.bln.calc.formula;
 
 import kz.kegoc.bln.calc.CalcContext;
 
