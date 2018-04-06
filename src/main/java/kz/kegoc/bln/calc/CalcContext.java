@@ -12,5 +12,4 @@ import java.time.LocalDateTime;
 public class CalcContext {
     private LocalDateTime start;
     private LocalDateTime end;
-    private LocalDateTime date;
 }

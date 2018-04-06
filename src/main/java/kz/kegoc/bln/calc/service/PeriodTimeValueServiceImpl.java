@@ -32,7 +32,7 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
             meteringPoint.getId(),
             parameter.getId(),
             context.getStart(),
-            context.getEnd()
+            context.getEnd().minusMinutes(15)
         );
 
         Double result = 0d;

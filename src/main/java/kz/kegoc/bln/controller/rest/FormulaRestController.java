@@ -26,7 +26,6 @@ public class FormulaRestController {
         String content = new String(contentAsBytes, Charset.forName("UTF-8"));
 
         CalcContext context = new CalcContext();
-        context.setDate(LocalDateTime.of(2018, 4, 2, 0, 0, 0));
         context.setStart(LocalDateTime.of(2018, 4, 1, 0, 0, 0));
         context.setEnd(LocalDateTime.of(2018, 4, 2, 0, 0, 0));
 

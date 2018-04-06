@@ -6,7 +6,6 @@ import kz.kegoc.bln.calc.service.AtTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-
 import java.util.function.UnaryOperator;
 
 @Builder
@@ -31,5 +30,4 @@ public class AtTimeValueOperand implements Operand {
             .operator(operator)
             .build();
     }
-
 }

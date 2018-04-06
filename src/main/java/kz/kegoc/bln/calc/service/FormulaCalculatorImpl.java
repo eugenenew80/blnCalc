@@ -195,6 +195,9 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
                 case "mp":
                     mp = attrValue;
                     break;
+                case "param":
+                    param = attrValue;
+                    break;
                 case "per":
                     per = attrValue;
                     break;
@@ -212,7 +215,6 @@ public class FormulaCalculatorImpl implements FormulaCalculator {
 
         return PeriodTimeValueOperand.builder()
             .meteringPointCode(mp)
-            .parameterCode(param)
             .parameterCode(param)
             .per(per)
             .rate(rate)
