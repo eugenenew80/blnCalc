@@ -1,6 +1,6 @@
-package calc.formula.builder.impl;
+package calc.formula.builder.xml.impl;
 
-import calc.formula.builder.ExpressionBuilder;
+import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.builder.ExpressionBuilderFactory;
 import calc.formula.service.*;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import javax.script.ScriptEngine;
 
 @Service
 @RequiredArgsConstructor
-public class DefaultExpressionBuilderFactory implements ExpressionBuilderFactory {
+public class XmlExpressionBuilderFactory implements ExpressionBuilderFactory {
     private final AtTimeValueService atTimeValueService;
     private final PeriodTimeValueService periodTimeValueService;
     private final PowerLineService powerLineService;

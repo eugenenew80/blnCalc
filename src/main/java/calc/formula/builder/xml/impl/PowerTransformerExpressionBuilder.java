@@ -1,19 +1,19 @@
-package calc.formula.builder.impl;
+package calc.formula.builder.xml.impl;
 
 import calc.formula.CalcContext;
-import calc.formula.builder.ExpressionBuilder;
-import calc.formula.expression.impl.ReactorExpression;
-import calc.formula.service.ReactorService;
+import calc.formula.builder.xml.ExpressionBuilder;
+import calc.formula.expression.impl.PowerTransformerExpression;
+import calc.formula.service.PowerTransformerService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class ReactorExpressionBuilder implements ExpressionBuilder<ReactorExpression> {
-    private final ReactorService service;
+public class PowerTransformerExpressionBuilder implements ExpressionBuilder<PowerTransformerExpression> {
+    private final PowerTransformerService service;
 
     @Override
-    public ReactorExpression build(Node node, CalcContext context) {
+    public PowerTransformerExpression build(Node node, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         Long id = null;
@@ -31,11 +31,11 @@ public class ReactorExpressionBuilder implements ExpressionBuilder<ReactorExpres
             }
         }
 
-        return  ReactorExpression.builder()
+        return  PowerTransformerExpression.builder()
             .id(id)
             .attr(attr)
-            .context(context)
             .service(service)
+            .context(context)
             .build();
     }
 }
