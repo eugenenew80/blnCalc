@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PeriodTimeValueOperand implements Expression {
+public class PeriodTimeValueExpression implements Expression {
     private final String meteringPointCode;
     private final String parameterCode;
     private final Double rate;

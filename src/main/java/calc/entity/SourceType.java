@@ -3,7 +3,7 @@ package calc.entity;
 import lombok.*;
 import javax.persistence.*;
 import org.hibernate.annotations.Immutable;
-import calc.ejb.BooleanToIntConverter;
+import calc.converter.BooleanToIntConverter;
 
 @Data
 @EqualsAndHashCode(of= {"id"})

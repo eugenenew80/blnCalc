@@ -10,12 +10,14 @@ import calc.repo.MeteringPointRepo;
 import calc.repo.ParameterRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AtTimeValueServiceImpl implements AtTimeValueService {
     private final AtTimeValueRepo repo;
@@ -33,18 +35,18 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
         if (meteringPoint == null && parameter == null)
             return 0d;
 
-        LocalDateTime dateTime;
+        LocalDateTime date;
         if (per.equals("s"))
-            dateTime = context.getStartDate();
+            date = context.getStartDate();
         else if (per.equals("e"))
-            dateTime = context.getEndDate();
+            date = context.getEndDate();
         else
-            dateTime = LocalDate.now().atStartOfDay();
+            date = LocalDate.now().atStartOfDay();
 
         List<AtTimeValue> list = repo.findAllByMeteringPointIdAndParamIdAndMeteringDate(
             meteringPoint.getId(),
             parameter.getId(),
-            dateTime
+            date
         );
 
         Double result = 0d;

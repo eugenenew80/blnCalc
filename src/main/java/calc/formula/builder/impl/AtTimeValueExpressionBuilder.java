@@ -2,18 +2,18 @@ package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.builder.ExpressionBuilder;
-import calc.formula.expression.impl.AtTimeValueOperand;
+import calc.formula.expression.impl.AtTimeValueExpression;
 import calc.formula.service.AtTimeValueService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeValueOperand> {
+public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeValueExpression> {
     private final AtTimeValueService service;
 
     @Override
-    public AtTimeValueOperand build(Node node, CalcContext context) {
+    public AtTimeValueExpression build(Node node, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         String mp = "";
@@ -39,7 +39,7 @@ public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeVal
             }
         }
 
-        return  AtTimeValueOperand.builder()
+        return  AtTimeValueExpression.builder()
             .meteringPointCode(mp)
             .parameterCode(param)
             .per(per)

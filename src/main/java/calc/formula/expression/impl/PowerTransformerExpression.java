@@ -2,19 +2,17 @@ package calc.formula.expression.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
-import calc.formula.service.AtTimeValueService;
+import calc.formula.service.PowerTransformerService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class AtTimeValueOperand implements Expression {
-    private final String meteringPointCode;
-    private final String parameterCode;
-    private final String per;
-    private final Double rate;
-    private final AtTimeValueService service;
+public class PowerTransformerExpression implements Expression {
+    private final Long id;
+    private final String attr;
+    private final PowerTransformerService service;
     private final CalcContext context;
 
     @Override
@@ -24,6 +22,6 @@ public class AtTimeValueOperand implements Expression {
 
     @Override
     public Double getValue() {
-        return rate*service.getValue(meteringPointCode, parameterCode, per, context);
+        return service.getNumberAttribute(id, attr, context);
     }
 }

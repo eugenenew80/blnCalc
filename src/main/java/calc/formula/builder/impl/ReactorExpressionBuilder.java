@@ -2,18 +2,18 @@ package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.builder.ExpressionBuilder;
-import calc.formula.expression.impl.ReactorOperand;
+import calc.formula.expression.impl.ReactorExpression;
 import calc.formula.service.ReactorService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class ReactorExpressionBuilder implements ExpressionBuilder<ReactorOperand> {
+public class ReactorExpressionBuilder implements ExpressionBuilder<ReactorExpression> {
     private final ReactorService service;
 
     @Override
-    public ReactorOperand build(Node node, CalcContext context) {
+    public ReactorExpression build(Node node, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         Long id = null;
@@ -31,7 +31,7 @@ public class ReactorExpressionBuilder implements ExpressionBuilder<ReactorOperan
             }
         }
 
-        return  ReactorOperand.builder()
+        return  ReactorExpression.builder()
             .id(id)
             .attr(attr)
             .context(context)

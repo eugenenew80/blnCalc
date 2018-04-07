@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     private final PeriodTimeValueRepo repo;
@@ -27,45 +27,48 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     @Override
     public Double getValue(String meteringPointCode, String parameterCode, String interval, Byte startHour, Byte endHour, CalcContext context) {
         MeteringPoint meteringPoint = meteringPointRepo
-            .findByCode(meteringPointCode);
+                .findByCode(meteringPointCode);
 
         Parameter parameter = parameterRepo
-            .findByCodeAndParamType(parameterCode, "PT");
+                .findByCodeAndParamType(parameterCode, "PT");
 
         if (meteringPoint == null && parameter == null)
             return 0d;
 
-        LocalDateTime startDate = context.getStartDate();
-        LocalDateTime endDate = context.getEndDate();
-
+        LocalDateTime startDate;
+        LocalDateTime endDate;
         if (interval.equals("c")) {
             startDate = context.getStartDate();
             endDate = context.getEndDate().minusHours(1);
         }
-
-        if (interval.equals("m")) {
+        else if (interval.equals("m")) {
             startDate = context.getStartDate()
-                .truncatedTo(ChronoUnit.DAYS)
-                .minusDays(context.getStartDate().getDayOfMonth()-1);
+                    .truncatedTo(ChronoUnit.DAYS)
+                    .minusDays(context.getStartDate().getDayOfMonth()-1);
             endDate = context.getEndDate().minusHours(1);
+        }
+        else {
+            startDate = context.getStartDate();
+            endDate = context.getEndDate();
         }
 
         List<PeriodTimeValue> list = repo.findAllByMeteringPointIdAndParamIdAndMeteringDateBetween(
-            meteringPoint.getId(),
-            parameter.getId(),
-            startDate,
-            endDate
+                meteringPoint.getId(),
+                parameter.getId(),
+                startDate,
+                endDate
         );
 
         Double result = 0d;
         if (!list.isEmpty()) {
             result = list.stream()
-                .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
-                .map(t -> t.getVal())
-                .reduce((t1, t2) -> t1 + t2)
-                .orElse(0d);
+                    .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
+                    .map(t -> t.getVal())
+                    .reduce((t1, t2) -> t1 + t2)
+                    .orElse(0d);
         }
 
         return result;
     }
 }
+

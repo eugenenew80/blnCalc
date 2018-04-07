@@ -3,19 +3,20 @@ package calc.formula.builder.impl;
 import calc.formula.CalcContext;
 import calc.formula.builder.ExpressionBuilder;
 import calc.formula.expression.Expression;
-import calc.formula.expression.impl.JavaScriptOperand;
+import calc.formula.expression.impl.JsExpression;
+import calc.formula.service.XmlExpressionService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.Node;
 import javax.script.ScriptEngine;
 import java.util.HashMap;
 
 @RequiredArgsConstructor
-public class JavaScriptExpressionBuilder implements ExpressionBuilder<JavaScriptOperand> {
+public class JsExpressionBuilder implements ExpressionBuilder<JsExpression> {
     private final ScriptEngine engine;
-    private final RootExpressionBuilder expressionBuilder;
+    private final XmlExpressionService expressionService;
 
     @Override
-    public JavaScriptOperand build(Node parentNode, CalcContext context) {
+    public JsExpression build(Node parentNode, CalcContext context) {
         String src = "";
         HashMap<String, Expression> attributes = new HashMap<>();
 
@@ -31,22 +32,22 @@ public class JavaScriptExpressionBuilder implements ExpressionBuilder<JavaScript
 
                     Node paramNode = node.getChildNodes().item(j);
                     String paramName = paramNode.getAttributes()
-                            .getNamedItem("name")
-                            .getNodeValue();
+                        .getNamedItem("name")
+                        .getNodeValue();
 
                     for (int k=0; k<paramNode.getChildNodes().getLength(); k++) {
                         if (paramNode.getChildNodes().item(k).getNodeType() == Node.TEXT_NODE)
                             continue;
 
                         Node operandNode = paramNode.getChildNodes().item(k);
-                        Expression operand = expressionBuilder.build(operandNode, context);
+                        Expression operand = expressionService.parse(operandNode, context);
                         attributes.put(paramName, operand);
                     }
                 }
             }
         }
 
-        return  JavaScriptOperand.builder()
+        return  JsExpression.builder()
             .src(src)
             .attributes(attributes)
             .engine(engine)

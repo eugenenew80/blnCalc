@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class JavaScriptOperand implements Expression {
+public class JsExpression implements Expression {
     private final String src;
     private final Map<String, Expression> attributes;
     private final ScriptEngine engine;

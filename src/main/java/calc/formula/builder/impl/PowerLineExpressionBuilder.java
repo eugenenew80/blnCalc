@@ -2,18 +2,18 @@ package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.builder.ExpressionBuilder;
-import calc.formula.expression.impl.PowerLineOperand;
+import calc.formula.expression.impl.PowerLineExpression;
 import calc.formula.service.PowerLineService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class PowerLineExpressionBuilder implements ExpressionBuilder<PowerLineOperand> {
+public class PowerLineExpressionBuilder implements ExpressionBuilder<PowerLineExpression> {
     private final PowerLineService service;
 
     @Override
-    public PowerLineOperand build(Node node, CalcContext context) {
+    public PowerLineExpression build(Node node, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         Long id = null;
@@ -35,7 +35,7 @@ public class PowerLineExpressionBuilder implements ExpressionBuilder<PowerLineOp
             }
         }
 
-        return  PowerLineOperand.builder()
+        return  PowerLineExpression.builder()
             .id(id)
             .code(code)
             .attr(attr)

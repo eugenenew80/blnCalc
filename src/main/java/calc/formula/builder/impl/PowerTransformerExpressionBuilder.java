@@ -2,18 +2,18 @@ package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.builder.ExpressionBuilder;
-import calc.formula.expression.impl.PowerTransformerOperand;
+import calc.formula.expression.impl.PowerTransformerExpression;
 import calc.formula.service.PowerTransformerService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class PowerTransformerExpressionBuilder implements ExpressionBuilder<PowerTransformerOperand> {
+public class PowerTransformerExpressionBuilder implements ExpressionBuilder<PowerTransformerExpression> {
     private final PowerTransformerService service;
 
     @Override
-    public PowerTransformerOperand build(Node node, CalcContext context) {
+    public PowerTransformerExpression build(Node node, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         Long id = null;
@@ -31,7 +31,7 @@ public class PowerTransformerExpressionBuilder implements ExpressionBuilder<Powe
             }
         }
 
-        return  PowerTransformerOperand.builder()
+        return  PowerTransformerExpression.builder()
             .id(id)
             .attr(attr)
             .service(service)

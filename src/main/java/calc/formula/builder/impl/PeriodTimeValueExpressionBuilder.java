@@ -2,18 +2,18 @@ package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.builder.ExpressionBuilder;
-import calc.formula.expression.impl.PeriodTimeValueOperand;
+import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.PeriodTimeValueService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<PeriodTimeValueOperand> {
+public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<PeriodTimeValueExpression> {
     private final PeriodTimeValueService service;
 
     @Override
-    public PeriodTimeValueOperand build(Node node, CalcContext context) {
+    public PeriodTimeValueExpression build(Node node, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         String mp = "";
@@ -47,7 +47,7 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
             }
         }
 
-        return PeriodTimeValueOperand.builder()
+        return PeriodTimeValueExpression.builder()
             .meteringPointCode(mp)
             .parameterCode(param)
             .interval(interval)

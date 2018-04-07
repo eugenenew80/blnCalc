@@ -2,16 +2,16 @@ package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.builder.ExpressionBuilder;
-import calc.formula.expression.impl.DoubleValueOperand;
+import calc.formula.expression.impl.DoubleValueExpression;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class DoubleValueExpressionBuilder implements ExpressionBuilder<DoubleValueOperand> {
+public class DoubleValueExpressionBuilder implements ExpressionBuilder<DoubleValueExpression> {
 
     @Override
-    public DoubleValueOperand build(Node node, CalcContext context) {
+    public DoubleValueExpression build(Node node, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
         Double val = 0d;
         for (int i=0; i<attributes.getLength(); i++) {
@@ -24,7 +24,7 @@ public class DoubleValueExpressionBuilder implements ExpressionBuilder<DoubleVal
             }
         }
 
-        return DoubleValueOperand.builder()
+        return DoubleValueExpression.builder()
             .value(val)
             .build();
     }

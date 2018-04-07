@@ -1,15 +1,18 @@
-package calc.formula.builder.impl;
+package calc.formula.service.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.builder.ExpressionBuilder;
 import calc.formula.expression.impl.BinaryExpression;
 import calc.formula.expression.Expression;
-import calc.formula.expression.impl.UnaryExpression;
 import calc.formula.builder.ExpressionBuilderFactory;
-import calc.formula.expression.impl.DoubleValueOperand;
+import calc.formula.service.XmlExpressionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +21,13 @@ import java.util.function.UnaryOperator;
 
 @Service
 @RequiredArgsConstructor
-public class RootExpressionBuilder implements ExpressionBuilder<Expression> {
-    private final ExpressionBuilderFactory operandBuilderFactory;
+public class XmlExpressionServiceImpl implements XmlExpressionService {
+    private final ExpressionBuilderFactory builderFactory;
     private final Map<String, BinaryOperator<Expression>> binaryOperators;
     private final Map<String, UnaryOperator<Expression>> unaryOperators;
 
     @Override
-    public Expression build(Node node, CalcContext context) {
+    public Expression parse(Node node, CalcContext context) {
         String nodeType = getNodeType(node);
         if (nodeType.equals("binary"))
             return buildBinary(node, context);
@@ -35,8 +38,21 @@ public class RootExpressionBuilder implements ExpressionBuilder<Expression> {
         if (nodeType.equals("operand"))
             return buildExpression(node, context);
 
-        return defaultExpression();
+        throw new IllegalArgumentException("Invalid operation: " + node.getNodeName());
     }
+
+    @Override
+    public Expression parse(String formula, CalcContext context) throws Exception {
+        Node node = DocumentBuilderFactory
+            .newInstance()
+            .newDocumentBuilder().parse(new InputSource(new StringReader(formula)))
+            .getDocumentElement()
+            .getParentNode()
+            .getFirstChild();
+
+        return parse(node, context);
+    }
+
 
     private String getNodeType(Node node) {
         String operator = node.getNodeName();
@@ -47,13 +63,6 @@ public class RootExpressionBuilder implements ExpressionBuilder<Expression> {
             return "unary";
 
         return "operand";
-    }
-
-    private Expression defaultExpression() {
-        return UnaryExpression.builder()
-            .operator(unaryOperators.get("nothing"))
-            .expression(DoubleValueOperand.builder().value(0d).build())
-            .build();
     }
 
     private  Expression buildBinary(Node node, CalcContext context) {
@@ -94,10 +103,10 @@ public class RootExpressionBuilder implements ExpressionBuilder<Expression> {
     }
 
     private Expression buildExpression(Node node, CalcContext context) {
-        ExpressionBuilder expressionBuilder = operandBuilderFactory.getBuilder(node.getNodeName(), this);
-        if (expressionBuilder!=null)
-            return expressionBuilder.build(node, context);
+        ExpressionBuilder builder = builderFactory.getBuilder(node.getNodeName(), this);
+        if (builder!=null)
+            return builder.build(node, context);
 
-        return build(node, context);
+        return parse(node, context);
     }
 }

@@ -2,18 +2,17 @@ package calc.formula.expression.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
-import calc.formula.service.PowerLineService;
+import calc.formula.service.ReactorService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PowerLineOperand implements Expression {
+public class ReactorExpression implements Expression {
     private final Long id;
-    private final String code;
     private final String attr;
-    private final PowerLineService service;
+    private final ReactorService service;
     private final CalcContext context;
 
     @Override
@@ -23,6 +22,6 @@ public class PowerLineOperand implements Expression {
 
     @Override
     public Double getValue() {
-        return service.getNumberAttribute(id, code, attr, context);
+        return service.getNumberAttribute(id, attr, context);
     }
 }

@@ -17,26 +17,26 @@ public class DefaultExpressionBuilderFactory implements ExpressionBuilderFactory
     private final ReactorService reactorService;
     private final ScriptEngine engine;
 
-    public ExpressionBuilder getBuilder(String operandType, RootExpressionBuilder expressionBuilder) {
-        if (operandType.equals("pt"))
+    public ExpressionBuilder getBuilder(String expressionType, XmlExpressionService expressionService) {
+        if (expressionType.equals("pt"))
             return new PeriodTimeValueExpressionBuilder(periodTimeValueService);
 
-        if (operandType.equals("at"))
+        if (expressionType.equals("at"))
             return new AtTimeValueExpressionBuilder(atTimeValueService);
 
-        if (operandType.equals("js"))
-            return new JavaScriptExpressionBuilder(engine, expressionBuilder);
+        if (expressionType.equals("js"))
+            return new JsExpressionBuilder(engine, expressionService);
 
-        if (operandType.equals("li"))
+        if (expressionType.equals("li"))
             return new PowerLineExpressionBuilder(powerLineService);
 
-        if (operandType.equals("tr"))
+        if (expressionType.equals("tr"))
             return new PowerTransformerExpressionBuilder(powerTransformerService);
 
-        if (operandType.equals("re"))
+        if (expressionType.equals("re"))
             return new ReactorExpressionBuilder(reactorService);
 
-        if (operandType.equals("number"))
+        if (expressionType.equals("number"))
             return new DoubleValueExpressionBuilder();
 
         return null;
