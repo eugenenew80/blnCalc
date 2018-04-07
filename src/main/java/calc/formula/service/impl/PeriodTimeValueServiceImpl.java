@@ -26,13 +26,13 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
 
     @Override
     public Double getValue(
-            String meteringPointCode,
-            String parameterCode,
-            String src,
-            String interval,
-            Byte startHour,
-            Byte endHour,
-            CalcContext context) {
+        String meteringPointCode,
+        String parameterCode,
+        String src,
+        String interval,
+        Byte startHour,
+        Byte endHour,
+        CalcContext context) {
 
         MeteringPoint meteringPoint = meteringPointRepo
             .findByCode(meteringPointCode);
@@ -67,16 +67,14 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
             endDate
         );
 
-        Double result = 0d;
-        if (!list.isEmpty()) {
-            result = list.stream()
-                .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
-                .map(t -> t.getVal())
-                .reduce((t1, t2) -> t1 + t2)
-                .orElse(0d);
-        }
+        if (list.isEmpty())
+            return 0d;
 
-        return result;
+        return list.stream()
+            .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
+            .map(t -> t.getVal())
+            .reduce((t1, t2) -> t1 + t2)
+            .orElse(0d);
     }
 }
 

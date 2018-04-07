@@ -25,7 +25,13 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
     private final ParameterRepo parameterRepo;
 
     @Override
-    public Double getValue(String meteringPointCode, String parameterCode, String src, String per, CalcContext context) {
+    public Double getValue(
+        String meteringPointCode,
+        String parameterCode,
+        String src,
+        String per,
+        CalcContext context) {
+
         MeteringPoint meteringPoint = meteringPointRepo
             .findByCode(meteringPointCode);
 
@@ -49,14 +55,12 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
             date
         );
 
-        Double result = 0d;
-        if (!list.isEmpty()) {
-            result = list.stream()
-                .map(t -> t.getVal())
-                .reduce((t1, t2) -> t1 + t2)
-                .orElse(0d);
-        }
+        if (list.isEmpty())
+            return 0d;
 
-        return result;
+        return list.stream()
+            .map(t -> t.getVal())
+            .reduce((t1, t2) -> t1 + t2)
+            .orElse(0d);
     }
 }
