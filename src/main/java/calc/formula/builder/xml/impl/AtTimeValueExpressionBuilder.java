@@ -18,7 +18,7 @@ public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeVal
 
         String mp = "";
         String param = "";
-        String src = "ALL";
+        String src = "";
         String per = "e";
         Double rate = 1d;
         for (int i=0; i<attributes.getLength(); i++) {
