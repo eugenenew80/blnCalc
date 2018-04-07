@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class PeriodTimeValueExpression implements Expression {
     private final String meteringPointCode;
     private final String parameterCode;
+    private final String src;
     private final Double rate;
     private final String interval;
     private final Byte startHour;
@@ -26,6 +27,6 @@ public class PeriodTimeValueExpression implements Expression {
 
     @Override
     public Double getValue() {
-        return rate*service.getValue(meteringPointCode, parameterCode, interval, startHour, endHour, context);
+        return rate*service.getValue(meteringPointCode, parameterCode, src, interval, startHour, endHour, context);
     }
 }

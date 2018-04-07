@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class AtTimeValueExpression implements Expression {
     private final String meteringPointCode;
     private final String parameterCode;
+    private final String src;
     private final String per;
     private final Double rate;
     private final AtTimeValueService service;
@@ -24,6 +25,6 @@ public class AtTimeValueExpression implements Expression {
 
     @Override
     public Double getValue() {
-        return rate*service.getValue(meteringPointCode, parameterCode, per, context);
+        return rate*service.getValue(meteringPointCode, parameterCode, src, per, context);
     }
 }
