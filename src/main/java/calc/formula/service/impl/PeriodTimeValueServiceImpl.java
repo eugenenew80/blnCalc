@@ -1,9 +1,10 @@
-package calc.formula.service;
+package calc.formula.service.impl;
 
 import calc.formula.CalcContext;
 import calc.entity.MeteringPoint;
 import calc.entity.Parameter;
 import calc.entity.PeriodTimeValue;
+import calc.formula.service.PeriodTimeValueService;
 import calc.repo.MeteringPointRepo;
 import calc.repo.ParameterRepo;
 import calc.repo.PeriodTimeValueRepo;
@@ -25,8 +26,11 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
 
     @Override
     public Double getValue(String meteringPointCode, String parameterCode, String interval, Byte startHour, Byte endHour, CalcContext context) {
-        MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
-        Parameter parameter = parameterRepo.findByCodeAndParamType(parameterCode, "PT");
+        MeteringPoint meteringPoint = meteringPointRepo
+            .findByCode(meteringPointCode);
+
+        Parameter parameter = parameterRepo
+            .findByCodeAndParamType(parameterCode, "PT");
 
         if (meteringPoint == null && parameter == null)
             return 0d;

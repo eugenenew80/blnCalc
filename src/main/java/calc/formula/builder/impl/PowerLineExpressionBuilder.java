@@ -1,14 +1,15 @@
-package calc.formula.builder.xml;
+package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
-import calc.formula.operand.PowerLineOperand;
+import calc.formula.builder.ExpressionBuilder;
+import calc.formula.expression.impl.PowerLineOperand;
 import calc.formula.service.PowerLineService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class PowerLineOperandBuilder implements OperandBuilder<PowerLineOperand> {
+public class PowerLineExpressionBuilder implements ExpressionBuilder<PowerLineOperand> {
     private final PowerLineService service;
 
     @Override

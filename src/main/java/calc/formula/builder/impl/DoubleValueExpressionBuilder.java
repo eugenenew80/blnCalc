@@ -1,13 +1,14 @@
-package calc.formula.builder.xml;
+package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
-import calc.formula.operand.DoubleValueOperand;
+import calc.formula.builder.ExpressionBuilder;
+import calc.formula.expression.impl.DoubleValueOperand;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class DoubleValueOperandBuilder implements OperandBuilder<DoubleValueOperand> {
+public class DoubleValueExpressionBuilder implements ExpressionBuilder<DoubleValueOperand> {
 
     @Override
     public DoubleValueOperand build(Node node, CalcContext context) {

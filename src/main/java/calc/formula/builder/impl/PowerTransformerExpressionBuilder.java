@@ -1,14 +1,15 @@
-package calc.formula.builder.xml;
+package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
-import calc.formula.operand.PowerTransformerOperand;
+import calc.formula.builder.ExpressionBuilder;
+import calc.formula.expression.impl.PowerTransformerOperand;
 import calc.formula.service.PowerTransformerService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class PowerTransformerOperandBuilder implements OperandBuilder<PowerTransformerOperand> {
+public class PowerTransformerExpressionBuilder implements ExpressionBuilder<PowerTransformerOperand> {
     private final PowerTransformerService service;
 
     @Override

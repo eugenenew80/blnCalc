@@ -1,7 +1,8 @@
-package calc.formula.service;
+package calc.formula.service.impl;
 
 import calc.formula.CalcContext;
 import calc.entity.Reactor;
+import calc.formula.service.ReactorService;
 import calc.repo.ReactorRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ public class ReactorServiceImpl implements ReactorService {
     @Override
     public Double getNumberAttribute(Long id, String attr, CalcContext context) {
         Reactor reactor = repo.findOne(id);
-
         if (reactor == null)
             return null;
 

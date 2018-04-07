@@ -1,14 +1,15 @@
-package calc.formula.builder.xml;
+package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
-import calc.formula.operand.ReactorOperand;
+import calc.formula.builder.ExpressionBuilder;
+import calc.formula.expression.impl.ReactorOperand;
 import calc.formula.service.ReactorService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class ReactorOperandBuilder implements OperandBuilder<ReactorOperand> {
+public class ReactorExpressionBuilder implements ExpressionBuilder<ReactorOperand> {
     private final ReactorService service;
 
     @Override

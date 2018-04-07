@@ -1,7 +1,8 @@
-package calc.formula.service;
+package calc.formula.service.impl;
 
 import calc.formula.CalcContext;
 import calc.entity.PowerTransformer;
+import calc.formula.service.PowerTransformerService;
 import calc.repo.PowerTransformerRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ public class PowerTransformerServiceImpl implements PowerTransformerService {
     @Override
     public Double getNumberAttribute(Long id, String attr, CalcContext context) {
         PowerTransformer powerTransformer = repo.findOne(id);
-
         if (powerTransformer == null)
             return null;
 

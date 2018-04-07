@@ -1,12 +1,12 @@
-package calc.formula.builder.xml;
+package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
-import calc.formula.expression.BinaryExpression;
+import calc.formula.builder.ExpressionBuilder;
+import calc.formula.expression.impl.BinaryExpression;
 import calc.formula.expression.Expression;
-import calc.formula.expression.UnaryExpression;
-import calc.formula.builder.factory.OperandBuilderFactory;
-import calc.formula.operand.DoubleValueOperand;
-import calc.formula.operand.Operand;
+import calc.formula.expression.impl.UnaryExpression;
+import calc.formula.builder.ExpressionBuilderFactory;
+import calc.formula.expression.impl.DoubleValueOperand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
@@ -18,13 +18,13 @@ import java.util.function.UnaryOperator;
 
 @Service
 @RequiredArgsConstructor
-public class ExpressionBuilder implements OperandBuilder<Operand> {
-    private final OperandBuilderFactory operandBuilderFactory;
-    private final Map<String, BinaryOperator<Operand>> binaryOperators;
-    private final Map<String, UnaryOperator<Operand>> unaryOperators;
+public class RootExpressionBuilder implements ExpressionBuilder<Expression> {
+    private final ExpressionBuilderFactory operandBuilderFactory;
+    private final Map<String, BinaryOperator<Expression>> binaryOperators;
+    private final Map<String, UnaryOperator<Expression>> unaryOperators;
 
     @Override
-    public Operand build(Node node, CalcContext context) {
+    public Expression build(Node node, CalcContext context) {
         String nodeType = getNodeType(node);
         if (nodeType.equals("binary"))
             return buildBinary(node, context);
@@ -33,7 +33,7 @@ public class ExpressionBuilder implements OperandBuilder<Operand> {
             return buildUnary(node, context);
 
         if (nodeType.equals("operand"))
-            return buildOperand(node, context);
+            return buildExpression(node, context);
 
         return defaultExpression();
     }
@@ -52,17 +52,17 @@ public class ExpressionBuilder implements OperandBuilder<Operand> {
     private Expression defaultExpression() {
         return UnaryExpression.builder()
             .operator(unaryOperators.get("nothing"))
-            .operand(DoubleValueOperand.builder().value(0d).build())
+            .expression(DoubleValueOperand.builder().value(0d).build())
             .build();
     }
 
     private  Expression buildBinary(Node node, CalcContext context) {
-        BinaryOperator<Operand> binaryOperator = binaryOperators.get(node.getNodeName());
-        List<Operand> operands = buildOperands(node, context);
+        BinaryOperator<Expression> binaryOperator = binaryOperators.get(node.getNodeName());
+        List<Expression> expressions = buildExpressions(node, context);
 
         BinaryExpression expression = BinaryExpression.builder()
             .operator(binaryOperator)
-            .operands(operands)
+            .expressions(expressions)
             .build();
 
         return expression;
@@ -77,32 +77,26 @@ public class ExpressionBuilder implements OperandBuilder<Operand> {
             }
         }
 
-        UnaryOperator<Operand> operator = unaryOperators.get(node.getNodeName());
-        Operand operand = buildOperand(node.getChildNodes().item(k), context);
-
-        UnaryExpression expression = UnaryExpression.builder()
-            .operator(operator)
-            .operand(operand)
-            .build();
-
-        return expression;
+        UnaryOperator<Expression> operator = unaryOperators.get(node.getNodeName());
+        Expression expression = buildExpression(node.getChildNodes().item(k), context);
+        return expression.andThen(operator);
     }
 
-    private List<Operand> buildOperands(Node node, CalcContext context) {
-        List<Operand> operands = new ArrayList<>();
+    private List<Expression> buildExpressions(Node node, CalcContext context) {
+        List<Expression> expressions = new ArrayList<>();
         for (int i=0; i<node.getChildNodes().getLength(); i++) {
             if (node.getChildNodes().item(i).getNodeType()==3) continue;
-            Operand operand = buildOperand(node.getChildNodes().item(i), context);
-            operands.add(operand);
+            Expression expression = buildExpression(node.getChildNodes().item(i), context);
+            expressions.add(expression);
         }
 
-        return operands;
+        return expressions;
     }
 
-    private  Operand buildOperand(Node node, CalcContext context) {
-        OperandBuilder operandBuilder = operandBuilderFactory.getBuilder(node.getNodeName(), this);
-        if (operandBuilder!=null)
-            return operandBuilder.build(node, context);
+    private Expression buildExpression(Node node, CalcContext context) {
+        ExpressionBuilder expressionBuilder = operandBuilderFactory.getBuilder(node.getNodeName(), this);
+        if (expressionBuilder!=null)
+            return expressionBuilder.build(node, context);
 
         return build(node, context);
     }

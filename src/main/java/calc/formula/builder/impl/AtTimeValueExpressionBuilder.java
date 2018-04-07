@@ -1,26 +1,25 @@
-package calc.formula.builder.xml;
+package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
-import calc.formula.operand.PeriodTimeValueOperand;
-import calc.formula.service.PeriodTimeValueService;
+import calc.formula.builder.ExpressionBuilder;
+import calc.formula.expression.impl.AtTimeValueOperand;
+import calc.formula.service.AtTimeValueService;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 @RequiredArgsConstructor
-public class PeriodTimeValueOperandBuilder implements OperandBuilder<PeriodTimeValueOperand> {
-    private final PeriodTimeValueService service;
+public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeValueOperand> {
+    private final AtTimeValueService service;
 
     @Override
-    public PeriodTimeValueOperand build(Node node, CalcContext context) {
+    public AtTimeValueOperand build(Node node, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         String mp = "";
         String param = "";
-        String interval = "c";
+        String per = "e";
         Double rate = 1d;
-        Byte startHour = 0;
-        Byte endHour = 23;
         for (int i=0; i<attributes.getLength(); i++) {
             String attrName = attributes.item(i).getNodeName();
             String attrValue = attributes.item(i).getNodeValue();
@@ -28,31 +27,23 @@ public class PeriodTimeValueOperandBuilder implements OperandBuilder<PeriodTimeV
                 case "mp":
                     mp = attrValue;
                     break;
+                case "per":
+                    per = attrValue;
+                    break;
                 case "param":
                     param = attrValue;
-                    break;
-                case "interval":
-                    interval = attrValue;
                     break;
                 case "rate":
                     rate = Double.parseDouble(attrValue);
                     break;
-                case "start":
-                    startHour = Byte.parseByte(attrValue);
-                    break;
-                case "end":
-                    endHour = Byte.parseByte(attrValue);
-                    break;
             }
         }
 
-        return PeriodTimeValueOperand.builder()
+        return  AtTimeValueOperand.builder()
             .meteringPointCode(mp)
             .parameterCode(param)
-            .interval(interval)
+            .per(per)
             .rate(rate)
-            .startHour(startHour)
-            .endHour(endHour)
             .service(service)
             .context(context)
             .build();

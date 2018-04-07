@@ -1,9 +1,10 @@
-package calc.formula.service;
+package calc.formula.service.impl;
 
 import calc.formula.CalcContext;
 import calc.entity.AtTimeValue;
 import calc.entity.MeteringPoint;
 import calc.entity.Parameter;
+import calc.formula.service.AtTimeValueService;
 import calc.repo.AtTimeValueRepo;
 import calc.repo.MeteringPointRepo;
 import calc.repo.ParameterRepo;
@@ -23,8 +24,11 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
 
     @Override
     public Double getValue(String meteringPointCode, String parameterCode, String per, CalcContext context) {
-        MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
-        Parameter parameter = parameterRepo.findByCodeAndParamType(parameterCode, "AT");
+        MeteringPoint meteringPoint = meteringPointRepo
+            .findByCode(meteringPointCode);
+
+        Parameter parameter = parameterRepo
+            .findByCodeAndParamType(parameterCode, "AT");
 
         if (meteringPoint == null && parameter == null)
             return 0d;

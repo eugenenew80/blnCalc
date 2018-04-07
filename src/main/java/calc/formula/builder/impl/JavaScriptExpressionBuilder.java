@@ -1,22 +1,23 @@
-package calc.formula.builder.xml;
+package calc.formula.builder.impl;
 
 import calc.formula.CalcContext;
-import calc.formula.operand.JavaScriptOperand;
-import calc.formula.operand.Operand;
+import calc.formula.builder.ExpressionBuilder;
+import calc.formula.expression.Expression;
+import calc.formula.expression.impl.JavaScriptOperand;
 import lombok.RequiredArgsConstructor;
 import org.w3c.dom.Node;
 import javax.script.ScriptEngine;
 import java.util.HashMap;
 
 @RequiredArgsConstructor
-public class JavaScriptOperandBuilder implements OperandBuilder<JavaScriptOperand> {
+public class JavaScriptExpressionBuilder implements ExpressionBuilder<JavaScriptOperand> {
     private final ScriptEngine engine;
-    private final ExpressionBuilder expressionBuilder;
+    private final RootExpressionBuilder expressionBuilder;
 
     @Override
     public JavaScriptOperand build(Node parentNode, CalcContext context) {
         String src = "";
-        HashMap<String, Operand> attributes = new HashMap<>();
+        HashMap<String, Expression> attributes = new HashMap<>();
 
         for (int i = 0; i < parentNode.getChildNodes().getLength(); i++) {
             Node node = parentNode.getChildNodes().item(i);
@@ -38,7 +39,7 @@ public class JavaScriptOperandBuilder implements OperandBuilder<JavaScriptOperan
                             continue;
 
                         Node operandNode = paramNode.getChildNodes().item(k);
-                        Operand operand = expressionBuilder.build(operandNode, context);
+                        Expression operand = expressionBuilder.build(operandNode, context);
                         attributes.put(paramName, operand);
                     }
                 }

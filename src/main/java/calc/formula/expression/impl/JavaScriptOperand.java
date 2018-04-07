@@ -1,19 +1,23 @@
-package calc.formula.operand;
+package calc.formula.expression.impl;
 
-import calc.formula.expression.UnaryExpression;
+import calc.formula.expression.Expression;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import javax.script.*;
 import java.util.Map;
-import java.util.function.UnaryOperator;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class JavaScriptOperand implements Operand {
+public class JavaScriptOperand implements Expression {
     private final String src;
-    private final Map<String, Operand> attributes;
+    private final Map<String, Expression> attributes;
     private final ScriptEngine engine;
+
+    @Override
+    public Expression calc() {
+        return this;
+    }
 
     @Override
     public Double getValue() {
@@ -30,13 +34,5 @@ public class JavaScriptOperand implements Operand {
         }
 
         return eval!=null ? Double.parseDouble(eval.toString()) : null;
-    }
-
-    @Override
-    public UnaryExpression andThen(UnaryOperator<Operand> operator) {
-        return UnaryExpression.builder()
-            .operand(this)
-            .operator(operator)
-            .build();
     }
 }

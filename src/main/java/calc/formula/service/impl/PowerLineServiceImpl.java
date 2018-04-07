@@ -1,7 +1,8 @@
-package calc.formula.service;
+package calc.formula.service.impl;
 
 import calc.formula.CalcContext;
 import calc.entity.PowerLine;
+import calc.formula.service.PowerLineService;
 import calc.repo.PowerLineRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,11 @@ public class PowerLineServiceImpl implements PowerLineService {
 
     @Override
     public Double getNumberAttribute(Long id, String code, String attr, CalcContext context) {
-        PowerLine powerLine;
+        PowerLine powerLine = null;
         if (id!=null)
             powerLine = repo.findOne(id);
         else if (code!=null)
             powerLine = repo.findByCode(code);
-        else
-            powerLine = null;
 
         if (powerLine == null)
             return null;

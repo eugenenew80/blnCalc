@@ -1,16 +1,15 @@
-package calc.formula.operand;
+package calc.formula.expression.impl;
 
 import calc.formula.CalcContext;
-import calc.formula.expression.UnaryExpression;
+import calc.formula.expression.Expression;
 import calc.formula.service.AtTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-import java.util.function.UnaryOperator;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class AtTimeValueOperand implements Operand {
+public class AtTimeValueOperand implements Expression {
     private final String meteringPointCode;
     private final String parameterCode;
     private final String per;
@@ -19,15 +18,12 @@ public class AtTimeValueOperand implements Operand {
     private final CalcContext context;
 
     @Override
-    public Double getValue() {
-        return rate*service.getValue(meteringPointCode, parameterCode, per, context);
+    public Expression calc() {
+        return this;
     }
 
     @Override
-    public UnaryExpression andThen(UnaryOperator<Operand> operator) {
-        return UnaryExpression.builder()
-            .operand(this)
-            .operator(operator)
-            .build();
+    public Double getValue() {
+        return rate*service.getValue(meteringPointCode, parameterCode, per, context);
     }
 }

@@ -1,12 +1,12 @@
 package calc;
 
+import calc.formula.expression.Expression;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import calc.formula.operand.DoubleValueOperand;
-import calc.formula.operand.Operand;
+import calc.formula.expression.impl.DoubleValueOperand;
 import calc.entity.MeteringPoint;
 import calc.entity.Parameter;
 import org.ehcache.CacheManager;
@@ -49,36 +49,36 @@ public class AppConfig {
     }
 
     @Bean
-    public Map<String, BinaryOperator<Operand>> binaryOperators() {
-        BinaryOperator<Operand> add = (op1, op2) -> DoubleValueOperand.builder()
+    public Map<String, BinaryOperator<Expression>> binaryOperators() {
+        BinaryOperator<Expression> add = (op1, op2) -> DoubleValueOperand.builder()
             .value(op1.getValue() + op2.getValue())
             .build();
 
-        BinaryOperator<Operand> subtract = (op1, op2) -> DoubleValueOperand.builder()
+        BinaryOperator<Expression> subtract = (op1, op2) -> DoubleValueOperand.builder()
             .value(op1.getValue() - op2.getValue())
             .build();
 
-        BinaryOperator<Operand> divide = (op1, op2) -> DoubleValueOperand.builder()
+        BinaryOperator<Expression> divide = (op1, op2) -> DoubleValueOperand.builder()
             .value(op1.getValue() / op2.getValue())
             .build();
 
-        BinaryOperator<Operand> multiply = (op1, op2) -> DoubleValueOperand.builder()
+        BinaryOperator<Expression> multiply = (op1, op2) -> DoubleValueOperand.builder()
             .value(op1.getValue() * op2.getValue())
             .build();
 
-        BinaryOperator<Operand> pow = (op1, op2) -> DoubleValueOperand.builder()
+        BinaryOperator<Expression> pow = (op1, op2) -> DoubleValueOperand.builder()
             .value(Math.pow(op1.getValue(), op2.getValue()))
             .build();
 
-        BinaryOperator<Operand> max = (op1, op2) -> DoubleValueOperand.builder()
+        BinaryOperator<Expression> max = (op1, op2) -> DoubleValueOperand.builder()
             .value(Math.max(op1.getValue(), op2.getValue()))
             .build();
 
-        BinaryOperator<Operand> min = (op1, op2) -> DoubleValueOperand.builder()
+        BinaryOperator<Expression> min = (op1, op2) -> DoubleValueOperand.builder()
             .value(Math.min(op1.getValue(), op2.getValue()))
             .build();
 
-        Map<String, BinaryOperator<Operand>> operations = new HashMap<>();
+        Map<String, BinaryOperator<Expression>> operations = new HashMap<>();
         operations.put("add", add);
         operations.put("subtract", subtract);
         operations.put("multiply", multiply);
@@ -91,60 +91,60 @@ public class AppConfig {
     }
 
     @Bean
-    public Map<String, UnaryOperator<Operand>> unaryOperations() {
-        UnaryOperator<Operand> nothing = (op) -> DoubleValueOperand.builder()
+    public Map<String, UnaryOperator<Expression>> unaryOperations() {
+        UnaryOperator<Expression> nothing = (op) -> DoubleValueOperand.builder()
             .value(op.getValue())
             .build();
 
-        UnaryOperator<Operand> minus = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> minus = (op) -> DoubleValueOperand.builder()
             .value(-1*op.getValue())
             .build();
 
-        UnaryOperator<Operand> abs = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> abs = (op) -> DoubleValueOperand.builder()
             .value(Math.abs(op.getValue()))
             .build();
 
-        UnaryOperator<Operand> ceil = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> ceil = (op) -> DoubleValueOperand.builder()
             .value(Math.ceil(op.getValue()))
             .build();
 
-        UnaryOperator<Operand> floor = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> floor = (op) -> DoubleValueOperand.builder()
             .value(Math.floor(op.getValue()))
             .build();
 
-        UnaryOperator<Operand> sqrt = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> sqrt = (op) -> DoubleValueOperand.builder()
             .value(Math.sqrt(op.getValue()))
             .build();
 
-        UnaryOperator<Operand> pow2 = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> pow2 = (op) -> DoubleValueOperand.builder()
             .value(Math.pow(op.getValue(),2))
             .build();
 
-        UnaryOperator<Operand> sign = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> sign = (op) -> DoubleValueOperand.builder()
             .value(Math.signum(op.getValue()))
             .build();
 
-        UnaryOperator<Operand> round = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> round = (op) -> DoubleValueOperand.builder()
             .value(Math.round(op.getValue()*1d) / 1d)
             .build();
 
-        UnaryOperator<Operand> round1 = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> round1 = (op) -> DoubleValueOperand.builder()
             .value(Math.round(op.getValue()*10d) / 10d)
             .build();
 
-        UnaryOperator<Operand> round2 = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> round2 = (op) -> DoubleValueOperand.builder()
             .value(Math.round(op.getValue()*100d) / 100d)
             .build();
 
-        UnaryOperator<Operand> round3 = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> round3 = (op) -> DoubleValueOperand.builder()
             .value(Math.round(op.getValue()*1000d) / 1000d)
             .build();
 
-        UnaryOperator<Operand> round4 = (op) -> DoubleValueOperand.builder()
+        UnaryOperator<Expression> round4 = (op) -> DoubleValueOperand.builder()
             .value(Math.round(op.getValue()*10000d) / 10000d)
             .build();
 
-        Map<String, UnaryOperator<Operand>> operations = new HashMap<>();
+        Map<String, UnaryOperator<Expression>> operations = new HashMap<>();
         operations.put("nothing", nothing);
         operations.put("minus", minus);
         operations.put("abs", abs);
