@@ -5,17 +5,16 @@ import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.BinaryExpression;
 import calc.formula.expression.Expression;
 import calc.formula.builder.ExpressionBuilderFactory;
+import calc.formula.service.OperatorFactory;
 import calc.formula.service.XmlExpressionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
@@ -23,8 +22,7 @@ import java.util.function.UnaryOperator;
 @RequiredArgsConstructor
 public class XmlExpressionServiceImpl implements XmlExpressionService {
     private final ExpressionBuilderFactory builderFactory;
-    private final Map<String, BinaryOperator<Expression>> binaryOperators;
-    private final Map<String, UnaryOperator<Expression>> unaryOperators;
+    private final OperatorFactory operatorFactory;
 
     @Override
     public Expression parse(Node node, CalcContext context) {
@@ -35,7 +33,7 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         if (nodeType.equals("unary"))
             return buildUnary(node, context);
 
-        if (nodeType.equals("operand"))
+        if (nodeType.equals("expression"))
             return buildExpression(node, context);
 
         throw new IllegalArgumentException("Invalid operation: " + node.getNodeName());
@@ -56,17 +54,17 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
 
     private String getNodeType(Node node) {
         String operator = node.getNodeName();
-        if (binaryOperators.containsKey(operator))
+        if (operatorFactory.binary(operator)!=null)
             return "binary";
 
-        if (unaryOperators.containsKey(operator))
+        if (operatorFactory.unary(operator)!=null)
             return "unary";
 
-        return "operand";
+        return "expression";
     }
 
     private  Expression buildBinary(Node node, CalcContext context) {
-        BinaryOperator<Expression> binaryOperator = binaryOperators.get(node.getNodeName());
+        BinaryOperator<Expression> binaryOperator = operatorFactory.binary(node.getNodeName());
         List<Expression> expressions = buildExpressions(node, context);
 
         BinaryExpression expression = BinaryExpression.builder()
@@ -86,7 +84,7 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
             }
         }
 
-        UnaryOperator<Expression> operator = unaryOperators.get(node.getNodeName());
+        UnaryOperator<Expression> operator = operatorFactory.unary(node.getNodeName());
         Expression expression = buildExpression(node.getChildNodes().item(k), context);
         return expression.andThen(operator);
     }
