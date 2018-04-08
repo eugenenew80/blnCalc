@@ -13,12 +13,12 @@ public class UnaryExpression implements Expression {
     private final UnaryOperator<Expression> operator;
 
     @Override
-    public Expression calc() {
+    public Expression expression() {
         return operator.apply(expression);
     }
 
     @Override
-    public Double getValue() {
-        return calc().getValue();
+    public Double value() {
+        return expression().value();
     }
 }

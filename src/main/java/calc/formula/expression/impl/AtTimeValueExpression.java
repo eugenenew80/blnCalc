@@ -19,12 +19,12 @@ public class AtTimeValueExpression implements Expression {
     private final CalcContext context;
 
     @Override
-    public Expression calc() {
+    public Expression expression() {
         return this;
     }
 
     @Override
-    public Double getValue() {
+    public Double value() {
         return rate*service.getValue(meteringPointCode, parameterCode, src, per, context);
     }
 }

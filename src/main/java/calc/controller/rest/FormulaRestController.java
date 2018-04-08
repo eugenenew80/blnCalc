@@ -30,7 +30,7 @@ public class FormulaRestController {
         try {
             result = expressionService
                 .parse(formula, context)
-                .getValue();
+                .value();
         }
         catch (Exception e) {
             e.printStackTrace();

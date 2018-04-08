@@ -15,17 +15,17 @@ public class JsExpression implements Expression {
     private final ScriptEngine engine;
 
     @Override
-    public Expression calc() {
+    public Expression expression() {
         return this;
     }
 
     @Override
-    public Double getValue() {
+    public Double value() {
         Object eval = null;
         try {
             final ScriptContext ctx = new SimpleScriptContext();
             attributes.keySet().stream()
-                .forEach(key -> ctx.setAttribute(key, attributes.get(key).getValue(), ScriptContext.ENGINE_SCOPE));
+                .forEach(key -> ctx.setAttribute(key, attributes.get(key).value(), ScriptContext.ENGINE_SCOPE));
 
             eval = engine.eval(src, ctx);
         }

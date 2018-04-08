@@ -51,31 +51,31 @@ public class AppConfig {
     @Bean
     public Map<String, BinaryOperator<Expression>> binaryOperators() {
         BinaryOperator<Expression> add = (op1, op2) -> DoubleValueExpression.builder()
-            .value(op1.getValue() + op2.getValue())
+            .value(op1.value() + op2.value())
             .build();
 
         BinaryOperator<Expression> subtract = (op1, op2) -> DoubleValueExpression.builder()
-            .value(op1.getValue() - op2.getValue())
+            .value(op1.value() - op2.value())
             .build();
 
         BinaryOperator<Expression> divide = (op1, op2) -> DoubleValueExpression.builder()
-            .value(op1.getValue() / op2.getValue())
+            .value(op1.value() / op2.value())
             .build();
 
         BinaryOperator<Expression> multiply = (op1, op2) -> DoubleValueExpression.builder()
-            .value(op1.getValue() * op2.getValue())
+            .value(op1.value() * op2.value())
             .build();
 
         BinaryOperator<Expression> pow = (op1, op2) -> DoubleValueExpression.builder()
-            .value(Math.pow(op1.getValue(), op2.getValue()))
+            .value(Math.pow(op1.value(), op2.value()))
             .build();
 
         BinaryOperator<Expression> max = (op1, op2) -> DoubleValueExpression.builder()
-            .value(Math.max(op1.getValue(), op2.getValue()))
+            .value(Math.max(op1.value(), op2.value()))
             .build();
 
         BinaryOperator<Expression> min = (op1, op2) -> DoubleValueExpression.builder()
-            .value(Math.min(op1.getValue(), op2.getValue()))
+            .value(Math.min(op1.value(), op2.value()))
             .build();
 
         Map<String, BinaryOperator<Expression>> operations = new HashMap<>();
@@ -93,55 +93,55 @@ public class AppConfig {
     @Bean
     public Map<String, UnaryOperator<Expression>> unaryOperations() {
         UnaryOperator<Expression> nothing = (op) -> DoubleValueExpression.builder()
-            .value(op.getValue())
+            .value(op.value())
             .build();
 
         UnaryOperator<Expression> minus = (op) -> DoubleValueExpression.builder()
-            .value(-1*op.getValue())
+            .value(-1*op.value())
             .build();
 
         UnaryOperator<Expression> abs = (op) -> DoubleValueExpression.builder()
-            .value(Math.abs(op.getValue()))
+            .value(Math.abs(op.value()))
             .build();
 
         UnaryOperator<Expression> ceil = (op) -> DoubleValueExpression.builder()
-            .value(Math.ceil(op.getValue()))
+            .value(Math.ceil(op.value()))
             .build();
 
         UnaryOperator<Expression> floor = (op) -> DoubleValueExpression.builder()
-            .value(Math.floor(op.getValue()))
+            .value(Math.floor(op.value()))
             .build();
 
         UnaryOperator<Expression> sqrt = (op) -> DoubleValueExpression.builder()
-            .value(Math.sqrt(op.getValue()))
+            .value(Math.sqrt(op.value()))
             .build();
 
         UnaryOperator<Expression> pow2 = (op) -> DoubleValueExpression.builder()
-            .value(Math.pow(op.getValue(),2))
+            .value(Math.pow(op.value(),2))
             .build();
 
         UnaryOperator<Expression> sign = (op) -> DoubleValueExpression.builder()
-            .value(Math.signum(op.getValue()))
+            .value(Math.signum(op.value()))
             .build();
 
         UnaryOperator<Expression> round = (op) -> DoubleValueExpression.builder()
-            .value(Math.round(op.getValue()*1d) / 1d)
+            .value(Math.round(op.value()*1d) / 1d)
             .build();
 
         UnaryOperator<Expression> round1 = (op) -> DoubleValueExpression.builder()
-            .value(Math.round(op.getValue()*10d) / 10d)
+            .value(Math.round(op.value()*10d) / 10d)
             .build();
 
         UnaryOperator<Expression> round2 = (op) -> DoubleValueExpression.builder()
-            .value(Math.round(op.getValue()*100d) / 100d)
+            .value(Math.round(op.value()*100d) / 100d)
             .build();
 
         UnaryOperator<Expression> round3 = (op) -> DoubleValueExpression.builder()
-            .value(Math.round(op.getValue()*1000d) / 1000d)
+            .value(Math.round(op.value()*1000d) / 1000d)
             .build();
 
         UnaryOperator<Expression> round4 = (op) -> DoubleValueExpression.builder()
-            .value(Math.round(op.getValue()*10000d) / 10000d)
+            .value(Math.round(op.value()*10000d) / 10000d)
             .build();
 
         Map<String, UnaryOperator<Expression>> operations = new HashMap<>();

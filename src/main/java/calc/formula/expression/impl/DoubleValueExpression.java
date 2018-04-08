@@ -11,12 +11,12 @@ public class DoubleValueExpression implements Expression {
     private final Double value;
 
     @Override
-    public Expression calc() {
+    public Expression expression() {
         return this;
     }
 
     @Override
-    public Double getValue() {
+    public Double value() {
         return value;
     }
 }

@@ -4,8 +4,8 @@ import calc.formula.expression.impl.UnaryExpression;
 import java.util.function.UnaryOperator;
 
 public interface Expression {
-    Expression calc();
-    Double getValue();
+    Expression expression();
+    Double value();
 
     default UnaryExpression andThen(UnaryOperator<Expression> operator) {
         return UnaryExpression.builder()

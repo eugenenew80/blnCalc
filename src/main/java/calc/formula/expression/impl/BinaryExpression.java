@@ -14,14 +14,14 @@ public class BinaryExpression implements Expression {
     private final BinaryOperator<Expression> operator;
 
     @Override
-    public Expression calc() {
+    public Expression expression() {
         return expressions.stream()
             .reduce(operator)
-            .orElseGet(null);
+            .orElse(null);
     }
 
     @Override
-    public Double getValue() {
-        return calc().getValue();
+    public Double value() {
+        return expression().value();
     }
 }
