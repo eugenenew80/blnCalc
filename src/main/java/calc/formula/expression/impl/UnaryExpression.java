@@ -4,6 +4,8 @@ import calc.formula.expression.Expression;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Set;
 import java.util.function.UnaryOperator;
 
 @Builder
@@ -20,5 +22,10 @@ public class UnaryExpression implements Expression {
     @Override
     public Double value() {
         return expression().value();
+    }
+
+    @Override
+    public Set<String> meteringPoints() {
+        return expression.meteringPoints();
     }
 }

@@ -7,6 +7,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toSet;
+
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PeriodTimeValueExpression implements Expression {
@@ -28,5 +33,11 @@ public class PeriodTimeValueExpression implements Expression {
     @Override
     public Double value() {
         return rate*service.getValue(meteringPointCode, parameterCode, src, interval, startHour, endHour, context);
+    }
+
+    @Override
+    public Set<String> meteringPoints() {
+        return Stream.of(meteringPointCode)
+            .collect(toSet());
     }
 }

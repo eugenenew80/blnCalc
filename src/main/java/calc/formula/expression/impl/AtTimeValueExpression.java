@@ -7,6 +7,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toSet;
+
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AtTimeValueExpression implements Expression {
@@ -26,5 +31,11 @@ public class AtTimeValueExpression implements Expression {
     @Override
     public Double value() {
         return rate*service.getValue(meteringPointCode, parameterCode, src, per, context);
+    }
+
+    @Override
+    public Set<String> meteringPoints() {
+        return Stream.of(meteringPointCode)
+            .collect(toSet());
     }
 }
