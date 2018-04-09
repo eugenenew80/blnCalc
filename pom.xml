@@ -14,16 +14,28 @@
 
     <profiles>
         <profile>
+            <id>prod</id>
+            <properties>
+                <driver>oracle.jdbc.OracleDriver</driver>
+                <url>jdbc:oracle:thin:@localhost:1521:BLNDEV</url>
+                <username>system</username>
+                <password>${settings.servers.server.ora.password}</password>
+                <scripts>dev</scripts>
+                <skipTests>true</skipTests>
+            </properties>
+        </profile>
+
+        <profile>
             <id>dev</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
 
             <properties>
-                <driver>org.postgresql.Driver</driver>
+                <driver>oracle.jdbc.OracleDriver</driver>
                 <url>jdbc:oracle:thin:@10.9.50.151:1521:orcl12c</url>
-                <username>apps</username>
-                <password>apps</password>
+                <username>system</username>
+                <password>Q1w2e3r4t5</password>
                 <scripts>dev</scripts>
                 <skipTests>true</skipTests>
             </properties>
@@ -31,7 +43,6 @@
 
         <profile>
             <id>localDev</id>
-
             <properties>
                 <driver>org.postgresql.Driver</driver>
                 <url>jdbc:postgresql://localhost:5432/bln_dev</url>
@@ -44,10 +55,6 @@
 
         <profile>
             <id>localTest</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-
             <properties>
                 <driver>org.postgresql.Driver</driver>
                 <url>jdbc:postgresql://localhost:5432/bln_dev</url>
@@ -128,6 +135,26 @@
         </dependency>
 
         <dependency>
+            <groupId>net.sf.dozer</groupId>
+            <artifactId>dozer</artifactId>
+            <version>5.4.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
@@ -162,7 +189,6 @@
             <version>4.13</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>angular-ui-codemirror</artifactId>
@@ -184,6 +210,39 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>1.5.10.RELEASE</version>
             </plugin>
+
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.5.3</version>
+
+                <configuration>
+                    <changeLogFile>
+                        ${basedir}/src/main/resources/liquibase/${scripts}/changelog.xml
+                    </changeLogFile>
+                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+                    <driver>${driver}</driver>
+                    <url>${url}</url>
+                    <username>${username}</username>
+                    <password>${password}</password>
+                </configuration>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.liquibase.ext</groupId>
+                        <artifactId>liquibase-oracle</artifactId>
+                        <version>3.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
+
+        <extensions>
+            <extension>
+                <groupId>com.github.shyiko.servers-maven-extension</groupId>
+                <artifactId>servers-maven-extension</artifactId>
+                <version>1.3.1</version>
+            </extension>
+        </extensions>
     </build>
 </project>

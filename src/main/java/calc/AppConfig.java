@@ -7,17 +7,29 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import calc.entity.MeteringPoint;
 import calc.entity.Parameter;
+import org.dozer.DozerBeanMapper;
 import org.ehcache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.util.Arrays;
 import static org.ehcache.config.builders.CacheConfigurationBuilder.newCacheConfigurationBuilder;
 import static org.ehcache.config.builders.CacheManagerBuilder.newCacheManagerBuilder;
 import static org.ehcache.config.builders.ResourcePoolsBuilder.*;
 
 @Configuration
 public class AppConfig {
+
+    @Bean
+    public DozerBeanMapper dozerBeanMapper() {
+        DozerBeanMapper mapper = new DozerBeanMapper();
+        mapper.setMappingFiles(Arrays.asList(
+            "dozer/MappingConfig.xml"
+        ));
+
+        return mapper;
+    }
 
     @Bean
     public ObjectMapper objectMapper() {

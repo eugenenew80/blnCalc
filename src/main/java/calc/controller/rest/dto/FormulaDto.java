@@ -2,15 +2,18 @@ package calc.controller.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class FormulaDto {
-    @JsonFormat(pattern = "dd.MM.yyyy")
-    private LocalDate startDate;
+    private Long id;
+    private String code;
+    private String description;
+    private String textBase64;
 
     @JsonFormat(pattern = "dd.MM.yyyy")
-    private LocalDate endDate;
+    private LocalDateTime startDate;
 
-    private String contentBase64;
+    @JsonFormat(pattern = "dd.MM.yyyy")
+    private LocalDateTime endDate;
 }

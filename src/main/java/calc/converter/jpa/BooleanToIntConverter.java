@@ -1,4 +1,4 @@
-package calc.converter;
+package calc.converter.jpa;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

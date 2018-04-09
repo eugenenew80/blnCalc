@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<sqrt>
-    <add>
-        <pow rate="2"><pt mp="121420300070100018" param="A+" /></pow>
-        <pow rate="2"><pt mp="121420300070100018" param="A-" /></pow>
-    </add>
-</sqrt>
