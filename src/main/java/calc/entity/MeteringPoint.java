@@ -8,10 +8,15 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
+@NoArgsConstructor
 @Entity
 @Table(name = "dict_metering_points")
 @Immutable
 public class MeteringPoint {
+    public MeteringPoint(String code) {
+        this.code = code;
+    }
+
     @Id
     private Long id;
 
