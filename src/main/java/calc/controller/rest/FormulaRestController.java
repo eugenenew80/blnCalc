@@ -2,61 +2,98 @@ package calc.controller.rest;
 
 import calc.controller.rest.dto.FormulaDto;
 import calc.entity.Formula;
-import calc.formula.CalcContext;
-import calc.controller.rest.dto.CalcDto;
-import calc.controller.rest.dto.ResultDto;
-import calc.formula.service.ExpressionService;
 import calc.repo.FormulaRepo;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.dozer.DozerBeanMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import java.nio.charset.Charset;
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+import static calc.util.Util.first;
 
 @RestController
 @RequiredArgsConstructor
 public class FormulaRestController {
-    private final ExpressionService expressionService;
     private final FormulaRepo formulaRepo;
     private final DozerBeanMapper mapper;
 
-    @GetMapping(value = "/rest/formula/{id}", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
+    @PostConstruct
+    private void init() {
+        findById = formulaRepo::findOne;
+        findByCode = formulaRepo::findByCode;
+        save = formulaRepo::save;
+        transformToEntity = t -> mapper.map(t, Formula.class);
+        transformToDto = t -> mapper.map(t, FormulaDto.class);
+
+        encodeToBase64 = (t -> {
+            t.setTextBase64(new String(Base64.encodeBase64(t.getText().getBytes())));
+            return t;
+        });
+
+        decodeFromBase64 = (t -> {
+            t.setText(new String(Base64.decodeBase64(t.getTextBase64().getBytes())));
+            return t;
+        });
+    }
+
+    @GetMapping(value = "/rest/formula/", produces = "application/json;charset=utf-8")
+    public List<FormulaDto> getAll() {
+        return formulaRepo.findAll()
+            .stream()
+            .map(transformToDto::apply)
+            .collect(Collectors.toList());
+    }
+
+    @GetMapping(value = "/rest/formula/{id}", produces = "application/json;charset=utf-8")
     public FormulaDto getById(@PathVariable Long id) {
-        Formula formula = formulaRepo.findOne(id);
-        FormulaDto dto = mapper.map(formula, FormulaDto.class);
-        dto.setTextBase64(new String(Base64.encodeBase64(formula.getText().getBytes())));
-        return dto;
+        return first(findById)
+            .andThen(transformToDto)
+            .andThen(encodeToBase64)
+            .apply(id);
     }
 
-    @GetMapping(value = "/rest/formula/byCode/{code}", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
+    @GetMapping(value = "/rest/formula/byCode/{code}", produces = "application/json;charset=utf-8")
     public FormulaDto getByCode(@PathVariable String code) {
-        Formula formula = formulaRepo.findByCode(code);
-        FormulaDto dto = mapper.map(formula, FormulaDto.class);
-        dto.setTextBase64(new String(Base64.encodeBase64(formula.getText().getBytes())));
-        return dto;
+        return first(findByCode)
+            .andThen(transformToDto)
+            .andThen(encodeToBase64)
+            .apply(code);
     }
 
-    @PostMapping(value = "/rest/formula/calc", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
-    public ResultDto calc(@RequestBody CalcDto calcDto) {
-        byte[] contentAsBytes = Base64.decodeBase64(calcDto.getContentBase64());
-        String formula = new String(contentAsBytes, Charset.forName("UTF-8"));
-
-        CalcContext context = CalcContext.builder()
-            .startDate(calcDto.getStartDate().atStartOfDay())
-            .endDate(calcDto.getEndDate().atStartOfDay().plusDays(1))
-            .build();
-
-        Double result;
-        try {
-            result = expressionService
-                .parse(formula, context)
-                .value();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            result = null;
-        }
-
-        return new ResultDto(result);
+    @PostMapping(value = "/rest/formula/", produces = "application/json;charset=utf-8")
+    public FormulaDto create(@RequestBody FormulaDto dto) {
+        return first(decodeFromBase64)
+            .andThen(transformToEntity)
+            .andThen(save)
+            .andThen(transformToDto)
+            .apply(dto);
     }
+
+    @PutMapping(value = "/rest/formula/{id}", produces = "application/json;charset=utf-8")
+    public FormulaDto update(@PathVariable Long id, @RequestBody FormulaDto dto) {
+        return first(decodeFromBase64)
+            .andThen(transformToEntity)
+            .andThen(save)
+            .andThen(transformToDto)
+            .apply(dto);
+    }
+
+    @DeleteMapping(value = "/rest/formula/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        formulaRepo.delete(id);
+    }
+
+
+    private UnaryOperator<Formula> save;
+    private Function<Long, Formula> findById;
+    private Function<String, Formula> findByCode;
+    private Function<FormulaDto, Formula> transformToEntity;
+    private Function<Formula, FormulaDto> transformToDto;
+    private Function<FormulaDto, FormulaDto> encodeToBase64;
+    private Function<FormulaDto, FormulaDto> decodeFromBase64;
 }

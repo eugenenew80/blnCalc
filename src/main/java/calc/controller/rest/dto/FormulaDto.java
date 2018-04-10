@@ -1,6 +1,7 @@
 package calc.controller.rest.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -10,6 +11,9 @@ public class FormulaDto {
     private String code;
     private String description;
     private String textBase64;
+
+    @JsonIgnore
+    private String text;
 
     @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDateTime startDate;
