@@ -30,7 +30,13 @@ public class AtTimeValueExpression implements Expression {
 
     @Override
     public Double value() {
-        return rate*service.getValue(meteringPointCode, parameterCode, src, per, context);
+        return rate*service.getValue(
+            meteringPointCode,
+            parameterCode,
+            src,
+            per,
+            context
+        );
     }
 
     @Override

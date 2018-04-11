@@ -1,20 +1,14 @@
 package calc.controller.rest;
 
-import calc.controller.rest.dto.CalcDto;
+import calc.controller.rest.dto.ContextDto;
 import calc.controller.rest.dto.ResultDto;
 import calc.entity.MeteringPointFormula;
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
 import calc.formula.service.ExpressionService;
-import calc.repo.FormulaRepo;
 import calc.repo.MeteringPointFormulaRepo;
-import calc.repo.MeteringPointRepo;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.jgrapht.alg.CycleDetector;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,22 +21,20 @@ import java.util.*;
 @RequiredArgsConstructor
 public class CalcController {
     private final ExpressionService expressionService;
-    private final FormulaRepo formulaRepo;
-    private final MeteringPointRepo meteringPointRepo;
     private final MeteringPointFormulaRepo meteringPointFormulaRepo;
 
     @PostConstruct
-    private void init() {
-    }
+    private void init() { }
 
     @PostMapping(value = "/rest/calc/text", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
-    public ResultDto calc(@RequestBody CalcDto calcDto) throws Exception {
-        byte[] contentAsBytes = Base64.decodeBase64(calcDto.getContentBase64());
+    public ResultDto calc(@RequestBody ContextDto contextDto) throws Exception {
+        byte[] contentAsBytes = Base64.decodeBase64(contextDto.getContentBase64());
         String formula = new String(contentAsBytes, Charset.forName("UTF-8"));
 
         CalcContext context = CalcContext.builder()
-            .startDate(calcDto.getStartDate().atStartOfDay())
-            .endDate(calcDto.getEndDate().atStartOfDay().plusDays(1))
+            .startDate(contextDto.getStartDate().atStartOfDay())
+            .endDate(contextDto.getEndDate().atStartOfDay().plusDays(1))
+            .orgId(contextDto.getOrgId())
             .build();
 
         Double result = expressionService
@@ -54,55 +46,34 @@ public class CalcController {
 
 
     @PostMapping(value = "/rest/calc/all", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
-    public void calcAll(@RequestBody CalcDto calcDto) throws Exception {
+    public void calcAll(@RequestBody ContextDto contextDto) throws Exception {
         CalcContext context = CalcContext.builder()
-            .startDate(calcDto.getStartDate().atStartOfDay())
-            .endDate(calcDto.getEndDate().atStartOfDay().plusDays(1))
+            .startDate(contextDto.getStartDate().atStartOfDay())
+            .endDate(contextDto.getEndDate().atStartOfDay().plusDays(1))
+            .orgId(3l)
+            .values(new HashMap<>())
             .build();
 
         Map<String, Expression> expressionMap = new HashMap<>();
-        for (MeteringPointFormula mpf : meteringPointFormulaRepo.findAll()) {
-            Expression expr = expressionService
-                .parse(mpf.getFormula().getText(), context);
+        for (MeteringPointFormula mpf : meteringPointFormulaRepo.findAllByMeteringPointOrgId(context.getOrgId())) {
+            if (mpf.getStartDate() !=null && context.getEndDate().isBefore(mpf.getStartDate()))
+                continue;
 
-            expressionMap.put(mpf.getMeteringPoint().getCode(), expr);
+            if (mpf.getEndDate()!=null && context.getStartDate().isAfter(mpf.getEndDate()))
+                continue;
+
+            if (mpf.getMeteringPoint().getMeteringPointTypeId()!=2)
+                continue;
+
+            Expression expr = expressionService.parse(mpf.getFormula().getText(), context);
+            expressionMap.putIfAbsent(mpf.getMeteringPoint().getCode(), expr);
         }
 
-        List<String> mps = sort(expressionMap);
+        List<String> mps = expressionService.sort(expressionMap);
         for (String code : mps) {
             Double value = expressionMap.get(code).value();
-            System.out.println(code);
+            System.out.println(code + ": " + value);
         }
     }
 
-    private List<String> sort(Map<String, Expression> expressionMap) throws Exception {
-        DefaultDirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        for (String key : expressionMap.keySet()) {
-            graph.addVertex(key);
-        }
-
-        for (String key : expressionMap.keySet()) {
-            Expression expression = expressionMap.get(key);
-            for (String mp : expression.meteringPoints()) {
-                if (graph.containsVertex(mp))
-                    graph.addEdge(mp, key);
-            }
-        }
-
-        Set<String> detectedCycles = detectCycles(graph);
-        if (!detectedCycles.isEmpty())
-            throw new Exception("Cycles detected: " + detectedCycles.iterator().next());
-
-        List<String> ordered = new ArrayList<>();
-        TopologicalOrderIterator<String, DefaultEdge> orderIterator = new TopologicalOrderIterator<>(graph);
-        while (orderIterator.hasNext())
-            ordered.add(orderIterator.next());
-
-        return ordered;
-    }
-
-    private Set<String> detectCycles(DefaultDirectedGraph<String, DefaultEdge> graph) {
-        CycleDetector<String, DefaultEdge> cycleDetector = new CycleDetector<>(graph);
-        return cycleDetector.findCycles();
-    }
 }

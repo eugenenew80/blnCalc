@@ -11,5 +11,5 @@ import java.util.List;
 public interface MeteringPointFormulaRepo extends JpaRepository<MeteringPointFormula, Long> {
 
     @EntityGraph(value = "MeteringPointFormula.allJoins" , type= EntityGraph.EntityGraphType.FETCH)
-    List<MeteringPointFormula> findAll();
+    List<MeteringPointFormula> findAllByMeteringPointOrgId(Long orgId);
 }

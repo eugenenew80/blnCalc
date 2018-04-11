@@ -32,7 +32,15 @@ public class PeriodTimeValueExpression implements Expression {
 
     @Override
     public Double value() {
-        return rate*service.getValue(meteringPointCode, parameterCode, src, interval, startHour, endHour, context);
+        return rate*service.getValue(
+            meteringPointCode,
+            parameterCode,
+            src,
+            interval,
+            startHour,
+            endHour,
+            context
+        );
     }
 
     @Override
