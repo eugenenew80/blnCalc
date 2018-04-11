@@ -6,23 +6,21 @@ import calc.entity.MeteringPointFormula;
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
 import calc.formula.service.ExpressionService;
-import calc.formula.sort.Graph;
-import calc.formula.sort.Vertex;
 import calc.repo.FormulaRepo;
 import calc.repo.MeteringPointFormulaRepo;
 import calc.repo.MeteringPointRepo;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.jgrapht.alg.CycleDetector;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.PostConstruct;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import static java.util.stream.Collectors.toList;
+import java.util.*;
 
 
 @RestController
@@ -62,7 +60,7 @@ public class CalcController {
             .endDate(calcDto.getEndDate().atStartOfDay().plusDays(1))
             .build();
 
-        Map<String, Expression> expressionMap = new TreeMap<>();
+        Map<String, Expression> expressionMap = new HashMap<>();
         for (MeteringPointFormula mpf : meteringPointFormulaRepo.findAll()) {
             Expression expr = expressionService
                 .parse(mpf.getFormula().getText(), context);
@@ -73,33 +71,38 @@ public class CalcController {
         List<String> mps = sort(expressionMap);
         for (String code : mps) {
             Double value = expressionMap.get(code).value();
-            System.out.println(value);
+            System.out.println(code);
         }
     }
 
-    private List<String> sort(Map<String, Expression> expressionMap) {
-        Map<String, Integer> vertexMap = new TreeMap<>();
-        int n =0;
+    private List<String> sort(Map<String, Expression> expressionMap) throws Exception {
+        DefaultDirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         for (String key : expressionMap.keySet()) {
-            vertexMap.put(key, n);
-            n++;
-        }
-
-        Graph theGraph = new Graph(expressionMap.size());
-        for (String key : expressionMap.keySet()) {
-            theGraph.addVertex(new Vertex(key));
+            graph.addVertex(key);
         }
 
         for (String key : expressionMap.keySet()) {
             Expression expression = expressionMap.get(key);
             for (String mp : expression.meteringPoints()) {
-                if (vertexMap.containsKey(mp))
-                    theGraph.addEdge(vertexMap.get(mp), vertexMap.get(key));
+                if (graph.containsVertex(mp))
+                    graph.addEdge(mp, key);
             }
         }
 
-        return theGraph.topo().stream()
-            .map(t->t.getCode())
-            .collect(toList());
+        Set<String> detectedCycles = detectCycles(graph);
+        if (!detectedCycles.isEmpty())
+            throw new Exception("Cycles detected: " + detectedCycles.iterator().next());
+
+        List<String> ordered = new ArrayList<>();
+        TopologicalOrderIterator<String, DefaultEdge> orderIterator = new TopologicalOrderIterator<>(graph);
+        while (orderIterator.hasNext())
+            ordered.add(orderIterator.next());
+
+        return ordered;
+    }
+
+    private Set<String> detectCycles(DefaultDirectedGraph<String, DefaultEdge> graph) {
+        CycleDetector<String, DefaultEdge> cycleDetector = new CycleDetector<>(graph);
+        return cycleDetector.findCycles();
     }
 }

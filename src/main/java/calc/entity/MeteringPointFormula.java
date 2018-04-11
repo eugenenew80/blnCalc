@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_mp_formulas")
+@NamedEntityGraph(name="MeteringPointFormula.allJoins", attributeNodes = {
+    @NamedAttributeNode("formula"),
+    @NamedAttributeNode("meteringPoint")
+})
 public class MeteringPointFormula {
     @Id
     private Long id;
