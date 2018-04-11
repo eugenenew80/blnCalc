@@ -1,14 +1,9 @@
 package calc;
 
-import calc.entity.MeteringPoint;
-import calc.formula.sort.Graph;
-import calc.formula.sort.Vertex;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
-
-import java.util.List;
 
 @EntityScan(
     basePackageClasses = { App.class, Jsr310JpaConverters.class }
@@ -16,28 +11,6 @@ import java.util.List;
 @SpringBootApplication
 public class App  {
     public static void main(String[] args) {
-
-        Graph theGraph = new Graph(20);
-        theGraph.addVertex(new Vertex("A"));
-        theGraph.addVertex(new Vertex("B"));
-        theGraph.addVertex(new Vertex("C"));
-        theGraph.addVertex(new Vertex("D"));
-        theGraph.addVertex(new Vertex("E"));
-        theGraph.addVertex(new Vertex("F"));
-        theGraph.addVertex(new Vertex("G"));
-        theGraph.addVertex(new Vertex("H"));
-
-        theGraph.addEdge(0, 3);
-        theGraph.addEdge(0, 4);
-        theGraph.addEdge(1, 4);
-        theGraph.addEdge(2, 5);
-        theGraph.addEdge(3, 6);
-        theGraph.addEdge(4, 6);
-        theGraph.addEdge(5, 7);
-        theGraph.addEdge(6, 7);
-
-        theGraph.topo().stream().forEach(System.out::println);
-
         SpringApplication.run(App.class, args);
     }
 }

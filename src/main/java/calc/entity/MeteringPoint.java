@@ -23,6 +23,9 @@ public class MeteringPoint {
     @Column
     private String code;
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy = "meteringPoint")
-    private List<MeteringPointFormula> formulas;
+    @Column(name = "org_id")
+    private Long orgId;
+
+    @Column(name = "metering_point_type_id")
+    private Long meteringPointTypeId;
 }

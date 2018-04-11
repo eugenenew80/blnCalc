@@ -67,7 +67,7 @@
                     $scope.data = null;
                     $scope.context.contentBase64 = window.btoa(unescape(encodeURIComponent($scope.formula)));
 
-                    $http.post("/rest/calc/text/", $scope.context, { headers: {'Content-Type': 'application/json;charset=utf-8' } })
+                    $http.post("/rest/calc/all/", $scope.context, { headers: {'Content-Type': 'application/json;charset=utf-8' } })
                         .then(function (response) {
                             $scope.data = response.data;
                         });

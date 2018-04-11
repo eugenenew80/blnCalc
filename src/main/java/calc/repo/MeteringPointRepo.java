@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface MeteringPointRepo extends JpaRepository<MeteringPoint, Long> {
     MeteringPoint findByCode(String code);
+    List<MeteringPoint> findAllByOrgId(Long orgId);
 }
