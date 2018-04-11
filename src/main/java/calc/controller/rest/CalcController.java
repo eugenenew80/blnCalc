@@ -51,7 +51,6 @@ public class CalcController {
             .startDate(contextDto.getStartDate().atStartOfDay())
             .endDate(contextDto.getEndDate().atStartOfDay().plusDays(1))
             .orgId(3l)
-            .values(new HashMap<>())
             .build();
 
         Map<String, Expression> expressionMap = new HashMap<>();
@@ -75,5 +74,4 @@ public class CalcController {
             System.out.println(code + ": " + value);
         }
     }
-
 }
