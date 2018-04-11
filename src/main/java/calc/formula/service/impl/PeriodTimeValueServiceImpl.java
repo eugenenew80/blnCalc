@@ -8,6 +8,7 @@ import calc.formula.service.PeriodTimeValueService;
 import calc.repo.MeteringPointRepo;
 import calc.repo.ParameterRepo;
 import calc.repo.PeriodTimeValueRepo;
+import calc.repo.ValueRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     private final PeriodTimeValueRepo repo;
     private final MeteringPointRepo meteringPointRepo;
     private final ParameterRepo parameterRepo;
+    private final ValueRepo valueRepo;
 
     @Override
     public Double getValue(
