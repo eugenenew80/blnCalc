@@ -18,14 +18,14 @@ public class App  {
     public static void main(String[] args) {
 
         Graph theGraph = new Graph(20);
-        theGraph.addVertex(new MeteringPoint("A"));
-        theGraph.addVertex(new MeteringPoint("B"));
-        theGraph.addVertex(new MeteringPoint("C"));
-        theGraph.addVertex(new MeteringPoint("D"));
-        theGraph.addVertex(new MeteringPoint("E"));
-        theGraph.addVertex(new MeteringPoint("F"));
-        theGraph.addVertex(new MeteringPoint("G"));
-        theGraph.addVertex(new MeteringPoint("H"));
+        theGraph.addVertex(new Vertex("A"));
+        theGraph.addVertex(new Vertex("B"));
+        theGraph.addVertex(new Vertex("C"));
+        theGraph.addVertex(new Vertex("D"));
+        theGraph.addVertex(new Vertex("E"));
+        theGraph.addVertex(new Vertex("F"));
+        theGraph.addVertex(new Vertex("G"));
+        theGraph.addVertex(new Vertex("H"));
 
         theGraph.addEdge(0, 3);
         theGraph.addEdge(0, 4);

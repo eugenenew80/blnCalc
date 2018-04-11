@@ -1,15 +1,13 @@
 package calc.formula.sort;
 
-import calc.entity.MeteringPoint;
-
 import java.util.*;
 
 public class Graph {
     private int maxSize;
     private int curSize;
     private int adjMat[][];
-    private List<MeteringPoint> meteringPoints = new ArrayList<>();
-    private Deque<MeteringPoint> sortedList = new LinkedList<>();
+    private List<Vertex> vertexList = new ArrayList<>();
+    private Deque<Vertex> sortedList = new LinkedList<>();
 
     public Graph(int maxSize) {
         this.maxSize = maxSize;
@@ -21,8 +19,8 @@ public class Graph {
                 adjMat[j][k] = 0;
     }
 
-    public void addVertex(MeteringPoint meteringPoint) {
-        meteringPoints.add(meteringPoint);
+    public void addVertex(Vertex vertex) {
+        vertexList.add(vertex);
         curSize++;
     }
 
@@ -30,14 +28,14 @@ public class Graph {
         adjMat[start][end] = 1;
     }
 
-    public List<MeteringPoint> topo() {
+    public List<Vertex> topo() {
         while(curSize > 0) {
-            int current = noSuccessors();
-            if(current == -1)
+            int currentVertex = noSuccessors();
+            if(currentVertex == -1)
                 throw new RuntimeException("Обнаружена циклическая формула");
 
-            sortedList.addFirst(meteringPoints.get(current));
-            deleteMeteringPoint(current);
+            sortedList.addFirst(vertexList.get(currentVertex));
+            deleteVertex(currentVertex);
         }
 
         return new ArrayList<>(sortedList);
@@ -61,14 +59,14 @@ public class Graph {
         return -1;
     }
 
-    public void deleteMeteringPoint(int index) {
-        meteringPoints.remove(index);
+    public void deleteVertex(int delVert) {
+        vertexList.remove(delVert);
 
-        if(index != curSize-1) {
-            for(int row=index; row<curSize-1; row++)
+        if(delVert != curSize-1) {
+            for(int row=delVert; row<curSize-1; row++)
                 moveRowUp(row, curSize);
 
-            for(int col=index; col<curSize-1; col++)
+            for(int col=delVert; col<curSize-1; col++)
                 moveColLeft(col, curSize-1);
         }
 
