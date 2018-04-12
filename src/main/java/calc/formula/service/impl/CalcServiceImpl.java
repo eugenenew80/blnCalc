@@ -2,11 +2,13 @@ package calc.formula.service.impl;
 
 import calc.controller.rest.dto.ResultDto;
 import calc.entity.MeteringPointFormula;
+import calc.entity.Value;
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
 import calc.formula.service.CalcService;
 import calc.formula.service.ExpressionService;
 import calc.repo.MeteringPointFormulaRepo;
+import calc.repo.ValueRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.Map;
 public class CalcServiceImpl implements CalcService {
     private final ExpressionService expressionService;
     private final MeteringPointFormulaRepo meteringPointFormulaRepo;
+    private final ValueRepo valueRepo;
 
     @Override
     public ResultDto getResult(String formula, CalcContext context) throws Exception {
@@ -26,34 +29,53 @@ public class CalcServiceImpl implements CalcService {
             .parse(formula, context)
             .value();
 
-        return new ResultDto(result);
+        return new ResultDto(null, result);
 
     }
 
     @Override
-    public List<ResultDto> getResult(CalcContext context) throws Exception {
+    public List<Value> getResult(CalcContext context) throws Exception {
         Map<String, Expression> expressionMap = new HashMap<>();
+        Map<String, MeteringPointFormula>  formulaMap = new HashMap<>();
+
         for (MeteringPointFormula mpf : meteringPointFormulaRepo.findAllByMeteringPointOrgId(context.getOrgId())) {
-            if (mpf.getStartDate() !=null && context.getEndDate().isBefore(mpf.getStartDate()))
+            if (mpf.getStartDate() !=null && context.getEndDate().atStartOfDay().isBefore(mpf.getStartDate()))
                 continue;
 
-            if (mpf.getEndDate()!=null && context.getStartDate().isAfter(mpf.getEndDate()))
+            if (mpf.getEndDate()!=null && context.getStartDate().atStartOfDay().isAfter(mpf.getEndDate()))
                 continue;
 
-            //if (mpf.getMeteringPoint().getMeteringPointTypeId()!=2)
-            //    continue;
+            if (mpf.getMeteringPoint().getMeteringPointTypeId()!=2)
+                continue;
 
             Expression expr = expressionService.parse(mpf.getFormula().getText(), context);
             expressionMap.putIfAbsent(mpf.getMeteringPoint().getCode(), expr);
+            formulaMap.putIfAbsent(mpf.getMeteringPoint().getCode(), mpf);
         }
 
         List<String> mps = expressionService.sort(expressionMap);
-        List<ResultDto> resultList = new ArrayList<>();
+        List<Value> values = new ArrayList<>();
         for (String code : mps) {
-            Double value = expressionMap.get(code).value();
-            resultList.add(new ResultDto(value));
+            Double result = expressionMap.get(code).value();
+
+            Long meteringPointId = formulaMap.get(code).getMeteringPoint().getId();
+            Long formulaId = formulaMap.get(code).getFormula().getId();
+
+            Value value = valueRepo.findAllByMeteringPointIdAndStartDateAndEndDate(meteringPointId, context.getStartDate(), context.getEndDate());
+            if (value==null) {
+                value = new Value();
+                value.setStartDate(context.getStartDate());
+                value.setEndDate(context.getEndDate());
+                value.setMeteringPointId(meteringPointId);
+            }
+
+            value.setFormulaId(formulaId);
+            value.setVal(result);
+
+            valueRepo.save(value);
+            values.add(value);
         }
 
-        return resultList;
+        return values;
     }
 }

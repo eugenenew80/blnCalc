@@ -2,11 +2,8 @@ package calc.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -14,6 +11,8 @@ import java.time.LocalDateTime;
 @Table(name = "calc_values")
 public class Value {
     @Id
+    @SequenceGenerator(name="calc_values_s", sequenceName = "calc_values_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_values_s")
     private Long id;
 
     @Column(name = "metering_point_id")
@@ -23,10 +22,10 @@ public class Value {
     private Long formulaId;
 
     @Column(name = "start_date")
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date")
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     @Column
     private Double val;

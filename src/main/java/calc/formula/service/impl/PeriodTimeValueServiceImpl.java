@@ -1,5 +1,6 @@
 package calc.formula.service.impl;
 
+import calc.entity.Value;
 import calc.formula.CalcContext;
 import calc.entity.MeteringPoint;
 import calc.entity.Parameter;
@@ -36,30 +37,54 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         Byte endHour,
         CalcContext context) {
 
-        MeteringPoint meteringPoint = meteringPointRepo
-            .findByCode(meteringPointCode);
+        MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
+        Parameter parameter = parameterRepo.findByCodeAndParamType(parameterCode, "PT");
 
-        Parameter parameter = parameterRepo
-            .findByCodeAndParamType(parameterCode, "PT");
+        if (meteringPoint.getMeteringPointTypeId()==2)
+            return calcValue(context, meteringPoint);
 
         if (meteringPoint == null && parameter == null)
             return 0d;
 
+        return ptValue(interval, startHour, endHour, context, meteringPoint, parameter);
+    }
+
+    private Double calcValue(CalcContext context, MeteringPoint meteringPoint) {
+        Value value = valueRepo.findAllByMeteringPointIdAndStartDateAndEndDate(
+            meteringPoint.getId(),
+            context.getStartDate(),
+            context.getEndDate()
+        );
+
+        return value!=null ? value.getVal() : 0d;
+    }
+
+    private Double ptValue(String interval, Byte startHour, Byte endHour, CalcContext context, MeteringPoint meteringPoint, Parameter parameter) {
         LocalDateTime startDate;
         LocalDateTime endDate;
         if (interval.equals("c")) {
-            startDate = context.getStartDate();
-            endDate = context.getEndDate().minusHours(1);
+            startDate = context.getStartDate()
+                .atStartOfDay();
+
+            endDate = context.getEndDate()
+                .atStartOfDay()
+                .plusDays(1)
+                .minusHours(1);
         }
         else if (interval.equals("m")) {
             startDate = context.getStartDate()
+                .atStartOfDay()
                 .truncatedTo(ChronoUnit.DAYS)
                 .minusDays(context.getStartDate().getDayOfMonth()-1);
-            endDate = context.getEndDate().minusHours(1);
+
+            endDate = context.getEndDate()
+                .atStartOfDay()
+                .plusDays(1)
+                .minusHours(1);
         }
         else {
-            startDate = context.getStartDate();
-            endDate = context.getEndDate();
+            startDate = context.getStartDate().atStartOfDay();
+            endDate = context.getEndDate().atStartOfDay();
         }
 
         List<PeriodTimeValue> list = repo.findAllByMeteringPointIdAndParamIdAndMeteringDateBetween(

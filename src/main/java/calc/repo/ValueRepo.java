@@ -3,15 +3,13 @@ package calc.repo;
 import calc.entity.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
 
 @Repository
 public interface ValueRepo extends JpaRepository<Value, Long> {
-    List<Value> findAllByMeteringPointIdAndStartDateAndEndDate(
+    Value findAllByMeteringPointIdAndStartDateAndEndDate(
         Long meteringPointId,
-        LocalDateTime startDateTime,
-        LocalDateTime endDateTime
+        LocalDate startDateTime,
+        LocalDate endDateTime
     );
 }

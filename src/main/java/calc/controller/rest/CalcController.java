@@ -2,6 +2,7 @@ package calc.controller.rest;
 
 import calc.controller.rest.dto.ContextDto;
 import calc.controller.rest.dto.ResultDto;
+import calc.entity.Value;
 import calc.formula.CalcContext;
 import calc.formula.service.CalcService;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,8 @@ public class CalcController {
         String formula = new String(contentAsBytes, Charset.forName("UTF-8"));
 
         CalcContext context = CalcContext.builder()
-            .startDate(contextDto.getStartDate().atStartOfDay())
-            .endDate(contextDto.getEndDate().atStartOfDay().plusDays(1))
+            .startDate(contextDto.getStartDate())
+            .endDate(contextDto.getEndDate())
             .orgId(contextDto.getOrgId())
             .build();
 
@@ -36,13 +37,15 @@ public class CalcController {
     }
 
     @PostMapping(value = "/rest/calc/all", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
-    public List<ResultDto> calcAll(@RequestBody ContextDto contextDto) throws Exception {
+    public void calcAll(@RequestBody ContextDto contextDto) throws Exception {
         CalcContext context = CalcContext.builder()
-            .startDate(contextDto.getStartDate().atStartOfDay())
-            .endDate(contextDto.getEndDate().atStartOfDay().plusDays(1))
-            .orgId(3l)
+            .startDate(contextDto.getStartDate())
+            .endDate(contextDto.getEndDate())
+            .orgId(11l)
             .build();
 
-        return calcService.getResult(context);
+        List<Value> values = calcService.getResult(context);
+
+        values.stream().forEach( t -> System.out.println(t));
     }
 }
