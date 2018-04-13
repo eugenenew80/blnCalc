@@ -4,8 +4,6 @@ import lombok.*;
 import javax.persistence.*;
 import org.hibernate.annotations.Immutable;
 
-import java.util.List;
-
 @Data
 @EqualsAndHashCode(of= {"id"})
 @NoArgsConstructor

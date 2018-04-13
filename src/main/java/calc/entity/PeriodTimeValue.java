@@ -9,9 +9,10 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "media_period_time_values")
-@Immutable
 public class PeriodTimeValue  {
 	@Id
+	@SequenceGenerator(name="media_period_time_values_s", sequenceName = "media_period_time_values_s", allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "media_period_time_values_s")
 	private Long id;
 
 	@Column(name = "metering_point_id")
@@ -19,6 +20,9 @@ public class PeriodTimeValue  {
 
 	@Column(name = "param_id")
 	private Long paramId;
+
+	@Column(name = "unit_id")
+	private Long unitId;
 
 	@Column(name = "metering_date")
 	private LocalDateTime meteringDate;

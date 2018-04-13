@@ -2,7 +2,6 @@ package calc.controller.rest;
 
 import calc.controller.rest.dto.ContextDto;
 import calc.controller.rest.dto.ResultDto;
-import calc.entity.Value;
 import calc.formula.CalcContext;
 import calc.formula.service.CalcService;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +43,6 @@ public class CalcController {
             .orgId(11l)
             .build();
 
-        List<Value> values = calcService.getResult(context);
-
-        values.stream().forEach( t -> System.out.println(t));
+        calcService.getResult(context);
     }
 }

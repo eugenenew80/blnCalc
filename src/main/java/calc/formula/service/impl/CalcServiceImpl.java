@@ -1,14 +1,16 @@
 package calc.formula.service.impl;
 
 import calc.controller.rest.dto.ResultDto;
-import calc.entity.MeteringPointFormula;
-import calc.entity.Value;
+import calc.entity.Formula;
+import calc.entity.MeteringPoint;
+import calc.entity.PeriodTimeValue;
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
 import calc.formula.service.CalcService;
 import calc.formula.service.ExpressionService;
-import calc.repo.MeteringPointFormulaRepo;
-import calc.repo.ValueRepo;
+import calc.repo.FormulaRepo;
+import calc.repo.PeriodTimeValueRepo;
+import calc.repo.SourceTypeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -20,8 +22,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CalcServiceImpl implements CalcService {
     private final ExpressionService expressionService;
-    private final MeteringPointFormulaRepo meteringPointFormulaRepo;
-    private final ValueRepo valueRepo;
+    private final FormulaRepo formulaRepo;
+    private  final PeriodTimeValueRepo periodTimeValueRepo;
+    private  final SourceTypeRepo sourceTypeRepo;
 
     @Override
     public ResultDto getResult(String formula, CalcContext context) throws Exception {
@@ -34,11 +37,11 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-    public List<Value> getResult(CalcContext context) throws Exception {
+    public void getResult(CalcContext context) throws Exception {
         Map<String, Expression> expressionMap = new HashMap<>();
-        Map<String, MeteringPointFormula>  formulaMap = new HashMap<>();
+        Map<String, Formula>  formulaMap = new HashMap<>();
 
-        for (MeteringPointFormula mpf : meteringPointFormulaRepo.findAllByMeteringPointOrgId(context.getOrgId())) {
+        for (Formula mpf : formulaRepo.findAllByMeteringPointOrgId(context.getOrgId())) {
             if (mpf.getStartDate() !=null && context.getEndDate().atStartOfDay().isBefore(mpf.getStartDate()))
                 continue;
 
@@ -48,34 +51,45 @@ public class CalcServiceImpl implements CalcService {
             if (mpf.getMeteringPoint().getMeteringPointTypeId()!=2)
                 continue;
 
-            Expression expr = expressionService.parse(mpf.getFormula().getText(), context);
+            Expression expr = expressionService.parse(mpf.getText(), context);
             expressionMap.putIfAbsent(mpf.getMeteringPoint().getCode(), expr);
             formulaMap.putIfAbsent(mpf.getMeteringPoint().getCode(), mpf);
         }
 
         List<String> mps = expressionService.sort(expressionMap);
-        List<Value> values = new ArrayList<>();
+        List<PeriodTimeValue> ptValues = new ArrayList<>();
+
+        context.setPtValues(new ArrayList<>());
         for (String code : mps) {
             Double result = expressionMap.get(code).value();
 
-            Long meteringPointId = formulaMap.get(code).getMeteringPoint().getId();
-            Long formulaId = formulaMap.get(code).getFormula().getId();
+            Formula formula = formulaMap.get(code);
+            MeteringPoint meteringPoint = formula.getMeteringPoint();
 
-            Value value = valueRepo.findAllByMeteringPointIdAndStartDateAndEndDate(meteringPointId, context.getStartDate(), context.getEndDate());
-            if (value==null) {
-                value = new Value();
-                value.setStartDate(context.getStartDate());
-                value.setEndDate(context.getEndDate());
-                value.setMeteringPointId(meteringPointId);
+            PeriodTimeValue pt = periodTimeValueRepo.findAllByMeteringPointIdAndParamIdAndMeteringDateBetween(meteringPoint.getId(), formula.getParameter().getId(), context.getEndDate().atStartOfDay().plusDays(1), context.getEndDate().atStartOfDay().plusDays(1))
+                .stream()
+                .filter(t -> t.getSourceType().getId() == 4l)
+                .findFirst()
+                .orElse(null);
+
+            if (pt==null) {
+                pt = new PeriodTimeValue();
+                pt.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
+                pt.setMeteringPointId(meteringPoint.getId());
+                pt.setParamId(formula.getParameter().getId());
+                pt.setSourceType(sourceTypeRepo.findOne(4l));
             }
 
-            value.setFormulaId(formulaId);
-            value.setVal(result);
+            pt.setInterval(formula.getInterval());
+            pt.setUnitId(formula.getUnit().getId());
+            pt.setStatus("OK");
+            pt.setVal(result);
 
-            valueRepo.save(value);
-            values.add(value);
+            context.getPtValues().add(pt);
+            ptValues.add(pt);
         }
 
-        return values;
+        periodTimeValueRepo.save(ptValues);
+        ptValues.stream().forEach( t -> System.out.println(t));
     }
 }

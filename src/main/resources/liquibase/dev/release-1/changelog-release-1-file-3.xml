@@ -78,4 +78,32 @@
                 schemaName="apps"
                 tableName="calc_values" />
     </changeSet>
+
+    <changeSet id="calc-eug-12" logicalFilePath="path-independent" author="eugene">
+        <comment>Adding column parameter_id into table: calc_formulas</comment>
+        <addColumn schemaName="apps" tableName="calc_formulas">
+            <column name="parameter_id" type="number" remarks="Ид. параметра">
+                <constraints nullable="true"/>
+            </column>
+            <column name="unit_id" type="number" remarks="Ид. единицы измерения">
+                <constraints nullable="true"/>
+            </column>
+            <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-13" logicalFilePath="path-independent" author="eugene">
+        <comment>Adding column parameter_id into table: calc_formulas</comment>
+        <addColumn schemaName="apps" tableName="calc_formulas">
+            <column name="interval" type="number" remarks="Интервал">
+                <constraints nullable="true"/>
+            </column>
+            <column name="param_type" type="varchar2(10)" remarks="Тип параметра">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

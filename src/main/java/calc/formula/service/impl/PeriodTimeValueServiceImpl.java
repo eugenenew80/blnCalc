@@ -1,6 +1,5 @@
 package calc.formula.service.impl;
 
-import calc.entity.Value;
 import calc.formula.CalcContext;
 import calc.entity.MeteringPoint;
 import calc.entity.Parameter;
@@ -9,7 +8,6 @@ import calc.formula.service.PeriodTimeValueService;
 import calc.repo.MeteringPointRepo;
 import calc.repo.ParameterRepo;
 import calc.repo.PeriodTimeValueRepo;
-import calc.repo.ValueRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,6 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     private final PeriodTimeValueRepo repo;
     private final MeteringPointRepo meteringPointRepo;
     private final ParameterRepo parameterRepo;
-    private final ValueRepo valueRepo;
 
     @Override
     public Double getValue(
@@ -40,23 +37,19 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
         Parameter parameter = parameterRepo.findByCodeAndParamType(parameterCode, "PT");
 
-        if (meteringPoint.getMeteringPointTypeId()==2)
-            return calcValue(context, meteringPoint);
-
         if (meteringPoint == null && parameter == null)
             return 0d;
 
+        PeriodTimeValue pt = context.getPtValues().stream()
+            .filter(t -> t.getMeteringPointId().equals(meteringPoint.getId()))
+            .filter(t -> t.getParamId().equals(parameter.getId()))
+            .findFirst()
+            .orElse(null);
+
+        if (pt!=null)
+            return pt.getVal();
+
         return ptValue(interval, startHour, endHour, context, meteringPoint, parameter);
-    }
-
-    private Double calcValue(CalcContext context, MeteringPoint meteringPoint) {
-        Value value = valueRepo.findAllByMeteringPointIdAndStartDateAndEndDate(
-            meteringPoint.getId(),
-            context.getStartDate(),
-            context.getEndDate()
-        );
-
-        return value!=null ? value.getVal() : 0d;
     }
 
     private Double ptValue(String interval, Byte startHour, Byte endHour, CalcContext context, MeteringPoint meteringPoint, Parameter parameter) {
