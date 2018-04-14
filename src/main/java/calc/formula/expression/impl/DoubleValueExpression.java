@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class DoubleValueExpression implements Expression {
     private final Double value;
+    private final Double[] values;
 
     @Override
     public Expression expression() {
@@ -18,5 +19,10 @@ public class DoubleValueExpression implements Expression {
     @Override
     public Double value() {
         return value;
+    }
+
+    @Override
+    public Double[] values() {
+        return values != null ? values : Expression.super.values();
     }
 }

@@ -13,10 +13,8 @@ import calc.repo.PeriodTimeValueRepo;
 import calc.repo.SourceTypeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -48,8 +46,8 @@ public class CalcServiceImpl implements CalcService {
             if (mpf.getEndDate()!=null && context.getStartDate().atStartOfDay().isAfter(mpf.getEndDate()))
                 continue;
 
-            if (mpf.getMeteringPoint().getMeteringPointTypeId()!=2)
-                continue;
+            //if (mpf.getMeteringPoint().getMeteringPointTypeId()!=2)
+            //    continue;
 
             Expression expr = expressionService.parse(mpf.getText(), context);
             expressionMap.putIfAbsent(mpf.getMeteringPoint().getCode(), expr);
@@ -61,7 +59,12 @@ public class CalcServiceImpl implements CalcService {
 
         context.setPtValues(new ArrayList<>());
         for (String code : mps) {
-            Double result = expressionMap.get(code).value();
+            Expression expression = expressionMap.get(code);
+            System.out.println(expression.getClass());
+
+            Double result = expression.value();
+            Double[] results = expression.values();
+            System.out.println(Arrays.asList(results));
 
             Formula formula = formulaMap.get(code);
             MeteringPoint meteringPoint = formula.getMeteringPoint();

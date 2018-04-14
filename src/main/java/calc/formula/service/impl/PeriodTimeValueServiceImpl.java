@@ -14,7 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,34 +28,40 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     private final ParameterRepo parameterRepo;
 
     @Override
-    public Double getValue(
+    public List<PeriodTimeValue> getValues(
         String meteringPointCode,
         String parameterCode,
         String src,
         String interval,
         Byte startHour,
         Byte endHour,
-        CalcContext context) {
+        CalcContext context
+    ) {
+        MeteringPoint meteringPoint = meteringPointRepo
+            .findByCode(meteringPointCode);
 
-        MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
-        Parameter parameter = parameterRepo.findByCodeAndParamType(parameterCode, "PT");
+        Parameter parameter = parameterRepo
+            .findByCodeAndParamType(parameterCode, "PT");
 
-        if (meteringPoint == null && parameter == null)
-            return 0d;
+        if (meteringPoint == null || parameter == null)
+            return Collections.emptyList();
 
-        PeriodTimeValue pt = context.getPtValues().stream()
+        List<PeriodTimeValue> list = context.getPtValues().stream()
             .filter(t -> t.getMeteringPointId().equals(meteringPoint.getId()))
             .filter(t -> t.getParamId().equals(parameter.getId()))
-            .findFirst()
-            .orElse(null);
+            .collect(toList());
 
-        if (pt!=null)
-            return pt.getVal();
+        if (!list.isEmpty())
+            return list;
 
-        return ptValue(interval, startHour, endHour, context, meteringPoint, parameter);
+        return findValues(interval, context, meteringPoint, parameter)
+            .stream()
+            .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
+            .collect(toList());
     }
 
-    private Double ptValue(String interval, Byte startHour, Byte endHour, CalcContext context, MeteringPoint meteringPoint, Parameter parameter) {
+
+    private List<PeriodTimeValue> findValues(String interval, CalcContext context, MeteringPoint meteringPoint, Parameter parameter) {
         LocalDateTime startDate;
         LocalDateTime endDate;
         if (interval.equals("c")) {
@@ -80,21 +89,11 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
             endDate = context.getEndDate().atStartOfDay();
         }
 
-        List<PeriodTimeValue> list = repo.findAllByMeteringPointIdAndParamIdAndMeteringDateBetween(
+        return repo.findAllByMeteringPointIdAndParamIdAndMeteringDateBetween(
             meteringPoint.getId(),
             parameter.getId(),
             startDate,
             endDate
         );
-
-        if (list.isEmpty())
-            return 0d;
-
-        return list.stream()
-            .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
-            .map(t -> t.getVal())
-            .reduce((t1, t2) -> t1 + t2)
-            .orElse(0d);
     }
 }
-

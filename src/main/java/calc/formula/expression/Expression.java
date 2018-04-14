@@ -10,6 +10,11 @@ public interface Expression {
     Expression expression();
     Double value();
 
+    default Double[] values() {
+        Double v = value();
+        return new Double[] {v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v};
+    }
+
     default Set<String> meteringPoints() {
         return Collections.emptySet();
     }

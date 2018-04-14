@@ -1,9 +1,11 @@
 package calc.formula.service;
 
+import calc.entity.PeriodTimeValue;
 import calc.formula.CalcContext;
+import java.util.List;
 
 public interface PeriodTimeValueService {
-    Double getValue(
+    List<PeriodTimeValue> getValues(
         String meteringPointCode,
         String parameterCode,
         String src,
@@ -12,4 +14,5 @@ public interface PeriodTimeValueService {
         Byte endHour,
         CalcContext context
     );
+
 }

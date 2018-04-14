@@ -4,6 +4,8 @@ import calc.formula.expression.Expression;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -27,6 +29,11 @@ public class BinaryExpression implements Expression {
     @Override
     public Double value() {
         return expression().value();
+    }
+
+    @Override
+    public Double[] values() {
+        return expression().values();
     }
 
     @Override
