@@ -29,8 +29,8 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
         String meteringPointCode,
         String parameterCode,
         String src,
-        String per,
-        CalcContext context) {
+        CalcContext context
+    ) {
 
         MeteringPoint meteringPoint = meteringPointRepo
             .findByCode(meteringPointCode);
@@ -41,15 +41,9 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
         if (meteringPoint == null && parameter == null)
             return 0d;
 
-        LocalDateTime date;
-        if (per.equals("s"))
-            date = context.getStartDate().atStartOfDay();
-        else if (per.equals("e"))
-            date = context.getEndDate()
-                .atStartOfDay()
-                .plusDays(1);
-        else
-            date = LocalDate.now().atStartOfDay();
+        LocalDateTime date = context.getEndDate()
+            .atStartOfDay()
+            .plusDays(1);
 
         List<AtTimeValue> list = repo.findAllByMeteringPointIdAndParamIdAndMeteringDate(
             meteringPoint.getId(),

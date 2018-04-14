@@ -9,7 +9,6 @@ public interface PeriodTimeValueService {
         String meteringPointCode,
         String parameterCode,
         String src,
-        String interval,
         Byte startHour,
         Byte endHour,
         CalcContext context

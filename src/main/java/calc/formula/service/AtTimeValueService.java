@@ -7,7 +7,6 @@ public interface AtTimeValueService {
         String meteringPointCode,
         String parameterCode,
         String src,
-        String per,
         CalcContext context
     );
 }

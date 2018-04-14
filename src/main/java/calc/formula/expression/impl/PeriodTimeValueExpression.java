@@ -69,7 +69,6 @@ public class PeriodTimeValueExpression implements Expression {
             meteringPointCode,
             parameterCode,
             src,
-            interval,
             startHour,
             endHour,
             context

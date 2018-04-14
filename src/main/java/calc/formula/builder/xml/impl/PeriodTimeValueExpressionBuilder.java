@@ -19,7 +19,6 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
         String mp = "";
         String param = "";
         String src = "";
-        String interval = "c";
         Double rate = 1d;
         Byte startHour = 0;
         Byte endHour = 23;
@@ -35,9 +34,6 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
                     break;
                 case "src":
                     src = attrValue;
-                    break;
-                case "interval":
-                    interval = attrValue;
                     break;
                 case "rate":
                     rate = Double.parseDouble(attrValue);
@@ -55,7 +51,6 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
             .meteringPointCode(mp)
             .parameterCode(param)
             .src(src)
-            .interval(interval)
             .rate(rate)
             .startHour(startHour)
             .endHour(endHour)

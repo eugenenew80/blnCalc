@@ -1,9 +1,10 @@
 package calc.formula.service;
 
-import calc.controller.rest.dto.ResultDto;
+import calc.entity.PeriodTimeValue;
 import calc.formula.CalcContext;
+import java.util.List;
 
 public interface CalcService {
-    ResultDto getResult(String formula, CalcContext context) throws Exception;
-    void getResult(CalcContext context) throws Exception;
+    PeriodTimeValue calc(String formula, CalcContext context) throws Exception;
+    List<PeriodTimeValue> calc(CalcContext context) throws Exception;
 }

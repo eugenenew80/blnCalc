@@ -1,6 +1,5 @@
 package calc.formula.service.impl;
 
-import calc.controller.rest.dto.ResultDto;
 import calc.entity.Formula;
 import calc.entity.MeteringPoint;
 import calc.entity.PeriodTimeValue;
@@ -9,11 +8,9 @@ import calc.formula.expression.Expression;
 import calc.formula.service.CalcService;
 import calc.formula.service.ExpressionService;
 import calc.repo.FormulaRepo;
-import calc.repo.PeriodTimeValueRepo;
 import calc.repo.SourceTypeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service
@@ -21,21 +18,22 @@ import java.util.*;
 public class CalcServiceImpl implements CalcService {
     private final ExpressionService expressionService;
     private final FormulaRepo formulaRepo;
-    private  final PeriodTimeValueRepo periodTimeValueRepo;
-    private  final SourceTypeRepo sourceTypeRepo;
+    private final SourceTypeRepo sourceTypeRepo;
 
     @Override
-    public ResultDto getResult(String formula, CalcContext context) throws Exception {
+    public PeriodTimeValue calc(String formula, CalcContext context) throws Exception {
         Double result = expressionService
             .parse(formula, context)
             .value();
 
-        return new ResultDto(null, result);
+        PeriodTimeValue pt = new PeriodTimeValue();
+        pt.setVal(result);
 
+        return pt;
     }
 
     @Override
-    public void getResult(CalcContext context) throws Exception {
+    public List<PeriodTimeValue> calc(CalcContext context) throws Exception {
         Map<String, Expression> expressionMap = new HashMap<>();
         Map<String, Formula>  formulaMap = new HashMap<>();
 
@@ -55,44 +53,29 @@ public class CalcServiceImpl implements CalcService {
         }
 
         List<String> mps = expressionService.sort(expressionMap);
-        List<PeriodTimeValue> ptValues = new ArrayList<>();
 
         context.setPtValues(new ArrayList<>());
         for (String code : mps) {
             Expression expression = expressionMap.get(code);
-            System.out.println(expression.getClass());
-
-            Double result = expression.value();
             Double[] results = expression.values();
-            System.out.println(Arrays.asList(results));
+            for (int i=0; i<results.length; i++) {
+                Formula formula = formulaMap.get(code);
+                MeteringPoint meteringPoint = formula.getMeteringPoint();
 
-            Formula formula = formulaMap.get(code);
-            MeteringPoint meteringPoint = formula.getMeteringPoint();
-
-            PeriodTimeValue pt = periodTimeValueRepo.findAllByMeteringPointIdAndParamIdAndMeteringDateBetween(meteringPoint.getId(), formula.getParameter().getId(), context.getEndDate().atStartOfDay().plusDays(1), context.getEndDate().atStartOfDay().plusDays(1))
-                .stream()
-                .filter(t -> t.getSourceType().getId() == 4l)
-                .findFirst()
-                .orElse(null);
-
-            if (pt==null) {
-                pt = new PeriodTimeValue();
-                pt.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
+                PeriodTimeValue pt = new PeriodTimeValue();
+                pt.setVal(results[i]);
+                pt.setMeteringDate(context.getStartDate().atStartOfDay().plusHours(i));
                 pt.setMeteringPointId(meteringPoint.getId());
                 pt.setParamId(formula.getParameter().getId());
+                pt.setInterval(formula.getInterval());
+                pt.setUnitId(formula.getUnit().getId());
+                pt.setStatus("OK");
                 pt.setSourceType(sourceTypeRepo.findOne(4l));
+
+                context.getPtValues().add(pt);
             }
-
-            pt.setInterval(formula.getInterval());
-            pt.setUnitId(formula.getUnit().getId());
-            pt.setStatus("OK");
-            pt.setVal(result);
-
-            context.getPtValues().add(pt);
-            ptValues.add(pt);
         }
 
-        periodTimeValueRepo.save(ptValues);
-        ptValues.stream().forEach( t -> System.out.println(t));
+        return context.getPtValues();
     }
 }

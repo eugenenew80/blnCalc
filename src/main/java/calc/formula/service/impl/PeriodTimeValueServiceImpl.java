@@ -11,12 +11,9 @@ import calc.repo.PeriodTimeValueRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
-
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -32,7 +29,6 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         String meteringPointCode,
         String parameterCode,
         String src,
-        String interval,
         Byte startHour,
         Byte endHour,
         CalcContext context
@@ -46,7 +42,8 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         if (meteringPoint == null || parameter == null)
             return Collections.emptyList();
 
-        List<PeriodTimeValue> list = context.getPtValues().stream()
+        List<PeriodTimeValue> list = context.getPtValues()
+            .stream()
             .filter(t -> t.getMeteringPointId().equals(meteringPoint.getId()))
             .filter(t -> t.getParamId().equals(parameter.getId()))
             .collect(toList());
@@ -54,40 +51,20 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         if (!list.isEmpty())
             return list;
 
-        return findValues(interval, context, meteringPoint, parameter)
+        return findValues(meteringPoint, parameter, context)
             .stream()
             .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
             .collect(toList());
     }
 
+    private List<PeriodTimeValue> findValues(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
+        LocalDateTime startDate = context.getStartDate()
+            .atStartOfDay();
 
-    private List<PeriodTimeValue> findValues(String interval, CalcContext context, MeteringPoint meteringPoint, Parameter parameter) {
-        LocalDateTime startDate;
-        LocalDateTime endDate;
-        if (interval.equals("c")) {
-            startDate = context.getStartDate()
-                .atStartOfDay();
-
-            endDate = context.getEndDate()
-                .atStartOfDay()
-                .plusDays(1)
-                .minusHours(1);
-        }
-        else if (interval.equals("m")) {
-            startDate = context.getStartDate()
-                .atStartOfDay()
-                .truncatedTo(ChronoUnit.DAYS)
-                .minusDays(context.getStartDate().getDayOfMonth()-1);
-
-            endDate = context.getEndDate()
-                .atStartOfDay()
-                .plusDays(1)
-                .minusHours(1);
-        }
-        else {
-            startDate = context.getStartDate().atStartOfDay();
-            endDate = context.getEndDate().atStartOfDay();
-        }
+        LocalDateTime endDate = context.getEndDate()
+            .atStartOfDay()
+            .plusDays(1)
+            .minusHours(1);
 
         return repo.findAllByMeteringPointIdAndParamIdAndMeteringDateBetween(
             meteringPoint.getId(),

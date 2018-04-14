@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "media_at_time_values")
 @Immutable
+@NamedEntityGraph(name="AtTimeValue.allJoins", attributeNodes = {
+	@NamedAttributeNode("sourceType")
+})
 public class AtTimeValue {
 	@Id
 	private Long id;

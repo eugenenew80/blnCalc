@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "media_period_time_values")
+@Immutable
+@NamedEntityGraph(name="PeriodTimeValue.allJoins", attributeNodes = {
+	@NamedAttributeNode("sourceType")
+})
 public class PeriodTimeValue  {
 	@Id
 	@SequenceGenerator(name="media_period_time_values_s", sequenceName = "media_period_time_values_s", allocationSize=1)

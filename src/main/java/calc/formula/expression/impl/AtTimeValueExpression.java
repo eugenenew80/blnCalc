@@ -18,7 +18,6 @@ public class AtTimeValueExpression implements Expression {
     private final String meteringPointCode;
     private final String parameterCode;
     private final String src;
-    private final String per;
     private final Double rate;
     private final AtTimeValueService service;
     private final CalcContext context;
@@ -34,7 +33,6 @@ public class AtTimeValueExpression implements Expression {
             meteringPointCode,
             parameterCode,
             src,
-            per,
             context
         );
     }
