@@ -5,20 +5,16 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import calc.entity.MeteringPoint;
-import calc.entity.Parameter;
 import org.dozer.DozerBeanMapper;
-import org.ehcache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.util.Arrays;
-import static org.ehcache.config.builders.CacheConfigurationBuilder.newCacheConfigurationBuilder;
-import static org.ehcache.config.builders.CacheManagerBuilder.newCacheManagerBuilder;
-import static org.ehcache.config.builders.ResourcePoolsBuilder.*;
 
 @Configuration
+@EnableCaching
 public class AppConfig {
 
     @Bean
@@ -46,11 +42,5 @@ public class AppConfig {
         return new ScriptEngineManager().getEngineByName("nashorn");
     }
 
-    @Bean
-    public CacheManager cacheManager() {
-        return newCacheManagerBuilder()
-            .withCache("meteringPoints", newCacheConfigurationBuilder(String.class, MeteringPoint.class, heap(100)).build())
-            .withCache("parameters", newCacheConfigurationBuilder(String.class, Parameter.class, heap(100)).build())
-            .build(true);
-    }
+
 }
