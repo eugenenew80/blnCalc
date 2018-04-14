@@ -1,5 +1,6 @@
 package calc.formula.expression.impl;
 
+import calc.entity.Formula;
 import calc.formula.expression.Expression;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -13,6 +14,7 @@ public class JsExpression implements Expression {
     private final String src;
     private final Map<String, Expression> attributes;
     private final ScriptEngine engine;
+    private final Formula formula;
 
     @Override
     public Expression expression() {

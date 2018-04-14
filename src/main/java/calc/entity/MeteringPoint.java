@@ -2,19 +2,17 @@ package calc.entity;
 
 import lombok.*;
 import javax.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Immutable;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
-@NoArgsConstructor
 @Entity
 @Table(name = "dict_metering_points")
 @Immutable
 public class MeteringPoint {
-    public MeteringPoint(String code) {
-        this.code = code;
-    }
-
     @Id
     private Long id;
 
@@ -26,4 +24,8 @@ public class MeteringPoint {
 
     @Column(name = "metering_point_type_id")
     private Long meteringPointTypeId;
+
+    @OneToMany(mappedBy = "meteringPoint")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Formula> formulas;
 }

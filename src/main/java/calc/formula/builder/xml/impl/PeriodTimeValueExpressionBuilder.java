@@ -1,5 +1,6 @@
 package calc.formula.builder.xml.impl;
 
+import calc.entity.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
@@ -13,7 +14,7 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
     private final PeriodTimeValueService service;
 
     @Override
-    public PeriodTimeValueExpression build(Node node, CalcContext context) {
+    public PeriodTimeValueExpression build(Node node, Formula formula, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         String mp = "";
@@ -54,6 +55,7 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
             .rate(rate)
             .startHour(startHour)
             .endHour(endHour)
+            .formula(formula)
             .service(service)
             .context(context)
             .build();

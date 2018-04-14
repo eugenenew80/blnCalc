@@ -1,5 +1,6 @@
 package calc.formula.builder.xml.impl;
 
+import calc.entity.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.AtTimeValueExpression;
@@ -13,7 +14,7 @@ public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeVal
     private final AtTimeValueService service;
 
     @Override
-    public AtTimeValueExpression build(Node node, CalcContext context) {
+    public AtTimeValueExpression build(Node node, Formula formula, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         String mp = "";
@@ -44,6 +45,7 @@ public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeVal
             .parameterCode(param)
             .src(src)
             .rate(rate)
+            .formula(formula)
             .service(service)
             .context(context)
             .build();

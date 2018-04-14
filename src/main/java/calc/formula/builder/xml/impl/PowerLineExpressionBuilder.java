@@ -1,5 +1,6 @@
 package calc.formula.builder.xml.impl;
 
+import calc.entity.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.PowerLineExpression;
@@ -13,7 +14,7 @@ public class PowerLineExpressionBuilder implements ExpressionBuilder<PowerLineEx
     private final PowerLineService service;
 
     @Override
-    public PowerLineExpression build(Node node, CalcContext context) {
+    public PowerLineExpression build(Node node, Formula formula, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         Long id = null;
@@ -39,6 +40,7 @@ public class PowerLineExpressionBuilder implements ExpressionBuilder<PowerLineEx
             .id(id)
             .code(code)
             .attr(attr)
+            .formula(formula)
             .service(service)
             .context(context)
             .build();

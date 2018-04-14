@@ -21,7 +21,10 @@ public class CalcServiceImpl implements CalcService {
     private final SourceTypeRepo sourceTypeRepo;
 
     @Override
-    public PeriodTimeValue calc(String formula, CalcContext context) throws Exception {
+    public PeriodTimeValue calc(String text, CalcContext context) throws Exception {
+        Formula formula = new Formula();
+        formula.setText(text);
+
         Double result = expressionService
             .parse(formula, context)
             .value();
@@ -47,7 +50,8 @@ public class CalcServiceImpl implements CalcService {
             //if (mpf.getMeteringPoint().getMeteringPointTypeId()!=2)
             //    continue;
 
-            Expression expr = expressionService.parse(mpf.getText(), context);
+            Expression expr = expressionService.parse(mpf, context);
+
             expressionMap.putIfAbsent(mpf.getMeteringPoint().getCode(), expr);
             formulaMap.putIfAbsent(mpf.getMeteringPoint().getCode(), mpf);
         }

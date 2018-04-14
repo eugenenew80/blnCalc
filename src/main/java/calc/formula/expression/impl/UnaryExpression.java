@@ -1,5 +1,6 @@
 package calc.formula.expression.impl;
 
+import calc.entity.Formula;
 import calc.formula.expression.Expression;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import static java.util.stream.Collectors.toList;
 public class UnaryExpression implements Expression {
     private final Expression expression;
     private final UnaryOperator<Expression> operator;
+    private final Formula formula;
 
     @Override
     public Expression expression() {

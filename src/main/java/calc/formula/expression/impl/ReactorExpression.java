@@ -1,5 +1,6 @@
 package calc.formula.expression.impl;
 
+import calc.entity.Formula;
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
 import calc.formula.service.ReactorService;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class ReactorExpression implements Expression {
     private final Long id;
     private final String attr;
+    private final Formula formula;
     private final ReactorService service;
     private final CalcContext context;
 

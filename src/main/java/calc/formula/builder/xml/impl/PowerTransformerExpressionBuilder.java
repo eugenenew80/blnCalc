@@ -1,5 +1,6 @@
 package calc.formula.builder.xml.impl;
 
+import calc.entity.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.PowerTransformerExpression;
@@ -13,7 +14,7 @@ public class PowerTransformerExpressionBuilder implements ExpressionBuilder<Powe
     private final PowerTransformerService service;
 
     @Override
-    public PowerTransformerExpression build(Node node, CalcContext context) {
+    public PowerTransformerExpression build(Node node, Formula formula, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         Long id = null;
@@ -34,6 +35,7 @@ public class PowerTransformerExpressionBuilder implements ExpressionBuilder<Powe
         return  PowerTransformerExpression.builder()
             .id(id)
             .attr(attr)
+            .formula(formula)
             .service(service)
             .context(context)
             .build();

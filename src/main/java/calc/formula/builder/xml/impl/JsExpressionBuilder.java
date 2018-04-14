@@ -1,5 +1,6 @@
 package calc.formula.builder.xml.impl;
 
+import calc.entity.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.Expression;
@@ -16,7 +17,7 @@ public class JsExpressionBuilder implements ExpressionBuilder<JsExpression> {
     private final XmlExpressionService expressionService;
 
     @Override
-    public JsExpression build(Node parentNode, CalcContext context) {
+    public JsExpression build(Node parentNode, Formula formula, CalcContext context) {
         String src = "";
         HashMap<String, Expression> attributes = new HashMap<>();
 
@@ -40,7 +41,7 @@ public class JsExpressionBuilder implements ExpressionBuilder<JsExpression> {
                             continue;
 
                         Node operandNode = paramNode.getChildNodes().item(k);
-                        Expression operand = expressionService.parse(operandNode, context);
+                        Expression operand = expressionService.parse(operandNode, formula, context);
                         attributes.put(paramName, operand);
                     }
                 }
@@ -50,6 +51,7 @@ public class JsExpressionBuilder implements ExpressionBuilder<JsExpression> {
         return  JsExpression.builder()
             .src(src)
             .attributes(attributes)
+            .formula(formula)
             .engine(engine)
             .build();
     }

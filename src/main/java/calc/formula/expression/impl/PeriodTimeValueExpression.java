@@ -1,5 +1,6 @@
 package calc.formula.expression.impl;
 
+import calc.entity.Formula;
 import calc.entity.PeriodTimeValue;
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
@@ -27,6 +28,7 @@ public class PeriodTimeValueExpression implements Expression {
     private final String interval;
     private final Byte startHour;
     private final Byte endHour;
+    private final Formula formula;
     private final PeriodTimeValueService service;
     private final CalcContext context;
 
@@ -37,6 +39,9 @@ public class PeriodTimeValueExpression implements Expression {
 
     @Override
     public Double value() {
+        if (formula.getMultiValues())
+            return 0d;
+
         List<PeriodTimeValue> list = getValues();
         list.forEach(t -> t.setVal(t.getVal() * rate));
 
@@ -48,6 +53,9 @@ public class PeriodTimeValueExpression implements Expression {
 
     @Override
     public Double[] values() {
+        if (!formula.getMultiValues())
+            return new Double[0];
+
         List<PeriodTimeValue> list = getValues();
         list.forEach(t -> t.setVal(t.getVal() * rate));
 
