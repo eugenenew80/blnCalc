@@ -32,7 +32,7 @@ public class PeriodTimeValue  {
 	private LocalDateTime meteringDate;
 
 	@Column
-	private Integer interval;
+	private Long interval;
 
 	@Column
 	private Double val;

@@ -1,8 +1,8 @@
 package calc.entity;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -32,7 +32,7 @@ public class Formula {
     private String paramType;
 
     @Column(name = "interval")
-    private Integer interval;
+    private Long interval;
 
     @ManyToOne
     @JoinColumn(name="metering_point_id")
@@ -51,4 +51,8 @@ public class Formula {
 
     @Column(name = "end_date")
     private LocalDateTime endDate;
+
+    @Column(name = "is_multi_values")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean multiValues;
 }

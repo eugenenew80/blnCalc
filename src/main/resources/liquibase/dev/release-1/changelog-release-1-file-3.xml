@@ -106,4 +106,13 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-eug-14" logicalFilePath="path-independent" author="eugene">
+        <comment>Adding column is_multi_values into table: calc_formulas</comment>
+        <addColumn schemaName="apps" tableName="calc_formulas">
+            <column name="is_multi_values" type="number" remarks="Результат - массив или скалярное значение">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

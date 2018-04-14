@@ -1,8 +1,6 @@
 package calc.formula.service.impl;
 
-import calc.entity.Formula;
-import calc.entity.MeteringPoint;
-import calc.entity.PeriodTimeValue;
+import calc.entity.*;
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
 import calc.formula.service.CalcService;
@@ -11,6 +9,8 @@ import calc.repo.FormulaRepo;
 import calc.repo.SourceTypeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -57,21 +57,38 @@ public class CalcServiceImpl implements CalcService {
         context.setPtValues(new ArrayList<>());
         for (String code : mps) {
             Expression expression = expressionMap.get(code);
-            Double[] results = expression.values();
-            for (int i=0; i<results.length; i++) {
-                Formula formula = formulaMap.get(code);
-                MeteringPoint meteringPoint = formula.getMeteringPoint();
+            Formula formula = formulaMap.get(code);
+            MeteringPoint meteringPoint = formula.getMeteringPoint();
+            Parameter parameter = formula.getParameter();
+            Unit unit = formula.getUnit();
 
+            Double[] results;
+            LocalDateTime startDate;
+            Long interval;
+            if (formula.getMultiValues()) {
+                results = expression.values();
+                startDate = context.getStartDate().atStartOfDay();
+                interval = 3600l;
+            }
+            else {
+                results = new Double[]{expression.value()};
+                startDate = context.getStartDate().atStartOfDay();
+
+                LocalDateTime s = context.getStartDate().atStartOfDay();
+                LocalDateTime e = context.getEndDate().atStartOfDay().plusDays(1);
+                interval = s.until(e, ChronoUnit.SECONDS);
+            }
+
+            for (int i=0; i<results.length; i++) {
                 PeriodTimeValue pt = new PeriodTimeValue();
                 pt.setVal(results[i]);
-                pt.setMeteringDate(context.getStartDate().atStartOfDay().plusHours(i));
+                pt.setMeteringDate(startDate.plusHours(i));
+                pt.setInterval(interval);
                 pt.setMeteringPointId(meteringPoint.getId());
-                pt.setParamId(formula.getParameter().getId());
-                pt.setInterval(formula.getInterval());
-                pt.setUnitId(formula.getUnit().getId());
+                pt.setParamId(parameter.getId());
+                pt.setUnitId(unit.getId());
                 pt.setStatus("OK");
                 pt.setSourceType(sourceTypeRepo.findOne(4l));
-
                 context.getPtValues().add(pt);
             }
         }
