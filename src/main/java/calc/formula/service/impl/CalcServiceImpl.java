@@ -36,7 +36,7 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-    public List<PeriodTimeValue> calc(CalcContext context) throws Exception {
+    public CalcContext calc(CalcContext context) throws Exception {
         Map<String, Expression> expressionMap = new HashMap<>();
         Map<String, Formula>  formulaMap = new HashMap<>();
 
@@ -59,6 +59,7 @@ public class CalcServiceImpl implements CalcService {
         List<String> mps = expressionService.sort(expressionMap);
 
         context.setPtValues(new ArrayList<>());
+        context.setAtValues(new ArrayList<>());
         for (String code : mps) {
             Expression expression = expressionMap.get(code);
             Formula formula = formulaMap.get(code);
@@ -84,19 +85,32 @@ public class CalcServiceImpl implements CalcService {
             }
 
             for (int i=0; i<results.length; i++) {
-                PeriodTimeValue pt = new PeriodTimeValue();
-                pt.setVal(results[i]);
-                pt.setMeteringDate(startDate.plusHours(i));
-                pt.setInterval(interval);
-                pt.setMeteringPointId(meteringPoint.getId());
-                pt.setParamId(parameter.getId());
-                pt.setUnitId(unit.getId());
-                pt.setStatus("OK");
-                pt.setSourceType(sourceTypeRepo.findOne(4l));
-                context.getPtValues().add(pt);
+                if (formula.getParamType().equals("PT")) {
+                    PeriodTimeValue pt = new PeriodTimeValue();
+                    pt.setVal(results[i]);
+                    pt.setMeteringDate(startDate.plusHours(i));
+                    pt.setInterval(interval);
+                    pt.setMeteringPointId(meteringPoint.getId());
+                    pt.setParamId(parameter.getId());
+                    pt.setUnitId(unit.getId());
+                    pt.setStatus("OK");
+                    pt.setSourceType(sourceTypeRepo.findOne(4l));
+                    context.getPtValues().add(pt);
+                }
+                if (formula.getParamType().equals("AT")) {
+                    AtTimeValue at = new AtTimeValue();
+                    at.setVal(results[i]);
+                    at.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
+                    at.setMeteringPointId(meteringPoint.getId());
+                    at.setParamId(parameter.getId());
+                    at.setUnitId(unit.getId());
+                    at.setStatus("OK");
+                    at.setSourceType(sourceTypeRepo.findOne(4l));
+                    context.getAtValues().add(at);
+                }
             }
         }
 
-        return context.getPtValues();
+        return context;
     }
 }

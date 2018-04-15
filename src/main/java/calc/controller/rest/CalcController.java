@@ -43,9 +43,10 @@ public class CalcController {
             .orgId(3l)
             .build();
 
-        List<PeriodTimeValue> list = calcService.calc(context);
-        list.stream().forEach( t -> System.out.println(t));
+        context = calcService.calc(context);
+        context.getPtValues().stream().forEach( t -> System.out.println(t));
+        context.getAtValues().stream().forEach( t -> System.out.println(t));
 
-        return list;
+        return context.getPtValues();
     }
 }

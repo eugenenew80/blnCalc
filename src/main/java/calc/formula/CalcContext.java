@@ -1,5 +1,6 @@
 package calc.formula;
 
+import calc.entity.AtTimeValue;
 import calc.entity.PeriodTimeValue;
 import lombok.*;
 import java.time.LocalDate;
@@ -12,4 +13,5 @@ public class CalcContext {
     private LocalDate endDate;
     private Long orgId;
     private List<PeriodTimeValue> ptValues;
+    private List<AtTimeValue> atValues;
 }

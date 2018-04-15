@@ -2,14 +2,12 @@ package calc.entity;
 
 import lombok.*;
 import javax.persistence.*;
-import org.hibernate.annotations.Immutable;
 import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "media_period_time_values")
-@Immutable
 @NamedEntityGraph(name="PeriodTimeValue.allJoins", attributeNodes = {
 	@NamedAttributeNode("sourceType")
 })
