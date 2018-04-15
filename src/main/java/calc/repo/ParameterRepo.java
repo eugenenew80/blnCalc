@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ParameterRepo extends JpaRepository<Parameter, Long> {
-    @Cacheable(value="paramsCache", key="{#p0, #p1}" )
+    @Cacheable(value="paramsCache", key="{#code, #paramType}" )
     Parameter findByCodeAndParamType(String code, String paramType);
 }

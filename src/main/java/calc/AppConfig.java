@@ -5,16 +5,21 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.google.common.cache.CacheBuilder;
 import org.dozer.DozerBeanMapper;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.guava.GuavaCache;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
-@EnableCaching
+//@EnableCaching
 public class AppConfig {
 
     @Bean
@@ -42,5 +47,19 @@ public class AppConfig {
         return new ScriptEngineManager().getEngineByName("nashorn");
     }
 
+    @Bean
+    public CacheManager cacheManager() {
+        SimpleCacheManager simpleCacheManager = new SimpleCacheManager();
 
+        GuavaCache paramsCache = new GuavaCache("paramsCache", CacheBuilder.newBuilder()
+            .expireAfterAccess(1, TimeUnit.MINUTES)
+            .build());
+
+        GuavaCache meteringPointsCache = new GuavaCache("meteringPointsCache", CacheBuilder.newBuilder()
+            .expireAfterAccess(1, TimeUnit.MINUTES)
+            .build());
+
+        simpleCacheManager.setCaches(Arrays.asList(paramsCache, meteringPointsCache));
+        return simpleCacheManager;
+    }
 }
