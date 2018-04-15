@@ -31,9 +31,6 @@ public class Formula {
     @Column(name = "param_type")
     private String paramType;
 
-    @Column(name = "interval")
-    private Long interval;
-
     @ManyToOne
     @JoinColumn(name="metering_point_id")
     private MeteringPoint meteringPoint;

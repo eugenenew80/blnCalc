@@ -25,6 +25,26 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_type" type="varchar2(10)" remarks="Тип параметра">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_multi_values" type="number" defaultValue="0" remarks="Результат - массив или скалярное значение">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="parameter_id" type="number" remarks="Ид. параметра">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="unit_id" type="number" remarks="Ид. единицы измерения">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала действия формулы">
                 <constraints nullable="true"/>
             </column>
