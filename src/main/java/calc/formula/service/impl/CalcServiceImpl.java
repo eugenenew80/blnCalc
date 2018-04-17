@@ -47,8 +47,8 @@ public class CalcServiceImpl implements CalcService {
             if (mpf.getEndDate()!=null && context.getStartDate().atStartOfDay().isAfter(mpf.getEndDate()))
                 continue;
 
-            //if (mpf.getMeteringPoint().getMeteringPointTypeId()!=2)
-            //    continue;
+            if (mpf.getMeteringPoint().getMeteringPointTypeId()!=2)
+                continue;
 
             Expression expr = expressionService.parse(mpf, context);
 
@@ -60,6 +60,8 @@ public class CalcServiceImpl implements CalcService {
 
         context.setPtValues(new ArrayList<>());
         context.setAtValues(new ArrayList<>());
+        context.setCalcTrace(new HashMap<>());
+
         for (String code : mps) {
             Expression expression = expressionMap.get(code);
             Formula formula = formulaMap.get(code);

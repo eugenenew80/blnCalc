@@ -40,7 +40,7 @@ public class CalcController {
         CalcContext context = CalcContext.builder()
             .startDate(contextDto.getStartDate())
             .endDate(contextDto.getEndDate())
-            .orgId(3l)
+            .orgId(11l)
             .build();
 
         context = calcService.calc(context);

@@ -47,14 +47,7 @@ public class AtTimeValueExpression implements Expression {
         if (!formula.getMultiValues())
             return new Double[0];
 
-        Double v = rate*service.getValue(
-            meteringPointCode,
-            parameterCode,
-            src,
-            context
-        ) / 24.0d;
-
-        return new Double[] { v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v  };
+        return Expression.super.values();
     }
 
     @Override

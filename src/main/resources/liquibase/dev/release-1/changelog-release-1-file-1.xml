@@ -33,10 +33,6 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="is_multi_values" type="number" defaultValue="0" remarks="Результат - массив или скалярное значение">
-                <constraints nullable="false"/>
-            </column>
-
             <column name="parameter_id" type="number" remarks="Ид. параметра">
                 <constraints nullable="false"/>
             </column>
@@ -47,6 +43,10 @@
 
             <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала действия формулы">
                 <constraints nullable="true"/>
+            </column>
+
+            <column name="is_multi_values" type="number" defaultValue="0" remarks="Результат - массив или скалярное значение">
+                <constraints nullable="false"/>
             </column>
 
             <column name="end_date" type="TIMESTAMP" remarks="Дата и время окончания действия формулы">

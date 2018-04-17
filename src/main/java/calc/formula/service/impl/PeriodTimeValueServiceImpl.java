@@ -1,9 +1,11 @@
 package calc.formula.service.impl;
 
+import calc.entity.SourceType;
 import calc.formula.CalcContext;
 import calc.entity.MeteringPoint;
 import calc.entity.Parameter;
 import calc.entity.PeriodTimeValue;
+import calc.formula.CalcInfo;
 import calc.formula.service.PeriodTimeValueService;
 import calc.repo.MeteringPointRepo;
 import calc.repo.ParameterRepo;
@@ -14,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
+
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -51,7 +55,19 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         if (!list.isEmpty())
             return list;
 
-        return findValues(meteringPoint, parameter, context)
+        List<PeriodTimeValue> values = findValues(meteringPoint, parameter, context);
+
+        List<SourceType> sourceTypes = values.stream()
+            .map(v -> v.getSourceType())
+            .distinct()
+            .collect(toList())    ;
+
+        List<CalcInfo> infoList = context.getCalcTrace().get(meteringPoint.getId());
+
+
+        infoList.add(CalcInfo.builder().sourceType(sourceTypes.get(0)).build() );
+
+        return values
             .stream()
             .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
             .collect(toList());
