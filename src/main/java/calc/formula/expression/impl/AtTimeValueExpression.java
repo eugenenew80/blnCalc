@@ -1,10 +1,10 @@
 package calc.formula.expression.impl;
 
-import calc.controller.rest.dto.Result;
+import calc.formula.CalcResult;
 import calc.entity.Formula;
 import calc.entity.SourceType;
 import calc.formula.CalcContext;
-import calc.formula.CalcInfo;
+import calc.formula.CalcTrace;
 import calc.formula.expression.Expression;
 import calc.formula.service.AtTimeValueService;
 import lombok.AccessLevel;
@@ -34,14 +34,14 @@ public class AtTimeValueExpression implements Expression {
 
     @Override
     public Double value() {
-        List<Result> list = service.getValue(
+        List<CalcResult> list = service.getValue(
             meteringPointCode,
             parameterCode,
             context
         );
         list.forEach(t -> t.setVal(t.getVal() * rate));
 
-        CalcInfo calcInfo = trace(list);
+        CalcTrace calcInfo = trace(list);
         Double result = list.stream()
             .filter(t -> t.getSourceType().equals(calcInfo.getSourceType()))
             .map(t -> t.getVal())
@@ -64,8 +64,8 @@ public class AtTimeValueExpression implements Expression {
     }
 
     @SuppressWarnings("Duplicates")
-    private CalcInfo trace(List<Result> list) {
-        List<CalcInfo> infoList = context.getTrace().get(formula.getId());
+    private CalcTrace trace(List<CalcResult> list) {
+        List<CalcTrace> infoList = context.getTrace().get(formula.getId());
         if (infoList == null)
             infoList = new ArrayList<>();
 
@@ -74,7 +74,7 @@ public class AtTimeValueExpression implements Expression {
             .distinct()
             .collect(toList());
 
-        CalcInfo calcInfo = CalcInfo.builder()
+        CalcTrace calcInfo = CalcTrace.builder()
             .sourceType(selectSourceType(sourceTypeList))
             .sourceTypeCount(sourceTypeList.size())
             .meteringPointCode(meteringPointCode)

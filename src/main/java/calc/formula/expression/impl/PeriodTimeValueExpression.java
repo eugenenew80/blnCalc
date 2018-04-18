@@ -1,10 +1,10 @@
 package calc.formula.expression.impl;
 
-import calc.controller.rest.dto.Result;
+import calc.formula.CalcResult;
 import calc.entity.Formula;
 import calc.entity.SourceType;
 import calc.formula.CalcContext;
-import calc.formula.CalcInfo;
+import calc.formula.CalcTrace;
 import calc.formula.expression.Expression;
 import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
@@ -43,13 +43,13 @@ public class PeriodTimeValueExpression implements Expression {
 
     @Override
     public Double[] values() {
-        List<Result> list = getValues();
+        List<CalcResult> list = getValues();
         list.forEach(t -> t.setVal(t.getVal() * rate));
 
         Double[] results = new Double[24];
         Arrays.fill(results, null);
 
-        CalcInfo calcInfo = trace(list);
+        CalcTrace calcInfo = trace(list);
         list.stream()
             .filter( t -> t.getSourceType().equals(calcInfo.getSourceType()) )
             .forEach(t -> results[t.getMeteringDate().getHour()] = t.getVal());
@@ -64,7 +64,7 @@ public class PeriodTimeValueExpression implements Expression {
             .collect(toSet());
     }
 
-    private List<Result> getValues() {
+    private List<CalcResult> getValues() {
         return service.getValues(
             meteringPointCode,
             parameterCode,
@@ -75,8 +75,8 @@ public class PeriodTimeValueExpression implements Expression {
     }
 
     @SuppressWarnings("Duplicates")
-    private CalcInfo trace(List<Result> list) {
-        List<CalcInfo> infoList = context.getTrace().get(formula.getId());
+    private CalcTrace trace(List<CalcResult> list) {
+        List<CalcTrace> infoList = context.getTrace().get(formula.getId());
         if (infoList == null)
             infoList = new ArrayList<>();
 
@@ -85,7 +85,7 @@ public class PeriodTimeValueExpression implements Expression {
             .distinct()
             .collect(toList());
 
-        CalcInfo calcInfo = CalcInfo.builder()
+        CalcTrace calcInfo = CalcTrace.builder()
             .sourceType(selectSourceType(sourceTypeList))
             .sourceTypeCount(sourceTypeList.size())
             .meteringPointCode(meteringPointCode)

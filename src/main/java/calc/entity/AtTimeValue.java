@@ -1,6 +1,6 @@
 package calc.entity;
 
-import calc.controller.rest.dto.Result;
+import calc.formula.CalcResult;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -40,8 +40,8 @@ public class AtTimeValue {
 	@JoinColumn(name = "source_type_id")
 	private SourceType sourceType;
 
-	public Result toResult() {
-		Result result = new Result();
+	public CalcResult toResult() {
+		CalcResult result = new CalcResult();
 		result.setInterval(null);
 		result.setMeteringDate(this.getMeteringDate());
 		result.setMeteringPointId(this.getMeteringPointId());

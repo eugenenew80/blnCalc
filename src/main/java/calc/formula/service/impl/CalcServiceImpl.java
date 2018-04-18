@@ -1,6 +1,6 @@
 package calc.formula.service.impl;
 
-import calc.controller.rest.dto.Result;
+import calc.formula.CalcResult;
 import calc.entity.*;
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
@@ -21,7 +21,7 @@ public class CalcServiceImpl implements CalcService {
     private final SourceTypeRepo sourceTypeRepo;
 
     @Override
-    public Result calc(String text, CalcContext context) throws Exception {
+    public CalcResult calc(String text, CalcContext context) throws Exception {
         Formula formula = new Formula();
         formula.setText(text);
 
@@ -29,14 +29,14 @@ public class CalcServiceImpl implements CalcService {
             .parse(formula, context)
             .value();
 
-        Result result = new Result();
+        CalcResult result = new CalcResult();
         result.setVal(value);
 
         return result;
     }
 
     @Override
-    public List<Result> calc(CalcContext context) throws Exception {
+    public List<CalcResult> calc(CalcContext context) throws Exception {
         Map<String, Expression> expressionMap = new HashMap<>();
         Map<String, Formula>  formulaMap = new HashMap<>();
 
@@ -82,7 +82,7 @@ public class CalcServiceImpl implements CalcService {
                 }
 
                 for (int i = 0; i < results.length; i++) {
-                    Result result = new Result();
+                    CalcResult result = new CalcResult();
                     result.setMeteringDate(meteringDate.plusHours(i));
                     result.setVal(results[i]);
                     result.setInterval(interval);

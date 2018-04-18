@@ -1,11 +1,11 @@
-package calc.controller.rest.dto;
+package calc.formula;
 
 import calc.entity.SourceType;
 import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class Result {
+public class CalcResult {
     private Long meteringPointId;
     private Long paramId;
     private Long unitId;

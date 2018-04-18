@@ -1,7 +1,7 @@
 package calc.controller.rest;
 
 import calc.controller.rest.dto.ContextDto;
-import calc.controller.rest.dto.Result;
+import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.formula.service.CalcService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class CalcController {
     private void init() { }
 
     @PostMapping(value = "/rest/calc/text", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
-    public Result calc(@RequestBody ContextDto contextDto) throws Exception {
+    public CalcResult calc(@RequestBody ContextDto contextDto) throws Exception {
         byte[] contentAsBytes = Base64.decodeBase64(contextDto.getContentBase64());
         String formula = new String(contentAsBytes, Charset.forName("UTF-8"));
 
@@ -36,14 +36,14 @@ public class CalcController {
     }
 
     @PostMapping(value = "/rest/calc/all", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
-    public List<Result> calcAll(@RequestBody ContextDto contextDto) throws Exception {
+    public List<CalcResult> calcAll(@RequestBody ContextDto contextDto) throws Exception {
         CalcContext context = CalcContext.builder()
             .startDate(contextDto.getStartDate())
             .endDate(contextDto.getEndDate())
             .orgId(11l)
             .build();
 
-        List<Result> list = calcService.calc(context);
+        List<CalcResult> list = calcService.calc(context);
         list.stream().forEach( t -> System.out.println(t));
 
         return context.getValues();

@@ -1,6 +1,6 @@
 package calc.formula.service.impl;
 
-import calc.controller.rest.dto.Result;
+import calc.formula.CalcResult;
 import calc.entity.SourceTypePriority;
 import calc.formula.CalcContext;
 import calc.entity.AtTimeValue;
@@ -29,7 +29,7 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
     private final ParameterRepo parameterRepo;
 
     @Override
-    public List<Result> getValue(
+    public List<CalcResult> getValue(
         String meteringPointCode,
         String parameterCode,
         CalcContext context
@@ -43,7 +43,7 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
         if (meteringPoint == null || parameter == null)
             return Collections.emptyList();
 
-        List<Result> list = context.getValues()
+        List<CalcResult> list = context.getValues()
             .stream()
             .filter(t -> t.getParamType().equals("AT"))
             .filter(t -> t.getMeteringPointId().equals(meteringPoint.getId()))

@@ -1,6 +1,6 @@
 package calc.formula.service.impl;
 
-import calc.controller.rest.dto.Result;
+import calc.formula.CalcResult;
 import calc.entity.*;
 import calc.formula.CalcContext;
 import calc.formula.service.PeriodTimeValueService;
@@ -26,7 +26,7 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     private final ParameterRepo parameterRepo;
 
     @Override
-    public List<Result> getValues(
+    public List<CalcResult> getValues(
         String meteringPointCode,
         String parameterCode,
         Byte startHour,
@@ -42,7 +42,7 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         if (meteringPoint == null || parameter == null)
             return Collections.emptyList();
 
-        List<Result> list = context.getValues()
+        List<CalcResult> list = context.getValues()
             .stream()
             .filter(t -> t.getParamType().equals("PT"))
             .filter(t -> t.getMeteringPointId().equals(meteringPoint.getId()))

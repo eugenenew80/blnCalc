@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CalcInfo {
+public class CalcTrace {
     private String meteringPointCode;
     private String parameterCode;
     private SourceType sourceType;
