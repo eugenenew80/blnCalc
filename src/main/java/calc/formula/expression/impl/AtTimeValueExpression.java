@@ -63,6 +63,7 @@ public class AtTimeValueExpression implements Expression {
             .collect(toSet());
     }
 
+    @SuppressWarnings("Duplicates")
     private CalcInfo trace(List<Result> list) {
         List<CalcInfo> infoList = context.getTrace().get(formula.getId());
         if (infoList == null)

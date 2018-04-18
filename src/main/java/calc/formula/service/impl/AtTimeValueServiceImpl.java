@@ -55,18 +55,7 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
 
         return findValues(meteringPoint, parameter, context)
             .stream()
-            .map( t-> {
-                Result result = new Result();
-                result.setInterval(null);
-                result.setMeteringDate(t.getMeteringDate());
-                result.setMeteringPointId(t.getMeteringPointId());
-                result.setParamId(t.getParamId());
-                result.setParamType("AT");
-                result.setUnitId(t.getUnitId());
-                result.setVal(t.getVal());
-                result.setSourceType(t.getSourceType());
-                return result;
-            })
+            .map(AtTimeValue::toResult)
             .collect(toList());
     }
 

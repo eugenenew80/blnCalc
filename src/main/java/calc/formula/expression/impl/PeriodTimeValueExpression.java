@@ -11,10 +11,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
-import static java.util.Arrays.setAll;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -47,7 +47,7 @@ public class PeriodTimeValueExpression implements Expression {
         list.forEach(t -> t.setVal(t.getVal() * rate));
 
         Double[] results = new Double[24];
-        setAll(results, d -> null);
+        Arrays.fill(results, null);
 
         CalcInfo calcInfo = trace(list);
         list.stream()
@@ -74,6 +74,7 @@ public class PeriodTimeValueExpression implements Expression {
         );
     }
 
+    @SuppressWarnings("Duplicates")
     private CalcInfo trace(List<Result> list) {
         List<CalcInfo> infoList = context.getTrace().get(formula.getId());
         if (infoList == null)

@@ -1,5 +1,6 @@
 package calc.entity;
 
+import calc.controller.rest.dto.Result;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,4 +39,17 @@ public class AtTimeValue {
 	@ManyToOne
 	@JoinColumn(name = "source_type_id")
 	private SourceType sourceType;
+
+	public Result toResult() {
+		Result result = new Result();
+		result.setInterval(null);
+		result.setMeteringDate(this.getMeteringDate());
+		result.setMeteringPointId(this.getMeteringPointId());
+		result.setParamId(this.getParamId());
+		result.setParamType("AT");
+		result.setUnitId(this.getUnitId());
+		result.setVal(this.getVal());
+		result.setSourceType(this.getSourceType());
+		return result;
+	}
 }

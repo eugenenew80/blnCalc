@@ -397,4 +397,220 @@
         <rollback/>
     </changeSet>
 
+    <changeSet id="calc-eug-28" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_daily_sheet_headers</comment>
+        <createTable tableName="calc_daily_sheet_headers" schemaName="apps" remarks="Заголовок суточной ведомости">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Ид. филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="TIMESTAMP" remarks="Дата начала периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="TIMESTAMP" remarks="Дата окончания периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="varchar(20)" remarks="Статус">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-29" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_daily_sheet_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_daily_sheet_headers"
+                schemaName="apps"
+                tableName="calc_daily_sheet_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-30" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_daily_sheet_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_daily_sheet_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-31" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_daily_sheet_lines</comment>
+        <createTable tableName="calc_daily_sheet_lines" schemaName="apps" remarks="Строки суточной ведомости">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="meter_id" type="number" remarks="Ид. счётчика">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="param_id" type="number" remarks="Ид. параметра">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="source_type_id" type="number" remarks="Ид. параметра">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="start_val" type="number" remarks="Показания на начало периода">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="end_val" type="number" remarks="Показания на конец периода">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="val" type="number" remarks="Расход за период">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-31" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_daily_sheet_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_daily_sheet_lines"
+                schemaName="apps"
+                tableName="calc_daily_sheet_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-32" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_daily_sheet_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_daily_sheet_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-33" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_daily_sheet_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-34" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_lines to dict_meters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_lines"
+                baseColumnNames="meter_id"
+                constraintName="fk_calc_daily_sheet_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_meters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-35" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_daily_sheet_lines_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-36" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_lines to media_source_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_lines"
+                baseColumnNames="source_type_id"
+                constraintName="fk_calc_daily_sheet_lines_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_source_types"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-37" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_daily_sheet_headers_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
 </databaseChangeLog>

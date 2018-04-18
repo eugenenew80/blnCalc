@@ -55,18 +55,7 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         return findValues(meteringPoint, parameter, context)
             .stream()
             .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
-            .map( t-> {
-                Result result = new Result();
-                result.setInterval(t.getInterval());
-                result.setMeteringDate(t.getMeteringDate());
-                result.setMeteringPointId(t.getMeteringPointId());
-                result.setParamId(t.getParamId());
-                result.setParamType("PT");
-                result.setUnitId(t.getUnitId());
-                result.setVal(t.getVal());
-                result.setSourceType(t.getSourceType());
-                return result;
-            })
+            .map(PeriodTimeValue::toResult)
             .collect(toList());
     }
 
