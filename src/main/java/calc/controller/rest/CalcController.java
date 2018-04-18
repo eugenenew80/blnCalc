@@ -1,8 +1,9 @@
 package calc.controller.rest;
 
 import calc.controller.rest.dto.ContextDto;
-import calc.entity.PeriodTimeValue;
+import calc.controller.rest.dto.Result;
 import calc.formula.CalcContext;
+import calc.formula.CalcInfo;
 import calc.formula.service.CalcService;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -22,7 +23,7 @@ public class CalcController {
     private void init() { }
 
     @PostMapping(value = "/rest/calc/text", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
-    public PeriodTimeValue calc(@RequestBody ContextDto contextDto) throws Exception {
+    public Result calc(@RequestBody ContextDto contextDto) throws Exception {
         byte[] contentAsBytes = Base64.decodeBase64(contextDto.getContentBase64());
         String formula = new String(contentAsBytes, Charset.forName("UTF-8"));
 
@@ -36,17 +37,21 @@ public class CalcController {
     }
 
     @PostMapping(value = "/rest/calc/all", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
-    public List<PeriodTimeValue> calcAll(@RequestBody ContextDto contextDto) throws Exception {
+    public List<Result> calcAll(@RequestBody ContextDto contextDto) throws Exception {
         CalcContext context = CalcContext.builder()
             .startDate(contextDto.getStartDate())
             .endDate(contextDto.getEndDate())
             .orgId(11l)
             .build();
 
-        context = calcService.calc(context);
-        context.getPtValues().stream().forEach( t -> System.out.println(t));
-        context.getAtValues().stream().forEach( t -> System.out.println(t));
+        List<Result> list = calcService.calc(context);
+        list.stream().forEach( t -> System.out.println(t));
 
-        return context.getPtValues();
+        for (Long formulaId : context.getTrace().keySet()) {
+            List<CalcInfo> infoList = context.getTrace().get(formulaId);
+            infoList.stream().map(CalcInfo::getSourceType).forEach(System.out::println);
+        }
+
+        return context.getValues();
     }
 }

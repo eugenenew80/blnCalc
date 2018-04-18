@@ -1,14 +1,18 @@
 package calc.formula.expression.impl;
 
+import calc.controller.rest.dto.Result;
 import calc.entity.Formula;
 import calc.entity.PeriodTimeValue;
+import calc.entity.SourceType;
 import calc.formula.CalcContext;
+import calc.formula.CalcInfo;
 import calc.formula.expression.Expression;
 import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -39,30 +43,27 @@ public class PeriodTimeValueExpression implements Expression {
 
     @Override
     public Double value() {
-        if (formula.getMultiValues())
-            return 0d;
-
-        List<PeriodTimeValue> list = getValues();
-        list.forEach(t -> t.setVal(t.getVal() * rate));
-
-        return list.stream()
-            .map(t -> t.getVal())
+        return 0d;
+        /*
+        return Arrays.stream(values())
             .reduce((t1, t2) -> t1 + t2)
             .orElse(0d);
+        */
     }
 
     @Override
     public Double[] values() {
-        if (!formula.getMultiValues())
-            return new Double[0];
-
-        List<PeriodTimeValue> list = getValues();
+        List<Result> list = getValues();
         list.forEach(t -> t.setVal(t.getVal() * rate));
 
         Double[] results = new Double[24];
         setAll(results, d -> 0d);
 
-        list.forEach(t -> results[t.getMeteringDate().getHour()] = t.getVal());
+        CalcInfo calcInfo = trace(list);
+        list.stream()
+            .filter( t -> t.getSourceType().equals(calcInfo.getSourceType()) )
+            .forEach(t -> results[t.getMeteringDate().getHour()] = t.getVal());
+
         return results;
     }
 
@@ -72,7 +73,7 @@ public class PeriodTimeValueExpression implements Expression {
             .collect(toSet());
     }
 
-    private List<PeriodTimeValue> getValues() {
+    private List<Result> getValues() {
         return service.getValues(
             meteringPointCode,
             parameterCode,
@@ -81,5 +82,36 @@ public class PeriodTimeValueExpression implements Expression {
             endHour,
             context
         );
+    }
+
+    private CalcInfo trace(List<Result> list) {
+        List<CalcInfo> infoList = context.getTrace().get(formula.getId());
+        if (infoList == null)
+            infoList = new ArrayList<>();
+
+        List<SourceType> sourceTypeList = list.stream()
+            .map(t -> t.getSourceType())
+            .distinct()
+            .collect(toList());
+
+        CalcInfo calcInfo = CalcInfo.builder()
+            .sourceType(selectSourceType(sourceTypeList))
+            .sourceTypeCount(sourceTypeList.size())
+            .build();
+
+        infoList.add(calcInfo);
+        context.getTrace().putIfAbsent(formula.getId(), infoList);
+        return calcInfo;
+    }
+
+    private SourceType selectSourceType(List<SourceType> sourceTypeList) {
+        sourceTypeList.stream()
+            .distinct()
+            .collect(toList());
+
+        if (!sourceTypeList.isEmpty())
+            return sourceTypeList.get(0);
+
+        return null;
     }
 }

@@ -1,19 +1,19 @@
 package calc.entity;
 
-import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_formulas")
 @NamedEntityGraph(name="Formula.allJoins", attributeNodes = {
-    @NamedAttributeNode("meteringPoint"),
-    @NamedAttributeNode("parameter"),
-    @NamedAttributeNode("unit")
+    @NamedAttributeNode("meteringPoint")
 })
 public class Formula {
     @Id
@@ -28,28 +28,17 @@ public class Formula {
     @Column
     private String text;
 
-    @Column(name = "param_type")
-    private String paramType;
-
     @ManyToOne
     @JoinColumn(name="metering_point_id")
     private MeteringPoint meteringPoint;
 
-    @ManyToOne
-    @JoinColumn(name="parameter_id")
-    private Parameter parameter;
-
-    @ManyToOne
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
+    @OneToMany(mappedBy = "formula")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<FormulaParameter> parameters;
 
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
     @Column(name = "end_date")
     private LocalDateTime endDate;
-
-    @Column(name = "is_multi_values")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean multiValues;
 }

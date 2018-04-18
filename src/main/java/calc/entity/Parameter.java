@@ -18,4 +18,8 @@ public class Parameter {
 
     @Column
     private String paramType;
+
+    @ManyToOne
+    @JoinColumn(name="unit_id")
+    private Unit unit;
 }

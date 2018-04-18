@@ -1,11 +1,11 @@
 package calc.formula.service;
 
-import calc.entity.PeriodTimeValue;
+import calc.controller.rest.dto.Result;
 import calc.formula.CalcContext;
 import java.util.List;
 
 public interface PeriodTimeValueService {
-    List<PeriodTimeValue> getValues(
+    List<Result> getValues(
         String meteringPointCode,
         String parameterCode,
         String src,

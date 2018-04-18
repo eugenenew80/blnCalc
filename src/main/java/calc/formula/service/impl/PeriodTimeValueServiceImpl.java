@@ -1,11 +1,10 @@
 package calc.formula.service.impl;
 
-import calc.entity.SourceType;
+import calc.controller.rest.dto.Result;
 import calc.formula.CalcContext;
 import calc.entity.MeteringPoint;
 import calc.entity.Parameter;
 import calc.entity.PeriodTimeValue;
-import calc.formula.CalcInfo;
 import calc.formula.service.PeriodTimeValueService;
 import calc.repo.MeteringPointRepo;
 import calc.repo.ParameterRepo;
@@ -16,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
-
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -29,7 +26,7 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     private final ParameterRepo parameterRepo;
 
     @Override
-    public List<PeriodTimeValue> getValues(
+    public List<Result> getValues(
         String meteringPointCode,
         String parameterCode,
         String src,
@@ -46,8 +43,9 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         if (meteringPoint == null || parameter == null)
             return Collections.emptyList();
 
-        List<PeriodTimeValue> list = context.getPtValues()
+        List<Result> list = context.getValues()
             .stream()
+            .filter(t -> t.getParamType().equals("PT"))
             .filter(t -> t.getMeteringPointId().equals(meteringPoint.getId()))
             .filter(t -> t.getParamId().equals(parameter.getId()))
             .collect(toList());
@@ -55,21 +53,21 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         if (!list.isEmpty())
             return list;
 
-        List<PeriodTimeValue> values = findValues(meteringPoint, parameter, context);
-
-        List<SourceType> sourceTypes = values.stream()
-            .map(v -> v.getSourceType())
-            .distinct()
-            .collect(toList())    ;
-
-        List<CalcInfo> infoList = context.getCalcTrace().get(meteringPoint.getId());
-
-
-        infoList.add(CalcInfo.builder().sourceType(sourceTypes.get(0)).build() );
-
-        return values
+        return findValues(meteringPoint, parameter, context)
             .stream()
             .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
+            .map( t-> {
+                Result result = new Result();
+                result.setInterval(t.getInterval());
+                result.setMeteringDate(t.getMeteringDate());
+                result.setMeteringPointId(t.getMeteringPointId());
+                result.setParamId(t.getParamId());
+                result.setParamType("PT");
+                result.setUnitId(t.getUnitId());
+                result.setVal(t.getVal());
+                result.setSourceType(t.getSourceType());
+                return result;
+            })
             .collect(toList());
     }
 

@@ -9,4 +9,5 @@ import lombok.Getter;
 public class CalcInfo {
     private SourceType sourceType;
     private String status;
+    private Integer sourceTypeCount;
 }

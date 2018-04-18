@@ -38,7 +38,7 @@ public class PeriodTimeValue  {
 	@Column
 	private String status;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "source_type_id")
 	private SourceType sourceType;
 }

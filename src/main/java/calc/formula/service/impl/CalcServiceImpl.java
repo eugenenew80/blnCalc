@@ -1,7 +1,9 @@
 package calc.formula.service.impl;
 
+import calc.controller.rest.dto.Result;
 import calc.entity.*;
 import calc.formula.CalcContext;
+import calc.formula.CalcInfo;
 import calc.formula.expression.Expression;
 import calc.formula.service.CalcService;
 import calc.formula.service.ExpressionService;
@@ -10,7 +12,6 @@ import calc.repo.SourceTypeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -21,22 +22,22 @@ public class CalcServiceImpl implements CalcService {
     private final SourceTypeRepo sourceTypeRepo;
 
     @Override
-    public PeriodTimeValue calc(String text, CalcContext context) throws Exception {
+    public Result calc(String text, CalcContext context) throws Exception {
         Formula formula = new Formula();
         formula.setText(text);
 
-        Double result = expressionService
+        Double value = expressionService
             .parse(formula, context)
             .value();
 
-        PeriodTimeValue pt = new PeriodTimeValue();
-        pt.setVal(result);
+        Result result = new Result();
+        result.setVal(value);
 
-        return pt;
+        return result;
     }
 
     @Override
-    public CalcContext calc(CalcContext context) throws Exception {
+    public List<Result> calc(CalcContext context) throws Exception {
         Map<String, Expression> expressionMap = new HashMap<>();
         Map<String, Formula>  formulaMap = new HashMap<>();
 
@@ -57,62 +58,42 @@ public class CalcServiceImpl implements CalcService {
         }
 
         List<String> mps = expressionService.sort(expressionMap);
-
-        context.setPtValues(new ArrayList<>());
-        context.setAtValues(new ArrayList<>());
-        context.setCalcTrace(new HashMap<>());
-
+        context.setValues(new ArrayList<>());
+        context.setTrace(new HashMap<>());
         for (String code : mps) {
             Expression expression = expressionMap.get(code);
             Formula formula = formulaMap.get(code);
             MeteringPoint meteringPoint = formula.getMeteringPoint();
-            Parameter parameter = formula.getParameter();
-            Unit unit = formula.getUnit();
+            Parameter parameter = formula.getParameters().get(0).getParameter();
+            Unit unit = parameter.getUnit();
 
             Double[] results;
-            LocalDateTime startDate;
+            LocalDateTime meteringDate;
             Long interval;
-            if (formula.getMultiValues()) {
+            if (parameter.getParamType().equals("PT")) {
                 results = expression.values();
-                startDate = context.getStartDate().atStartOfDay();
+                meteringDate = context.getStartDate().atStartOfDay();
                 interval = 3600l;
             }
             else {
                 results = new Double[]{expression.value()};
-                startDate = context.getStartDate().atStartOfDay();
-
-                LocalDateTime s = context.getStartDate().atStartOfDay();
-                LocalDateTime e = context.getEndDate().atStartOfDay().plusDays(1);
-                interval = s.until(e, ChronoUnit.SECONDS);
+                meteringDate = context.getEndDate().atStartOfDay().plusDays(1);
+                interval = null;
             }
 
             for (int i=0; i<results.length; i++) {
-                if (formula.getParamType().equals("PT")) {
-                    PeriodTimeValue pt = new PeriodTimeValue();
-                    pt.setVal(results[i]);
-                    pt.setMeteringDate(startDate.plusHours(i));
-                    pt.setInterval(interval);
-                    pt.setMeteringPointId(meteringPoint.getId());
-                    pt.setParamId(parameter.getId());
-                    pt.setUnitId(unit.getId());
-                    pt.setStatus("OK");
-                    pt.setSourceType(sourceTypeRepo.findOne(4l));
-                    context.getPtValues().add(pt);
-                }
-                if (formula.getParamType().equals("AT")) {
-                    AtTimeValue at = new AtTimeValue();
-                    at.setVal(results[i]);
-                    at.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
-                    at.setMeteringPointId(meteringPoint.getId());
-                    at.setParamId(parameter.getId());
-                    at.setUnitId(unit.getId());
-                    at.setStatus("OK");
-                    at.setSourceType(sourceTypeRepo.findOne(4l));
-                    context.getAtValues().add(at);
-                }
+                Result result = new Result();
+                result.setMeteringDate(meteringDate.plusHours(i));
+                result.setVal(results[i]);
+                result.setInterval(interval);
+                result.setMeteringPointId(meteringPoint.getId());
+                result.setParamId(parameter.getId());
+                result.setUnitId(unit.getId());
+                result.setParamType(parameter.getParamType());
+                context.getValues().add(result);
             }
         }
 
-        return context;
+        return context.getValues();
     }
 }

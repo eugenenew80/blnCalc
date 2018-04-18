@@ -1,5 +1,6 @@
 package calc.formula.service.impl;
 
+import calc.controller.rest.dto.Result;
 import calc.formula.CalcContext;
 import calc.entity.AtTimeValue;
 import calc.entity.MeteringPoint;
@@ -11,10 +12,10 @@ import calc.repo.ParameterRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,38 +26,57 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
     private final ParameterRepo parameterRepo;
 
     @Override
-    public Double getValue(
+    public List<Result> getValue(
         String meteringPointCode,
         String parameterCode,
         String src,
         CalcContext context
     ) {
-
         MeteringPoint meteringPoint = meteringPointRepo
             .findByCode(meteringPointCode);
 
         Parameter parameter = parameterRepo
             .findByCodeAndParamType(parameterCode, "AT");
 
-        if (meteringPoint == null && parameter == null)
-            return 0d;
+        if (meteringPoint == null || parameter == null)
+            return Collections.emptyList();
 
+        List<Result> list = context.getValues()
+            .stream()
+            .filter(t -> t.getParamType().equals("AT"))
+            .filter(t -> t.getMeteringPointId().equals(meteringPoint.getId()))
+            .filter(t -> t.getParamId().equals(parameter.getId()))
+            .collect(toList());
+
+        if (!list.isEmpty())
+            return list;
+
+        return findValues(meteringPoint, parameter, context)
+            .stream()
+            .map( t-> {
+                Result result = new Result();
+                result.setInterval(null);
+                result.setMeteringDate(t.getMeteringDate());
+                result.setMeteringPointId(t.getMeteringPointId());
+                result.setParamId(t.getParamId());
+                result.setParamType("PT");
+                result.setUnitId(t.getUnitId());
+                result.setVal(t.getVal());
+                result.setSourceType(t.getSourceType());
+                return result;
+            })
+            .collect(toList());
+    }
+
+    private List<AtTimeValue> findValues(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
         LocalDateTime date = context.getEndDate()
             .atStartOfDay()
             .plusDays(1);
 
-        List<AtTimeValue> list = repo.findAllByMeteringPointIdAndParamIdAndMeteringDate(
+        return repo.findAllByMeteringPointIdAndParamIdAndMeteringDate(
             meteringPoint.getId(),
             parameter.getId(),
             date
         );
-
-        if (list.isEmpty())
-            return 0d;
-
-        return list.stream()
-            .map(t -> t.getVal())
-            .reduce((t1, t2) -> t1 + t2)
-            .orElse(0d);
     }
 }
