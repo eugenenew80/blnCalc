@@ -86,12 +86,12 @@
 
     <changeSet id="calc-eug-5" logicalFilePath="path-independent" author="eugene">
         <comment>Creating table: calc_formulas</comment>
-        <createTable tableName="calc_formula_params" schemaName="apps" remarks="Параметры, рассчитываемые формулой">
+        <createTable tableName="calc_metering_point_params" schemaName="apps" remarks="Параметры, релевантные для точки учёта">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="formula_id" type="number" remarks="Ид. формулы">
+            <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
                 <constraints nullable="false"/>
             </column>
 
@@ -118,31 +118,31 @@
     </changeSet>
 
     <changeSet id="calc-eug-6" logicalFilePath="path-independent" author="eugene">
-        <comment>Creating primary key for table: calc_formula_params</comment>
+        <comment>Creating primary key for table: calc_metering_point_params</comment>
         <addPrimaryKey
                 columnNames="id"
-                constraintName="pk_calc_formula_params"
+                constraintName="pk_calc_metering_point_params"
                 schemaName="apps"
-                tableName="calc_formula_params"/>
+                tableName="calc_metering_point_params"/>
     </changeSet>
 
     <changeSet id="calc-eug-7" logicalFilePath="path-independent" author="eugene">
-        <comment>Creating sequence for table: calc_formula_params</comment>
+        <comment>Creating sequence for table: calc_metering_point_params</comment>
         <createSequence
                 incrementBy="1"
                 schemaName="apps"
-                sequenceName="calc_formula_params_s"
+                sequenceName="calc_metering_point_params_s"
                 startValue="1"/>
     </changeSet>
 
     <changeSet id="calc-eug-8" logicalFilePath="path-independent" author="eugene">
         <addUniqueConstraint
-                columnNames="formula_id, parameter_id"
-                constraintName="un_calc_formula_params_1"
+                columnNames="metering_point_id, parameter_id"
+                constraintName="un_calc_metering_point_params_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 schemaName="apps"
-                tableName="calc_formula_params" />
+                tableName="calc_metering_point_params" />
     </changeSet>
 
     <changeSet id="calc-eug-9" logicalFilePath="path-independent" author="ruslan" context="dev">
@@ -163,29 +163,29 @@
     </changeSet>
 
     <changeSet id="calc-eug-10" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_formula_params to calc_formulas</comment>
+        <comment>Creating foreign constraint: calc_metering_point_params to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_formula_params"
-                baseColumnNames="formula_id"
-                constraintName="fk_calc_formula_params_1"
+                baseTableName="calc_metering_point_params"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_metering_point_params_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="calc_formulas"
+                referencedTableName="dict_metering_points"
                 referencedColumnNames="id"
         />
     </changeSet>
 
     <changeSet id="calc-eug-11" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_formula_params to media_parameters</comment>
+        <comment>Creating foreign constraint: calc_metering_point_params to media_parameters</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_formula_params"
+                baseTableName="calc_metering_point_params"
                 baseColumnNames="parameter_id"
-                constraintName="fk_calc_formula_params_2"
+                constraintName="fk_calc_metering_point_params_2"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -207,20 +207,20 @@
     </changeSet>
 
     <changeSet id="calc-eug-13" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_formula_params</comment>
-        <createIndex indexName="idx_calc_formula_params_1"
+        <comment>Creating index: calc_metering_point_params</comment>
+        <createIndex indexName="idx_calc_metering_point_params_1"
                  schemaName="apps"
-                 tableName="calc_formula_params"
+                 tableName="calc_metering_point_params"
                  unique="false">
-            <column name="formula_id" type="number"/>
+            <column name="metering_point_id" type="number"/>
         </createIndex>
     </changeSet>
 
     <changeSet id="calc-eug-14" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_formula_params</comment>
-        <createIndex indexName="idx_calc_formula_params_2"
+        <comment>Creating index: calc_metering_point_params</comment>
+        <createIndex indexName="idx_calc_metering_point_params_2"
                  schemaName="apps"
-                 tableName="calc_formula_params"
+                 tableName="calc_metering_point_params"
                  unique="false">
             <column name="parameter_id" type="number"/>
         </createIndex>

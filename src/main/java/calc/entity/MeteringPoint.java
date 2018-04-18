@@ -28,4 +28,8 @@ public class MeteringPoint {
     @OneToMany(mappedBy = "meteringPoint")
     @Fetch(FetchMode.SUBSELECT)
     private List<Formula> formulas;
+
+    @OneToMany(mappedBy = "meteringPoint")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<MeteringPointParameter> parameters;
 }

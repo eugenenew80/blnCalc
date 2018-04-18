@@ -8,13 +8,13 @@ import javax.persistence.*;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_formula_params")
-public class FormulaParameter {
+public class MeteringPointParameter {
     @Id
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="formula_id")
-    private Formula formula;
+    @JoinColumn(name="metering_point_id")
+    private MeteringPoint meteringPoint;
 
     @ManyToOne
     @JoinColumn(name="parameter_id")

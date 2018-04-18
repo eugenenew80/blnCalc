@@ -32,10 +32,6 @@ public class Formula {
     @JoinColumn(name="metering_point_id")
     private MeteringPoint meteringPoint;
 
-    @OneToMany(mappedBy = "formula")
-    @Fetch(FetchMode.SUBSELECT)
-    private List<FormulaParameter> parameters;
-
     @Column(name = "start_date")
     private LocalDateTime startDate;
 

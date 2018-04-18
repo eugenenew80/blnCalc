@@ -3,7 +3,6 @@ package calc.formula.service.impl;
 import calc.controller.rest.dto.Result;
 import calc.entity.*;
 import calc.formula.CalcContext;
-import calc.formula.CalcInfo;
 import calc.formula.expression.Expression;
 import calc.formula.service.CalcService;
 import calc.formula.service.ExpressionService;
@@ -64,7 +63,7 @@ public class CalcServiceImpl implements CalcService {
             Formula formula = formulaMap.get(code);
             MeteringPoint meteringPoint = formula.getMeteringPoint();
 
-            for (FormulaParameter fp : formula.getParameters()) {
+            for (MeteringPointParameter fp : meteringPoint.getParameters()) {
                 Parameter parameter = fp.getParameter();
                 Unit unit = parameter.getUnit();
                 Expression expression = expressionService.parse(formula, parameter.getCode(), context);
