@@ -26,4 +26,7 @@ public class SourceType {
     @Column(name = "is_active")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isActive;
+
+    @Column
+    private Byte priority;
 }

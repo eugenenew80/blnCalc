@@ -144,4 +144,257 @@
                 schemaName="apps"
                 tableName="calc_formula_params" />
     </changeSet>
+
+    <changeSet id="calc-eug-9" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_formulas to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formulas"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_formulas_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-10" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_params to calc_formulas</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_params"
+                baseColumnNames="formula_id"
+                constraintName="fk_calc_formula_params_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formulas"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-11" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_params to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_params"
+                baseColumnNames="parameter_id"
+                constraintName="fk_calc_formula_params_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-12" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: media_period_time_values</comment>
+        <createIndex indexName="idx_calc_formula_1"
+                 schemaName="apps"
+                 tableName="calc_formulas"
+                 unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-13" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_formula_params</comment>
+        <createIndex indexName="idx_calc_formula_params_1"
+                 schemaName="apps"
+                 tableName="calc_formula_params"
+                 unique="false">
+            <column name="formula_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-14" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_formula_params</comment>
+        <createIndex indexName="idx_calc_formula_params_2"
+                 schemaName="apps"
+                 tableName="calc_formula_params"
+                 unique="false">
+            <column name="parameter_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-15" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>add Column into table: media_source_types</comment>
+        <addColumn schemaName="apps" tableName="media_source_types">
+            <column name="priority" type="number" remarks="Приоритет">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-16" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_source_type_priorities</comment>
+        <createTable tableName="calc_source_type_priorities" schemaName="apps" remarks="Приоритеты источников данных для точек учёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="source_type_id" type="number" remarks="Ид. источника данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="priority" type="number" remarks="Приоритет">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала действия формулы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="TIMESTAMP" remarks="Дата и время окончания действия формулы">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-17" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_source_type_priorities</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_source_type_priorities_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-18" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_source_type_priorities to media_source_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_source_type_priorities"
+                baseColumnNames="source_type_id"
+                constraintName="fk_calc_source_type_priorities_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_source_types"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-19" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_source_type_priorities to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_source_type_priorities"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_source_type_priorities_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-20" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_source_type_priorities</comment>
+        <createIndex indexName="idx_calc_source_type_priorities_1" schemaName="apps" tableName="calc_source_type_priorities" unique="false">
+            <column name="source_type_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-21" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_source_type_priorities</comment>
+        <createIndex indexName="idx_calc_source_type_priorities_2" schemaName="apps" tableName="calc_source_type_priorities" unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-22" logicalFilePath="path-independent" author="eugene" context="dev">
+        <preConditions onFail="MARK_RAN" >
+            <columnExists schemaName="apps" tableName="media_period_time_values" columnName="source_metering_point_code" />
+        </preConditions>
+
+        <comment>Dropping columns from table media_period_time_values</comment>
+        <dropColumn schemaName="apps" tableName="media_period_time_values" columnName="source_metering_point_code" />
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-23" logicalFilePath="path-independent" author="eugene" context="dev">
+        <preConditions onFail="MARK_RAN" >
+            <columnExists schemaName="apps" tableName="media_period_time_values" columnName="source_param_code" />
+        </preConditions>
+
+        <comment>Dropping columns from table media_period_time_values</comment>
+        <dropColumn schemaName="apps" tableName="media_period_time_values" columnName="source_param_code" />
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-24" logicalFilePath="path-independent" author="eugene" context="dev">
+        <preConditions onFail="MARK_RAN" >
+            <columnExists schemaName="apps" tableName="media_period_time_values" columnName="source_unit_code" />
+        </preConditions>
+
+        <comment>Dropping columns from table media_period_time_values</comment>
+        <dropColumn schemaName="apps" tableName="media_period_time_values" columnName="source_unit_code" />
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-25" logicalFilePath="path-independent" author="eugene" context="dev">
+        <preConditions onFail="MARK_RAN" >
+            <columnExists schemaName="apps" tableName="media_at_time_values" columnName="source_metering_point_code" />
+        </preConditions>
+
+        <comment>Dropping columns from table media_at_time_values</comment>
+        <dropColumn schemaName="apps" tableName="media_at_time_values" columnName="source_metering_point_code" />
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-26" logicalFilePath="path-independent" author="eugene" context="dev">
+        <preConditions onFail="MARK_RAN" >
+            <columnExists schemaName="apps" tableName="media_at_time_values" columnName="source_param_code" />
+        </preConditions>
+
+        <comment>Dropping columns from table media_at_time_values</comment>
+        <dropColumn schemaName="apps" tableName="media_at_time_values" columnName="source_param_code" />
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-27" logicalFilePath="path-independent" author="eugene" context="dev">
+        <preConditions onFail="MARK_RAN" >
+            <columnExists schemaName="apps" tableName="media_at_time_values" columnName="source_unit_code" />
+        </preConditions>
+
+        <comment>Dropping columns from table media_at_time_values</comment>
+        <dropColumn schemaName="apps" tableName="media_at_time_values" columnName="source_unit_code" />
+        <rollback/>
+    </changeSet>
+
 </databaseChangeLog>

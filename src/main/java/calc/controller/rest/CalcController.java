@@ -3,7 +3,6 @@ package calc.controller.rest;
 import calc.controller.rest.dto.ContextDto;
 import calc.controller.rest.dto.Result;
 import calc.formula.CalcContext;
-import calc.formula.CalcInfo;
 import calc.formula.service.CalcService;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -46,11 +45,6 @@ public class CalcController {
 
         List<Result> list = calcService.calc(context);
         list.stream().forEach( t -> System.out.println(t));
-
-        for (Long formulaId : context.getTrace().keySet()) {
-            List<CalcInfo> infoList = context.getTrace().get(formulaId);
-            infoList.stream().forEach(System.out::println);
-        }
 
         return context.getValues();
     }

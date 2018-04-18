@@ -25,7 +25,6 @@ public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeVal
 
         String mp = "";
         String param = "";
-        String src = "";
         Double rate = 1d;
         for (int i=0; i<attributes.getLength(); i++) {
             String attrName = attributes.item(i).getNodeName();
@@ -36,9 +35,6 @@ public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeVal
                     break;
                 case "param":
                     param = attrValue;
-                    break;
-                case "src":
-                    src = attrValue;
                     break;
                 case "rate":
                     rate = Double.parseDouble(attrValue);
@@ -52,7 +48,6 @@ public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeVal
         return  AtTimeValueExpression.builder()
             .meteringPointCode(mp)
             .parameterCode(param)
-            .src(src)
             .rate(rate)
             .formula(formula)
             .service(service)

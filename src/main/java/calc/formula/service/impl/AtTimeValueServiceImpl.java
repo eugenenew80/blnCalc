@@ -1,6 +1,7 @@
 package calc.formula.service.impl;
 
 import calc.controller.rest.dto.Result;
+import calc.entity.SourceTypePriority;
 import calc.formula.CalcContext;
 import calc.entity.AtTimeValue;
 import calc.entity.MeteringPoint;
@@ -9,6 +10,7 @@ import calc.formula.service.AtTimeValueService;
 import calc.repo.AtTimeValueRepo;
 import calc.repo.MeteringPointRepo;
 import calc.repo.ParameterRepo;
+import calc.repo.SourceTypePriorityRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +25,13 @@ import static java.util.stream.Collectors.toList;
 public class AtTimeValueServiceImpl implements AtTimeValueService {
     private final AtTimeValueRepo repo;
     private final MeteringPointRepo meteringPointRepo;
+    private final SourceTypePriorityRepo sourceTypePriorityRepo;
     private final ParameterRepo parameterRepo;
 
     @Override
     public List<Result> getValue(
         String meteringPointCode,
         String parameterCode,
-        String src,
         CalcContext context
     ) {
         MeteringPoint meteringPoint = meteringPointRepo
@@ -59,7 +61,7 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
                 result.setMeteringDate(t.getMeteringDate());
                 result.setMeteringPointId(t.getMeteringPointId());
                 result.setParamId(t.getParamId());
-                result.setParamType("PT");
+                result.setParamType("AT");
                 result.setUnitId(t.getUnitId());
                 result.setVal(t.getVal());
                 result.setSourceType(t.getSourceType());
@@ -78,5 +80,16 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
             parameter.getId(),
             date
         );
+    }
+
+    @Override
+    public List<SourceTypePriority> getSourceTypes(String meteringPointCode, CalcContext context) {
+        MeteringPoint meteringPoint = meteringPointRepo
+                .findByCode(meteringPointCode);
+
+        if (meteringPoint == null)
+            return Collections.emptyList();
+
+        return sourceTypePriorityRepo.findAllByMeteringPointId(meteringPoint.getId());
     }
 }

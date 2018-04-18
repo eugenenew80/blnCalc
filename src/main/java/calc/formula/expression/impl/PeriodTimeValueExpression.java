@@ -2,7 +2,6 @@ package calc.formula.expression.impl;
 
 import calc.controller.rest.dto.Result;
 import calc.entity.Formula;
-import calc.entity.PeriodTimeValue;
 import calc.entity.SourceType;
 import calc.formula.CalcContext;
 import calc.formula.CalcInfo;
@@ -11,13 +10,10 @@ import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
-
 import static java.util.Arrays.setAll;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -27,7 +23,6 @@ import static java.util.stream.Collectors.toSet;
 public class PeriodTimeValueExpression implements Expression {
     private final String meteringPointCode;
     private final String parameterCode;
-    private final String src;
     private final Double rate;
     private final String interval;
     private final Byte startHour;
@@ -73,7 +68,6 @@ public class PeriodTimeValueExpression implements Expression {
         return service.getValues(
             meteringPointCode,
             parameterCode,
-            src,
             startHour,
             endHour,
             context

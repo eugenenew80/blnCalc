@@ -1,14 +1,13 @@
 package calc.formula.service.impl;
 
 import calc.controller.rest.dto.Result;
+import calc.entity.*;
 import calc.formula.CalcContext;
-import calc.entity.MeteringPoint;
-import calc.entity.Parameter;
-import calc.entity.PeriodTimeValue;
 import calc.formula.service.PeriodTimeValueService;
 import calc.repo.MeteringPointRepo;
 import calc.repo.ParameterRepo;
 import calc.repo.PeriodTimeValueRepo;
+import calc.repo.SourceTypePriorityRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +22,13 @@ import static java.util.stream.Collectors.toList;
 public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     private final PeriodTimeValueRepo repo;
     private final MeteringPointRepo meteringPointRepo;
+    private final SourceTypePriorityRepo sourceTypePriorityRepo;
     private final ParameterRepo parameterRepo;
 
     @Override
     public List<Result> getValues(
         String meteringPointCode,
         String parameterCode,
-        String src,
         Byte startHour,
         Byte endHour,
         CalcContext context
@@ -86,5 +85,16 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
             startDate,
             endDate
         );
+    }
+
+    @Override
+    public List<SourceTypePriority> getSourceTypes(String meteringPointCode, CalcContext context) {
+        MeteringPoint meteringPoint = meteringPointRepo
+            .findByCode(meteringPointCode);
+
+        if (meteringPoint == null)
+            return Collections.emptyList();
+
+        return sourceTypePriorityRepo.findAllByMeteringPointId(meteringPoint.getId());
     }
 }
