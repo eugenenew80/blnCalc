@@ -32,16 +32,16 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
     private final OperatorFactory operatorFactory;
 
     @Override
-    public Expression parse(Node node, Formula formula, CalcContext context) {
+    public Expression parse(Node node, Formula formula, String parameterCode, CalcContext context) {
         String nodeType = getNodeType(node);
         if (nodeType.equals("binary"))
-            return buildBinary(node, formula, context);
+            return buildBinary(node, formula, parameterCode, context);
 
         if (nodeType.equals("unary"))
-            return buildUnary(node, formula, context);
+            return buildUnary(node, formula, parameterCode, context);
 
         if (nodeType.equals("expression"))
-            return buildExpression(node, formula, context);
+            return buildExpression(node, formula, parameterCode, context);
 
         throw new IllegalArgumentException("Invalid operation: " + node.getNodeName());
     }
@@ -49,6 +49,11 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
 
     @Override
     public Expression parse(Formula formula, CalcContext context) throws Exception {
+        return parse(formula, null, context);
+    }
+
+    @Override
+    public Expression parse(Formula formula, String parameterCode, CalcContext context) throws Exception {
         Node node = DocumentBuilderFactory
             .newInstance()
             .newDocumentBuilder().parse(new InputSource(new StringReader(formula.getText())))
@@ -56,7 +61,7 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
             .getParentNode()
             .getFirstChild();
 
-        return parse(node, formula, context);
+        return parse(node, formula, parameterCode, context);
     }
 
 
@@ -71,9 +76,9 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         return "expression";
     }
 
-    private  Expression buildBinary(Node node, Formula formula, CalcContext context) {
+    private  Expression buildBinary(Node node, Formula formula, String parameterCode, CalcContext context) {
         BinaryOperator<Expression> binaryOperator = operatorFactory.binary(node.getNodeName());
-        List<Expression> expressions = buildExpressions(node, formula, context);
+        List<Expression> expressions = buildExpressions(node, formula, parameterCode, context);
 
         BinaryExpression expression = BinaryExpression.builder()
             .operator(binaryOperator)
@@ -83,7 +88,7 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         return expression;
     }
 
-    private Expression buildUnary(Node node, Formula formula, CalcContext context) {
+    private Expression buildUnary(Node node, Formula formula, String parameterCode, CalcContext context) {
         int k=-1;
         for (int i=0; i<node.getChildNodes().getLength(); i++) {
             if (node.getChildNodes().item(i).getNodeType()==1) {
@@ -93,27 +98,27 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         }
 
         UnaryOperator<Expression> operator = operatorFactory.unary(node.getNodeName());
-        Expression expression = buildExpression(node.getChildNodes().item(k), formula, context);
+        Expression expression = buildExpression(node.getChildNodes().item(k), formula, parameterCode, context);
         return expression.andThen(operator);
     }
 
-    private List<Expression> buildExpressions(Node node, Formula formula, CalcContext context) {
+    private List<Expression> buildExpressions(Node node, Formula formula, String parameterCode, CalcContext context) {
         List<Expression> expressions = new ArrayList<>();
         for (int i=0; i<node.getChildNodes().getLength(); i++) {
             if (node.getChildNodes().item(i).getNodeType()==3) continue;
-            Expression expression = buildExpression(node.getChildNodes().item(i), formula, context);
+            Expression expression = buildExpression(node.getChildNodes().item(i), formula, parameterCode, context);
             expressions.add(expression);
         }
 
         return expressions;
     }
 
-    private Expression buildExpression(Node node, Formula formula, CalcContext context) {
+    private Expression buildExpression(Node node, Formula formula, String parameterCode, CalcContext context) {
         ExpressionBuilder builder = builderFactory.getBuilder(node.getNodeName(), this);
         if (builder!=null)
-            return builder.build(node, formula, context);
+            return builder.build(node, formula, parameterCode, context);
 
-        return parse(node, formula, context);
+        return parse(node, formula, parameterCode, context);
     }
 
 

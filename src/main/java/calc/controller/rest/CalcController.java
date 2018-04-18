@@ -49,7 +49,7 @@ public class CalcController {
 
         for (Long formulaId : context.getTrace().keySet()) {
             List<CalcInfo> infoList = context.getTrace().get(formulaId);
-            infoList.stream().map(CalcInfo::getSourceType).forEach(System.out::println);
+            infoList.stream().forEach(System.out::println);
         }
 
         return context.getValues();

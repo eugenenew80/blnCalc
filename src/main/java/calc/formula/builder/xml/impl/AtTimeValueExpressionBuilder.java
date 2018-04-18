@@ -6,6 +6,7 @@ import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.AtTimeValueExpression;
 import calc.formula.service.AtTimeValueService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -15,6 +16,11 @@ public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeVal
 
     @Override
     public AtTimeValueExpression build(Node node, Formula formula, CalcContext context) {
+        return build(node, formula, null, context);
+    }
+
+    @Override
+    public AtTimeValueExpression build(Node node, Formula formula, String parameterCode, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         String mp = "";
@@ -39,6 +45,9 @@ public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeVal
                     break;
             }
         }
+
+        if (StringUtils.isEmpty(param))
+            param = parameterCode;
 
         return  AtTimeValueExpression.builder()
             .meteringPointCode(mp)

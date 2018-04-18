@@ -58,39 +58,109 @@ public class OperatorFactoryImpl implements OperatorFactory {
     }
 
     private void binaryOperators() {
-        BinaryOperator<Expression> add = (op1, op2) -> DoubleValueExpression.builder()
-            .value(op1.value() + op2.value())
-            .build();
+        BinaryOperator<Expression> add = (op1, op2) -> {
+            Double v1 = op1.value();
+            Double v2 = op2.value();
+            Double res = null;
+            if (v1!=null || v2!=null) {
+                if (v1==null) v1 = 0d;
+                if (v2==null) v2 = 0d;
+                res = v1 + v2;
+            }
+            return DoubleValueExpression.builder()
+                    .value(res)
+                    .build();
+        };
         add = arrOperator(add);
 
-        BinaryOperator<Expression> subtract = (op1, op2) -> DoubleValueExpression.builder()
-            .value(op1.value() - op2.value())
-            .build();
+        BinaryOperator<Expression> subtract = (op1, op2) -> {
+            Double v1 = op1.value();
+            Double v2 = op2.value();
+            Double res = null;
+            if (v1!=null || v2!=null) {
+                if (v1==null) v1 = 0d;
+                if (v2==null) v2 = 0d;
+                res = v1 - v2;
+            }
+            return DoubleValueExpression.builder()
+                    .value(res)
+                    .build();
+        };
         subtract = arrOperator(subtract);
 
-        BinaryOperator<Expression> divide = (op1, op2) -> DoubleValueExpression.builder()
-            .value(op1.value() / op2.value())
-            .build();
+        BinaryOperator<Expression> divide = (op1, op2) -> {
+            Double v1 = op1.value();
+            Double v2 = op2.value();
+            Double res = null;
+            if (v1!=null || v2!=null) {
+                if (v1==null) v1 = 0d;
+                if (v2==null) v2 = 0d;
+                res = v1 / v2;
+            }
+            return DoubleValueExpression.builder()
+                    .value(res)
+                    .build();
+        };
         divide = arrOperator(divide);
 
-        BinaryOperator<Expression> multiply = (op1, op2) -> DoubleValueExpression.builder()
-            .value(op1.value() * op2.value())
-            .build();
+        BinaryOperator<Expression> multiply = (op1, op2) -> {
+            Double v1 = op1.value();
+            Double v2 = op2.value();
+            Double res = null;
+            if (v1!=null || v2!=null) {
+                if (v1==null) v1 = 0d;
+                if (v2==null) v2 = 0d;
+                res = v1 * v2;
+            }
+            return DoubleValueExpression.builder()
+                    .value(res)
+                    .build();
+        };
         multiply = arrOperator(multiply);
 
-        BinaryOperator<Expression> pow = (op1, op2) -> DoubleValueExpression.builder()
-            .value(Math.pow(op1.value(), op2.value()))
-            .build();
+        BinaryOperator<Expression> pow = (op1, op2) -> {
+            Double v1 = op1.value();
+            Double v2 = op2.value();
+            Double res = null;
+            if (v1!=null || v2!=null) {
+                if (v1==null) v1 = 0d;
+                if (v2==null) v2 = 0d;
+                res = Math.pow(v1, v2);
+            }
+            return DoubleValueExpression.builder()
+                    .value(res)
+                    .build();
+        };
         pow = arrOperator(pow);
 
-        BinaryOperator<Expression> max = (op1, op2) -> DoubleValueExpression.builder()
-            .value(Math.max(op1.value(), op2.value()))
-            .build();
+        BinaryOperator<Expression> max = (op1, op2) -> {
+            Double v1 = op1.value();
+            Double v2 = op2.value();
+            Double res = null;
+            if (v1!=null || v2!=null) {
+                if (v1==null) v1 = Double.MIN_VALUE;
+                if (v2==null) v2 = Double.MIN_VALUE;
+                res = Math.max(v1, v2);
+            }
+            return DoubleValueExpression.builder()
+                .value(res)
+                .build();
+        };
         max = arrOperator(max);
 
-        BinaryOperator<Expression> min = (op1, op2) -> DoubleValueExpression.builder()
-            .value(Math.min(op1.value(), op2.value()))
-            .build();
+        BinaryOperator<Expression> min = (op1, op2) ->  {
+            Double v1 = op1.value();
+            Double v2 = op2.value();
+            Double res = null;
+            if (v1!=null || v2!=null) {
+                if (v1==null) v1 = Double.MAX_VALUE;
+                if (v2==null) v2 = Double.MAX_VALUE;
+                res = Math.min(v1, v2);
+            }
+            return DoubleValueExpression.builder()
+                .value(res)
+                .build();
+        };
         min = arrOperator(min);
 
         binaryOperators.put("add", add);

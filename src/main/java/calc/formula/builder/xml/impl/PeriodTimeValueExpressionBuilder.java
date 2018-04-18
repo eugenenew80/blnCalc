@@ -6,6 +6,7 @@ import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.PeriodTimeValueService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -15,6 +16,11 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
 
     @Override
     public PeriodTimeValueExpression build(Node node, Formula formula, CalcContext context) {
+        return build(node, formula, null, context);
+    }
+
+    @Override
+    public PeriodTimeValueExpression build(Node node, Formula formula, String parameterCode, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         String mp = "";
@@ -48,6 +54,9 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
             }
         }
 
+        if (StringUtils.isEmpty(param))
+            param = parameterCode;
+
         return PeriodTimeValueExpression.builder()
             .meteringPointCode(mp)
             .parameterCode(param)
@@ -60,4 +69,6 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
             .context(context)
             .build();
     }
+
+
 }

@@ -43,12 +43,7 @@ public class PeriodTimeValueExpression implements Expression {
 
     @Override
     public Double value() {
-        return 0d;
-        /*
-        return Arrays.stream(values())
-            .reduce((t1, t2) -> t1 + t2)
-            .orElse(0d);
-        */
+        return null;
     }
 
     @Override
@@ -57,13 +52,14 @@ public class PeriodTimeValueExpression implements Expression {
         list.forEach(t -> t.setVal(t.getVal() * rate));
 
         Double[] results = new Double[24];
-        setAll(results, d -> 0d);
+        setAll(results, d -> null);
 
         CalcInfo calcInfo = trace(list);
         list.stream()
             .filter( t -> t.getSourceType().equals(calcInfo.getSourceType()) )
             .forEach(t -> results[t.getMeteringDate().getHour()] = t.getVal());
 
+        calcInfo.setValues(results);
         return results;
     }
 
@@ -97,6 +93,8 @@ public class PeriodTimeValueExpression implements Expression {
         CalcInfo calcInfo = CalcInfo.builder()
             .sourceType(selectSourceType(sourceTypeList))
             .sourceTypeCount(sourceTypeList.size())
+            .meteringPointCode(meteringPointCode)
+            .parameterCode(parameterCode)
             .build();
 
         infoList.add(calcInfo);

@@ -9,5 +9,6 @@ import java.util.Map;
 
 public interface ExpressionService {
     Expression parse(Formula formula, CalcContext context) throws Exception;
+    Expression parse(Formula formula, String parameterCode, CalcContext context) throws Exception;
     List<String> sort(Map<String, Expression> expressions) throws Exception;
 }

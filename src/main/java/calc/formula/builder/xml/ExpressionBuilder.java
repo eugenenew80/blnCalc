@@ -7,4 +7,8 @@ import org.w3c.dom.Node;
 
 public interface ExpressionBuilder<T extends Expression> {
     T build(Node node, Formula formula, CalcContext context);
+
+    default T build(Node node, Formula formula, String parameterCode, CalcContext context) {
+        return build(node, formula, context);
+    }
 }

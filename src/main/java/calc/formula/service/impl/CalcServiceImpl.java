@@ -41,56 +41,58 @@ public class CalcServiceImpl implements CalcService {
         Map<String, Expression> expressionMap = new HashMap<>();
         Map<String, Formula>  formulaMap = new HashMap<>();
 
-        for (Formula mpf : formulaRepo.findAllByMeteringPointOrgId(context.getOrgId())) {
-            if (mpf.getStartDate() !=null && context.getEndDate().atStartOfDay().isBefore(mpf.getStartDate()))
+        for (Formula formula : formulaRepo.findAllByMeteringPointOrgId(context.getOrgId())) {
+            if (formula.getStartDate() !=null && context.getEndDate().atStartOfDay().isBefore(formula.getStartDate()))
                 continue;
 
-            if (mpf.getEndDate()!=null && context.getStartDate().atStartOfDay().isAfter(mpf.getEndDate()))
+            if (formula.getEndDate()!=null && context.getStartDate().atStartOfDay().isAfter(formula.getEndDate()))
                 continue;
 
-            if (mpf.getMeteringPoint().getMeteringPointTypeId()!=2)
+            if (formula.getMeteringPoint().getMeteringPointTypeId()!=2)
                 continue;
 
-            Expression expr = expressionService.parse(mpf, context);
+            Expression expr = expressionService.parse(formula, context);
 
-            expressionMap.putIfAbsent(mpf.getMeteringPoint().getCode(), expr);
-            formulaMap.putIfAbsent(mpf.getMeteringPoint().getCode(), mpf);
+            expressionMap.putIfAbsent(formula.getMeteringPoint().getCode(), expr);
+            formulaMap.putIfAbsent(formula.getMeteringPoint().getCode(), formula);
         }
 
-        List<String> mps = expressionService.sort(expressionMap);
+        List<String> mpCodes = expressionService.sort(expressionMap);
         context.setValues(new ArrayList<>());
         context.setTrace(new HashMap<>());
-        for (String code : mps) {
-            Expression expression = expressionMap.get(code);
+        for (String code : mpCodes) {
             Formula formula = formulaMap.get(code);
             MeteringPoint meteringPoint = formula.getMeteringPoint();
-            Parameter parameter = formula.getParameters().get(0).getParameter();
-            Unit unit = parameter.getUnit();
 
-            Double[] results;
-            LocalDateTime meteringDate;
-            Long interval;
-            if (parameter.getParamType().equals("PT")) {
-                results = expression.values();
-                meteringDate = context.getStartDate().atStartOfDay();
-                interval = 3600l;
-            }
-            else {
-                results = new Double[]{expression.value()};
-                meteringDate = context.getEndDate().atStartOfDay().plusDays(1);
-                interval = null;
-            }
+            for (FormulaParameter fp : formula.getParameters()) {
+                Parameter parameter = fp.getParameter();
+                Unit unit = parameter.getUnit();
+                Expression expression = expressionService.parse(formula, parameter.getCode(), context);
 
-            for (int i=0; i<results.length; i++) {
-                Result result = new Result();
-                result.setMeteringDate(meteringDate.plusHours(i));
-                result.setVal(results[i]);
-                result.setInterval(interval);
-                result.setMeteringPointId(meteringPoint.getId());
-                result.setParamId(parameter.getId());
-                result.setUnitId(unit.getId());
-                result.setParamType(parameter.getParamType());
-                context.getValues().add(result);
+                Double[] results;
+                LocalDateTime meteringDate;
+                Long interval;
+                if (parameter.getParamType().equals("PT")) {
+                    results = expression.values();
+                    meteringDate = context.getStartDate().atStartOfDay();
+                    interval = 3600l;
+                } else {
+                    results = new Double[]{expression.value()};
+                    meteringDate = context.getEndDate().atStartOfDay().plusDays(1);
+                    interval = null;
+                }
+
+                for (int i = 0; i < results.length; i++) {
+                    Result result = new Result();
+                    result.setMeteringDate(meteringDate.plusHours(i));
+                    result.setVal(results[i]);
+                    result.setInterval(interval);
+                    result.setMeteringPointId(meteringPoint.getId());
+                    result.setParamId(parameter.getId());
+                    result.setUnitId(unit.getId());
+                    result.setParamType(parameter.getParamType());
+                    context.getValues().add(result);
+                }
             }
         }
 

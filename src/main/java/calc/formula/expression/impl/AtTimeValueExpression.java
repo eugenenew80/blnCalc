@@ -44,11 +44,14 @@ public class AtTimeValueExpression implements Expression {
         list.forEach(t -> t.setVal(t.getVal() * rate));
 
         CalcInfo calcInfo = trace(list);
-        return list.stream()
-            .filter( t -> t.getSourceType().equals(calcInfo.getSourceType()) )
+        Double result = list.stream()
+            .filter(t -> t.getSourceType().equals(calcInfo.getSourceType()))
             .map(t -> t.getVal())
             .reduce((t1, t2) -> t1 + t2)
-            .orElse(0d);
+            .orElse(null);
+
+        calcInfo.setValue(result);
+        return result;
     }
 
     @Override
@@ -75,6 +78,8 @@ public class AtTimeValueExpression implements Expression {
         CalcInfo calcInfo = CalcInfo.builder()
             .sourceType(selectSourceType(sourceTypeList))
             .sourceTypeCount(sourceTypeList.size())
+            .meteringPointCode(meteringPointCode)
+            .parameterCode(parameterCode)
             .build();
 
         infoList.add(calcInfo);

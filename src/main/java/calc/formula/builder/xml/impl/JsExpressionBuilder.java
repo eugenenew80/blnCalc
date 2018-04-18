@@ -18,6 +18,11 @@ public class JsExpressionBuilder implements ExpressionBuilder<JsExpression> {
 
     @Override
     public JsExpression build(Node parentNode, Formula formula, CalcContext context) {
+        return build(parentNode, formula, null, context);
+    }
+
+    @Override
+    public JsExpression build(Node parentNode, Formula formula, String parameterCode, CalcContext context) {
         String src = "";
         HashMap<String, Expression> attributes = new HashMap<>();
 
@@ -33,15 +38,15 @@ public class JsExpressionBuilder implements ExpressionBuilder<JsExpression> {
 
                     Node paramNode = node.getChildNodes().item(j);
                     String paramName = paramNode.getAttributes()
-                        .getNamedItem("name")
-                        .getNodeValue();
+                            .getNamedItem("name")
+                            .getNodeValue();
 
                     for (int k=0; k<paramNode.getChildNodes().getLength(); k++) {
                         if (paramNode.getChildNodes().item(k).getNodeType() == Node.TEXT_NODE)
                             continue;
 
                         Node operandNode = paramNode.getChildNodes().item(k);
-                        Expression operand = expressionService.parse(operandNode, formula, context);
+                        Expression operand = expressionService.parse(operandNode, formula, parameterCode, context);
                         attributes.put(paramName, operand);
                     }
                 }
