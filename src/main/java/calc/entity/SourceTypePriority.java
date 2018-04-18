@@ -25,6 +25,9 @@ public class SourceTypePriority {
     @JoinColumn(name = "source_type_id")
     private SourceType sourceType;
 
+    @Column
+    private Byte priority;
+
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
