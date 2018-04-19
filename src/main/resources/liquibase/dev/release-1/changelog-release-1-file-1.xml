@@ -145,7 +145,7 @@
                 tableName="calc_metering_point_params" />
     </changeSet>
 
-    <changeSet id="calc-eug-9" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-eug-9" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_formulas to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -230,6 +230,14 @@
         <comment>add Column into table: media_source_types</comment>
         <addColumn schemaName="apps" tableName="media_source_types">
             <column name="priority" type="number" remarks="Приоритет">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_oper" type="number" remarks="Подходит для оперативного расчёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_final" type="number" remarks="Подходит для окончательного расчёта">
                 <constraints nullable="true"/>
             </column>
         </addColumn>
@@ -408,11 +416,15 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="start_date" type="TIMESTAMP" remarks="Дата начала периода">
+            <column name="period_type" type="varchar(10)" remarks="Статус">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="end_date" type="TIMESTAMP" remarks="Дата окончания периода">
+            <column name="metering_date" type="TIMESTAMP" remarks="Дата и время, на которые производится ввод данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_data_source_id" type="number" remarks="Ид. филиала">
                 <constraints nullable="false"/>
             </column>
 
@@ -463,6 +475,10 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="daily_sheet_header_id" type="number" remarks="Ид. заголовка суточной ведомости">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
                 <constraints nullable="false"/>
             </column>
@@ -491,6 +507,18 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="under_count_val" type="number" remarks="Недучёт за период">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="is_oper" type="number" remarks="Расход за период">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="is_under_count" type="number" remarks="Расход за период">
+                <constraints nullable="true" />
+            </column>
+
             <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
                 <constraints nullable="true"/>
             </column>
@@ -509,7 +537,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-31" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-32" logicalFilePath="path-independent" author="eugene">
         <comment>Creating primary key for table: calc_daily_sheet_lines</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -518,7 +546,7 @@
                 tableName="calc_daily_sheet_lines"/>
     </changeSet>
 
-    <changeSet id="calc-eug-32" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-33" logicalFilePath="path-independent" author="eugene">
         <comment>Creating sequence for table: calc_daily_sheet_lines</comment>
         <createSequence
                 incrementBy="1"
@@ -527,7 +555,7 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-eug-33" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-34" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_daily_sheet_lines to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -544,7 +572,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-34" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-35" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_daily_sheet_lines to dict_meters</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -561,7 +589,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-35" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-36" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_daily_sheet_lines to media_parameters</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -578,7 +606,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-36" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-37" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_daily_sheet_lines to media_source_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -595,7 +623,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-37" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-38" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_daily_sheet_headers to dict_organizations</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -612,5 +640,133 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-39" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_daily_sheet_headers</comment>
+        <createTable tableName="calc_metering_data_sources" schemaName="apps" remarks="Источники получения данных">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
 
+            <column name="description" type="varchar(300)" remarks="Описание источника данных">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="contact_info" type="varchar(300)" remarks="Контактные данные источника данных">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Ид. филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-40" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_metering_data_sources</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_metering_data_sources"
+                schemaName="apps"
+                tableName="calc_metering_data_sources"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-41" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_metering_data_sources</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_metering_data_sources_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-42" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_sources to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_sources"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_metering_data_sources_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-43" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_headers to calc_metering_data_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_headers"
+                baseColumnNames="metering_data_source_id"
+                constraintName="fk_calc_daily_sheet_headers_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-44" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_daily_sheet_headers</comment>
+        <createTable tableName="calc_metering_data_source_lines" schemaName="apps" remarks="Точки учёта, относящиеся к источникам данных">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_data_source_id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="varchar(300)" remarks="Описание источника данных">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="contact_info" type="varchar(300)" remarks="Контактные данные источника данных">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Ид. филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_formula_params")
+@Table(name = "calc_metering_point_params")
 public class MeteringPointParameter {
     @Id
     private Long id;
