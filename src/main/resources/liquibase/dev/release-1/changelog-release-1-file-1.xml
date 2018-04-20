@@ -30,7 +30,7 @@
             </column>
 
             <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала действия формулы">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
 
             <column name="end_date" type="TIMESTAMP" remarks="Дата и время окончания действия формулы">
@@ -648,7 +648,7 @@
             </column>
 
             <column name="description" type="varchar(300)" remarks="Описание источника данных">
-                <constraints nullable="true"/>
+                <constraints nullable="false"/>
             </column>
 
             <column name="contact_info" type="varchar(300)" remarks="Контактные данные источника данных">
@@ -656,6 +656,10 @@
             </column>
 
             <column name="org_id" type="number" remarks="Ид. филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_active" type="number" remarks="Активно/Неактивно">
                 <constraints nullable="false"/>
             </column>
 
@@ -736,19 +740,15 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="metering_data_source_id" type="number" remarks="Идентификатор">
+            <column name="metering_data_source_id" type="number" remarks="Идентификатор источника получения данных">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="description" type="varchar(300)" remarks="Описание источника данных">
-                <constraints nullable="true"/>
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
             </column>
 
-            <column name="contact_info" type="varchar(300)" remarks="Контактные данные источника данных">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="org_id" type="number" remarks="Ид. филиала">
+            <column name="order_num" type="number" remarks="Порядковый номер в списке">
                 <constraints nullable="false"/>
             </column>
 
@@ -768,5 +768,79 @@
                 <constraints nullable="true"/>
             </column>
         </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-45" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_source_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_source_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_metering_data_source_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-46" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_source_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_source_lines"
+                baseColumnNames="metering_data_source_id"
+                constraintName="fk_calc_metering_data_source_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-47" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_metering_data_source_lines</comment>
+        <createIndex indexName="idx_calc_metering_data_source_lines_1"
+                 schemaName="apps"
+                 tableName="calc_metering_data_source_lines"
+                 unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-48" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_metering_data_source_lines</comment>
+        <createIndex indexName="idx_calc_metering_data_source_lines_2"
+                 schemaName="apps"
+                 tableName="calc_metering_data_source_lines"
+                 unique="false">
+            <column name="metering_data_source_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-49" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_metering_data_sources</comment>
+        <createIndex indexName="idx_calc_metering_data_sources_1"
+                 schemaName="apps"
+                 tableName="calc_metering_data_sources"
+                 unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-50" logicalFilePath="path-independent" author="eugene" context="dev">
+        <addUniqueConstraint
+                 columnNames="metering_data_source_id, metering_point_id"
+                 constraintName="un_calc_metering_data_source_lines_1"
+                 deferrable="true"
+                 initiallyDeferred="true"
+                 schemaName="apps"
+                 tableName="calc_metering_data_source_lines"/>
     </changeSet>
 </databaseChangeLog>
