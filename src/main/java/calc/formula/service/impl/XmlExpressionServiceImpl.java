@@ -54,8 +54,11 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
 
     @Override
     public Expression parse(Formula formula, String parameterCode, CalcContext context) throws Exception {
-        Node node = DocumentBuilderFactory
-            .newInstance()
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setIgnoringComments(true);
+        factory.setIgnoringElementContentWhitespace(true);
+
+        Node node = factory
             .newDocumentBuilder().parse(new InputSource(new StringReader(formula.getText())))
             .getDocumentElement()
             .getParentNode()
