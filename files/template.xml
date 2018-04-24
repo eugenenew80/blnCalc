@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<report-template code="balance-subst"  version="1" >
+    <head>
+        <period start-date="2018-03-01" end-date="2018-03-31" />
+        <energy-object type="subst" id="1" name="ПС 500 кВ Шымкент" />
+    </head>
+
+    <division code="1" name="Прием от энергосистемы (импорт)">
+        <section code="1.1" name="Шины 500 кВ">
+            <row num="1" mp="123" param="A-1" total="true">
+                <attr name="serial"><mp attr="serial" /></attr>
+                <attr name="name"><mp attr="name" /></attr>
+                <attr name="start"><at per="s" /></attr>
+                <attr name="end"><at per="e" /></attr>
+                <attr name="rate"><mp attr="rate" /></attr>
+
+                <attr name="amount">
+                    <subtract>
+                        <at per="e" />
+                        <at per="s" />
+                    </subtract>
+                </attr>
+
+                <proportion><number val="0"/></proportion>
+                <error><number val="0"/></error>
+                <under-count><number val="0"/></under-count>
+            </row>
+        </section>
+    </division>
+
+</report-template>

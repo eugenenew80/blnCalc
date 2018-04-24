@@ -1,0 +1,71 @@
+<Styles xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+
+    <Style ss:ID="Default" ss:Name="Normal">
+        <Font ss:FontName="Times New Roman" />
+        <Alignment ss:Vertical="Bottom"/>
+    </Style>
+
+    <Style ss:ID="h1">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="20" ss:Bold="1"/>
+        <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+    </Style>
+
+    <Style ss:ID="h4">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="12" ss:Bold="1"/>
+        <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+    </Style>
+
+    <Style ss:ID="th">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Bold="1"/>
+        <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+        <Borders>
+            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+        </Borders>
+    </Style>
+
+    <Style ss:ID="tddc">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10" ss:Bold="1"/>
+        <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+    </Style>
+
+    <Style ss:ID="tddn2">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10" ss:Bold="1"/>
+        <NumberFormat ss:Format="#,##0"/>
+    </Style>
+
+    <Style ss:ID="tdc">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10"/>
+        <NumberFormat ss:Format="@"/>
+        <Borders>
+            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+        </Borders>
+    </Style>
+
+    <Style ss:ID="tdn2">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10"/>
+        <NumberFormat ss:Format="#,##0"/>
+        <Borders>
+            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+        </Borders>
+    </Style>
+
+    <Style ss:ID="tdn4">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10"/>
+        <NumberFormat ss:Format="#,##0.0000"/>
+        <Borders>
+            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+        </Borders>
+    </Style>
+</Styles>
