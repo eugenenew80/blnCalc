@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<report code="balance-subst"  version="1" >
+    <head>
+        <period start-date="2018-03-01" end-date="2018-03-31" />
+        <energy-object type="subst" id="1" name="ПС 500 кВ Шымкент" />
+    </head>
+
+    <division code="1" name="Прием от энергосистемы (импорт)">
+        <section code="1.1" name="Шины 500 кВ">
+            <mp num="1" total="true">
+                <serial>01061295</serial>
+                <name>Шым-500 Л-5169</name>
+                <rate>0</rate>
+                <amount>11500</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="2" total="true">
+                <serial>01061298</serial>
+                <name>Шым-500 Л-5019</name>
+                <rate>0</rate>
+                <amount>279147750</amount>
+                <proportion>0,9789</proportion>
+                <error>0.8538</error>
+                <under-count>0.6985</under-count>
+            </mp>
+        </section>
+
+        <section  code="1.2" name="Шины 220 кВ">
+            <mp num="1" total="true">
+                <serial>01011130</serial>
+                <name>Шым-500 Л-2409</name>
+                <rate>0</rate>
+                <amount>0</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="2" total="true">
+                <serial>01012794</serial>
+                <name>Шым-500 Л-2339</name>
+                <rate>0</rate>
+                <amount>0</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="3" total="true">
+                <serial>01012792</serial>
+                <name>Шым-500 Л-2399</name>
+                <rate>0</rate>
+                <amount>0</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="4" total="true">
+                <serial>01061296</serial>
+                <name>Шым-500 Л-2479</name>
+                <rate>0</rate>
+                <amount>5887255</amount>
+                <proportion>0,0206</proportion>
+                <error>0,0003</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="5" total="true">
+                <serial>01012802</serial>
+                <name>Шым-500 Л-2379</name>
+                <rate>0</rate>
+                <amount>33770</amount>
+                <proportion>0.0001</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="6" total="true">
+                <serial>01012796</serial>
+                <name>Шым-500 Л-2309</name>
+                <rate>0</rate>
+                <amount>0</amount>
+                <proportion>0</proportion>
+                <error>0</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="7" total="true">
+                <serial>01011118</serial>
+                <name>Шым-500 220 кВ ОВ</name>
+                <rate>0</rate>
+                <amount>0</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="8" total="true">
+                <serial>01011134</serial>
+                <name>Шым-500 Л-2349</name>
+                <rate>0</rate>
+                <amount>78705</amount>
+                <proportion>0.0003</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="9" total="true">
+                <serial>01011126</serial>
+                <name>Шым-500 Л-2499</name>
+                <rate>0</rate>
+                <amount>0</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="10" total="true">
+                <serial></serial>
+                <name>Шым-500 220 кВ УШР</name>
+                <rate>0</rate>
+                <amount>0</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+        </section>
+
+        <section code="1.3" name="Шины 220 кВ Ввода">
+            <mp num="1">
+                <serial>01012799</serial>
+                <name>Шым-500 220 кВ Ввод АТ-1</name>
+                <rate>0</rate>
+                <amount>106064200</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="2">
+                <serial>01011106</serial>
+                <name>Шым-500 220 кВ Ввод АТ-3</name>
+                <rate>0</rate>
+                <amount>85945860</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+        </section>
+    </division>
+
+    <division code="2" name="Отдача в энергосистему (экспорт)">
+        <section code="2.1" name="Шины 500 кВ">
+            <mp num="1" total="true">
+                <serial>01061295</serial>
+                <name>Шым-500 Л-5169</name>
+                <rate>0</rate>
+                <amount>85759000</amount>
+                <proportion>0.3025</proportion>
+                <error>0.8538</error>
+                <under-count>0.0667</under-count>
+            </mp>
+            <mp num="2" total="true">
+                <serial>01061298</serial>
+                <name>Шым-500 Л-5019</name>
+                <rate>0</rate>
+                <amount>0</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+        </section>
+
+        <section code="2.2" name="Шины 220 кВ">
+            <mp num="1" total="true">
+                <serial>01011130</serial>
+                <name>Шым-500 Л-2409</name>
+                <rate>0</rate>
+                <amount>42170150</amount>
+                <proportion>0,1488</proportion>
+                <error>0.8538</error>
+                <under-count>0.0161</under-count>
+            </mp>
+            <mp num="2" total="true">
+                <serial>01012794</serial>
+                <name>Шым-500 Л-2339</name>
+                <rate>0</rate>
+                <amount>5686890</amount>
+                <proportion>0,0201</proportion>
+                <error>0.8538</error>
+                <under-count>0.0003</under-count>
+            </mp>
+            <mp num="3" total="true">
+                <serial>01061331</serial>
+                <name>Шым-500 Л-2359</name>
+                <rate>0</rate>
+                <amount>11055</amount>
+                <proportion>0</proportion>
+                <error>0.8538</error>
+                <under-count>0</under-count>
+            </mp>
+            <mp num="4" total="true">
+                <serial>01012792</serial>
+                <name>Шым-500 Л-2399</name>
+                <rate>0</rate>
+                <amount>42030010</amount>
+                <proportion>0.1483</proportion>
+                <error>0.8538</error>
+                <under-count>0.016</under-count>
+            </mp>
+        </section>
+    </division>
+
+    <footer />
+</report>
