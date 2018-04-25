@@ -19,333 +19,371 @@
     </head>
 
     <table code="t1" name="Показания счётчиков">
-        <column type="String" attr="num"            name="№ п/п" />
-        <column type="String" attr="serial"         name="№ счетчиков" />
-        <column type="String" attr="name"           name="Наименование объектов" />
-        <column type="Number" attr="end"            name="Показ. на конец периода" />
-        <column type="Number" attr="start"          name="Показ. на начала периода" />
-        <column type="Number" attr="rate"           name="Коэф-т счетчиков" />
-        <column type="Number" attr="amount"         name="К-во э/э,  учтенн. Счетчиком, кВт*час" />
-        <column type="Number" attr="proportion"     name="Доля полученной (отпущенной) электроэнергии" />
-        <column type="Number" attr="error"          name="Средне-квадратичная  погрешность" />
-        <column type="Number" attr="under-count"    name="Допустимый небаланс" />
+        <body>
+            <column type="String" attr="num"            name="№ п/п" />
+            <column type="String" attr="serial"         name="№ счетчиков" />
+            <column type="String" attr="name"           name="Наименование объектов" />
+            <column type="Number" attr="end"            name="Показ. на конец периода" />
+            <column type="Number" attr="start"          name="Показ. на начала периода" />
+            <column type="Number" attr="rate"           name="Коэф-т счетчиков" />
+            <column type="Number" attr="amount"         name="К-во э/э,  учтенн. Счетчиком, кВт*час" />
+            <column type="Number" attr="proportion"     name="Доля полученной (отпущенной) электроэнергии" />
+            <column type="Number" attr="error"          name="Средне-квадратичная  погрешность" />
+            <column type="Number" attr="under-count"    name="Допустимый небаланс" />
 
-        <division code="1" name="Прием от энергосистемы (импорт)">
-            <section code="1.1" name="Шины 500 кВ">
-                <row total="true">
-                    <attr name="num">1</attr>
-                    <attr name="serial">01061295</attr>
-                    <attr name="name">Шым-500 Л-5169</attr>
-                    <attr name="end"            type="number" precision="0">11500</attr>
-                    <attr name="start"          type="number" precision="0">11500</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">11500</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">2</attr>
-                    <attr name="serial">01061298</attr>
-                    <attr name="name">Шым-500 Л-5019</attr>
-                    <attr name="end"            type="number" precision="0">279147750</attr>
-                    <attr name="start"          type="number" precision="0">279147750</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">279147750</attr>
-                    <attr name="proportion"     type="number" precision="4">0.9789</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-            </section>
+            <division code="1" name="Прием от энергосистемы (импорт)">
+                <section code="1.1" name="Шины 500 кВ">
+                    <row total="true">
+                        <attr name="num">1</attr>
+                        <attr name="serial">01061295</attr>
+                        <attr name="name">Шым-500 Л-5169</attr>
+                        <attr name="end"            type="number" precision="0">11500</attr>
+                        <attr name="start"          type="number" precision="0">11500</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">11500</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">2</attr>
+                        <attr name="serial">01061298</attr>
+                        <attr name="name">Шым-500 Л-5019</attr>
+                        <attr name="end"            type="number" precision="0">279147750</attr>
+                        <attr name="start"          type="number" precision="0">279147750</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">279147750</attr>
+                        <attr name="proportion"     type="number" precision="4">0.9789</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                </section>
 
-            <section code="1.2" name="Шины 220 кВ">
-                <row total="true">
-                    <attr name="num">1</attr>
-                    <attr name="serial">01011130</attr>
-                    <attr name="name">Шым-500 Л-2409</attr>
-                    <attr name="end"            type="number" precision="0">0</attr>
-                    <attr name="start"          type="number" precision="0">0</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">0</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">2</attr>
-                    <attr name="serial">01012794</attr>
-                    <attr name="name">Шым-500 Л-2339</attr>
-                    <attr name="end"            type="number" precision="0">0</attr>
-                    <attr name="start"          type="number" precision="0">0</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">0</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">3</attr>
-                    <attr name="serial">01012792</attr>
-                    <attr name="name">Шым-500 Л-2399</attr>
-                    <attr name="end"            type="number" precision="0">0</attr>
-                    <attr name="start"          type="number" precision="0">0</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">0</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">4</attr>
-                    <attr name="serial">01061296</attr>
-                    <attr name="name">Шым-500 Л-2479</attr>
-                    <attr name="end"            type="number" precision="0">5887255</attr>
-                    <attr name="start"          type="number" precision="0">5887255</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">5887255</attr>
-                    <attr name="proportion"     type="number" precision="4">0,0206</attr>
-                    <attr name="error"          type="number" precision="4">0,0003</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">5</attr>
-                    <attr name="serial">01012802</attr>
-                    <attr name="name">Шым-500 Л-2379</attr>
-                    <attr name="end"            type="number" precision="0">33770</attr>
-                    <attr name="start"          type="number" precision="0">33770</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">33770</attr>
-                    <attr name="proportion"     type="number" precision="4">0.0001</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">6</attr>
-                    <attr name="serial">01012796</attr>
-                    <attr name="name">Шым-500 Л-2309</attr>
-                    <attr name="end"            type="number" precision="0">0</attr>
-                    <attr name="start"          type="number" precision="0">0</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">0</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">7</attr>
-                    <attr name="serial">01011118</attr>
-                    <attr name="name">Шым-500 220 кВ ОВ</attr>
-                    <attr name="end"            type="number" precision="0">0</attr>
-                    <attr name="start"          type="number" precision="0">0</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">0</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">8</attr>
-                    <attr name="serial">01011134</attr>
-                    <attr name="name">Шым-500 Л-2349</attr>
-                    <attr name="end"            type="number" precision="0">78705</attr>
-                    <attr name="start"          type="number" precision="0">78705</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">78705</attr>
-                    <attr name="proportion"     type="number" precision="4">0.0003</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">9</attr>
-                    <attr name="serial">01011126</attr>
-                    <attr name="name">Шым-500 Л-2499</attr>
-                    <attr name="end"            type="number" precision="0">0</attr>
-                    <attr name="start"          type="number" precision="0">0</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">0</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">10</attr>
-                    <attr name="serial"></attr>
-                    <attr name="name">Шым-500 220 кВ УШР</attr>
-                    <attr name="end"            type="number" precision="0">0</attr>
-                    <attr name="start"          type="number" precision="0">0</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">0</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-            </section>
+                <section code="1.2" name="Шины 220 кВ">
+                    <row total="true">
+                        <attr name="num">1</attr>
+                        <attr name="serial">01011130</attr>
+                        <attr name="name">Шым-500 Л-2409</attr>
+                        <attr name="end"            type="number" precision="0">0</attr>
+                        <attr name="start"          type="number" precision="0">0</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">0</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">2</attr>
+                        <attr name="serial">01012794</attr>
+                        <attr name="name">Шым-500 Л-2339</attr>
+                        <attr name="end"            type="number" precision="0">0</attr>
+                        <attr name="start"          type="number" precision="0">0</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">0</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">3</attr>
+                        <attr name="serial">01012792</attr>
+                        <attr name="name">Шым-500 Л-2399</attr>
+                        <attr name="end"            type="number" precision="0">0</attr>
+                        <attr name="start"          type="number" precision="0">0</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">0</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">4</attr>
+                        <attr name="serial">01061296</attr>
+                        <attr name="name">Шым-500 Л-2479</attr>
+                        <attr name="end"            type="number" precision="0">5887255</attr>
+                        <attr name="start"          type="number" precision="0">5887255</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">5887255</attr>
+                        <attr name="proportion"     type="number" precision="4">0,0206</attr>
+                        <attr name="error"          type="number" precision="4">0,0003</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">5</attr>
+                        <attr name="serial">01012802</attr>
+                        <attr name="name">Шым-500 Л-2379</attr>
+                        <attr name="end"            type="number" precision="0">33770</attr>
+                        <attr name="start"          type="number" precision="0">33770</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">33770</attr>
+                        <attr name="proportion"     type="number" precision="4">0.0001</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">6</attr>
+                        <attr name="serial">01012796</attr>
+                        <attr name="name">Шым-500 Л-2309</attr>
+                        <attr name="end"            type="number" precision="0">0</attr>
+                        <attr name="start"          type="number" precision="0">0</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">0</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">7</attr>
+                        <attr name="serial">01011118</attr>
+                        <attr name="name">Шым-500 220 кВ ОВ</attr>
+                        <attr name="end"            type="number" precision="0">0</attr>
+                        <attr name="start"          type="number" precision="0">0</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">0</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">8</attr>
+                        <attr name="serial">01011134</attr>
+                        <attr name="name">Шым-500 Л-2349</attr>
+                        <attr name="end"            type="number" precision="0">78705</attr>
+                        <attr name="start"          type="number" precision="0">78705</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">78705</attr>
+                        <attr name="proportion"     type="number" precision="4">0.0003</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">9</attr>
+                        <attr name="serial">01011126</attr>
+                        <attr name="name">Шым-500 Л-2499</attr>
+                        <attr name="end"            type="number" precision="0">0</attr>
+                        <attr name="start"          type="number" precision="0">0</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">0</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">10</attr>
+                        <attr name="serial"></attr>
+                        <attr name="name">Шым-500 220 кВ УШР</attr>
+                        <attr name="end"            type="number" precision="0">0</attr>
+                        <attr name="start"          type="number" precision="0">0</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">0</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                </section>
 
-            <section code="1.3" name="Шины 220 кВ Ввода">
-                <row>
-                    <attr name="num">1</attr>
-                    <attr name="serial">01012799</attr>
-                    <attr name="name">Шым-500 220 кВ Ввод АТ-1</attr>
-                    <attr name="end"            type="number" precision="0">106064200</attr>
-                    <attr name="start"          type="number" precision="0">106064200</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">106064200</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row>
-                    <attr name="num">2</attr>
-                    <attr name="serial">01011106</attr>
-                    <attr name="name">Шым-500 220 кВ Ввод АТ-3</attr>
-                    <attr name="end"            type="number" precision="0">85945860</attr>
-                    <attr name="start"          type="number" precision="0">85945860</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">85945860</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-            </section>
-        </division>
+                <section code="1.3" name="Шины 220 кВ Ввода">
+                    <row>
+                        <attr name="num">1</attr>
+                        <attr name="serial">01012799</attr>
+                        <attr name="name">Шым-500 220 кВ Ввод АТ-1</attr>
+                        <attr name="end"            type="number" precision="0">106064200</attr>
+                        <attr name="start"          type="number" precision="0">106064200</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">106064200</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row>
+                        <attr name="num">2</attr>
+                        <attr name="serial">01011106</attr>
+                        <attr name="name">Шым-500 220 кВ Ввод АТ-3</attr>
+                        <attr name="end"            type="number" precision="0">85945860</attr>
+                        <attr name="start"          type="number" precision="0">85945860</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">85945860</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                </section>
+            </division>
 
-        <division code="2" name="Отдача в энергосистему (экспорт)">
-            <section code="2.1" name="Шины 500 кВ">
-                <row total="true">
-                    <attr name="num">1</attr>
-                    <attr name="serial">01061295</attr>
-                    <attr name="name">Шым-500 Л-5169</attr>
-                    <attr name="end"            type="number" precision="0">85759000</attr>
-                    <attr name="start"          type="number" precision="0">85759000</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">85759000</attr>
-                    <attr name="proportion"     type="number" precision="4">0.3025</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0.0667</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">2</attr>
-                    <attr name="serial">01061298</attr>
-                    <attr name="name">Шым-500 Л-5019</attr>
-                    <attr name="end"            type="number" precision="0">0</attr>
-                    <attr name="start"          type="number" precision="0">0</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">0</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-            </section>
+            <division code="2" name="Отдача в энергосистему (экспорт)">
+                <section code="2.1" name="Шины 500 кВ">
+                    <row total="true">
+                        <attr name="num">1</attr>
+                        <attr name="serial">01061295</attr>
+                        <attr name="name">Шым-500 Л-5169</attr>
+                        <attr name="end"            type="number" precision="0">85759000</attr>
+                        <attr name="start"          type="number" precision="0">85759000</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">85759000</attr>
+                        <attr name="proportion"     type="number" precision="4">0.3025</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0.0667</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">2</attr>
+                        <attr name="serial">01061298</attr>
+                        <attr name="name">Шым-500 Л-5019</attr>
+                        <attr name="end"            type="number" precision="0">0</attr>
+                        <attr name="start"          type="number" precision="0">0</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">0</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                </section>
 
-            <section code="2.2" name="Шины 220 кВ">
-                <row total="true">
-                    <attr name="num">1</attr>
-                    <attr name="serial">01011130</attr>
-                    <attr name="name">Шым-500 Л-2409</attr>
-                    <attr name="end"            type="number" precision="0">42170150</attr>
-                    <attr name="start"          type="number" precision="0">42170150</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">42170150</attr>
-                    <attr name="proportion"     type="number" precision="4">0.1488</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0.0161</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">2</attr>
-                    <attr name="serial">01012794</attr>
-                    <attr name="name">Шым-500 Л-2339</attr>
-                    <attr name="end"            type="number" precision="0">5686890</attr>
-                    <attr name="start"          type="number" precision="0">5686890</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">5686890</attr>
-                    <attr name="proportion"     type="number" precision="4">0.0201</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0.0003</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">3</attr>
-                    <attr name="serial">01061331</attr>
-                    <attr name="name">Шым-500 Л-2359</attr>
-                    <attr name="end"            type="number" precision="0">11055</attr>
-                    <attr name="start"          type="number" precision="0">11055</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">11055</attr>
-                    <attr name="proportion"     type="number" precision="4">0</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0</attr>
-                </row>
-                <row total="true">
-                    <attr name="num">4</attr>
-                    <attr name="serial">01012792</attr>
-                    <attr name="name">Шым-500 Л-2399</attr>
-                    <attr name="end"            type="number" precision="0">42030010</attr>
-                    <attr name="start"          type="number" precision="0">42030010</attr>
-                    <attr name="rate"           type="number" precision="2">0</attr>
-                    <attr name="amount"         type="number" precision="0">42030010</attr>
-                    <attr name="proportion"     type="number" precision="4">0.1483</attr>
-                    <attr name="error"          type="number" precision="4">0.8538</attr>
-                    <attr name="under-count"    type="number" precision="0">0.016</attr>
-                </row>
-            </section>
-        </division>
+                <section code="2.2" name="Шины 220 кВ">
+                    <row total="true">
+                        <attr name="num">1</attr>
+                        <attr name="serial">01011130</attr>
+                        <attr name="name">Шым-500 Л-2409</attr>
+                        <attr name="end"            type="number" precision="0">42170150</attr>
+                        <attr name="start"          type="number" precision="0">42170150</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">42170150</attr>
+                        <attr name="proportion"     type="number" precision="4">0.1488</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0.0161</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">2</attr>
+                        <attr name="serial">01012794</attr>
+                        <attr name="name">Шым-500 Л-2339</attr>
+                        <attr name="end"            type="number" precision="0">5686890</attr>
+                        <attr name="start"          type="number" precision="0">5686890</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">5686890</attr>
+                        <attr name="proportion"     type="number" precision="4">0.0201</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0.0003</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">3</attr>
+                        <attr name="serial">01061331</attr>
+                        <attr name="name">Шым-500 Л-2359</attr>
+                        <attr name="end"            type="number" precision="0">11055</attr>
+                        <attr name="start"          type="number" precision="0">11055</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">11055</attr>
+                        <attr name="proportion"     type="number" precision="4">0</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0</attr>
+                    </row>
+                    <row total="true">
+                        <attr name="num">4</attr>
+                        <attr name="serial">01012792</attr>
+                        <attr name="name">Шым-500 Л-2399</attr>
+                        <attr name="end"            type="number" precision="0">42030010</attr>
+                        <attr name="start"          type="number" precision="0">42030010</attr>
+                        <attr name="rate"           type="number" precision="2">0</attr>
+                        <attr name="amount"         type="number" precision="0">42030010</attr>
+                        <attr name="proportion"     type="number" precision="4">0.1483</attr>
+                        <attr name="error"          type="number" precision="4">0.8538</attr>
+                        <attr name="under-count"    type="number" precision="0">0.016</attr>
+                    </row>
+                </section>
+            </division>
+        </body>
 
         <footer>
             <division>
                 <row>
                     <attr name="name">4. Потери в э/э понижающих трансформаторах</attr>
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
                     <attr name="unit"></attr>
-                    <attr name="amount">0</attr>
+                    <attr name="amount" type="number" precision="0">0</attr>
                 </row>
             </division>
 
             <division>
                 <row>
                     <attr name="name">5. Расчет допустимого небаланса</attr>
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
                     <attr name="unit">%</attr>
-                    <attr name="amount" precision="4">1.049</attr>
+                    <attr name="amount" type="number" precision="4">1.049</attr>
                 </row>
             </division>
 
             <division>
                 <row>
                     <attr name="name">6. Баланс э/э на подстанции</attr>
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
                     <attr name="unit"></attr>
                 </row>
 
                 <row>
                     <attr name="name">1. Поступило на шины</attr>
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
                     <attr name="unit">кВт*час</attr>
-                    <attr name="amount">285158980</attr>
+                    <attr name="amount" type="number" precision="0">285158980</attr>
                 </row>
 
                 <row>
                     <attr name="name">2. Расход э/э на подстанции</attr>
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
                     <attr name="unit">кВт*час</attr>
-                    <attr name="amount">335554</attr>
+                    <attr name="amount" type="number" precision="0">335554</attr>
                 </row>
 
                 <row>
                     <attr name="name">3. Отпуск э/э потребителяем в энергосистему</attr>
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
                     <attr name="unit">кВт*час</attr>
-                    <attr name="amount">283459690</attr>
+                    <attr name="amount" type="number" precision="0">283459690</attr>
                 </row>
 
                 <row>
                     <attr name="name">4. Фактический небаланс</attr>
-                    <attr name="unit">кВт*час</attr>
-                    <attr name="amount">1363736</attr>
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" name="unit">кВт*час</attr>
+                    <attr name="amount" type="number" precision="0">1363736</attr>
                 </row>
 
                 <row>
                     <attr name="name"></attr>
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
                     <attr name="unit">%</attr>
-                    <attr name="amount" precision="4">0.4782</attr>
+                    <attr name="amount" type="number" precision="4">0.4782</attr>
                 </row>
 
                 <row>
                     <attr name="name">5. Допустимый небаланс</attr>
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
+                    <attr type="empty" />
                     <attr name="unit">%</attr>
-                    <attr name="amount" precision="4">1.049</attr>
+                    <attr name="amount" type="number" precision="4">1.049</attr>
                 </row>
             </division>
         </footer>

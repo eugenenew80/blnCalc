@@ -9,15 +9,6 @@
 
         <Row>
             <Cell ss:StyleID="tddc"><Data ss:Type="String"><xsl:value-of select="$title"/></Data></Cell>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
         </Row>
     </xsl:template>
 
@@ -88,12 +79,13 @@
    </xsl:template>
 
     <xsl:template match="table">
-        <xsl:if test="position() &gt; 1">
-            <Row />
-        </xsl:if>
+        <Row />
+        <xsl:apply-templates select="body" />
+        <xsl:apply-templates select="footer" />
+    </xsl:template>
 
+    <xsl:template match="table/body">
         <xsl:if test="count(column[@name]) &gt; 0">
-            <Row />
             <Row ss:AutoFitHeight="1">
                 <xsl:for-each select="column">
                     <Cell ss:StyleID="th">
@@ -104,19 +96,19 @@
                 </xsl:for-each>
             </Row>
         </xsl:if>
-
         <xsl:apply-templates select="division" />
-        <xsl:apply-templates select="footer" />
     </xsl:template>
 
-    <xsl:template match="table/division">
+    <xsl:template match="table/body/division">
+        <xsl:if test="position() &gt; 1">
+            <Row/>
+        </xsl:if>
+
         <xsl:call-template name="show_title">
             <xsl:with-param name="title" select = "concat(@code, ' ', @name)" />
         </xsl:call-template>
 
         <xsl:apply-templates select="section" />
-
-        <Row />
 
         <xsl:call-template name="show_total">
             <xsl:with-param name="title" select = "concat('Всего по разделу',  ' ', @code)" />
@@ -124,8 +116,10 @@
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="table/division/section">
-        <Row />
+    <xsl:template match="table/body/division/section">
+        <xsl:if test="position() &gt; 1">
+            <Row/>
+        </xsl:if>
 
         <xsl:call-template name="show_title">
             <xsl:with-param name="title" select = "concat(@code, ' ', @name)" />
@@ -139,7 +133,7 @@
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template match="table/division/section/row">
+    <xsl:template match="table/body/division/section/row">
         <Row>
             <xsl:for-each select="attr">
                 <Cell>
@@ -177,44 +171,43 @@
         <xsl:apply-templates select="row" />
     </xsl:template>
 
-    <xsl:template match="table/footer/division/row[position()=1]">
-        <Row/>
+    <xsl:template match="table/footer/division/row">
+        <xsl:variable name="strong">
+            <xsl:if test="position()=1">-strong</xsl:if>
+        </xsl:variable>
+
+        <xsl:if test="position()=1">
+            <Row/>
+        </xsl:if>
+
         <Row>
-            <Cell ss:StyleID="c-strong"><Data ss:Type="String"><xsl:value-of select="attr[@name='name']" /></Data></Cell>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell ss:StyleID="c-strong"><Data ss:Type="String"><xsl:value-of select="attr[@name='unit']" /></Data></Cell>
+            <xsl:for-each select="attr">
+                <Cell>
+                    <xsl:if test="@type='number'">
+                        <xsl:attribute name="ss:StyleID">
+                            <xsl:value-of select="concat('n', @precision, $strong)" />
+                        </xsl:attribute>
+                    </xsl:if>
 
-            <Cell>
-                <xsl:if test="attr[@name='amount']">
-                    <xsl:attribute name="ss:StyleID">
-                        <xsl:value-of select="concat('n', attr[@name='amount']/@precision, '-strong')" />
-                    </xsl:attribute>
-                    <Data ss:Type="Number"><xsl:value-of select="attr[@name='amount']" /></Data>
-                </xsl:if>
-            </Cell>
-        </Row>
-    </xsl:template>
+                    <xsl:if test="not(@type)">
+                        <xsl:attribute name="ss:StyleID"><xsl:value-of select="concat('c', $strong)" /></xsl:attribute>
+                    </xsl:if>
 
-    <xsl:template match="table/footer/division/row[position() &gt; 1]">
-        <Row>
-            <Cell ss:StyleID="c"><Data ss:Type="String"><xsl:value-of select="attr[@name='name']" /></Data></Cell>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell/>
-            <Cell ss:StyleID="c"><Data ss:Type="String"><xsl:value-of select="attr[@name='unit']" /></Data></Cell>
+                    <xsl:if test="not(@type='empty')">
+                        <Data>
+                            <xsl:if test="@type='number'">
+                                <xsl:attribute name="ss:Type">Number</xsl:attribute>
+                            </xsl:if>
 
-            <Cell>
-                <xsl:if test="attr[@name='amount']">
-                    <xsl:attribute name="ss:StyleID">
-                        <xsl:value-of select="concat('n', attr[@name='amount']/@precision)" />
-                    </xsl:attribute>
-                    <Data ss:Type="Number"><xsl:value-of select="attr[@name='amount']" /></Data>
-                </xsl:if>
-            </Cell>
+                            <xsl:if test="not(@type)">
+                                <xsl:attribute name="ss:Type">String</xsl:attribute>
+                            </xsl:if>
+
+                            <xsl:value-of select="." />
+                        </Data>
+                    </xsl:if>
+                </Cell>
+            </xsl:for-each>
         </Row>
     </xsl:template>
 </xsl:stylesheet>
