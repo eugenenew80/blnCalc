@@ -14,12 +14,13 @@
     </sheet>
 
     <head>
+        <name>АКТ</name>
         <period start-date="2018-03-01" end-date="2018-03-31" />
         <energy-object type="subst" id="1" name="ПС 500 кВ Шымкент" />
     </head>
 
     <table code="t1" name="Показания счётчиков">
-        <body>
+        <head>
             <column type="String" attr="num"            name="№ п/п" />
             <column type="String" attr="serial"         name="№ счетчиков" />
             <column type="String" attr="name"           name="Наименование объектов" />
@@ -30,7 +31,9 @@
             <column type="Number" attr="proportion"     name="Доля полученной (отпущенной) электроэнергии" />
             <column type="Number" attr="error"          name="Средне-квадратичная  погрешность" />
             <column type="Number" attr="under-count"    name="Допустимый небаланс" />
+        </head>
 
+        <body>
             <division code="1" name="Прием от энергосистемы (импорт)">
                 <section code="1.1" name="Шины 500 кВ">
                     <row total="true">
@@ -389,4 +392,5 @@
         </footer>
     </table>
 
+    <footer/>
 </report-result>

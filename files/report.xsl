@@ -62,17 +62,22 @@
 
     <xsl:template match="head">
         <Row ss:AutoFitHeight="1">
-            <Cell ss:MergeAcross="9" ss:StyleID="h1"><Data ss:Type="String">АКТ</Data></Cell>
+            <Cell ss:StyleID="h1">
+                <xsl:attribute name="ss:MergeAcross">9</xsl:attribute>
+                <Data ss:Type="String"><xsl:value-of select="name" /></Data>
+            </Cell>
         </Row>
 
         <Row ss:AutoFitHeight="1">
-            <Cell ss:MergeAcross="9" ss:StyleID="h4">
+            <Cell ss:StyleID="h4">
+                <xsl:attribute name="ss:MergeAcross">9</xsl:attribute>
                 <Data ss:Type="String"><xsl:value-of select="concat('за период с ', period/@start-date, ' по ', period/@end-date)" /></Data>
             </Cell>
         </Row>
 
         <Row ss:AutoFitHeight="1">
-            <Cell ss:MergeAcross="9" ss:StyleID="h4">
+            <Cell ss:StyleID="h4">
+                <xsl:attribute name="ss:MergeAcross">9</xsl:attribute>
                 <Data ss:Type="String"><xsl:value-of select="energy-object/@name" /></Data>
             </Cell>
         </Row>
@@ -80,11 +85,12 @@
 
     <xsl:template match="table">
         <Row />
+        <xsl:apply-templates select="head" />
         <xsl:apply-templates select="body" />
         <xsl:apply-templates select="footer" />
     </xsl:template>
 
-    <xsl:template match="table/body">
+    <xsl:template match="table/head">
         <xsl:if test="count(column[@name]) &gt; 0">
             <Row ss:AutoFitHeight="1">
                 <xsl:for-each select="column">
@@ -96,6 +102,9 @@
                 </xsl:for-each>
             </Row>
         </xsl:if>
+    </xsl:template>
+
+    <xsl:template match="table/body">
         <xsl:apply-templates select="division" />
     </xsl:template>
 
