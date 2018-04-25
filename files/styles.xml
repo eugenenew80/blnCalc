@@ -31,9 +31,24 @@
         <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
     </Style>
 
-    <Style ss:ID="tddn2">
+    <Style ss:ID="tddn">
         <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10" ss:Bold="1"/>
         <NumberFormat ss:Format="#,##0"/>
+    </Style>
+
+    <Style ss:ID="tddn0">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10" ss:Bold="1"/>
+        <NumberFormat ss:Format="#,##0"/>
+    </Style>
+
+    <Style ss:ID="tddn2">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10" ss:Bold="1"/>
+        <NumberFormat ss:Format="#,##0.00"/>
+    </Style>
+
+    <Style ss:ID="tddn4">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10" ss:Bold="1"/>
+        <NumberFormat ss:Format="#,##0.0000"/>
     </Style>
 
     <Style ss:ID="tdc">
@@ -47,9 +62,31 @@
         </Borders>
     </Style>
 
-    <Style ss:ID="tdn2">
+    <Style ss:ID="tdn">
         <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10"/>
         <NumberFormat ss:Format="#,##0"/>
+        <Borders>
+            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+        </Borders>
+    </Style>
+
+    <Style ss:ID="tdn0">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10"/>
+        <NumberFormat ss:Format="#,##0"/>
+        <Borders>
+            <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
+            <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
+        </Borders>
+    </Style>
+
+    <Style ss:ID="tdn2">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10"/>
+        <NumberFormat ss:Format="#,##0.00"/>
         <Borders>
             <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"/>
             <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"/>
@@ -67,5 +104,63 @@
             <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"/>
             <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"/>
         </Borders>
+    </Style>
+
+    <Style ss:ID="c-strong">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10" ss:Bold="1"/>
+        <NumberFormat ss:Format="@"/>
+    </Style>
+
+    <Style ss:ID="n-strong">
+        <Font ss:FontName="Times New Roman" x:Family="Roman"  ss:Size="10" ss:Bold="1"/>
+        <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+        <NumberFormat ss:Format="#,##0"/>
+    </Style>
+
+    <Style ss:ID="n0-strong">
+        <Font ss:FontName="Times New Roman" x:Family="Roman"  ss:Size="10" ss:Bold="1"/>
+        <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+        <NumberFormat ss:Format="#,##0"/>
+    </Style>
+
+    <Style ss:ID="n2-strong">
+        <Font ss:FontName="Times New Roman" x:Family="Roman"  ss:Size="10" ss:Bold="1"/>
+        <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+        <NumberFormat ss:Format="#,##0.00"/>
+    </Style>
+
+    <Style ss:ID="n4-strong">
+        <Font ss:FontName="Times New Roman" x:Family="Roman"  ss:Size="10" ss:Bold="1"/>
+        <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+        <NumberFormat ss:Format="#,##0.0000"/>
+    </Style>
+
+    <Style ss:ID="c">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10" />
+        <NumberFormat ss:Format="@"/>
+    </Style>
+
+    <Style ss:ID="n">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10"  />
+        <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+        <NumberFormat ss:Format="#,##0"/>
+    </Style>
+
+    <Style ss:ID="n0">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10"  />
+        <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+        <NumberFormat ss:Format="#,##0"/>
+    </Style>
+
+    <Style ss:ID="n2">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10"  />
+        <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+        <NumberFormat ss:Format="#,##0.00"/>
+    </Style>
+
+    <Style ss:ID="n4">
+        <Font ss:FontName="Times New Roman" x:Family="Roman" ss:Size="10"  />
+        <Alignment ss:Horizontal="Right" ss:Vertical="Bottom"/>
+        <NumberFormat ss:Format="#,##0.0000"/>
     </Style>
 </Styles>
