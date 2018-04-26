@@ -4,80 +4,62 @@
     xmlns:x="urn:schemas-microsoft-com:office:excel"
     xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
 
-    <xsl:template name = "show_title" >
-        <xsl:param name = "title" />
-
-        <Row>
-            <Cell ss:StyleID="tddc"><Data ss:Type="String"><xsl:value-of select="$title"/></Data></Cell>
-        </Row>
-    </xsl:template>
-
-    <xsl:template name = "show_total" >
-        <xsl:param name = "title" />
-        <xsl:param name = "total" />
-
-        <Row>
-            <Cell ss:StyleID="tddc"><Data ss:Type="String"><xsl:value-of select="$title" /></Data></Cell>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddn0"><Data ss:Type="Number"><xsl:value-of select="$total" /></Data></Cell>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-            <Cell ss:StyleID="tddc"/>
-        </Row>
-    </xsl:template>
-
     <xsl:template match="/">
         <xsl:processing-instruction name="mso-application"> progid="Excel.Sheet"</xsl:processing-instruction>
         <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet">
-
             <xsl:copy-of select="document('styles.xml')"   />
-
-            <Worksheet ss:Name="Акт">
-                <Table ss:ExpandedColumnCount="10" ss:ExpandedRowCount="65000" x:FullColumns="1" x:FullRows="1">
-                    <xsl:apply-templates select="/report-result/sheet" />
-
-                    <xsl:apply-templates select="/report-result/head" />
-
-                    <xsl:apply-templates select="/report-result/table" />
-
-                    <xsl:apply-templates select="/report-result/footer" />
-                </Table>
-            </Worksheet>
+            <xsl:apply-templates select="/report-result/sheet" />
         </Workbook>
     </xsl:template>
 
     <xsl:template match="sheet">
-        <xsl:for-each select="column">
-            <Column>
-                <xsl:attribute name="ss:Width">
-                    <xsl:value-of select="@width" />
+        <Worksheet>
+            <xsl:attribute name="ss:Name" >
+                <xsl:value-of select="@name" />
+            </xsl:attribute>
+
+            <xsl:variable name="columnCount" select="count(column)" />
+
+            <Table  ss:ExpandedRowCount="65000">
+                <xsl:attribute name="ss:ExpandedColumnCount">
+                    <xsl:value-of select="$columnCount" />
                 </xsl:attribute>
-            </Column>
-        </xsl:for-each>
+
+                <xsl:for-each select="column">
+                    <Column>
+                        <xsl:attribute name="ss:Width">
+                            <xsl:value-of select="@width" />
+                        </xsl:attribute>
+                    </Column>
+                </xsl:for-each>
+
+                <xsl:apply-templates select="head" />
+                <xsl:apply-templates select="table" />
+                <xsl:apply-templates select="footer" />
+            </Table>
+        </Worksheet>
     </xsl:template>
 
     <xsl:template match="head">
+        <xsl:variable name="columnCount" select="count(../column)" />
+
         <Row ss:AutoFitHeight="1">
             <Cell ss:StyleID="h1">
-                <xsl:attribute name="ss:MergeAcross">9</xsl:attribute>
+                <xsl:attribute name="ss:MergeAcross"><xsl:value-of select="$columnCount - 1" /></xsl:attribute>
                 <Data ss:Type="String"><xsl:value-of select="name" /></Data>
             </Cell>
         </Row>
 
         <Row ss:AutoFitHeight="1">
             <Cell ss:StyleID="h4">
-                <xsl:attribute name="ss:MergeAcross">9</xsl:attribute>
+                <xsl:attribute name="ss:MergeAcross"><xsl:value-of select="$columnCount - 1" /></xsl:attribute>
                 <Data ss:Type="String"><xsl:value-of select="concat('за период с ', period/@start-date, ' по ', period/@end-date)" /></Data>
             </Cell>
         </Row>
 
         <Row ss:AutoFitHeight="1">
             <Cell ss:StyleID="h4">
-                <xsl:attribute name="ss:MergeAcross">9</xsl:attribute>
+                <xsl:attribute name="ss:MergeAcross"><xsl:value-of select="$columnCount - 1" /></xsl:attribute>
                 <Data ss:Type="String"><xsl:value-of select="energy-object/@name" /></Data>
             </Cell>
         </Row>
@@ -113,16 +95,45 @@
             <Row/>
         </xsl:if>
 
-        <xsl:call-template name="show_title">
-            <xsl:with-param name="title" select = "concat(@code, ' ', @name)" />
-        </xsl:call-template>
+        <xsl:if test="@is-title='true'">
+            <Row>
+                <Cell ss:StyleID="tddc"><Data ss:Type="String"><xsl:value-of select="@name"/></Data></Cell>
+            </Row>
+        </xsl:if>
 
         <xsl:apply-templates select="section" />
 
-        <xsl:call-template name="show_total">
-            <xsl:with-param name="title" select = "concat('Всего по разделу',  ' ', @code)" />
-            <xsl:with-param name="total" select = "sum(section/row[@total='true']/attr[@name='amount'])" />
-        </xsl:call-template>
+        <xsl:if test="@is-total='true'">
+            <Row>
+                <xsl:for-each select="total/attr">
+                    <Cell>
+                        <xsl:if test="@type='number'">
+                            <xsl:attribute name="ss:StyleID">
+                                <xsl:value-of select="concat('n', @precision, '-strong')" />
+                            </xsl:attribute>
+                        </xsl:if>
+
+                        <xsl:if test="@type='string'">
+                            <xsl:attribute name="ss:StyleID">c-strong</xsl:attribute>
+                        </xsl:if>
+
+                        <xsl:if test="not(@type='empty')">
+                            <Data ss:Type="String">
+                                <xsl:if test="@type='number'">
+                                    <xsl:attribute name="ss:Type">Number</xsl:attribute>
+                                </xsl:if>
+
+                                <xsl:if test="@type='string'">
+                                    <xsl:attribute name="ss:Type">String</xsl:attribute>
+                                </xsl:if>
+
+                                <xsl:value-of select="." />
+                            </Data>
+                        </xsl:if>
+                    </Cell>
+                </xsl:for-each>
+            </Row>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="table/body/division/section">
@@ -130,16 +141,46 @@
             <Row/>
         </xsl:if>
 
-        <xsl:call-template name="show_title">
-            <xsl:with-param name="title" select = "concat(@code, ' ', @name)" />
-        </xsl:call-template>
+        <xsl:if test="@is-title='true'">
+            <Row>
+                <Cell ss:StyleID="tddc"><Data ss:Type="String"><xsl:value-of select="@name"/></Data></Cell>
+            </Row>
+        </xsl:if>
 
         <xsl:apply-templates select="row" />
 
-        <xsl:call-template name="show_total">
-            <xsl:with-param name="title" select = "concat('Итого по подразделу',  ' ', @code)" />
-            <xsl:with-param name="total" select = "sum(row[@total='true']/attr[@name='amount'])" />
-        </xsl:call-template>
+        <xsl:if test="@is-total='true'">
+            <Row>
+                <xsl:for-each select="total/attr">
+                    <Cell>
+                        <xsl:if test="@type='number'">
+                            <xsl:attribute name="ss:StyleID">
+                                <xsl:value-of select="concat('n', @precision, '-strong')" />
+                            </xsl:attribute>
+                        </xsl:if>
+
+                        <xsl:if test="@type='string'">
+                            <xsl:attribute name="ss:StyleID">c-strong</xsl:attribute>
+                        </xsl:if>
+
+                        <xsl:if test="not(@type='empty')">
+                            <Data ss:Type="String">
+                                <xsl:if test="@type='number'">
+                                    <xsl:attribute name="ss:Type">Number</xsl:attribute>
+                                </xsl:if>
+
+                                <xsl:if test="@type='string'">
+                                    <xsl:attribute name="ss:Type">String</xsl:attribute>
+                                </xsl:if>
+
+                                <xsl:value-of select="." />
+                            </Data>
+                        </xsl:if>
+                    </Cell>
+                </xsl:for-each>
+            </Row>
+        </xsl:if>
+
     </xsl:template>
 
     <xsl:template match="table/body/division/section/row">
@@ -152,7 +193,7 @@
                         </xsl:attribute>
                     </xsl:if>
 
-                    <xsl:if test="not(@type)">
+                    <xsl:if test="@type='string'">
                         <xsl:attribute name="ss:StyleID">tdc</xsl:attribute>
                     </xsl:if>
 
@@ -161,7 +202,7 @@
                             <xsl:attribute name="ss:Type">Number</xsl:attribute>
                         </xsl:if>
 
-                        <xsl:if test="not(@type)">
+                        <xsl:if test="@type='string'">
                             <xsl:attribute name="ss:Type">String</xsl:attribute>
                         </xsl:if>
 
@@ -198,7 +239,7 @@
                         </xsl:attribute>
                     </xsl:if>
 
-                    <xsl:if test="not(@type)">
+                    <xsl:if test="@type='string'">
                         <xsl:attribute name="ss:StyleID"><xsl:value-of select="concat('c', $strong)" /></xsl:attribute>
                     </xsl:if>
 
@@ -208,7 +249,7 @@
                                 <xsl:attribute name="ss:Type">Number</xsl:attribute>
                             </xsl:if>
 
-                            <xsl:if test="not(@type)">
+                            <xsl:if test="@type='string'">
                                 <xsl:attribute name="ss:Type">String</xsl:attribute>
                             </xsl:if>
 

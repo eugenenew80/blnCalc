@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
-    
+
     <changeSet id="calc-eug-1" logicalFilePath="path-independent" author="eugene">
         <comment>Creating table: calc_formulas</comment>
         <createTable tableName="calc_formulas" schemaName="apps" remarks="Формулы">
@@ -16,7 +16,7 @@
             <column name="code" type="varchar(20)" remarks="Уникальный код формулы">
                 <constraints nullable="true"/>
             </column>
-            
+
             <column name="description" type="varchar(300)" remarks="Описание формулы">
                 <constraints nullable="true"/>
             </column>
@@ -40,7 +40,7 @@
             <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
                 <constraints nullable="true"/>
             </column>
-            
+
             <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
                 <constraints nullable="true"/>
             </column>
@@ -55,34 +55,33 @@
         </createTable>
     </changeSet>
 
-	<changeSet id="calc-eug-2" logicalFilePath="path-independent" author="eugene">
-	    <comment>Creating primary key for table: calc_formulas</comment>
-	    <addPrimaryKey 
-	            columnNames="id"
-	            constraintName="pk_calc_formulas"
-	            schemaName="apps"
-	            tableName="calc_formulas"/>
-	</changeSet>
+    <changeSet id="calc-eug-2" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_formulas</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_formulas"
+                schemaName="apps"
+                tableName="calc_formulas"/>
+    </changeSet>
 
-	<changeSet id="calc-eug-3" logicalFilePath="path-independent" author="eugene">
-	    <comment>Creating sequence for table: calc_formulas</comment>
-	    <createSequence 
-	            incrementBy="1"
-	            schemaName="apps"
-	            sequenceName="calc_formulas_s"
-	            startValue="1"/>
-	</changeSet>
+    <changeSet id="calc-eug-3" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_formulas</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_formulas_s"
+                startValue="1"/>
+    </changeSet>
 
     <changeSet id="calc-eug-4" logicalFilePath="path-independent" author="eugene">
         <addUniqueConstraint
-             columnNames="code"
-             constraintName="un_calc_formulas_1"
-             deferrable="true"
-             initiallyDeferred="true"
-             schemaName="apps"
-             tableName="calc_formulas" />
+                columnNames="code"
+                constraintName="un_calc_formulas_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                schemaName="apps"
+                tableName="calc_formulas" />
     </changeSet>
-
 
     <changeSet id="calc-eug-5" logicalFilePath="path-independent" author="eugene">
         <comment>Creating table: calc_formulas</comment>
@@ -199,9 +198,9 @@
     <changeSet id="calc-eug-12" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: media_period_time_values</comment>
         <createIndex indexName="idx_calc_formula_1"
-                 schemaName="apps"
-                 tableName="calc_formulas"
-                 unique="false">
+                     schemaName="apps"
+                     tableName="calc_formulas"
+                     unique="false">
             <column name="metering_point_id" type="number"/>
         </createIndex>
     </changeSet>
@@ -209,9 +208,9 @@
     <changeSet id="calc-eug-13" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_metering_point_params</comment>
         <createIndex indexName="idx_calc_metering_point_params_1"
-                 schemaName="apps"
-                 tableName="calc_metering_point_params"
-                 unique="false">
+                     schemaName="apps"
+                     tableName="calc_metering_point_params"
+                     unique="false">
             <column name="metering_point_id" type="number"/>
         </createIndex>
     </changeSet>
@@ -219,9 +218,9 @@
     <changeSet id="calc-eug-14" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_metering_point_params</comment>
         <createIndex indexName="idx_calc_metering_point_params_2"
-                 schemaName="apps"
-                 tableName="calc_metering_point_params"
-                 unique="false">
+                     schemaName="apps"
+                     tableName="calc_metering_point_params"
+                     unique="false">
             <column name="parameter_id" type="number"/>
         </createIndex>
     </changeSet>
@@ -244,9 +243,13 @@
     </changeSet>
 
     <changeSet id="calc-eug-16" logicalFilePath="path-independent" author="eugene">
-        <comment>Creating table: calc_source_type_priorities</comment>
-        <createTable tableName="calc_source_type_priorities" schemaName="apps" remarks="Приоритеты источников данных для точек учёта">
+        <comment>Creating table: calc_priority_lines</comment>
+        <createTable tableName="calc_priority_lines" schemaName="apps" remarks="Приоритеты использования - строки">
             <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="priority_header_id" type="number" remarks="Ид. заголовка">
                 <constraints nullable="false"/>
             </column>
 
@@ -254,20 +257,8 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
-                <constraints nullable="false"/>
-            </column>
-
             <column name="priority" type="number" remarks="Приоритет">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала действия формулы">
                 <constraints nullable="false"/>
-            </column>
-
-            <column name="end_date" type="TIMESTAMP" remarks="Дата и время окончания действия формулы">
-                <constraints nullable="true"/>
             </column>
 
             <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
@@ -289,21 +280,21 @@
     </changeSet>
 
     <changeSet id="calc-eug-17" logicalFilePath="path-independent" author="eugene">
-        <comment>Creating sequence for table: calc_source_type_priorities</comment>
+        <comment>Creating sequence for table: calc_priority_lines</comment>
         <createSequence
                 incrementBy="1"
                 schemaName="apps"
-                sequenceName="calc_source_type_priorities_s"
+                sequenceName="calc_priority_lines_s"
                 startValue="1"/>
     </changeSet>
 
     <changeSet id="calc-eug-18" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_source_type_priorities to media_source_types</comment>
+        <comment>Creating foreign constraint: calc_priority_lines to media_source_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_source_type_priorities"
+                baseTableName="calc_priority_lines"
                 baseColumnNames="source_type_id"
-                constraintName="fk_calc_source_type_priorities_1"
+                constraintName="fk_calc_priority_lines_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -314,34 +305,10 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-19" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_source_type_priorities to dict_metering_points</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="calc_source_type_priorities"
-                baseColumnNames="metering_point_id"
-                constraintName="fk_calc_source_type_priorities_2"
-                deferrable="true"
-                initiallyDeferred="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="dict_metering_points"
-                referencedColumnNames="id"
-        />
-    </changeSet>
-
     <changeSet id="calc-eug-20" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_source_type_priorities</comment>
-        <createIndex indexName="idx_calc_source_type_priorities_1" schemaName="apps" tableName="calc_source_type_priorities" unique="false">
+        <comment>Creating index: calc_priority_lines</comment>
+        <createIndex indexName="idx_calc_priority_lines_1" schemaName="apps" tableName="calc_priority_lines" unique="false">
             <column name="source_type_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-21" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_source_type_priorities</comment>
-        <createIndex indexName="idx_calc_source_type_priorities_2" schemaName="apps" tableName="calc_source_type_priorities" unique="false">
-            <column name="metering_point_id" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -807,9 +774,9 @@
     <changeSet id="calc-eug-47" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_metering_data_source_lines</comment>
         <createIndex indexName="idx_calc_metering_data_source_lines_1"
-                 schemaName="apps"
-                 tableName="calc_metering_data_source_lines"
-                 unique="false">
+                     schemaName="apps"
+                     tableName="calc_metering_data_source_lines"
+                     unique="false">
             <column name="metering_point_id" type="number"/>
         </createIndex>
     </changeSet>
@@ -817,9 +784,9 @@
     <changeSet id="calc-eug-48" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_metering_data_source_lines</comment>
         <createIndex indexName="idx_calc_metering_data_source_lines_2"
-                 schemaName="apps"
-                 tableName="calc_metering_data_source_lines"
-                 unique="false">
+                     schemaName="apps"
+                     tableName="calc_metering_data_source_lines"
+                     unique="false">
             <column name="metering_data_source_id" type="number"/>
         </createIndex>
     </changeSet>
@@ -827,20 +794,189 @@
     <changeSet id="calc-eug-49" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_metering_data_sources</comment>
         <createIndex indexName="idx_calc_metering_data_sources_1"
-                 schemaName="apps"
-                 tableName="calc_metering_data_sources"
-                 unique="false">
+                     schemaName="apps"
+                     tableName="calc_metering_data_sources"
+                     unique="false">
             <column name="org_id" type="number"/>
         </createIndex>
     </changeSet>
 
     <changeSet id="calc-eug-50" logicalFilePath="path-independent" author="eugene" context="dev">
         <addUniqueConstraint
-                 columnNames="metering_data_source_id, metering_point_id"
-                 constraintName="un_calc_metering_data_source_lines_1"
-                 deferrable="true"
-                 initiallyDeferred="true"
-                 schemaName="apps"
-                 tableName="calc_metering_data_source_lines"/>
+                columnNames="metering_data_source_id, metering_point_id"
+                constraintName="un_calc_metering_data_source_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                schemaName="apps"
+                tableName="calc_metering_data_source_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-51" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_priority_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_priority_lines"
+                schemaName="apps"
+                tableName="calc_priority_lines"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-52" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_priority_headers</comment>
+        <createTable tableName="calc_priority_headers" schemaName="apps" remarks="Приоритеты использования данных - заголовки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="varchar(300)" remarks="Описание">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала действия приоритета">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="TIMESTAMP" remarks="Дата и время окончания действия приоритета">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_active" type="number" remarks="Активно/Неактивно">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-53" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_priority_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_priority_headers"
+                schemaName="apps"
+                tableName="calc_priority_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-54" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_priority_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_priority_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-55" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_priority_lines to calc_priority_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_priority_lines"
+                baseColumnNames="priority_header_id"
+                constraintName="fk_calc_priority_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_priority_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-56" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_priority_lines</comment>
+        <createIndex indexName="idx_calc_priority_lines_2" schemaName="apps" tableName="calc_priority_lines" unique="false">
+            <column name="priority_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-57" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_priority_metering_points</comment>
+        <createTable tableName="calc_priority_metering_points" schemaName="apps" remarks="Приоритеты использования данных - точки учёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="priority_header_id" type="number" remarks="Ид. заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-58" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_priority_metering_points</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_priority_metering_points"
+                schemaName="apps"
+                tableName="calc_priority_metering_points"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-59" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_priority_metering_points</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_priority_metering_points_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-60" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_priority_metering_points to calc_priority_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_priority_metering_points"
+                baseColumnNames="priority_header_id"
+                constraintName="fk_calc_priority_metering_points_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_priority_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-61" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_priority_metering_points</comment>
+        <createIndex indexName="idx_calc_priority_metering_points_1" schemaName="apps" tableName="calc_priority_metering_points" unique="false">
+            <column name="priority_header_id" type="number"/>
+        </createIndex>
     </changeSet>
 </databaseChangeLog>
