@@ -844,6 +844,10 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="org_id" type="number" remarks="Ид. филиала">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
                 <constraints nullable="true"/>
             </column>
@@ -977,6 +981,30 @@
         <comment>Creating index: calc_priority_metering_points</comment>
         <createIndex indexName="idx_calc_priority_metering_points_1" schemaName="apps" tableName="calc_priority_metering_points" unique="false">
             <column name="priority_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-62" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_priority_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_priority_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_priority_headers_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-63" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_priority_headers</comment>
+        <createIndex indexName="idx_calc_priority_headers_1" schemaName="apps" tableName="calc_priority_headers" unique="false">
+            <column name="org_id" type="number"/>
         </createIndex>
     </changeSet>
 </databaseChangeLog>
