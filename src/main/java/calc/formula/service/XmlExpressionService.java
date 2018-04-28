@@ -1,6 +1,6 @@
 package calc.formula.service;
 
-import calc.entity.Formula;
+import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
 import org.w3c.dom.Node;

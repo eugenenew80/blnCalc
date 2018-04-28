@@ -1,13 +1,13 @@
 package calc.formula.service.impl;
 
+import calc.entity.calc.*;
 import calc.formula.CalcResult;
-import calc.entity.*;
 import calc.formula.CalcContext;
 import calc.formula.expression.Expression;
 import calc.formula.service.CalcService;
 import calc.formula.service.ExpressionService;
-import calc.repo.FormulaRepo;
-import calc.repo.SourceTypeRepo;
+import calc.repo.calc.FormulaRepo;
+import calc.repo.calc.SourceTypeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;

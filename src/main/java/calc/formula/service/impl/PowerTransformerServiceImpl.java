@@ -1,9 +1,9 @@
 package calc.formula.service.impl;
 
 import calc.formula.CalcContext;
-import calc.entity.PowerTransformer;
+import calc.entity.calc.PowerTransformer;
 import calc.formula.service.PowerTransformerService;
-import calc.repo.PowerTransformerRepo;
+import calc.repo.calc.PowerTransformerRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

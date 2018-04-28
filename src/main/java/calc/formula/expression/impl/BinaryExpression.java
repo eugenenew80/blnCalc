@@ -1,12 +1,11 @@
 package calc.formula.expression.impl;
 
-import calc.entity.Formula;
+import calc.entity.calc.Formula;
 import calc.formula.expression.Expression;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;

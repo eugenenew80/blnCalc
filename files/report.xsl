@@ -8,7 +8,7 @@
         <xsl:processing-instruction name="mso-application"> progid="Excel.Sheet"</xsl:processing-instruction>
         <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet">
             <xsl:copy-of select="document('styles.xml')"   />
-            <xsl:apply-templates select="/report-result/sheet" />
+            <xsl:apply-templates select="/report/sheet" />
         </Workbook>
     </xsl:template>
 

@@ -1,9 +1,9 @@
 package calc.formula.service.impl;
 
 import calc.formula.CalcContext;
-import calc.entity.Reactor;
+import calc.entity.calc.Reactor;
 import calc.formula.service.ReactorService;
-import calc.repo.ReactorRepo;
+import calc.repo.calc.ReactorRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

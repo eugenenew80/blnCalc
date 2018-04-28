@@ -1,6 +1,6 @@
 package calc.formula.builder.xml.impl;
 
-import calc.entity.Formula;
+import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.PowerTransformerExpression;

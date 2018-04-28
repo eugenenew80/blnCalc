@@ -1,8 +1,8 @@
 package calc.formula.expression.impl;
 
 import calc.formula.CalcResult;
-import calc.entity.Formula;
-import calc.entity.SourceType;
+import calc.entity.calc.Formula;
+import calc.entity.calc.SourceType;
 import calc.formula.CalcContext;
 import calc.formula.CalcTrace;
 import calc.formula.expression.Expression;

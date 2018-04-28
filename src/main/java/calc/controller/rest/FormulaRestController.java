@@ -1,8 +1,8 @@
 package calc.controller.rest;
 
 import calc.controller.rest.dto.FormulaDto;
-import calc.entity.Formula;
-import calc.repo.FormulaRepo;
+import calc.entity.calc.Formula;
+import calc.repo.calc.FormulaRepo;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.dozer.DozerBeanMapper;

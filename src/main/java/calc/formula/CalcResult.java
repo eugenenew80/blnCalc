@@ -1,6 +1,6 @@
 package calc.formula;
 
-import calc.entity.SourceType;
+import calc.entity.calc.SourceType;
 import lombok.Data;
 import java.time.LocalDateTime;
 

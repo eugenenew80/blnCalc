@@ -1,9 +1,9 @@
 package calc.formula.service.impl;
 
 import calc.formula.CalcContext;
-import calc.entity.PowerLine;
+import calc.entity.calc.PowerLine;
 import calc.formula.service.PowerLineService;
-import calc.repo.PowerLineRepo;
+import calc.repo.calc.PowerLineRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

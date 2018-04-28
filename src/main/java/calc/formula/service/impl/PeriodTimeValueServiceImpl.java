@@ -1,13 +1,16 @@
 package calc.formula.service.impl;
 
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Parameter;
+import calc.entity.calc.PeriodTimeValue;
+import calc.entity.calc.SourceTypePriority;
 import calc.formula.CalcResult;
-import calc.entity.*;
 import calc.formula.CalcContext;
 import calc.formula.service.PeriodTimeValueService;
-import calc.repo.MeteringPointRepo;
-import calc.repo.ParameterRepo;
-import calc.repo.PeriodTimeValueRepo;
-import calc.repo.SourceTypePriorityRepo;
+import calc.repo.calc.MeteringPointRepo;
+import calc.repo.calc.ParameterRepo;
+import calc.repo.calc.PeriodTimeValueRepo;
+import calc.repo.calc.SourceTypePriorityRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

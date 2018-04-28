@@ -1,6 +1,6 @@
 package calc.formula.service;
 
-import calc.entity.SourceTypePriority;
+import calc.entity.calc.SourceTypePriority;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 

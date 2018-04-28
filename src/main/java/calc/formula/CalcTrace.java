@@ -1,6 +1,6 @@
 package calc.formula;
 
-import calc.entity.SourceType;
+import calc.entity.calc.SourceType;
 import lombok.Builder;
 import lombok.Data;
 
