@@ -8,8 +8,8 @@ import java.io.File;
 
 public class App2 {
     private static final String XSL_FILE = "files/report.xsl";
-    private static final String INPUT_FILE = "files/report.xml";
-    private static final String OUTPUT_FILE = "files/output.xml";
+    private static final String INPUT_FILE = "files/xmlFileName.xml";
+    private static final String OUTPUT_FILE = "files/result.xml";
 
     public static void main(String[] args) throws Exception {
         StreamSource xslCode = new StreamSource(new File(XSL_FILE));

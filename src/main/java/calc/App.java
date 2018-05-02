@@ -22,6 +22,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
 
 @EntityScan(
@@ -58,6 +59,15 @@ public class App  {
             sheetElement.setAttribute("name", sheet.getName());
             rootElement.appendChild(sheetElement);
 
+            sheet.getColumns()
+                .stream()
+                .sorted(Comparator.comparing(SheetColumn::getOrderNum))
+                .forEach(column -> {
+                    Element columnElement = doc.createElement("column");
+                    columnElement.setAttribute("width", column.getWidth().toString());
+                    sheetElement.appendChild(columnElement);
+                });
+
             List<ReportTable> tables = sheet.getTables();
             for (ReportTable table : tables) {
                 Element tableElement = doc.createElement("table");
@@ -66,14 +76,16 @@ public class App  {
 
                 if (table.getHasHeader()) {
                     Element tableHeadElement = doc.createElement("head");
-                    List<ReportAttr> attrs = table.getAttrs();
-                    for (ReportAttr attr : attrs) {
-                        Element tableColumnElement = doc.createElement("column");
-                        tableColumnElement.setAttribute("type", attr.getAttrType().toString().toLowerCase());
-                        tableColumnElement.setAttribute("attr", attr.getName());
-                        tableColumnElement.setAttribute("name", attr.getDescription());
-                        tableHeadElement.appendChild(tableColumnElement);
-                    }
+                    table.getAttrs()
+                        .stream()
+                        .sorted(Comparator.comparing(ReportAttr::getOrderNum))
+                        .forEach(attr -> {
+                            Element tableColumnElement = doc.createElement("column");
+                            tableColumnElement.setAttribute("type", attr.getAttrType().toString().toLowerCase());
+                            tableColumnElement.setAttribute("attr", attr.getName());
+                            tableColumnElement.setAttribute("name", attr.getDescription());
+                            tableHeadElement.appendChild(tableColumnElement);
+                        });
                     tableElement.appendChild(tableHeadElement);
                 }
 
@@ -81,41 +93,51 @@ public class App  {
                 Element bodyElement = doc.createElement("body");
                 tableElement.appendChild(bodyElement);
 
-                List<ReportDivision> divisions = table.getDivisions();
-                for (ReportDivision division : divisions){
-                    Element divisionElement = doc.createElement("division");
-                    divisionElement.setAttribute("name", division.getName());
-                    divisionElement.setAttribute("is-total", division.getHasTotal().toString().toLowerCase());
-                    divisionElement.setAttribute("is-title", division.getHasTitle().toString().toLowerCase());
-                    bodyElement.appendChild(divisionElement);
+                table.getDivisions()
+                    .stream()
+                    .sorted(Comparator.comparing(ReportDivision::getOrderNum))
+                    .forEach(division -> {
+                        Element divisionElement = doc.createElement("division");
+                        divisionElement.setAttribute("name", division.getName());
+                        divisionElement.setAttribute("is-total", division.getHasTotal().toString().toLowerCase());
+                        divisionElement.setAttribute("is-title", division.getHasTitle().toString().toLowerCase());
+                        bodyElement.appendChild(divisionElement);
 
-                    List<ReportSection> sections = division.getSections();
-                    for (ReportSection section: sections) {
-                        Element sectionElement = doc.createElement("section");
-                        sectionElement.setAttribute("name", section.getName());
-                        sectionElement.setAttribute("is-total", section.getHasTotal().toString().toLowerCase());
-                        sectionElement.setAttribute("is-title", section.getHasTitle().toString().toLowerCase());
-                        divisionElement.appendChild(sectionElement);
+                        division.getSections()
+                            .stream()
+                            .sorted(Comparator.comparing(ReportSection::getOrderNum))
+                            .forEach(section -> {
+                                Element sectionElement = doc.createElement("section");
+                                sectionElement.setAttribute("name", section.getName());
+                                sectionElement.setAttribute("is-total", section.getHasTotal().toString().toLowerCase());
+                                sectionElement.setAttribute("is-title", section.getHasTitle().toString().toLowerCase());
+                                divisionElement.appendChild(sectionElement);
 
-                        List<ReportRow> rows = section.getRows();
-                        for (ReportRow row: rows) {
-                            if (!row.getIsTotal()) {
-                                Element rowElement = doc.createElement("row");
-                                rowElement.setAttribute("is-total", row.getIsTotal().toString().toLowerCase());
-                                sectionElement.appendChild(rowElement);
+                                section.getRows()
+                                    .stream()
+                                    .sorted(Comparator.comparing(ReportRow::getOrderNum))
+                                    .forEach(row -> {
+                                        Element rowElement;
+                                        if (!row.getIsTotal()) {
+                                            rowElement = doc.createElement("row");
+                                            rowElement.setAttribute("is-total", "true");
+                                        }
+                                        else
+                                            rowElement = doc.createElement("total");
 
-                                List<ReportCell> cells = row.getCells();
-                                for (ReportCell cell : cells) {
-                                    Element attrElement = doc.createElement("attr");
-                                    attrElement.setAttribute("name", cell.getAttr().getName());
-                                    attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
-                                    attrElement.setNodeValue(cell.getVal());
-                                    rowElement.appendChild(attrElement);
-                                }
-                            }
-                        }
-                    }
-                }
+                                        sectionElement.appendChild(rowElement);
+
+                                        List<ReportCell> cells = row.getCells();
+                                        for (ReportCell cell : cells) {
+                                            Element attrElement = doc.createElement("attr");
+                                            attrElement.setAttribute("name", cell.getAttr().getName());
+                                            attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
+                                            attrElement.setNodeValue(cell.getVal());
+                                            rowElement.appendChild(attrElement);
+                                        }
+                                }) ;
+                        });
+                    });
             }
         }
 

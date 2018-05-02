@@ -22,4 +22,7 @@ public class SheetColumn {
 
     @javax.persistence.Column(name = "width")
     private Long width;
+
+    @javax.persistence.Column(name = "order_num")
+    private Long orderNum;
 }
