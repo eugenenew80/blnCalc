@@ -47,4 +47,7 @@ public class ReportDivision {
 
     @OneToMany(mappedBy = "division", fetch = FetchType.LAZY)
     private List<ReportSection> sections;
+
+    @OneToMany(mappedBy = "division", fetch = FetchType.LAZY)
+    private List<ReportRow> rows;
 }

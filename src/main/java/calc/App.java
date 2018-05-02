@@ -21,6 +21,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.util.Comparator;
 import java.util.List;
@@ -31,6 +32,9 @@ import java.util.List;
 @SpringBootApplication
 public class App  {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
+    private static final String XSL_FILE = "files/report.xsl";
+    private static final String INPUT_FILE = "files/doc.xml";
+    private static final String OUTPUT_FILE = "files/excel.xml";
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
@@ -67,6 +71,23 @@ public class App  {
                     columnElement.setAttribute("width", column.getWidth().toString());
                     sheetElement.appendChild(columnElement);
                 });
+
+            Element headElement = doc.createElement("head");
+            sheetElement.appendChild(headElement);
+
+            Element repNameElement = doc.createElement("name");
+            repNameElement.appendChild(doc.createTextNode("АКТ"));
+            headElement.appendChild(repNameElement);
+
+            Element repPeriodElement = doc.createElement("period");
+            repPeriodElement.setAttribute("start-date", "2018-03-01");
+            repPeriodElement.setAttribute("end-date", "2018-03-31");
+            headElement.appendChild(repPeriodElement);
+
+            Element repEnergyObjectElement = doc.createElement("energy-object");
+            repEnergyObjectElement.setAttribute("type", "subst");
+            repEnergyObjectElement.setAttribute("name", "ПС 500 кВ Шымкент");
+            headElement.appendChild(repEnergyObjectElement);
 
             List<ReportTable> tables = sheet.getTables();
             for (ReportTable table : tables) {
@@ -117,26 +138,19 @@ public class App  {
                                     .stream()
                                     .sorted(Comparator.comparing(ReportRow::getOrderNum))
                                     .forEach(row -> {
-                                        Element rowElement;
-                                        if (!row.getIsTotal()) {
-                                            rowElement = doc.createElement("row");
-                                            rowElement.setAttribute("is-total", "true");
-                                        }
-                                        else
-                                            rowElement = doc.createElement("total");
-
+                                        Element rowElement = createRowElement(doc, row);
                                         sectionElement.appendChild(rowElement);
-
-                                        List<ReportCell> cells = row.getCells();
-                                        for (ReportCell cell : cells) {
-                                            Element attrElement = doc.createElement("attr");
-                                            attrElement.setAttribute("name", cell.getAttr().getName());
-                                            attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
-                                            attrElement.setNodeValue(cell.getVal());
-                                            rowElement.appendChild(attrElement);
-                                        }
-                                }) ;
+                                });
                         });
+
+                        division.getRows()
+                            .stream()
+                            .filter(t -> t.getSection()==null)
+                            .sorted(Comparator.comparing(ReportRow::getOrderNum))
+                            .forEach(row -> {
+                                Element rowElement = createRowElement(doc, row);
+                                divisionElement.appendChild(rowElement);
+                            });
                     });
             }
         }
@@ -144,8 +158,54 @@ public class App  {
         TransformerFactory tranFactory = TransformerFactory.newInstance();
         Transformer aTransformer = tranFactory.newTransformer();
         Source src = new DOMSource(doc);
-        Result dest = new StreamResult(new File("files/xmlFileName.xml"));
+        Result dest = new StreamResult(new File(INPUT_FILE));
         aTransformer.transform(src, dest);
+
+
+        StreamSource xslCode = new StreamSource(new File(XSL_FILE));
+        StreamSource input = new StreamSource(new File(INPUT_FILE));
+        StreamResult output = new StreamResult(new File(OUTPUT_FILE));
+
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer trans = tf.newTransformer(xslCode);
+
+        trans.transform(input, output);
+    }
+
+    private Element createRowElement(Document doc, ReportRow row) {
+        Element rowElement;
+        if (!row.getIsTotal()) {
+            rowElement = doc.createElement("row");
+            rowElement.setAttribute("is-total", "true");
+        }
+        else
+            rowElement = doc.createElement("total");
+
+        row.getCells()
+            .stream()
+            .sorted(Comparator.comparing(c -> c.getAttr().getOrderNum()))
+            .forEach(cell -> {
+                Element attrElement = doc.createElement("attr");
+
+                if (!row.getIsTotal() ) {
+                    attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
+                }
+                else
+                    if (cell.getVal() != null) {
+                        attrElement.setAttribute("name", cell.getAttr().getName());
+                        attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
+                    }
+                    else
+                        attrElement.setAttribute("type", "empty");
+
+                if (cell.getAttr().getPrecision()!=null)
+                    attrElement.setAttribute("precision", cell.getAttr().getPrecision().toString());
+
+                rowElement.appendChild(attrElement);
+                if (cell.getVal() != null)
+                    attrElement.appendChild(doc.createTextNode(cell.getVal()));
+            });
+        return rowElement;
     }
 
     @Autowired

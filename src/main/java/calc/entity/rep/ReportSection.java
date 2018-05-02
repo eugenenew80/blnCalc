@@ -49,6 +49,6 @@ public class ReportSection {
     @Enumerated(EnumType.STRING)
     private TablePartEnum belongTo;
 
-    @OneToMany(mappedBy = "section", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "section", fetch = FetchType.LAZY)
     private List<ReportRow> rows;
 }
