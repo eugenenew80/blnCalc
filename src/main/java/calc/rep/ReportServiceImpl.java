@@ -273,24 +273,33 @@ public class ReportServiceImpl implements ReportService {
     }
 
     private Element createCellElement(Document doc, ReportCell cell) {
-        Element attrElement = doc.createElement("attr");
+        if (cell.getRow().getIsTotal())
+            return createTotalCellElement(doc, cell);
 
-        if (!cell.getRow().getIsTotal() ) {
-            attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
-        }
-        else
-            if (cell.getVal() != null) {
-                attrElement.setAttribute("name", cell.getAttr().getName());
-                attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
-            }
-            else
-                attrElement.setAttribute("type", "empty");
+        Element attrElement = doc.createElement("attr");
+        attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
 
         if (cell.getAttr().getPrecision()!=null)
             attrElement.setAttribute("precision", cell.getAttr().getPrecision().toString());
 
         if (cell.getVal() != null)
             attrElement.appendChild(doc.createTextNode(cell.getVal()));
+
+        return attrElement;
+    }
+
+    private Element createTotalCellElement(Document doc, ReportCell cell) {
+        Element attrElement = doc.createElement("attr");
+
+        attrElement.setAttribute("type", "empty");
+        if (cell.getVal() != null) {
+            attrElement.setAttribute("name", cell.getAttr().getName());
+            attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
+            attrElement.appendChild(doc.createTextNode(cell.getVal()));
+        }
+
+        if (cell.getAttr().getPrecision()!=null)
+            attrElement.setAttribute("precision", cell.getAttr().getPrecision().toString());
 
         return attrElement;
     }
