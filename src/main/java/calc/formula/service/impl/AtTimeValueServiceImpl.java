@@ -32,13 +32,14 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
     public List<CalcResult> getValue(
         String meteringPointCode,
         String parameterCode,
+        String per,
         CalcContext context
     ) {
         MeteringPoint meteringPoint = meteringPointRepo
             .findByCode(meteringPointCode);
 
         Parameter parameter = parameterRepo
-            .findByCodeAndParamType(parameterCode, "AT");
+            .findByCode(parameterCode);
 
         if (meteringPoint == null || parameter == null)
             return Collections.emptyList();
@@ -53,16 +54,18 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
         if (!list.isEmpty())
             return list;
 
-        return findValues(meteringPoint, parameter, context)
+        return findValues(meteringPoint, parameter, per, context)
             .stream()
             .map(AtTimeValue::toResult)
             .collect(toList());
     }
 
-    private List<AtTimeValue> findValues(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
-        LocalDateTime date = context.getEndDate()
-            .atStartOfDay()
-            .plusDays(1);
+    private List<AtTimeValue> findValues(MeteringPoint meteringPoint, Parameter parameter, String per, CalcContext context) {
+        LocalDateTime date;
+        if (per.equals("end"))
+            date = context.getEndDate().atStartOfDay().plusDays(1);
+        else
+            date = context.getStartDate().atStartOfDay();
 
         return repo.findAllByMeteringPointIdAndParamIdAndMeteringDate(
             meteringPoint.getId(),
@@ -74,7 +77,7 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
     @Override
     public List<SourceTypePriority> getSourceTypes(String meteringPointCode, CalcContext context) {
         MeteringPoint meteringPoint = meteringPointRepo
-                .findByCode(meteringPointCode);
+            .findByCode(meteringPointCode);
 
         if (meteringPoint == null)
             return Collections.emptyList();

@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toSet;
 public class AtTimeValueExpression implements Expression {
     private final String meteringPointCode;
     private final String parameterCode;
+    private final String per;
     private final Double rate;
     private final Formula formula;
     private final AtTimeValueService service;
@@ -37,6 +38,7 @@ public class AtTimeValueExpression implements Expression {
         List<CalcResult> list = service.getValue(
             meteringPointCode,
             parameterCode,
+            per,
             context
         );
         list.forEach(t -> t.setVal(t.getVal() * rate));

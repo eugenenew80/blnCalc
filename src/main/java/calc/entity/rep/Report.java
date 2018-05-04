@@ -3,6 +3,8 @@ package calc.entity.rep;
 import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Immutable;
+
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
+@Immutable
 @Table(name = "calc_reports")
 public class Report {
     @Id
@@ -27,4 +30,7 @@ public class Report {
 
     @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
     private List<ReportSheet> sheets;
+
+    @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
+    private List<ReportCell> cells;
 }

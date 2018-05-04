@@ -1,7 +1,11 @@
 package calc.rep;
 
 import calc.entity.rep.*;
+import calc.entity.rep.enums.AttrTypeEnum;
 import calc.entity.rep.enums.TablePartEnum;
+import calc.formula.CalcContext;
+import calc.formula.CalcResult;
+import calc.formula.service.CalcService;
 import calc.repo.rep.ReportRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +20,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileWriter;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import static java.util.stream.Collectors.toList;
 
@@ -24,16 +31,42 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
     private final ReportRepo reportRepo;
+    private final CalcService calcService;
+
+    public ReportCell calc(ReportCell cell)  {
+        CalcContext context = CalcContext.builder()
+            .startDate(LocalDate.of(2018, 3, 1))
+            .endDate(LocalDate.of(2018, 3, 31))
+            .orgId(11l)
+            .build();
+
+        context.setValues(new ArrayList<>());
+        context.setTrace(new HashMap<>());
+
+        if (cell.getFormula()!=null) {
+            CalcResult result = null;
+            try {
+                result = calcService.calc(cell.getFormula(), context);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (result.getVal()!=null)
+                cell.setVal(result.getVal().toString());
+        }
+
+        return cell;
+    }
 
     @Override
     public Document buildReport(Long reportId) throws Exception {
-        Report report = reportRepo.findOne(reportId);
-
         Document doc = DocumentBuilderFactory
             .newInstance()
             .newDocumentBuilder()
             .newDocument();
 
+        Report report = reportRepo.findOne(reportId);
         Document result = createReportElement(report, doc);
         save(result, "files/doc.xml");
 
@@ -178,6 +211,7 @@ public class ReportServiceImpl implements ReportService {
     private Element createTableHeaderElement(Document doc, List<ReportAttr> attrs) {
         Element tableHeadElement  = doc.createElement("head");
         attrs.stream()
+            .filter(attr -> attr.getBelongTo() == TablePartEnum.BODY)
             .sorted(Comparator.comparing(ReportAttr::getOrderNum))
             .forEach(attr -> {
                 Element tableColumnElement = doc.createElement("column");
@@ -276,11 +310,23 @@ public class ReportServiceImpl implements ReportService {
         if (cell.getRow().getIsTotal())
             return createTotalCellElement(doc, cell);
 
-        Element attrElement = doc.createElement("attr");
-        attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
+        cell = calc(cell);
 
-        if (cell.getAttr().getPrecision()!=null)
-            attrElement.setAttribute("precision", cell.getAttr().getPrecision().toString());
+        AttrTypeEnum attrType = cell.getAttrType();
+        if (attrType==null)
+            attrType = cell.getAttr().getAttrType();
+
+        Long precision = cell.getPrecision();
+        if (precision == null)
+            precision = cell.getAttr().getPrecision();
+
+        Element attrElement = doc.createElement("attr");
+
+        if (attrType!=null)
+            attrElement.setAttribute("type", attrType.toString().toLowerCase());
+
+        if (precision!=null)
+            attrElement.setAttribute("precision", precision.toString());
 
         if (cell.getVal() != null)
             attrElement.appendChild(doc.createTextNode(cell.getVal()));
@@ -291,15 +337,23 @@ public class ReportServiceImpl implements ReportService {
     private Element createTotalCellElement(Document doc, ReportCell cell) {
         Element attrElement = doc.createElement("attr");
 
+        AttrTypeEnum attrType = cell.getAttrType();
+        if (attrType==null)
+            attrType = cell.getAttr().getAttrType();
+
+        Long precision = cell.getPrecision();
+        if (precision == null)
+            precision = cell.getAttr().getPrecision();
+
         attrElement.setAttribute("type", "empty");
-        if (cell.getVal() != null) {
+        if (cell.getVal() != null && attrType!=null) {
             attrElement.setAttribute("name", cell.getAttr().getName());
-            attrElement.setAttribute("type", cell.getAttr().getAttrType().toString().toLowerCase());
+            attrElement.setAttribute("type", attrType.toString().toLowerCase());
             attrElement.appendChild(doc.createTextNode(cell.getVal()));
         }
 
-        if (cell.getAttr().getPrecision()!=null)
-            attrElement.setAttribute("precision", cell.getAttr().getPrecision().toString());
+        if (precision!=null)
+            attrElement.setAttribute("precision", precision.toString());
 
         return attrElement;
     }

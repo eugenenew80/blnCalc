@@ -3,12 +3,15 @@ package calc.entity.rep;
 import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Immutable;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @Entity
+@Immutable
 @javax.persistence.Table(name = "calc_report_tables")
 public class ReportTable {
     @Id

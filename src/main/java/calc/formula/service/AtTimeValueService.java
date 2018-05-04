@@ -10,6 +10,7 @@ public interface AtTimeValueService {
     List<CalcResult> getValue(
         String meteringPointCode,
         String parameterCode,
+        String per,
         CalcContext context
     );
 

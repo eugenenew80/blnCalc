@@ -4,12 +4,15 @@ import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.rep.enums.TablePartEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Immutable;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @Entity
+@Immutable
 @javax.persistence.Table(name = "calc_table_sections")
 public class ReportSection {
     @Id

@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MeteringPointRepo extends JpaRepository<MeteringPoint, Long> {
-    @Cacheable(value="meteringPointsCache", key="{#code}" )
     MeteringPoint findByCode(String code);
 }

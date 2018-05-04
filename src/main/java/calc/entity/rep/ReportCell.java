@@ -1,13 +1,17 @@
 package calc.entity.rep;
 
+import calc.entity.rep.enums.AttrTypeEnum;
 import calc.entity.rep.enums.TablePartEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Immutable;
+
 import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @Entity
+@Immutable
 @javax.persistence.Table(name = "calc_table_cells")
 public class ReportCell {
     @Id
@@ -41,10 +45,19 @@ public class ReportCell {
     @JoinColumn(name = "attr_id")
     private ReportAttr attr;
 
+    @Column(name = "attr_type")
+    @Enumerated(EnumType.STRING)
+    private AttrTypeEnum attrType;
+
+    @Column(name = "precision")
+    private Long precision;
     @Column
     @Enumerated(EnumType.STRING)
     private TablePartEnum belongTo;
 
     @Column(name = "val")
     private String val;
+
+    @Column(name = "formula")
+    private String formula;
 }

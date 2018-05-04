@@ -40,7 +40,7 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
             .findByCode(meteringPointCode);
 
         Parameter parameter = parameterRepo
-            .findByCodeAndParamType(parameterCode, "PT");
+            .findByCode(parameterCode);
 
         if (meteringPoint == null || parameter == null)
             return Collections.emptyList();

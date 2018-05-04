@@ -5,12 +5,14 @@ import calc.entity.rep.enums.TablePartEnum;
 import calc.entity.rep.enums.ValueTypeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @Entity
+@Immutable
 @Table(name = "calc_table_attrs")
 public class ReportAttr {
     @Id

@@ -2,11 +2,14 @@ package calc.entity.rep;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Immutable;
+
 import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @Entity
+@Immutable
 @javax.persistence.Table(name = "calc_sheet_columns")
 public class SheetColumn {
     @Id

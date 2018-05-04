@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-64" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_reports</comment>
+        <createTable tableName="calc_reports" schemaName="apps" remarks="Шаблоны отчётов">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="code" type="varchar(20)" remarks="Уникальный код формулы">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="description" type="varchar(300)" remarks="Описание формулы">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="text" type="varchar(3000)" remarks="Текст формулы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала действия формулы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="TIMESTAMP" remarks="Дата и время окончания действия формулы">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-65" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_reports</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_reports"
+                schemaName="apps"
+                tableName="calc_reports"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-66" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_reports</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_reports_s"
+                startValue="1"/>
+    </changeSet>
+
+</databaseChangeLog>

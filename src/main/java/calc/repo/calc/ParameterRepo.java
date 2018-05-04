@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ParameterRepo extends JpaRepository<Parameter, Long> {
-    @Cacheable(value="paramsCache", key="{#code, #paramType}" )
-    Parameter findByCodeAndParamType(String code, String paramType);
+    Parameter findByCode(String code);
 }
