@@ -177,7 +177,7 @@ public class ReportServiceImpl implements ReportService {
         tableElement.setAttribute("name", table.getName());
 
         if (table.getHasHeader()) {
-            Element tableHeadElement = createTableHeaderElement(doc, table.getAttrs());
+            Element tableHeadElement = createTableHeaderElement(doc, table);
             tableElement.appendChild(tableHeadElement);
 
             Element bodyElement = doc.createElement("body");
@@ -208,10 +208,11 @@ public class ReportServiceImpl implements ReportService {
         return tableElement;
     }
 
-    private Element createTableHeaderElement(Document doc, List<ReportAttr> attrs) {
+    private Element createTableHeaderElement(Document doc, ReportTable table) {
         Element tableHeadElement  = doc.createElement("head");
-        attrs.stream()
-            .filter(attr -> attr.getBelongTo() == TablePartEnum.BODY)
+        table.getBodyRowTemplate()
+            .getAttrs()
+            .stream()
             .sorted(Comparator.comparing(ReportAttr::getOrderNum))
             .forEach(attr -> {
                 Element tableColumnElement = doc.createElement("column");

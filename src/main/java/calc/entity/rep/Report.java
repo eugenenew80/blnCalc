@@ -30,7 +30,4 @@ public class Report {
 
     @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
     private List<ReportSheet> sheets;
-
-    @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
-    private List<ReportCell> cells;
 }

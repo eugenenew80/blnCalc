@@ -13,27 +13,15 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="code" type="varchar(20)" remarks="Уникальный код формулы">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="description" type="varchar(300)" remarks="Описание формулы">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="text" type="varchar(3000)" remarks="Текст формулы">
+            <column name="name" type="varchar(300)" remarks="Наименование шаблона/отчёта">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
+            <column name="report_type" type="varchar(30)" remarks="Тип шаблона">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала действия формулы">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="end_date" type="TIMESTAMP" remarks="Дата и время окончания действия формулы">
+            <column name="is_template" type="number" remarks="Является шаблоном?">
                 <constraints nullable="true"/>
             </column>
 
@@ -73,4 +61,1187 @@
                 startValue="1"/>
     </changeSet>
 
+
+    <changeSet id="calc-eug-67" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_report_sheets</comment>
+        <createTable tableName="calc_report_sheets" schemaName="apps" remarks="Листы отчета">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор шаблона/отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="row_count" type="number" remarks="Количество строк">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="column_count" type="number" remarks="Количество столбцов">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-68" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_report_sheets</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_report_sheets"
+                schemaName="apps"
+                tableName="calc_report_sheets"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-69" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_report_sheets</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_report_sheets_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-70" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_report_tables</comment>
+        <createTable tableName="calc_report_tables" schemaName="apps" remarks="Таблицы шаблона/отчёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор шаблона/отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="has_header" type="number" remarks="Есть заголовок">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="has_footer" type="number" remarks="Есть подвал">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="body_row_template_id" type="number" remarks="Идентификатор шаблона строки для таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="footer_row_template_id" type="number" remarks="Идентификатор шаблона строки для подвала">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-71" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_report_tables</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_report_tables"
+                schemaName="apps"
+                tableName="calc_report_tables"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-72" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_report_tables</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_report_tables_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-73" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_sheet_columns</comment>
+        <createTable tableName="calc_sheet_columns" schemaName="apps" remarks="Колонки листа">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор шаблона/отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="width" type="number" remarks="Ширина" defaultValue="70">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-74" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_sheet_columns</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_sheet_columns"
+                schemaName="apps"
+                tableName="calc_sheet_columns"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-75" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_sheet_columns</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_sheet_columns_s"
+                startValue="1"/>
+    </changeSet>
+
+
+
+    <changeSet id="calc-eug-76" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_sheet_columns</comment>
+        <createTable tableName="calc_table_divisions" schemaName="apps" remarks="Разделы таблиц">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="table_id" type="number" remarks="Идентификатор таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="belong_to" type="varchar(30)" remarks="К какой части таблицы относится" defaultValue="BODY">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="has_title" type="number" remarks="Выводить заголовок">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="has_total" type="number" remarks="Выводить итоги">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-77" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_table_divisions</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_table_divisions"
+                schemaName="apps"
+                tableName="calc_table_divisions"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-78" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_table_divisions</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_table_divisions_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-79" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_sheet_columns</comment>
+        <createTable tableName="calc_table_sections" schemaName="apps" remarks="Подразделы таблиц">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование подраздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="table_id" type="number" remarks="Идентификатор таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="division_id" type="number" remarks="Идентификатор раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="has_title" type="number" remarks="Выводить заголовок">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="has_total" type="number" remarks="Выводить итоги">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-80" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_table_sections</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_table_sections"
+                schemaName="apps"
+                tableName="calc_table_sections"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-81" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_table_sections</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_table_sections_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-82" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_table_rows</comment>
+        <createTable tableName="calc_table_rows" schemaName="apps" remarks="Строки отчёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование подраздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="table_id" type="number" remarks="Идентификатор таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="division_id" type="number" remarks="Идентификатор раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="section_id" type="number" remarks="Идентификатор подраздела">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="key" type="varchar(300)" remarks="Ключ для автогенерации формул">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_total" type="number" remarks="Выводить итоги">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-83" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_table_rows</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_table_rows"
+                schemaName="apps"
+                tableName="calc_table_rows"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-84" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_table_rows</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_table_rows_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-85" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_table_attrs</comment>
+        <createTable tableName="calc_table_attrs" schemaName="apps" remarks="Атрибуты строк">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="row_template_id" type="number" remarks="Идентификатор шаблона строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование атрибута">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="description" type="varchar(300)" remarks="Описание атрибута">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="attr_type" type="varchar(30)" remarks="Тип атрибута" defaultValue="EMPTY">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="value_type" type="varchar(30)" remarks="Тип атрибута" defaultValue="CONST">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="precision" type="number" remarks="Количество знаков в дробной части">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-86" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_table_attrs</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_table_attrs"
+                schemaName="apps"
+                tableName="calc_table_attrs"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-87" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_table_attrs</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_table_attrs_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-88" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_table_cells</comment>
+        <createTable tableName="calc_table_cells" schemaName="apps" remarks="Ячейки отчёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="table_id" type="number" remarks="Идентификатор таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="division_id" type="number" remarks="Идентификатор раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="section_id" type="number" remarks="Идентификатор подраздела">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="row_id" type="number" remarks="Идентификатор строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="attr_id" type="number" remarks="Идентификатор атрибута">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="val" type="varchar(300)" remarks="Значение ячейки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="formula" type="varchar(4000)" remarks="Формула для расчёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="attr_type" type="varchar(30)" remarks="Тип атрибута" defaultValue="EMPTY">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="precision" type="number" remarks="Количество знаков в дробной части">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-89" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_table_cells</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_table_cells"
+                schemaName="apps"
+                tableName="calc_table_cells"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-90" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_table_cells</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_table_cells_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-91" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_report_sheets</comment>
+        <createIndex indexName="idx_calc_report_sheets_1" schemaName="apps" tableName="calc_report_sheets" unique="false">
+            <column name="report_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-92" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_report_tables</comment>
+        <createIndex indexName="idx_calc_report_tables_1" schemaName="apps" tableName="calc_report_tables" unique="false">
+            <column name="report_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-93" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_report_tables</comment>
+        <createIndex indexName="idx_calc_report_tables_2" schemaName="apps" tableName="calc_report_tables" unique="false">
+            <column name="sheet_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-94" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_sheet_columns</comment>
+        <createIndex indexName="idx_calc_sheet_columns_1" schemaName="apps" tableName="calc_sheet_columns" unique="false">
+            <column name="report_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-95" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_sheet_columns</comment>
+        <createIndex indexName="idx_calc_sheet_columns_2" schemaName="apps" tableName="calc_sheet_columns" unique="false">
+            <column name="sheet_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-96" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_divisions</comment>
+        <createIndex indexName="idx_calc_table_divisions_1" schemaName="apps" tableName="calc_table_divisions" unique="false">
+            <column name="report_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-97" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_divisions</comment>
+        <createIndex indexName="idx_calc_table_divisions_2" schemaName="apps" tableName="calc_table_divisions" unique="false">
+            <column name="sheet_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-98" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_divisions</comment>
+        <createIndex indexName="idx_calc_table_divisions_3" schemaName="apps" tableName="calc_table_divisions" unique="false">
+            <column name="table_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-99" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_sections</comment>
+        <createIndex indexName="idx_calc_table_sections_1" schemaName="apps" tableName="calc_table_sections" unique="false">
+            <column name="report_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-100" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_sections</comment>
+        <createIndex indexName="idx_calc_table_sections_2" schemaName="apps" tableName="calc_table_sections" unique="false">
+            <column name="sheet_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-101" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_sections</comment>
+        <createIndex indexName="idx_calc_table_sections_3" schemaName="apps" tableName="calc_table_sections" unique="false">
+            <column name="table_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-102" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_sections</comment>
+        <createIndex indexName="idx_calc_table_sections_4" schemaName="apps" tableName="calc_table_sections" unique="false">
+            <column name="division_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-103" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_rows</comment>
+        <createIndex indexName="idx_calc_table_rows_1" schemaName="apps" tableName="calc_table_rows" unique="false">
+            <column name="report_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-104" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_rows</comment>
+        <createIndex indexName="idx_calc_table_rows_2" schemaName="apps" tableName="calc_table_rows" unique="false">
+            <column name="sheet_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-105" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_rows</comment>
+        <createIndex indexName="idx_calc_table_rows_3" schemaName="apps" tableName="calc_table_rows" unique="false">
+            <column name="table_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-106" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_rows</comment>
+        <createIndex indexName="idx_calc_table_rows_4" schemaName="apps" tableName="calc_table_rows" unique="false">
+            <column name="division_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-107" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_rows</comment>
+        <createIndex indexName="idx_calc_table_rows_5" schemaName="apps" tableName="calc_table_rows" unique="false">
+            <column name="section_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-108" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_attrs</comment>
+        <createIndex indexName="idx_calc_table_attrs_1" schemaName="apps" tableName="calc_table_attrs" unique="false">
+            <column name="row_template_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-109" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_cells</comment>
+        <createIndex indexName="idx_calc_table_cells_1" schemaName="apps" tableName="calc_table_cells" unique="false">
+            <column name="report_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-110" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_cells</comment>
+        <createIndex indexName="idx_calc_table_cells_2" schemaName="apps" tableName="calc_table_cells" unique="false">
+            <column name="sheet_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-111" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_cells</comment>
+        <createIndex indexName="idx_calc_table_cells_3" schemaName="apps" tableName="calc_table_cells" unique="false">
+            <column name="table_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-112" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_cells</comment>
+        <createIndex indexName="idx_calc_table_cells_4" schemaName="apps" tableName="calc_table_cells" unique="false">
+            <column name="division_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-113" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_cells</comment>
+        <createIndex indexName="idx_calc_table_cells_5" schemaName="apps" tableName="calc_table_cells" unique="false">
+            <column name="section_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-114" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_cells</comment>
+        <createIndex indexName="idx_calc_table_cells_6" schemaName="apps" tableName="calc_table_cells" unique="false">
+            <column name="row_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-115" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_table_cells</comment>
+        <createIndex indexName="idx_calc_table_cells_7" schemaName="apps" tableName="calc_table_cells" unique="false">
+            <column name="attr_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-116" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_report_sheets to calc_reports</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_report_sheets"
+                baseColumnNames="report_id"
+                constraintName="fk_calc_report_sheets_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_reports"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-117" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_report_tables to calc_reports</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_report_tables"
+                baseColumnNames="report_id"
+                constraintName="fk_calc_report_tables_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_reports"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-118" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_report_tables to calc_report_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_report_tables"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_report_tables_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_report_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-119" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_sheet_columns to calc_reports</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_sheet_columns"
+                baseColumnNames="report_id"
+                constraintName="fk_calc_sheet_columns_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_reports"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-120" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_sheet_columns to calc_report_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_sheet_columns"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_sheet_columns_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_report_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-121" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_divisions to calc_reports</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_divisions"
+                baseColumnNames="report_id"
+                constraintName="fk_calc_table_divisions_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_reports"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-122" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_divisions to calc_report_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_divisions"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_table_divisions_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_report_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-123" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_divisions to calc_report_tables</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_divisions"
+                baseColumnNames="table_id"
+                constraintName="fk_calc_table_divisions_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_report_tables"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-124" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_sections to calc_reports</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_sections"
+                baseColumnNames="report_id"
+                constraintName="fk_calc_table_sections_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_reports"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-125" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_sections to calc_report_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_sections"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_table_sections_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_report_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-126" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_sections to calc_report_tables</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_sections"
+                baseColumnNames="table_id"
+                constraintName="fk_calc_table_sections_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_report_tables"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-127" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_sections to calc_table_divisions</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_sections"
+                baseColumnNames="division_id"
+                constraintName="fk_calc_table_sections_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_table_divisions"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-128" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_rows to calc_reports</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_rows"
+                baseColumnNames="report_id"
+                constraintName="fk_calc_table_rows_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_reports"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-129" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_rows to calc_report_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_rows"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_table_rows_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_report_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-130" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_rows to calc_report_tables</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_rows"
+                baseColumnNames="table_id"
+                constraintName="fk_calc_table_rows_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_report_tables"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-131" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_rows to calc_table_divisions</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_rows"
+                baseColumnNames="division_id"
+                constraintName="fk_calc_table_rows_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_table_divisions"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-132" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_rows to calc_table_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_rows"
+                baseColumnNames="section_id"
+                constraintName="fk_calc_table_rows_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_table_sections"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-133" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_cells to calc_reports</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_cells"
+                baseColumnNames="report_id"
+                constraintName="fk_calc_table_cells_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_reports"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-134" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_cells to calc_report_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_cells"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_table_cells_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_report_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-135" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_cells to calc_report_tables</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_cells"
+                baseColumnNames="table_id"
+                constraintName="fk_calc_table_cells_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_report_tables"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-136" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_cells to calc_table_divisions</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_cells"
+                baseColumnNames="division_id"
+                constraintName="fk_calc_table_cells_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_table_divisions"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-137" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_cells to calc_table_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_cells"
+                baseColumnNames="section_id"
+                constraintName="fk_calc_table_cells_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_table_sections"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-138" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_cells to calc_table_rows</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_cells"
+                baseColumnNames="row_id"
+                constraintName="fk_calc_table_cells_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_table_rows"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-139" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_cells to calc_table_attrs</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_cells"
+                baseColumnNames="row_id"
+                constraintName="fk_calc_table_cells_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_table_attrs"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-140" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_table_attrs to calc_row_templates</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_table_attrs"
+                baseColumnNames="row_template_id"
+                constraintName="fk_calc_table_attrs_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_row_templates"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>

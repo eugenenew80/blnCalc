@@ -3,7 +3,6 @@ package calc.entity.rep;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
-
 import javax.persistence.*;
 
 @Data
@@ -23,9 +22,10 @@ public class SheetColumn {
     @JoinColumn(name = "sheet_id")
     private ReportSheet sheet;
 
-    @javax.persistence.Column(name = "width")
+    @Column(name = "width")
     private Long width;
 
-    @javax.persistence.Column(name = "order_num")
+    @Column(name = "order_num")
     private Long orderNum;
+
 }

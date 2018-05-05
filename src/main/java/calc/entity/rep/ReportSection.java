@@ -48,10 +48,6 @@ public class ReportSection {
     @Column(name = "order_num")
     private Long orderNum;
 
-    @Column(name = "belong_to")
-    @Enumerated(EnumType.STRING)
-    private TablePartEnum belongTo;
-
     @OneToMany(mappedBy = "section", fetch = FetchType.LAZY)
     private List<ReportRow> rows;
 }

@@ -125,7 +125,7 @@ public class OperatorFactoryImpl implements OperatorFactory {
     private Pair<Double, Double> validate(Expression op1, Expression op2, Double def) {
         Double v1 = op1.value();
         Double v2 = op2.value();
-        if (v1!=null || v2!=null) {
+        if (v1==null || v2==null) {
             if (v1==null) v1 = def;
             if (v2==null) v2 = def;
         }
