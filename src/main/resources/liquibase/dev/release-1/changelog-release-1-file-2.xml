@@ -13,27 +13,15 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="code" type="varchar(20)" remarks="Уникальный код формулы">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="description" type="varchar(300)" remarks="Описание формулы">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="text" type="varchar(3000)" remarks="Текст формулы">
+            <column name="name" type="varchar(300)" remarks="Наименование шаблона/отчёта">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Ид. точки учёта">
+            <column name="report_type" type="varchar(30)" remarks="Тип шаблона">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала действия формулы">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="end_date" type="TIMESTAMP" remarks="Дата и время окончания действия формулы">
+            <column name="is_template" type="number" remarks="Является шаблоном?">
                 <constraints nullable="true"/>
             </column>
 
@@ -73,4 +61,592 @@
                 startValue="1"/>
     </changeSet>
 
+
+    <changeSet id="calc-eug-67" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_report_sheets</comment>
+        <createTable tableName="calc_report_sheets" schemaName="apps" remarks="Листы отчета">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор шаблона/отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="row_count" type="number" remarks="Количество строк">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="column_count" type="number" remarks="Количество столбцов">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-68" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_report_sheets</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_report_sheets"
+                schemaName="apps"
+                tableName="calc_report_sheets"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-69" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_report_sheets</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_report_sheets_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-70" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_report_tables</comment>
+        <createTable tableName="calc_report_tables" schemaName="apps" remarks="Таблицы шаблона/отчёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор шаблона/отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="has_header" type="number" remarks="Есть заголовок">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="has_footer" type="number" remarks="Есть подвал">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="body_row_template_id" type="number" remarks="Идентификатор шаблона строки для таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="footer_row_template_id" type="number" remarks="Идентификатор шаблона строки для подвала">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-71" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_report_tables</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_report_tables"
+                schemaName="apps"
+                tableName="calc_report_tables"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-72" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_report_tables</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_report_tables_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-73" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_sheet_columns</comment>
+        <createTable tableName="calc_sheet_columns" schemaName="apps" remarks="Колонки листа">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор шаблона/отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="width" type="number" remarks="Ширина" defaultValue="70">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-74" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_sheet_columns</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_sheet_columns"
+                schemaName="apps"
+                tableName="calc_sheet_columns"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-75" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_sheet_columns</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_sheet_columns_s"
+                startValue="1"/>
+    </changeSet>
+
+
+
+    <changeSet id="calc-eug-76" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_sheet_columns</comment>
+        <createTable tableName="calc_table_divisions" schemaName="apps" remarks="Разделы таблиц">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="table_id" type="number" remarks="Идентификатор таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="belong_to" type="varchar(30)" remarks="К какой части таблицы относится" defaultValue="BODY">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="has_title" type="number" remarks="Выводить заголовок">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="has_total" type="number" remarks="Выводить итоги">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-77" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_table_divisions</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_table_divisions"
+                schemaName="apps"
+                tableName="calc_table_divisions"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-78" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_table_divisions</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_table_divisions_s"
+                startValue="1"/>
+    </changeSet>
+
+
+
+    <changeSet id="calc-eug-79" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_sheet_columns</comment>
+        <createTable tableName="calc_table_sections" schemaName="apps" remarks="Подразделы таблиц">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование подраздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="table_id" type="number" remarks="Идентификатор таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="division_id" type="number" remarks="Идентификатор раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="has_title" type="number" remarks="Выводить заголовок">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="has_total" type="number" remarks="Выводить итоги">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-80" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_table_sections</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_table_sections"
+                schemaName="apps"
+                tableName="calc_table_sections"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-81" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_table_sections</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_table_sections_s"
+                startValue="1"/>
+    </changeSet>
+
+
+
+    <changeSet id="calc-eug-82" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_table_rows</comment>
+        <createTable tableName="calc_table_rows" schemaName="apps" remarks="Строки отчёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование подраздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="table_id" type="number" remarks="Идентификатор таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="division_id" type="number" remarks="Идентификатор раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="section_id" type="number" remarks="Идентификатор подраздела">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="key" type="varchar(300)" remarks="Ключ для автогенерации формул">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_total" type="number" remarks="Выводить итоги">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-83" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_table_rows</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_table_rows"
+                schemaName="apps"
+                tableName="calc_table_rows"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-84" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_table_rows</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_table_rows_s"
+                startValue="1"/>
+    </changeSet>
+
+
+
+    <changeSet id="calc-eug-85" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_table_attrs</comment>
+        <createTable tableName="calc_table_attrs" schemaName="apps" remarks="Атрибуты строк">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="row_template_id" type="number" remarks="Идентификатор шаблона строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование атрибута">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="description" type="varchar(300)" remarks="Описание атрибута">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="attr_type" type="varchar(30)" remarks="Тип атрибута" defaultValue="EMPTY">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="value_type" type="varchar(30)" remarks="Тип атрибута" defaultValue="CONST">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="precision" type="number" remarks="Количество знаков в дробной части">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-86" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_table_attrs</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_table_attrs"
+                schemaName="apps"
+                tableName="calc_table_attrs"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-87" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_table_attrs</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_table_attrs_s"
+                startValue="1"/>
+    </changeSet>
+
+
+
+    <changeSet id="calc-eug-88" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_table_cells</comment>
+        <createTable tableName="calc_table_cells" schemaName="apps" remarks="Ячейки отчёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="report_id" type="number" remarks="Идентификатор отчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор листа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="table_id" type="number" remarks="Идентификатор таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="division_id" type="number" remarks="Идентификатор раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="section_id" type="number" remarks="Идентификатор подраздела">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="row_id" type="number" remarks="Идентификатор строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="attr_id" type="number" remarks="Идентификатор атрибута">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="val" type="varchar(300)" remarks="Значение ячейки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="formula" type="varchar(4000)" remarks="Формула для расчёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="attr_type" type="varchar(30)" remarks="Тип атрибута" defaultValue="EMPTY">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="precision" type="number" remarks="Количество знаков в дробной части">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-89" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_table_cells</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_table_cells"
+                schemaName="apps"
+                tableName="calc_table_cells"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-90" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_table_cells</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_table_cells_s"
+                startValue="1"/>
+    </changeSet>
 </databaseChangeLog>

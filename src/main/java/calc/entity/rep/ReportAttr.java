@@ -1,12 +1,10 @@
 package calc.entity.rep;
 
 import calc.entity.rep.enums.AttrTypeEnum;
-import calc.entity.rep.enums.TablePartEnum;
 import calc.entity.rep.enums.ValueTypeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
-
 import javax.persistence.*;
 
 @Data
@@ -17,17 +15,10 @@ import javax.persistence.*;
 public class ReportAttr {
     @Id
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "report_id")
-    private Report report;
 
     @ManyToOne
-    @JoinColumn(name = "sheet_id")
-    private ReportSheet sheet;
-
-    @ManyToOne
-    @JoinColumn(name = "table_id")
-    private ReportTable table;
+    @JoinColumn(name = "row_template_id")
+    private RowTemplate rowTemplate;
 
     @Column(name = "name")
     private String name;
@@ -48,8 +39,4 @@ public class ReportAttr {
 
     @Column(name = "order_num")
     private Long orderNum;
-
-    @Column(name = "belong_to")
-    @Enumerated(EnumType.STRING)
-    private TablePartEnum belongTo;
 }

@@ -4,7 +4,6 @@ import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Immutable
-@javax.persistence.Table(name = "calc_report_tables")
+@Table(name = "calc_report_tables")
 public class ReportTable {
     @Id
     private Long id;
@@ -39,7 +38,11 @@ public class ReportTable {
     @OneToMany(mappedBy = "table", fetch = FetchType.LAZY)
     private List<ReportDivision> divisions;
 
-    @OneToMany(mappedBy = "table", fetch = FetchType.LAZY)
-    private List<ReportAttr> attrs;
+    @ManyToOne
+    @JoinColumn(name = "body_row_template_id")
+    private RowTemplate bodyRowTemplate;
 
+    @ManyToOne
+    @JoinColumn(name = "footer_row_template_id")
+    private RowTemplate footerRowTemplate;
 }
