@@ -330,8 +330,6 @@
                 startValue="1"/>
     </changeSet>
 
-
-
     <changeSet id="calc-eug-79" logicalFilePath="path-independent" author="eugene">
         <comment>Creating table: calc_sheet_columns</comment>
         <createTable tableName="calc_table_sections" schemaName="apps" remarks="Подразделы таблиц">
@@ -406,8 +404,6 @@
                 sequenceName="calc_table_sections_s"
                 startValue="1"/>
     </changeSet>
-
-
 
     <changeSet id="calc-eug-82" logicalFilePath="path-independent" author="eugene">
         <comment>Creating table: calc_table_rows</comment>
@@ -488,8 +484,6 @@
                 startValue="1"/>
     </changeSet>
 
-
-
     <changeSet id="calc-eug-85" logicalFilePath="path-independent" author="eugene">
         <comment>Creating table: calc_table_attrs</comment>
         <createTable tableName="calc_table_attrs" schemaName="apps" remarks="Атрибуты строк">
@@ -560,8 +554,6 @@
                 sequenceName="calc_table_attrs_s"
                 startValue="1"/>
     </changeSet>
-
-
 
     <changeSet id="calc-eug-88" logicalFilePath="path-independent" author="eugene">
         <comment>Creating table: calc_table_cells</comment>
@@ -650,7 +642,6 @@
                 startValue="1"/>
     </changeSet>
 
-
     <changeSet id="calc-eug-91" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_report_sheets</comment>
         <createIndex indexName="idx_calc_report_sheets_1" schemaName="apps" tableName="calc_report_sheets" unique="false">
@@ -729,101 +720,98 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-101" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-102" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_sections</comment>
         <createIndex indexName="idx_calc_table_sections_4" schemaName="apps" tableName="calc_table_sections" unique="false">
             <column name="division_id" type="number"/>
         </createIndex>
     </changeSet>
 
-
-    <changeSet id="calc-eug-102" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-103" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_rows</comment>
         <createIndex indexName="idx_calc_table_rows_1" schemaName="apps" tableName="calc_table_rows" unique="false">
             <column name="report_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-103" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-104" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_rows</comment>
         <createIndex indexName="idx_calc_table_rows_2" schemaName="apps" tableName="calc_table_rows" unique="false">
             <column name="sheet_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-104" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-105" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_rows</comment>
         <createIndex indexName="idx_calc_table_rows_3" schemaName="apps" tableName="calc_table_rows" unique="false">
             <column name="table_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-105" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-106" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_rows</comment>
         <createIndex indexName="idx_calc_table_rows_4" schemaName="apps" tableName="calc_table_rows" unique="false">
             <column name="division_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-106" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-107" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_rows</comment>
         <createIndex indexName="idx_calc_table_rows_5" schemaName="apps" tableName="calc_table_rows" unique="false">
             <column name="section_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-107" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-108" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_attrs</comment>
         <createIndex indexName="idx_calc_table_attrs_1" schemaName="apps" tableName="calc_table_attrs" unique="false">
             <column name="row_template_id" type="number"/>
         </createIndex>
     </changeSet>
 
-
-
-    <changeSet id="calc-eug-108" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-109" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_cells</comment>
         <createIndex indexName="idx_calc_table_cells_1" schemaName="apps" tableName="calc_table_cells" unique="false">
             <column name="report_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-109" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-110" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_cells</comment>
         <createIndex indexName="idx_calc_table_cells_2" schemaName="apps" tableName="calc_table_cells" unique="false">
             <column name="sheet_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-110" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-111" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_cells</comment>
         <createIndex indexName="idx_calc_table_cells_3" schemaName="apps" tableName="calc_table_cells" unique="false">
             <column name="table_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-111" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-112" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_cells</comment>
         <createIndex indexName="idx_calc_table_cells_4" schemaName="apps" tableName="calc_table_cells" unique="false">
             <column name="division_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-112" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-113" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_cells</comment>
         <createIndex indexName="idx_calc_table_cells_5" schemaName="apps" tableName="calc_table_cells" unique="false">
             <column name="section_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-113" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-114" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_cells</comment>
         <createIndex indexName="idx_calc_table_cells_6" schemaName="apps" tableName="calc_table_cells" unique="false">
             <column name="row_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-114" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-115" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_cells</comment>
         <createIndex indexName="idx_calc_table_cells_7" schemaName="apps" tableName="calc_table_cells" unique="false">
             <column name="attr_id" type="number"/>
@@ -831,7 +819,7 @@
     </changeSet>
 
 
-    <changeSet id="calc-eug-115" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-116" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_report_sheets to calc_reports</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -848,7 +836,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-116" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-117" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_report_tables to calc_reports</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -865,7 +853,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-117" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-118" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_report_tables to calc_report_sheets</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -882,8 +870,7 @@
         />
     </changeSet>
 
-
-    <changeSet id="calc-eug-118" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-119" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_sheet_columns to calc_reports</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -900,7 +887,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-119" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-120" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_sheet_columns to calc_report_sheets</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -918,7 +905,7 @@
     </changeSet>
 
 
-    <changeSet id="calc-eug-120" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-121" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_divisions to calc_reports</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -935,7 +922,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-121" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-122" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_divisions to calc_report_sheets</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -952,7 +939,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-122" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-123" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_divisions to calc_report_tables</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -969,8 +956,7 @@
         />
     </changeSet>
 
-
-    <changeSet id="calc-eug-123" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-124" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_sections to calc_reports</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -987,7 +973,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-124" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-125" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_sections to calc_report_sheets</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1004,7 +990,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-125" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-126" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_sections to calc_report_tables</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1021,7 +1007,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-126" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-127" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_sections to calc_table_divisions</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1038,8 +1024,7 @@
         />
     </changeSet>
 
-
-    <changeSet id="calc-eug-127" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-128" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_rows to calc_reports</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1056,7 +1041,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-128" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-129" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_rows to calc_report_sheets</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1073,7 +1058,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-129" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-130" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_rows to calc_report_tables</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1090,7 +1075,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-130" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-131" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_rows to calc_table_divisions</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1107,7 +1092,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-131" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-132" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_rows to calc_table_sections</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1124,10 +1109,7 @@
         />
     </changeSet>
 
-
-
-
-    <changeSet id="calc-eug-132" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-133" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_cells to calc_reports</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1144,7 +1126,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-133" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-134" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_cells to calc_report_sheets</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1161,7 +1143,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-134" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-135" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_cells to calc_report_tables</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1178,7 +1160,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-135" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-136" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_cells to calc_table_divisions</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1195,7 +1177,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-136" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-137" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_cells to calc_table_sections</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1212,7 +1194,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-137" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-138" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_cells to calc_table_rows</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1229,7 +1211,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-138" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-139" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_cells to calc_table_attrs</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1246,7 +1228,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-139" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-140" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_attrs to calc_row_templates</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1262,5 +1244,4 @@
                 referencedColumnNames="id"
         />
     </changeSet>
-
 </databaseChangeLog>
