@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Immutable
 @Table(name = "calc_table_attrs")
-public class ReportAttr {
+public class TableAttr {
     @Id
     private Long id;
 

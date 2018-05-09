@@ -10,7 +10,15 @@ import java.util.Map;
 public class CalcContext {
     private LocalDate startDate;
     private LocalDate endDate;
+
     private Long orgId;
+    private String orgName;
+    private String reportType;
+    private String reportName;
+    private String energyObjectType;
+    private Long energyObjectId;
+    private String energyObjectName;
+
     private List<CalcResult> values;
     private Map<Long, List<CalcTrace>> trace;
 }

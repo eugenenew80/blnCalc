@@ -17,7 +17,7 @@ import static calc.util.Util.first;
 
 @RestController
 @RequiredArgsConstructor
-public class FormulaRestController {
+public class FormulaController {
     private final FormulaRepo formulaRepo;
     private final DozerBeanMapper mapper;
 

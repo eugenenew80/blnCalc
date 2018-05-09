@@ -30,6 +30,9 @@ public class ReportSheet {
     @Column(name = "column_count")
     private Long columnCount;
 
+    @Column(name = "order_num")
+    private Long orderNum;
+
     @OneToMany(mappedBy = "sheet", fetch = FetchType.LAZY)
     private List<ReportTable> tables;
 

@@ -1,7 +1,6 @@
 package calc.entity.rep;
 
 import calc.converter.jpa.BooleanToIntConverter;
-import calc.entity.rep.enums.TablePartEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
@@ -13,8 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Immutable
-@javax.persistence.Table(name = "calc_table_rows")
-public class ReportRow {
+@javax.persistence.Table(name = "calc_table_sections")
+public class TableSection {
     @Id
     private Long id;
 
@@ -32,22 +31,22 @@ public class ReportRow {
 
     @ManyToOne
     @JoinColumn(name = "division_id")
-    private ReportDivision division;
-
-    @ManyToOne
-    @JoinColumn(name = "section_id")
-    private ReportSection section;
+    private TableDivision division;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "is_total")
+    @Column(name = "has_total")
     @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isTotal;
+    private Boolean hasTotal;
+
+    @Column(name = "has_title")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean hasTitle;
 
     @Column(name = "order_num")
     private Long orderNum;
 
-    @OneToMany(mappedBy = "row", fetch = FetchType.LAZY)
-    private List<ReportCell> cells;
+    @OneToMany(mappedBy = "section", fetch = FetchType.LAZY)
+    private List<TableRow> rows;
 }

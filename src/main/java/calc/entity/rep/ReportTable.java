@@ -35,8 +35,11 @@ public class ReportTable {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean hasFooter;
 
+    @Column(name = "order_num")
+    private Long orderNum;
+
     @OneToMany(mappedBy = "table", fetch = FetchType.LAZY)
-    private List<ReportDivision> divisions;
+    private List<TableDivision> divisions;
 
     @ManyToOne
     @JoinColumn(name = "body_row_template_id")

@@ -13,8 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Immutable
-@javax.persistence.Table(name = "calc_table_sections")
-public class ReportSection {
+@javax.persistence.Table(name = "calc_table_divisions")
+public class TableDivision {
     @Id
     private Long id;
 
@@ -27,12 +27,8 @@ public class ReportSection {
     private ReportSheet sheet;
 
     @ManyToOne
-    @JoinColumn(name = "table_id")
+    @JoinColumn(name =  "table_id")
     private ReportTable table;
-
-    @ManyToOne
-    @JoinColumn(name = "division_id")
-    private ReportDivision division;
 
     @Column(name = "name")
     private String name;
@@ -48,6 +44,13 @@ public class ReportSection {
     @Column(name = "order_num")
     private Long orderNum;
 
-    @OneToMany(mappedBy = "section", fetch = FetchType.LAZY)
-    private List<ReportRow> rows;
+    @Column(name = "belong_to")
+    @Enumerated(EnumType.STRING)
+    private TablePartEnum belongTo;
+
+    @OneToMany(mappedBy = "division", fetch = FetchType.LAZY)
+    private List<TableSection> sections;
+
+    @OneToMany(mappedBy = "division", fetch = FetchType.LAZY)
+    private List<TableRow> rows;
 }

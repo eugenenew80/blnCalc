@@ -85,6 +85,10 @@
                 <constraints nullable="true"/>
             </column>
 
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
                 <constraints nullable="true"/>
             </column>
@@ -147,6 +151,10 @@
 
             <column name="has_footer" type="number" remarks="Есть подвал">
                 <constraints nullable="true"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ по порядку">
+                <constraints nullable="false"/>
             </column>
 
             <column name="body_row_template_id" type="number" remarks="Идентификатор шаблона строки для таблицы">
@@ -1228,7 +1236,55 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-140" logicalFilePath="path-independent" author="eugene" context="dev">
+
+    <changeSet id="calc-eug-140" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_row_templates</comment>
+        <createTable tableName="calc_row_templates" schemaName="apps" remarks="Шаблоны строк">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование шаблона строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-141" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_row_templates</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_row_templates"
+                schemaName="apps"
+                tableName="calc_row_templates"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-142" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_row_templates</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_row_templates_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-143" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_table_attrs to calc_row_templates</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1244,4 +1300,157 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+
+    <changeSet id="calc-eug-144" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_group_headers</comment>
+        <createTable tableName="calc_group_headers" schemaName="apps" remarks="Группы точек учёта - заголовки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-145" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_group_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_group_headers"
+                schemaName="apps"
+                tableName="calc_group_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-146" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_group_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_group_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-147" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating table: calc_group_lines</comment>
+        <createTable tableName="calc_group_lines" schemaName="apps" remarks="Группы точек учёта - строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="group_header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="№ пр порядку">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-148" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating primary key for table: calc_group_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_group_lines"
+                schemaName="apps"
+                tableName="calc_group_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-149" logicalFilePath="path-independent" author="eugene">
+        <comment>Creating sequence for table: calc_group_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_group_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-150" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_group_lines</comment>
+        <createIndex indexName="idx_calc_group_lines_1" schemaName="apps" tableName="calc_group_lines" unique="false">
+            <column name="group_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-151" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_group_lines</comment>
+        <createIndex indexName="idx_calc_group_lines_2" schemaName="apps" tableName="calc_group_lines" unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-152" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_group_lines to calc_group_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_group_lines"
+                baseColumnNames="group_header_id"
+                constraintName="fk_calc_group_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_group_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-153" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_group_lines to calc_group_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_group_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_group_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>

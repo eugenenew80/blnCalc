@@ -46,7 +46,7 @@
         <Row ss:AutoFitHeight="1">
             <Cell ss:StyleID="h1">
                 <xsl:attribute name="ss:MergeAcross"><xsl:value-of select="$columnCount - 1" /></xsl:attribute>
-                <Data ss:Type="String"><xsl:value-of select="name" /></Data>
+                <Data ss:Type="String"><xsl:value-of select="@name" /></Data>
             </Cell>
         </Row>
 

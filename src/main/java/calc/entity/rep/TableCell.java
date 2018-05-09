@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Immutable
 @Table(name = "calc_table_cells")
-public class ReportCell {
+public class TableCell {
     @Id
     private Long id;
 
@@ -29,19 +29,19 @@ public class ReportCell {
 
     @ManyToOne
     @JoinColumn(name = "division_id")
-    private ReportDivision division;
+    private TableDivision division;
 
     @ManyToOne
     @JoinColumn(name = "section_id")
-    private ReportSection section;
+    private TableSection section;
 
     @ManyToOne
     @JoinColumn(name = "row_id")
-    private ReportRow row;
+    private TableRow row;
 
     @ManyToOne
     @JoinColumn(name = "attr_id")
-    private ReportAttr attr;
+    private TableAttr attr;
 
     @Column(name = "attr_type")
     @Enumerated(EnumType.STRING)

@@ -1,7 +1,6 @@
 package calc.entity.rep;
 
 import calc.converter.jpa.BooleanToIntConverter;
-import calc.entity.rep.enums.TablePartEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
@@ -13,8 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Immutable
-@javax.persistence.Table(name = "calc_table_divisions")
-public class ReportDivision {
+@javax.persistence.Table(name = "calc_table_rows")
+public class TableRow {
     @Id
     private Long id;
 
@@ -27,30 +26,27 @@ public class ReportDivision {
     private ReportSheet sheet;
 
     @ManyToOne
-    @JoinColumn(name =  "table_id")
+    @JoinColumn(name = "table_id")
     private ReportTable table;
+
+    @ManyToOne
+    @JoinColumn(name = "division_id")
+    private TableDivision division;
+
+    @ManyToOne
+    @JoinColumn(name = "section_id")
+    private TableSection section;
 
     @Column(name = "name")
     private String name;
 
-    @Column(name = "has_total")
+    @Column(name = "is_total")
     @Convert(converter = BooleanToIntConverter.class)
-    private Boolean hasTotal;
-
-    @Column(name = "has_title")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean hasTitle;
+    private Boolean isTotal;
 
     @Column(name = "order_num")
     private Long orderNum;
 
-    @Column(name = "belong_to")
-    @Enumerated(EnumType.STRING)
-    private TablePartEnum belongTo;
-
-    @OneToMany(mappedBy = "division", fetch = FetchType.LAZY)
-    private List<ReportSection> sections;
-
-    @OneToMany(mappedBy = "division", fetch = FetchType.LAZY)
-    private List<ReportRow> rows;
+    @OneToMany(mappedBy = "row", fetch = FetchType.LAZY)
+    private List<TableCell> cells;
 }

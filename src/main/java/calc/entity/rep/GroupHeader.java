@@ -10,14 +10,14 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Immutable
-@Table(name = "calc_row_templates")
-public class RowTemplate {
+@Table(name = "calc_group_headers")
+public class GroupHeader {
     @Id
     private Long id;
 
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "rowTemplate", fetch = FetchType.LAZY)
-    private List<TableAttr> attrs;
+    @OneToMany(mappedBy = "groupHeader", fetch = FetchType.LAZY)
+    private List<GroupLine> lines;
 }

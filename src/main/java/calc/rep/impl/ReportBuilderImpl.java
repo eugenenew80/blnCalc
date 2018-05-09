@@ -1,4 +1,4 @@
-package calc.rep;
+package calc.rep.impl;
 
 import calc.entity.rep.*;
 import calc.entity.rep.enums.AttrTypeEnum;
@@ -6,6 +6,7 @@ import calc.entity.rep.enums.TablePartEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.service.CalcService;
+import calc.rep.ReportBuilder;
 import calc.repo.rep.ReportRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,62 +19,35 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.FileWriter;
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
-public class ReportServiceImpl implements ReportService {
+public class ReportBuilderImpl implements ReportBuilder {
     private final ReportRepo reportRepo;
     private final CalcService calcService;
 
-    public ReportCell calc(ReportCell cell)  {
-        CalcContext context = CalcContext.builder()
-            .startDate(LocalDate.of(2018, 3, 1))
-            .endDate(LocalDate.of(2018, 3, 31))
-            .orgId(11l)
-            .build();
-
-        context.setValues(new ArrayList<>());
-        context.setTrace(new HashMap<>());
-
-        if (cell.getFormula()!=null) {
-            CalcResult result = null;
-            try {
-                result = calcService.calc(cell.getFormula(), context);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            if (result.getVal()!=null)
-                cell.setVal(result.getVal().toString());
-        }
-
-        return cell;
-    }
-
     @Override
-    public Document buildReport(Long reportId) throws Exception {
+    public Document buildReport(Long reportId, CalcContext context) throws Exception {
         Document doc = DocumentBuilderFactory
             .newInstance()
             .newDocumentBuilder()
             .newDocument();
 
         Report report = reportRepo.findOne(reportId);
-        Document result = createReportElement(report, doc);
-        save(result, "files/doc.xml");
+        Document result = createReportElement(report, doc, context);
 
         return result;
     }
 
-    private void save(Document doc, String fileName) throws Exception {
+    @Override
+    public void save(Document doc, String fileName) throws Exception {
         DOMSource source = new DOMSource(doc);
 
         FileWriter writer = new FileWriter(new File(fileName));
@@ -90,25 +64,24 @@ public class ReportServiceImpl implements ReportService {
             .newInstance()
             .newTransformer(xslSource);
 
+        DOMSource source = new DOMSource(doc);
         DOMResult output = new DOMResult();
-        trans.transform(new DOMSource(doc), output);
+        trans.transform(source, output);
 
         return (Document) output.getNode();
     }
 
     @Override
-    public Document transform(Long reportId, Source xslSource) throws Exception {
-        return transform(
-            buildReport(reportId),
-            xslSource
-        );
+    public Document transform(Document doc) throws Exception {
+        return transform(doc,  new StreamSource(new File("files/report.xsl")));
     }
 
-    private Document createReportElement(Report report, Document doc) throws Exception {
+
+    private Document createReportElement(Report report, Document doc, CalcContext context)  {
         Element reportElement = doc.createElement("report");
         reportElement.setAttribute("type", report.getReportType());
 
-        List<Element> sheetElements = createSheetElements(doc, report.getSheets());
+        List<Element> sheetElements = createSheetElements(doc, report.getSheets(), context);
         for (Element sheetElement : sheetElements)
             reportElement.appendChild(sheetElement);
 
@@ -116,13 +89,14 @@ public class ReportServiceImpl implements ReportService {
         return doc;
     }
 
-    private List<Element> createSheetElements(Document doc, List<ReportSheet> sheets) {
+    private List<Element> createSheetElements(Document doc, List<ReportSheet> sheets, CalcContext context) {
         return sheets.stream()
-            .map(sheet -> createSheetElement(doc, sheet))
+            .sorted(Comparator.comparing(ReportSheet::getOrderNum))
+            .map(sheet -> createSheetElement(doc, sheet, context))
             .collect(toList());
     }
 
-    private Element createSheetElement(Document doc, ReportSheet sheet) {
+    private Element createSheetElement(Document doc, ReportSheet sheet, CalcContext context) {
         Element sheetElement = doc.createElement("sheet");
         sheetElement.setAttribute("name", sheet.getName());
 
@@ -135,44 +109,42 @@ public class ReportServiceImpl implements ReportService {
                 sheetElement.appendChild(columnElement);
             });
 
-        Element sheetHeaderElement = createSheetHeaderElement(doc);
+        Element sheetHeaderElement = createSheetHeaderElement(doc, context);
         sheetElement.appendChild(sheetHeaderElement);
 
-        List<Element> tableElements = createTableElements(doc, sheet.getTables());
+        List<Element> tableElements = createTableElements(doc, sheet.getTables(), context);
         for (Element tableElement : tableElements)
             sheetElement.appendChild(tableElement);
 
         return sheetElement;
     }
 
-    private Element createSheetHeaderElement(Document doc) {
+    private Element createSheetHeaderElement(Document doc, CalcContext context) {
         Element headElement = doc.createElement("head");
-
-        Element repNameElement = doc.createElement("name");
-        repNameElement.appendChild(doc.createTextNode("АКТ"));
-        headElement.appendChild(repNameElement);
+        headElement.setAttribute("type", context.getReportType());
+        headElement.setAttribute("name", context.getReportName());
 
         Element repPeriodElement = doc.createElement("period");
-        repPeriodElement.setAttribute("start-date", "2018-03-01");
-        repPeriodElement.setAttribute("end-date", "2018-03-31");
+        repPeriodElement.setAttribute("start-date", context.getStartDate().format(DateTimeFormatter.ISO_DATE));
+        repPeriodElement.setAttribute("end-date", context.getEndDate().format(DateTimeFormatter.ISO_DATE));
         headElement.appendChild(repPeriodElement);
 
         Element repEnergyObjectElement = doc.createElement("energy-object");
-        repEnergyObjectElement.setAttribute("type", "subst");
-        repEnergyObjectElement.setAttribute("name", "ПС 500 кВ Шымкент");
+        repEnergyObjectElement.setAttribute("type", context.getEnergyObjectType());
+        repEnergyObjectElement.setAttribute("name", context.getEnergyObjectName());
         headElement.appendChild(repEnergyObjectElement);
 
         return headElement;
     }
 
-    private List<Element> createTableElements(Document doc, List<ReportTable> tables) {
+    private List<Element> createTableElements(Document doc, List<ReportTable> tables, CalcContext context) {
         return tables.stream()
-            .sorted(Comparator.comparing(ReportTable::getId))
-            .map(table -> createTableElement(doc, table))
+            .sorted(Comparator.comparing(ReportTable::getOrderNum))
+            .map(table -> createTableElement(doc, table, context))
             .collect(toList());
     }
 
-    private Element createTableElement(Document doc, ReportTable table) {
+    private Element createTableElement(Document doc, ReportTable table, CalcContext context) {
         Element tableElement = doc.createElement("table");
         tableElement.setAttribute("name", table.getName());
 
@@ -183,12 +155,12 @@ public class ReportServiceImpl implements ReportService {
             Element bodyElement = doc.createElement("body");
             tableElement.appendChild(bodyElement);
 
-            List<ReportDivision> divisions = table.getDivisions()
+            List<TableDivision> divisions = table.getDivisions()
                 .stream()
                 .filter(t -> t.getBelongTo() == TablePartEnum.BODY)
                 .collect(toList());
 
-            List<Element> divisionElements = createDivisionElements(doc, divisions);
+            List<Element> divisionElements = createDivisionElements(doc, divisions, context);
             for (Element divisionElement : divisionElements)
                 bodyElement.appendChild(divisionElement);
 
@@ -200,7 +172,7 @@ public class ReportServiceImpl implements ReportService {
                 .filter(t -> t.getBelongTo() == TablePartEnum.FOOTER)
                 .collect(toList());
 
-            divisionElements = createDivisionElements(doc, divisions);
+            divisionElements = createDivisionElements(doc, divisions, context);
             for (Element divisionElement : divisionElements)
                 footerElement.appendChild(divisionElement);
         }
@@ -213,7 +185,7 @@ public class ReportServiceImpl implements ReportService {
         table.getBodyRowTemplate()
             .getAttrs()
             .stream()
-            .sorted(Comparator.comparing(ReportAttr::getOrderNum))
+            .sorted(Comparator.comparing(TableAttr::getOrderNum))
             .forEach(attr -> {
                 Element tableColumnElement = doc.createElement("column");
                 tableColumnElement.setAttribute("type", attr.getAttrType().toString().toLowerCase());
@@ -226,29 +198,29 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
-    private List<Element> createDivisionElements(Document doc, List<ReportDivision> divisions) {
+    private List<Element> createDivisionElements(Document doc, List<TableDivision> divisions, CalcContext context) {
         return divisions.stream()
-            .sorted(Comparator.comparing(ReportDivision::getOrderNum))
-            .map(division -> createDivisionElement(doc, division))
+            .sorted(Comparator.comparing(TableDivision::getOrderNum))
+            .map(division -> createDivisionElement(doc, division, context))
             .collect(toList());
     }
 
-    private Element createDivisionElement(Document doc, ReportDivision division) {
+    private Element createDivisionElement(Document doc, TableDivision division, CalcContext context) {
         Element divisionElement = doc.createElement("division");
         divisionElement.setAttribute("name", division.getName());
         divisionElement.setAttribute("is-total", division.getHasTotal().toString().toLowerCase());
         divisionElement.setAttribute("is-title", division.getHasTitle().toString().toLowerCase());
 
-        List<Element> sectionElements = createSectionElements(doc, division.getSections());
+        List<Element> sectionElements = createSectionElements(doc, division.getSections(), context);
         for (Element sectionElement : sectionElements)
             divisionElement.appendChild(sectionElement);
 
-        List<ReportRow> rows = division.getRows()
+        List<TableRow> rows = division.getRows()
             .stream()
             .filter(t -> t.getSection() == null)
             .collect(toList());
 
-        List<Element> rowsElement = createRowElements(doc, rows);
+        List<Element> rowsElement = createRowElements(doc, rows, context);
         for (Element rowElement : rowsElement)
             divisionElement.appendChild(rowElement);
 
@@ -256,20 +228,20 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
-    private List<Element> createSectionElements(Document doc, List<ReportSection> sections) {
+    private List<Element> createSectionElements(Document doc, List<TableSection> sections, CalcContext context) {
         return sections.stream()
-            .sorted(Comparator.comparing(ReportSection::getOrderNum))
-            .map(section -> createSectionElement(doc, section))
+            .sorted(Comparator.comparing(TableSection::getOrderNum))
+            .map(section -> createSectionElement(doc, section, context))
             .collect(toList());
     }
 
-    private Element createSectionElement(Document doc, ReportSection section) {
+    private Element createSectionElement(Document doc, TableSection section, CalcContext context) {
         Element sectionElement = doc.createElement("section");
         sectionElement.setAttribute("name", section.getName());
         sectionElement.setAttribute("is-total", section.getHasTotal().toString().toLowerCase());
         sectionElement.setAttribute("is-title", section.getHasTitle().toString().toLowerCase());
 
-        List<Element> rowElements = createRowElements(doc, section.getRows());
+        List<Element> rowElements = createRowElements(doc, section.getRows(), context);
         for (Element rowElement : rowElements)
             sectionElement.appendChild(rowElement);
 
@@ -277,14 +249,14 @@ public class ReportServiceImpl implements ReportService {
     }
 
 
-    private List<Element> createRowElements(Document doc, List<ReportRow> rows) {
+    private List<Element> createRowElements(Document doc, List<TableRow> rows, CalcContext context) {
         return rows.stream()
-            .sorted(Comparator.comparing(ReportRow::getOrderNum))
-            .map(row -> createRowElement(doc, row))
+            .sorted(Comparator.comparing(TableRow::getOrderNum))
+            .map(row -> createRowElement(doc, row, context))
             .collect(toList());
     }
 
-    private Element createRowElement(Document doc, ReportRow row) {
+    private Element createRowElement(Document doc, TableRow row, CalcContext context) {
         Element rowElement;
         if (!row.getIsTotal()) {
             rowElement = doc.createElement("row");
@@ -293,25 +265,25 @@ public class ReportServiceImpl implements ReportService {
         else
             rowElement = doc.createElement("total");
 
-        List<Element> cellElements = createCellElements(doc, row.getCells());
+        List<Element> cellElements = createCellElements(doc, row.getCells(), context);
         for (Element cellElement : cellElements)
             rowElement.appendChild(cellElement);
 
         return rowElement;
     }
 
-    private List<Element> createCellElements(Document doc, List<ReportCell> cells) {
+    private List<Element> createCellElements(Document doc, List<TableCell> cells, CalcContext context) {
         return cells.stream()
             .sorted(Comparator.comparing(c -> c.getAttr().getOrderNum()))
-            .map(cell -> createCellElement(doc, cell))
+            .map(cell -> createCellElement(doc, cell, context))
             .collect(toList());
     }
 
-    private Element createCellElement(Document doc, ReportCell cell) {
+    private Element createCellElement(Document doc, TableCell cell, CalcContext context) {
         if (cell.getRow().getIsTotal())
-            return createTotalCellElement(doc, cell);
+            return createTotalCellElement(doc, cell, context);
 
-        cell = calc(cell);
+        cell = calc(cell, context);
 
         AttrTypeEnum attrType = cell.getAttrType();
         if (attrType==null)
@@ -335,7 +307,9 @@ public class ReportServiceImpl implements ReportService {
         return attrElement;
     }
 
-    private Element createTotalCellElement(Document doc, ReportCell cell) {
+    private Element createTotalCellElement(Document doc, TableCell cell, CalcContext context) {
+        cell = calc(cell, context);
+
         Element attrElement = doc.createElement("attr");
 
         AttrTypeEnum attrType = cell.getAttrType();
@@ -357,5 +331,22 @@ public class ReportServiceImpl implements ReportService {
             attrElement.setAttribute("precision", precision.toString());
 
         return attrElement;
+    }
+
+    private TableCell calc(TableCell cell, CalcContext context)  {
+        if (cell.getFormula()!=null) {
+            CalcResult result = null;
+            try {
+                result = calcService.calc(cell.getFormula(), context);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (result.getVal()!=null)
+                cell.setVal(result.getVal().toString());
+        }
+
+        return cell;
     }
 }
