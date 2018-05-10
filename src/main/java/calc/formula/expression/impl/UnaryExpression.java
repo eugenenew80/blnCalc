@@ -1,7 +1,7 @@
 package calc.formula.expression.impl;
 
 import calc.entity.calc.Formula;
-import calc.formula.expression.Expression;
+import calc.formula.expression.DoubleExpression;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -12,26 +12,26 @@ import static java.util.stream.Collectors.toList;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class UnaryExpression implements Expression {
-    private final Expression expression;
-    private final UnaryOperator<Expression> operator;
+public class UnaryExpression implements DoubleExpression {
+    private final DoubleExpression expression;
+    private final UnaryOperator<DoubleExpression> operator;
     private final Formula formula;
 
     @Override
-    public Expression expression() {
+    public DoubleExpression doubleExpression() {
         return operator.apply(expression);
     }
 
     @Override
-    public Double value() {
-        return expression().value();
+    public Double doubleValue() {
+        return doubleExpression().doubleValue();
     }
 
     @Override
-    public Double[] values() {
-        return Arrays.stream(expression.values())
+    public Double[] doubleValues() {
+        return Arrays.stream(expression.doubleValues())
             .map(v -> DoubleValueExpression.builder().value(v).build())
-            .map(t -> operator.apply(t).value())
+            .map(t -> operator.apply(t).doubleValue())
             .collect(toList())
             .toArray(new Double[0]);
     }

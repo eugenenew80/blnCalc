@@ -1,9 +1,7 @@
 package calc.formula.service;
 
-import calc.entity.calc.SourceTypePriority;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
-
 import java.util.List;
 
 public interface PeriodTimeValueService {
@@ -14,6 +12,4 @@ public interface PeriodTimeValueService {
         Byte endHour,
         CalcContext context
     );
-
-    List<SourceTypePriority> getSourceTypes(String meteringPointCode, CalcContext context);
 }

@@ -24,6 +24,7 @@ public class ReportController {
             .endDate(contextDto.getEndDate())
             .orgId(contextDto.getOrgId())
             .orgName("Южные МЭС")
+            .reportName("АКТ")
             .energyObjectType("SUBST")
             .energyObjectId(11l)
             .energyObjectName("ПС Шымкент 500")

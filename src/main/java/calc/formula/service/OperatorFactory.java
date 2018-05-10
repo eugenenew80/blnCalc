@@ -1,10 +1,10 @@
 package calc.formula.service;
 
-import calc.formula.expression.Expression;
+import calc.formula.expression.DoubleExpression;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
 public interface OperatorFactory {
-    BinaryOperator<Expression> binary(String operator);
-    UnaryOperator<Expression> unary(String operator);
+    BinaryOperator<DoubleExpression> binary(String operator);
+    UnaryOperator<DoubleExpression> unary(String operator);
 }

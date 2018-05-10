@@ -17,7 +17,7 @@ public class GroupLine {
 
     @ManyToOne
     @JoinColumn(name = "group_header_id")
-    private GroupHeader header;
+    private GroupHeader groupHeader;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id")

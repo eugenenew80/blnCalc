@@ -48,7 +48,7 @@ public class AtTimeValue {
 		result.setParamId(this.getParamId());
 		result.setParamType("AT");
 		result.setUnitId(this.getUnitId());
-		result.setVal(this.getVal());
+		result.setDoubleVal(this.getVal());
 		result.setSourceType(this.getSourceType());
 		return result;
 	}

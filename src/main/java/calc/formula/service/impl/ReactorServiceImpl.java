@@ -18,7 +18,7 @@ public class ReactorServiceImpl implements ReactorService {
     private ReactorRepo repo;
 
     @Override
-    public Double getNumberAttribute(Long id, String attr, CalcContext context) {
+    public Double getDoubleAttribute(Long id, String attr, CalcContext context) {
         Reactor reactor = repo.findOne(id);
         if (reactor == null)
             return null;
@@ -29,6 +29,19 @@ public class ReactorServiceImpl implements ReactorService {
 
         if (attr.equals("unom"))
             value = reactor.getUnom();
+
+        return value;
+    }
+
+    @Override
+    public String getStringAttribute(Long id, String attr, CalcContext context) {
+        Reactor reactor = repo.findOne(id);
+        if (reactor == null)
+            return null;
+
+        String value = null;
+        if (attr.equals("name"))
+            value = reactor.getName();
 
         return value;
     }

@@ -17,6 +17,9 @@ public class PowerLine {
     private String code;
 
     @Column
+    private String name;
+
+    @Column
     private Double length;
 
     @Column

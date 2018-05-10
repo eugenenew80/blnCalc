@@ -3,7 +3,8 @@ package calc.formula.service.impl;
 import calc.entity.calc.*;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
-import calc.formula.expression.Expression;
+import calc.formula.expression.DoubleExpression;
+import calc.formula.expression.StringExpression;
 import calc.formula.service.CalcService;
 import calc.formula.service.ExpressionService;
 import calc.repo.calc.FormulaRepo;
@@ -25,19 +26,23 @@ public class CalcServiceImpl implements CalcService {
         Formula formula = new Formula();
         formula.setText(text);
 
-        Double value = expressionService
-            .parse(formula, context)
-            .value();
+        DoubleExpression expression = expressionService
+            .parse(formula, context);
 
         CalcResult result = new CalcResult();
-        result.setVal(value);
+        result.setDoubleVal(expression.doubleValue());
+
+        if (expression instanceof StringExpression) {
+            StringExpression stringExpression = (StringExpression) expression;
+            result.setStringVal(stringExpression.stringValue());
+        }
 
         return result;
     }
 
     @Override
     public List<CalcResult> calc(CalcContext context) throws Exception {
-        Map<String, Expression> expressionMap = new HashMap<>();
+        Map<String, DoubleExpression> expressionMap = new HashMap<>();
         Map<String, Formula>  formulaMap = new HashMap<>();
 
         for (Formula formula : formulaRepo.findAllByMeteringPointOrgId(context.getOrgId())) {
@@ -50,7 +55,7 @@ public class CalcServiceImpl implements CalcService {
             if (formula.getMeteringPoint().getMeteringPointTypeId()!=2)
                 continue;
 
-            Expression expr = expressionService.parse(formula, context);
+            DoubleExpression expr = expressionService.parse(formula, context);
 
             expressionMap.putIfAbsent(formula.getMeteringPoint().getCode(), expr);
             formulaMap.putIfAbsent(formula.getMeteringPoint().getCode(), formula);
@@ -66,17 +71,17 @@ public class CalcServiceImpl implements CalcService {
             for (MeteringPointParameter fp : meteringPoint.getParameters()) {
                 Parameter parameter = fp.getParameter();
                 Unit unit = parameter.getUnit();
-                Expression expression = expressionService.parse(formula, parameter.getCode(), context);
+                DoubleExpression expression = expressionService.parse(formula, parameter.getCode(), context);
 
                 Double[] results;
                 LocalDateTime meteringDate;
                 Long interval;
                 if (parameter.getParamType().equals("PT")) {
-                    results = expression.values();
+                    results = expression.doubleValues();
                     meteringDate = context.getStartDate().atStartOfDay();
                     interval = 3600l;
                 } else {
-                    results = new Double[]{expression.value()};
+                    results = new Double[]{expression.doubleValue()};
                     meteringDate = context.getEndDate().atStartOfDay().plusDays(1);
                     interval = null;
                 }
@@ -84,7 +89,7 @@ public class CalcServiceImpl implements CalcService {
                 for (int i = 0; i < results.length; i++) {
                     CalcResult result = new CalcResult();
                     result.setMeteringDate(meteringDate.plusHours(i));
-                    result.setVal(results[i]);
+                    result.setDoubleVal(results[i]);
                     result.setInterval(interval);
                     result.setMeteringPointId(meteringPoint.getId());
                     result.setParamId(parameter.getId());

@@ -1,7 +1,6 @@
 package calc.formula.service.impl;
 
 import calc.formula.CalcResult;
-import calc.entity.calc.SourceTypePriority;
 import calc.formula.CalcContext;
 import calc.entity.calc.AtTimeValue;
 import calc.entity.calc.MeteringPoint;
@@ -10,7 +9,6 @@ import calc.formula.service.AtTimeValueService;
 import calc.repo.calc.AtTimeValueRepo;
 import calc.repo.calc.MeteringPointRepo;
 import calc.repo.calc.ParameterRepo;
-import calc.repo.calc.SourceTypePriorityRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,6 @@ import static java.util.stream.Collectors.toList;
 public class AtTimeValueServiceImpl implements AtTimeValueService {
     private final AtTimeValueRepo repo;
     private final MeteringPointRepo meteringPointRepo;
-    private final SourceTypePriorityRepo sourceTypePriorityRepo;
     private final ParameterRepo parameterRepo;
 
     @Override
@@ -72,16 +69,5 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
             parameter.getId(),
             date
         );
-    }
-
-    @Override
-    public List<SourceTypePriority> getSourceTypes(String meteringPointCode, CalcContext context) {
-        MeteringPoint meteringPoint = meteringPointRepo
-            .findByCode(meteringPointCode);
-
-        if (meteringPoint == null)
-            return Collections.emptyList();
-
-        return sourceTypePriorityRepo.findAllByMeteringPointId(meteringPoint.getId());
     }
 }

@@ -21,4 +21,5 @@ public class CalcContext {
 
     private List<CalcResult> values;
     private Map<Long, List<CalcTrace>> trace;
+    private Map<Long, CalcResult> results;
 }

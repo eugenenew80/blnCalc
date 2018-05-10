@@ -18,7 +18,7 @@ public class PowerTransformerServiceImpl implements PowerTransformerService {
     private PowerTransformerRepo repo;
 
     @Override
-    public Double getNumberAttribute(Long id, String attr, CalcContext context) {
+    public Double getDoubleAttribute(Long id, String attr, CalcContext context) {
         PowerTransformer powerTransformer = repo.findOne(id);
         if (powerTransformer == null)
             return null;
@@ -41,6 +41,19 @@ public class PowerTransformerServiceImpl implements PowerTransformerService {
 
         if (attr.equals("pkz_ml"))
             value = powerTransformer.getPkzML();
+
+        return value;
+    }
+
+    @Override
+    public String getStringAttribute(Long id, String attr, CalcContext context) {
+        PowerTransformer powerTransformer = repo.findOne(id);
+        if (powerTransformer == null)
+            return null;
+
+        String value = null;
+        if (attr.equals("name"))
+            value = powerTransformer.getName();
 
         return value;
     }

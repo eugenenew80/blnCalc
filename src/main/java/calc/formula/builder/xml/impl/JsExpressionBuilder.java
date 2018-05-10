@@ -3,7 +3,7 @@ package calc.formula.builder.xml.impl;
 import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
-import calc.formula.expression.Expression;
+import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.JsExpression;
 import calc.formula.service.XmlExpressionService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class JsExpressionBuilder implements ExpressionBuilder<JsExpression> {
     @Override
     public JsExpression build(Node parentNode, Formula formula, String parameterCode, CalcContext context) {
         String src = "";
-        HashMap<String, Expression> attributes = new HashMap<>();
+        HashMap<String, DoubleExpression> attributes = new HashMap<>();
 
         for (int i = 0; i < parentNode.getChildNodes().getLength(); i++) {
             Node node = parentNode.getChildNodes().item(i);
@@ -46,7 +46,7 @@ public class JsExpressionBuilder implements ExpressionBuilder<JsExpression> {
                             continue;
 
                         Node operandNode = paramNode.getChildNodes().item(k);
-                        Expression operand = expressionService.parse(operandNode, formula, parameterCode, context);
+                        DoubleExpression operand = expressionService.parse(operandNode, formula, parameterCode, context);
                         attributes.put(paramName, operand);
                     }
                 }

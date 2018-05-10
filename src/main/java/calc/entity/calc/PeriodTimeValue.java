@@ -51,7 +51,7 @@ public class PeriodTimeValue  {
 		result.setParamId(this.getParamId());
 		result.setParamType("PT");
 		result.setUnitId(this.getUnitId());
-		result.setVal(this.getVal());
+		result.setDoubleVal(this.getVal());
 		result.setSourceType(this.getSourceType());
 		return result;
 	}

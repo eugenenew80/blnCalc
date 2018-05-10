@@ -15,6 +15,7 @@ public class XmlExpressionBuilderFactory implements ExpressionBuilderFactory {
     private final PowerLineService powerLineService;
     private final PowerTransformerService powerTransformerService;
     private final ReactorService reactorService;
+    private final MeteringPointService meteringPointService;
     private final ScriptEngine engine;
 
     public ExpressionBuilder getBuilder(String expressionType, XmlExpressionService expressionService) {
@@ -35,6 +36,9 @@ public class XmlExpressionBuilderFactory implements ExpressionBuilderFactory {
 
         if (expressionType.equals("re"))
             return new ReactorExpressionBuilder(reactorService);
+
+        if (expressionType.equals("mp"))
+            return new MeteringPointExpressionBuilder(meteringPointService);
 
         if (expressionType.equals("number"))
             return new DoubleValueExpressionBuilder();

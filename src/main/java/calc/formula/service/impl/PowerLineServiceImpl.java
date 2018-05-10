@@ -18,7 +18,7 @@ public class PowerLineServiceImpl implements PowerLineService {
     private PowerLineRepo repo;
 
     @Override
-    public Double getNumberAttribute(Long id, String code, String attr, CalcContext context) {
+    public Double getDoubleAttribute(Long id, String code, String attr, CalcContext context) {
         PowerLine powerLine = null;
         if (id!=null)
             powerLine = repo.findOne(id);
@@ -37,6 +37,27 @@ public class PowerLineServiceImpl implements PowerLineService {
 
         if (attr.equals("length"))
             value = powerLine.getLength();
+
+        return value;
+    }
+
+    @Override
+    public String getStringAttribute(Long id, String code, String attr, CalcContext context) {
+        PowerLine powerLine = null;
+        if (id!=null)
+            powerLine = repo.findOne(id);
+        else if (code!=null)
+            powerLine = repo.findByCode(code);
+
+        if (powerLine == null)
+            return null;
+
+        String value = null;
+        if (attr.equals("code"))
+            value = powerLine.getCode();
+
+        if (attr.equals("name"))
+            value = powerLine.getName();
 
         return value;
     }

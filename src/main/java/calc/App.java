@@ -38,6 +38,7 @@ public class App  {
             .endDate(LocalDate.of(2018, 3, 31))
             .orgId(11l)
             .orgName("Южные МЭС")
+            .reportName("АКТ")
             .energyObjectType("SUBST")
             .energyObjectId(11l)
             .energyObjectName("ПС Шымкент 500")

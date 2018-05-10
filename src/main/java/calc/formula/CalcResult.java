@@ -11,7 +11,8 @@ public class CalcResult {
     private Long unitId;
     private LocalDateTime meteringDate;
     private Long interval;
-    private Double val;
+    private Double doubleVal;
+    private String stringVal;
     private String paramType;
     private SourceType sourceType;
 }

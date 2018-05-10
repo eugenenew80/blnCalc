@@ -5,7 +5,7 @@ import calc.entity.calc.Formula;
 import calc.entity.calc.SourceType;
 import calc.formula.CalcContext;
 import calc.formula.CalcTrace;
-import calc.formula.expression.Expression;
+import calc.formula.expression.DoubleExpression;
 import calc.formula.service.AtTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toSet;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class AtTimeValueExpression implements Expression {
+public class AtTimeValueExpression implements DoubleExpression {
     private final String meteringPointCode;
     private final String parameterCode;
     private final String per;
@@ -29,24 +29,24 @@ public class AtTimeValueExpression implements Expression {
     private final CalcContext context;
 
     @Override
-    public Expression expression() {
+    public DoubleExpression doubleExpression() {
         return this;
     }
 
     @Override
-    public Double value() {
+    public Double doubleValue() {
         List<CalcResult> list = service.getValue(
             meteringPointCode,
             parameterCode,
             per,
             context
         );
-        list.forEach(t -> t.setVal(t.getVal() * rate));
+        list.forEach(t -> t.setDoubleVal(t.getDoubleVal() * rate));
 
         CalcTrace calcInfo = trace(list);
         Double result = list.stream()
             .filter(t -> t.getSourceType().equals(calcInfo.getSourceType()))
-            .map(t -> t.getVal())
+            .map(t -> t.getDoubleVal())
             .reduce((t1, t2) -> t1 + t2)
             .orElse(null);
 
@@ -55,7 +55,7 @@ public class AtTimeValueExpression implements Expression {
     }
 
     @Override
-    public Double[] values() {
+    public Double[] doubleValues() {
         return new Double[0];
     }
 

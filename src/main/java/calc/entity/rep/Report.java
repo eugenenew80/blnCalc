@@ -4,7 +4,6 @@ import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
-
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.util.List;
@@ -30,4 +29,7 @@ public class Report {
 
     @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
     private List<ReportSheet> sheets;
+
+    @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
+    private List<TableCell> cells;
 }

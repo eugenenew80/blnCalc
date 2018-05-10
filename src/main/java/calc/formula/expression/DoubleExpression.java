@@ -1,17 +1,16 @@
 package calc.formula.expression;
 
 import calc.formula.expression.impl.UnaryExpression;
-
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
-public interface Expression {
-    Expression expression();
-    Double value();
+public interface DoubleExpression {
+    DoubleExpression doubleExpression();
+    Double doubleValue();
 
-    default Double[] values() {
-        Double v = value();
+    default Double[] doubleValues() {
+        Double v = doubleValue();
         return new Double[] {v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v};
     }
 
@@ -19,7 +18,7 @@ public interface Expression {
         return Collections.emptySet();
     }
 
-    default UnaryExpression andThen(UnaryOperator<Expression> operator) {
+    default UnaryExpression andThen(UnaryOperator<DoubleExpression> operator) {
         return UnaryExpression.builder()
             .expression(this)
             .operator(operator)

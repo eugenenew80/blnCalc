@@ -19,6 +19,9 @@ public class MeteringPoint {
     @Column
     private String code;
 
+    @Column
+    private String name;
+
     @Column(name = "org_id")
     private Long orgId;
 

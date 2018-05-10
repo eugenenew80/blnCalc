@@ -3,9 +3,11 @@ package calc.formula.service.impl;
 import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
+import calc.formula.expression.StringExpression;
 import calc.formula.expression.impl.BinaryExpression;
-import calc.formula.expression.Expression;
+import calc.formula.expression.DoubleExpression;
 import calc.formula.builder.ExpressionBuilderFactory;
+import calc.formula.expression.impl.MeteringPointExpression;
 import calc.formula.service.OperatorFactory;
 import calc.formula.service.XmlExpressionService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +34,7 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
     private final OperatorFactory operatorFactory;
 
     @Override
-    public Expression parse(Node node, Formula formula, String parameterCode, CalcContext context) {
+    public DoubleExpression parse(Node node, Formula formula, String parameterCode, CalcContext context) {
         String nodeType = getNodeType(node);
         if (nodeType.equals("binary"))
             return buildBinary(node, formula, parameterCode, context);
@@ -40,20 +42,22 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         if (nodeType.equals("unary"))
             return buildUnary(node, formula, parameterCode, context);
 
-        if (nodeType.equals("expression"))
+        if (nodeType.equals("doubleExpression"))
+            return buildExpression(node, formula, parameterCode, context);
+
+        if (nodeType.equals("stringExpression"))
             return buildExpression(node, formula, parameterCode, context);
 
         throw new IllegalArgumentException("Invalid operation: " + node.getNodeName());
     }
 
-
     @Override
-    public Expression parse(Formula formula, CalcContext context) throws Exception {
+    public DoubleExpression parse(Formula formula, CalcContext context) throws Exception {
         return parse(formula, null, context);
     }
 
     @Override
-    public Expression parse(Formula formula, String parameterCode, CalcContext context) throws Exception {
+    public DoubleExpression parse(Formula formula, String parameterCode, CalcContext context) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setIgnoringComments(true);
         factory.setIgnoringElementContentWhitespace(true);
@@ -76,12 +80,18 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         if (operatorFactory.unary(operator)!=null)
             return "unary";
 
-        return "expression";
+        if (operator.equals("mp")) {
+            Node attr = node.getAttributes().getNamedItem("attr");
+            if (attr.getNodeValue().equals("code") || attr.getNodeValue().equals("name"));
+                return "stringExpression";
+        }
+
+        return "doubleExpression";
     }
 
-    private  Expression buildBinary(Node node, Formula formula, String parameterCode, CalcContext context) {
-        BinaryOperator<Expression> binaryOperator = operatorFactory.binary(node.getNodeName());
-        List<Expression> expressions = buildExpressions(node, formula, parameterCode, context);
+    private DoubleExpression buildBinary(Node node, Formula formula, String parameterCode, CalcContext context) {
+        BinaryOperator<DoubleExpression> binaryOperator = operatorFactory.binary(node.getNodeName());
+        List<DoubleExpression> expressions = buildExpressions(node, formula, parameterCode, context);
 
         BinaryExpression expression = BinaryExpression.builder()
             .operator(binaryOperator)
@@ -91,7 +101,7 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         return expression;
     }
 
-    private Expression buildUnary(Node node, Formula formula, String parameterCode, CalcContext context) {
+    private DoubleExpression buildUnary(Node node, Formula formula, String parameterCode, CalcContext context) {
         int k=-1;
         for (int i=0; i<node.getChildNodes().getLength(); i++) {
             if (node.getChildNodes().item(i).getNodeType()==1) {
@@ -100,23 +110,23 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
             }
         }
 
-        UnaryOperator<Expression> operator = operatorFactory.unary(node.getNodeName());
-        Expression expression = buildExpression(node.getChildNodes().item(k), formula, parameterCode, context);
+        UnaryOperator<DoubleExpression> operator = operatorFactory.unary(node.getNodeName());
+        DoubleExpression expression = buildExpression(node.getChildNodes().item(k), formula, parameterCode, context);
         return expression.andThen(operator);
     }
 
-    private List<Expression> buildExpressions(Node node, Formula formula, String parameterCode, CalcContext context) {
-        List<Expression> expressions = new ArrayList<>();
+    private List<DoubleExpression> buildExpressions(Node node, Formula formula, String parameterCode, CalcContext context) {
+        List<DoubleExpression> expressions = new ArrayList<>();
         for (int i=0; i<node.getChildNodes().getLength(); i++) {
             if (node.getChildNodes().item(i).getNodeType()==3) continue;
-            Expression expression = buildExpression(node.getChildNodes().item(i), formula, parameterCode, context);
+            DoubleExpression expression = buildExpression(node.getChildNodes().item(i), formula, parameterCode, context);
             expressions.add(expression);
         }
 
         return expressions;
     }
 
-    private Expression buildExpression(Node node, Formula formula, String parameterCode, CalcContext context) {
+    private DoubleExpression buildExpression(Node node, Formula formula, String parameterCode, CalcContext context) {
         ExpressionBuilder builder = builderFactory.getBuilder(node.getNodeName(), this);
         if (builder!=null)
             return builder.build(node, formula, parameterCode, context);
@@ -125,13 +135,13 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
     }
 
 
-    public List<String> sort(Map<String, Expression> expressionMap) throws Exception {
+    public List<String> sort(Map<String, DoubleExpression> expressionMap) throws Exception {
         DefaultDirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         for (String key : expressionMap.keySet())
             graph.addVertex(key);
 
         for (String key : expressionMap.keySet()) {
-            Expression expression = expressionMap.get(key);
+            DoubleExpression expression = expressionMap.get(key);
             for (String mp : expression.meteringPoints()) {
                 if (graph.containsVertex(mp))
                     graph.addEdge(mp, key);

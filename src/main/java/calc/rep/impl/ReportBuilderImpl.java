@@ -3,6 +3,7 @@ package calc.rep.impl;
 import calc.entity.rep.*;
 import calc.entity.rep.enums.AttrTypeEnum;
 import calc.entity.rep.enums.TablePartEnum;
+import calc.entity.rep.enums.ValueTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.service.CalcService;
@@ -10,6 +11,7 @@ import calc.rep.ReportBuilder;
 import calc.repo.rep.ReportRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,10 +26,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+
 import static java.util.stream.Collectors.toList;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ReportBuilderImpl implements ReportBuilder {
     private final ReportRepo reportRepo;
@@ -41,8 +45,24 @@ public class ReportBuilderImpl implements ReportBuilder {
             .newDocument();
 
         Report report = reportRepo.findOne(reportId);
-        Document result = createReportElement(report, doc, context);
 
+        Map<Long, CalcResult> results = new HashMap<>();
+        for (TableCell cell : report.getCells()) {
+            if (cell.getAttr().getValueType()== ValueTypeEnum.FORMULA && cell.getFormula()!=null) {
+                CalcResult result = null;
+                try {
+                    result = calcService.calc(cell.getFormula(), context);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                results.put(cell.getId(), result);
+            }
+        }
+
+        context.setResults(results);
+        Document result = createReportElement(report, doc, context);
         return result;
     }
 
@@ -283,8 +303,6 @@ public class ReportBuilderImpl implements ReportBuilder {
         if (cell.getRow().getIsTotal())
             return createTotalCellElement(doc, cell, context);
 
-        cell = calc(cell, context);
-
         AttrTypeEnum attrType = cell.getAttrType();
         if (attrType==null)
             attrType = cell.getAttr().getAttrType();
@@ -301,15 +319,23 @@ public class ReportBuilderImpl implements ReportBuilder {
         if (precision!=null)
             attrElement.setAttribute("precision", precision.toString());
 
-        if (cell.getVal() != null)
-            attrElement.appendChild(doc.createTextNode(cell.getVal()));
+        Object val = cell.getVal();
+        if (cell.getAttr().getValueType()==ValueTypeEnum.FORMULA && cell.getFormula()!=null) {
+            CalcResult calcResult = context.getResults().get(cell.getId());
+            if (attrType == AttrTypeEnum.STRING)
+                val = calcResult.getStringVal();
+
+            if (attrType == AttrTypeEnum.NUMBER)
+                val = calcResult.getDoubleVal();
+        }
+
+        if (val != null)
+            attrElement.appendChild(doc.createTextNode(val.toString()));
 
         return attrElement;
     }
 
     private Element createTotalCellElement(Document doc, TableCell cell, CalcContext context) {
-        cell = calc(cell, context);
-
         Element attrElement = doc.createElement("attr");
 
         AttrTypeEnum attrType = cell.getAttrType();
@@ -320,33 +346,26 @@ public class ReportBuilderImpl implements ReportBuilder {
         if (precision == null)
             precision = cell.getAttr().getPrecision();
 
+        Object val = cell.getVal();
+        if (val==null && cell.getAttr().getValueType()==ValueTypeEnum.FORMULA && cell.getFormula()!=null) {
+            CalcResult calcResult = context.getResults().get(cell.getId());
+            if (attrType == AttrTypeEnum.STRING)
+                val = calcResult.getStringVal();
+
+            if (attrType == AttrTypeEnum.NUMBER)
+                val = calcResult.getDoubleVal();
+        }
+
         attrElement.setAttribute("type", "empty");
-        if (cell.getVal() != null && attrType!=null) {
+        if (val != null && attrType!=null) {
             attrElement.setAttribute("name", cell.getAttr().getName());
             attrElement.setAttribute("type", attrType.toString().toLowerCase());
-            attrElement.appendChild(doc.createTextNode(cell.getVal()));
+            attrElement.appendChild(doc.createTextNode(val.toString()));
         }
 
         if (precision!=null)
             attrElement.setAttribute("precision", precision.toString());
 
         return attrElement;
-    }
-
-    private TableCell calc(TableCell cell, CalcContext context)  {
-        if (cell.getFormula()!=null) {
-            CalcResult result = null;
-            try {
-                result = calcService.calc(cell.getFormula(), context);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            if (result.getVal()!=null)
-                cell.setVal(result.getVal().toString());
-        }
-
-        return cell;
     }
 }

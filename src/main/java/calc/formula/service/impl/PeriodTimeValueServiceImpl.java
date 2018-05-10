@@ -78,15 +78,4 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
             endDate
         );
     }
-
-    @Override
-    public List<SourceTypePriority> getSourceTypes(String meteringPointCode, CalcContext context) {
-        MeteringPoint meteringPoint = meteringPointRepo
-            .findByCode(meteringPointCode);
-
-        if (meteringPoint == null)
-            return Collections.emptyList();
-
-        return sourceTypePriorityRepo.findAllByMeteringPointId(meteringPoint.getId());
-    }
 }

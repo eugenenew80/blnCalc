@@ -5,7 +5,7 @@ import calc.entity.calc.Formula;
 import calc.entity.calc.SourceType;
 import calc.formula.CalcContext;
 import calc.formula.CalcTrace;
-import calc.formula.expression.Expression;
+import calc.formula.expression.DoubleExpression;
 import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toSet;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class PeriodTimeValueExpression implements Expression {
+public class PeriodTimeValueExpression implements DoubleExpression {
     private final String meteringPointCode;
     private final String parameterCode;
     private final Double rate;
@@ -32,19 +32,19 @@ public class PeriodTimeValueExpression implements Expression {
     private final CalcContext context;
 
     @Override
-    public Expression expression() {
+    public DoubleExpression doubleExpression() {
         return this;
     }
 
     @Override
-    public Double value() {
+    public Double doubleValue() {
         return null;
     }
 
     @Override
-    public Double[] values() {
+    public Double[] doubleValues() {
         List<CalcResult> list = getValues();
-        list.forEach(t -> t.setVal(t.getVal() * rate));
+        list.forEach(t -> t.setDoubleVal(t.getDoubleVal() * rate));
 
         Double[] results = new Double[24];
         Arrays.fill(results, null);
@@ -52,7 +52,7 @@ public class PeriodTimeValueExpression implements Expression {
         CalcTrace calcInfo = trace(list);
         list.stream()
             .filter( t -> t.getSourceType().equals(calcInfo.getSourceType()) )
-            .forEach(t -> results[t.getMeteringDate().getHour()] = t.getVal());
+            .forEach(t -> results[t.getMeteringDate().getHour()] = t.getDoubleVal());
 
         calcInfo.setValues(results);
         return results;
