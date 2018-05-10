@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 @RequiredArgsConstructor
 public class DocumentBuilderImpl implements DocumentBuilder {
+
     @Override
     public Document buildDocument(Report report, CalcContext context) throws Exception {
         Document doc = DocumentBuilderFactory
@@ -104,8 +105,19 @@ public class DocumentBuilderImpl implements DocumentBuilder {
             tableElement.appendChild(tableHeadElement);
         }
 
-        Element bodyElement = doc.createElement("body");
+        Element bodyElement = createTableBodyElement(doc, table, context);
         tableElement.appendChild(bodyElement);
+
+        if (table.getHasFooter()) {
+            Element tableFooterElement = createTableFooterElement(doc, table, context);
+            tableElement.appendChild(tableFooterElement);
+        }
+
+        return tableElement;
+    }
+
+    private Element createTableBodyElement(Document doc, ReportTable table, CalcContext context) {
+        Element bodyElement = doc.createElement("body");
 
         List<TableDivision> divisions = table.getDivisions()
             .stream()
@@ -116,12 +128,7 @@ public class DocumentBuilderImpl implements DocumentBuilder {
         for (Element divisionElement : divisionElements)
             bodyElement.appendChild(divisionElement);
 
-        if (table.getHasFooter()) {
-            Element tableFooterElement = createTableFooterElement(doc, table, context);
-            tableElement.appendChild(tableFooterElement);
-        }
-
-        return tableElement;
+        return bodyElement;
     }
 
     private Element createTableHeaderElement(Document doc, ReportTable table, CalcContext context) {
@@ -169,7 +176,6 @@ public class DocumentBuilderImpl implements DocumentBuilder {
         return tableFooterElement;
     }
 
-
     private List<Element> createDivisionElements(Document doc, List<TableDivision> divisions, CalcContext context) {
         return divisions.stream()
             .sorted(Comparator.comparing(TableDivision::getOrderNum))
@@ -199,7 +205,6 @@ public class DocumentBuilderImpl implements DocumentBuilder {
         return divisionElement;
     }
 
-
     private List<Element> createSectionElements(Document doc, List<TableSection> sections, CalcContext context) {
         return sections.stream()
             .sorted(Comparator.comparing(TableSection::getOrderNum))
@@ -219,7 +224,6 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
         return sectionElement;
     }
-
 
     private List<Element> createRowElements(Document doc, List<TableRow> rows, CalcContext context) {
         return rows.stream()

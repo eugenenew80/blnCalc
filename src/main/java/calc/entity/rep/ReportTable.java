@@ -46,6 +46,14 @@ public class ReportTable {
     private RowTemplate bodyRowTemplate;
 
     @ManyToOne
+    @JoinColumn(name = "body_total_template_id")
+    private RowTemplate bodyTotalTemplate;
+
+    @ManyToOne
+    @JoinColumn(name = "header_row_template_id")
+    private RowTemplate headerRowTemplate;
+
+    @ManyToOne
     @JoinColumn(name = "footer_row_template_id")
     private RowTemplate footerRowTemplate;
 }

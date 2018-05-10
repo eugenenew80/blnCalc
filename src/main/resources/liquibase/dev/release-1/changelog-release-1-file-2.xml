@@ -161,6 +161,14 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="body_total_template_id" type="number" remarks="Идентификатор шаблона строки итогов для таблицы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_row_template_id" type="number" remarks="Идентификатор шаблона строки для заголовка">
+                <constraints nullable="true"/>
+            </column>
+
             <column name="footer_row_template_id" type="number" remarks="Идентификатор шаблона строки для подвала">
                 <constraints nullable="true"/>
             </column>
@@ -1449,6 +1457,103 @@
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
                 referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-154" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_report_tables</comment>
+        <createIndex indexName="idx_calc_report_tables_3" schemaName="apps" tableName="calc_report_tables" unique="false">
+            <column name="body_row_template_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-155" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_report_tables</comment>
+        <createIndex indexName="idx_calc_report_tables_4" schemaName="apps" tableName="calc_report_tables" unique="false">
+            <column name="body_total_template_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-156" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_report_tables</comment>
+        <createIndex indexName="idx_calc_report_tables_5" schemaName="apps" tableName="calc_report_tables" unique="false">
+            <column name="header_row_template_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-157" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_report_tables</comment>
+        <createIndex indexName="idx_calc_report_tables_6" schemaName="apps" tableName="calc_report_tables" unique="false">
+            <column name="footer_row_template_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-158" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_report_tables to calc_row_templates</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_report_tables"
+                baseColumnNames="body_row_template_id"
+                constraintName="fk_calc_report_tables_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_row_templates"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-159" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_report_tables to calc_row_templates</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_report_tables"
+                baseColumnNames="body_total_template_id"
+                constraintName="fk_calc_report_tables_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_row_templates"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-160" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_report_tables to calc_row_templates</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_report_tables"
+                baseColumnNames="footer_row_template_id"
+                constraintName="fk_calc_report_tables_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_row_templates"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-161" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_report_tables to calc_row_templates</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_report_tables"
+                baseColumnNames="header_row_template_id"
+                constraintName="fk_calc_report_tables_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_row_templates"
                 referencedColumnNames="id"
         />
     </changeSet>
