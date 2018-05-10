@@ -256,9 +256,6 @@ public class DocumentBuilderImpl implements DocumentBuilder {
     }
 
     private Element createCellElement(Document doc, TableCell cell, CalcContext context) {
-        if (cell.getRow().getIsTotal())
-            return createTotalCellElement(doc, cell, context);
-
         AttrTypeEnum attrType = cell.getAttrType();
         if (attrType==null)
             attrType = cell.getAttr().getAttrType();
@@ -287,40 +284,6 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
         if (val != null)
             attrElement.appendChild(doc.createTextNode(val.toString()));
-
-        return attrElement;
-    }
-
-    private Element createTotalCellElement(Document doc, TableCell cell, CalcContext context) {
-        Element attrElement = doc.createElement("attr");
-
-        AttrTypeEnum attrType = cell.getAttrType();
-        if (attrType==null)
-            attrType = cell.getAttr().getAttrType();
-
-        Long precision = cell.getPrecision();
-        if (precision == null)
-            precision = cell.getAttr().getPrecision();
-
-        Object val = cell.getVal();
-        if (val==null && cell.getAttr().getValueType()==ValueTypeEnum.FORMULA && cell.getFormula()!=null) {
-            CalcResult calcResult = context.getResults().get(cell.getId());
-            if (attrType == AttrTypeEnum.STRING)
-                val = calcResult.getStringVal();
-
-            if (attrType == AttrTypeEnum.NUMBER)
-                val = calcResult.getDoubleVal();
-        }
-
-        attrElement.setAttribute("type", "empty");
-        if (val != null && attrType!=null) {
-            attrElement.setAttribute("name", cell.getAttr().getName());
-            attrElement.setAttribute("type", attrType.toString().toLowerCase());
-            attrElement.appendChild(doc.createTextNode(val.toString()));
-        }
-
-        if (precision!=null)
-            attrElement.setAttribute("precision", precision.toString());
 
         return attrElement;
     }
