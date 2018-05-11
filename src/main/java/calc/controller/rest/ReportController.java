@@ -34,7 +34,6 @@ public class ReportController {
 
         Document document = reportService.buildReport(id, context);
         Document doc = reportService.transform(document);
-
         reportService.save(doc, "files/report.xml");
     }
 }

@@ -4,16 +4,16 @@ import calc.entity.rep.enums.AttrTypeEnum;
 import calc.entity.rep.enums.ValueTypeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
 import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Immutable
 @Table(name = "calc_table_attrs")
 public class TableAttr {
     @Id
+    @SequenceGenerator(name="calc_table_attrs_s", sequenceName = "calc_table_attrs_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_table_attrs_s")
     private Long id;
 
     @ManyToOne

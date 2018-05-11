@@ -3,17 +3,17 @@ package calc.entity.rep;
 import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Immutable
 @Table(name = "calc_report_tables")
 public class ReportTable {
     @Id
+    @SequenceGenerator(name="calc_report_tables_s", sequenceName = "calc_report_tables_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_report_tables_s")
     private Long id;
 
     @ManyToOne
@@ -46,7 +46,7 @@ public class ReportTable {
     private RowTemplate bodyRowTemplate;
 
     @ManyToOne
-    @JoinColumn(name = "body_total_template_id")
+    @JoinColumn(name = "body_total_row_template_id")
     private RowTemplate bodyTotalTemplate;
 
     @ManyToOne

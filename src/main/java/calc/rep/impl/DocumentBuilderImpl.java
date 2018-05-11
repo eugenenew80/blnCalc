@@ -11,12 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -186,8 +184,8 @@ public class DocumentBuilderImpl implements DocumentBuilder {
     private Element createDivisionElement(Document doc, TableDivision division, CalcContext context) {
         Element divisionElement = doc.createElement("division");
         divisionElement.setAttribute("name", division.getName());
-        divisionElement.setAttribute("is-total", division.getHasTotal().toString().toLowerCase());
-        divisionElement.setAttribute("is-title", division.getHasTitle().toString().toLowerCase());
+        divisionElement.setAttribute("has-total", division.getHasTotal().toString().toLowerCase());
+        divisionElement.setAttribute("has-title", division.getHasTitle().toString().toLowerCase());
 
         List<Element> sectionElements = createSectionElements(doc, division.getSections(), context);
         for (Element sectionElement : sectionElements)
@@ -215,8 +213,8 @@ public class DocumentBuilderImpl implements DocumentBuilder {
     private Element createSectionElement(Document doc, TableSection section, CalcContext context) {
         Element sectionElement = doc.createElement("section");
         sectionElement.setAttribute("name", section.getName());
-        sectionElement.setAttribute("is-total", section.getHasTotal().toString().toLowerCase());
-        sectionElement.setAttribute("is-title", section.getHasTitle().toString().toLowerCase());
+        sectionElement.setAttribute("has-total", section.getHasTotal().toString().toLowerCase());
+        sectionElement.setAttribute("has-title", section.getHasTitle().toString().toLowerCase());
 
         List<Element> rowElements = createRowElements(doc, section.getRows(), context);
         for (Element rowElement : rowElements)
@@ -233,14 +231,7 @@ public class DocumentBuilderImpl implements DocumentBuilder {
     }
 
     private Element createRowElement(Document doc, TableRow row, CalcContext context) {
-        Element rowElement;
-        if (!row.getIsTotal()) {
-            rowElement = doc.createElement("row");
-            rowElement.setAttribute("is-total", "true");
-        }
-        else
-            rowElement = doc.createElement("total");
-
+        Element rowElement = doc.createElement(row.getIsTotal() ? "total" : "row");
         List<Element> cellElements = createCellElements(doc, row.getCells(), context);
         for (Element cellElement : cellElements)
             rowElement.appendChild(cellElement);
@@ -265,6 +256,9 @@ public class DocumentBuilderImpl implements DocumentBuilder {
             precision = cell.getAttr().getPrecision();
 
         Element attrElement = doc.createElement("attr");
+
+        if (cell.getAttr().getName()!=null)
+            attrElement.setAttribute("name", cell.getAttr().getName());
 
         if (attrType!=null)
             attrElement.setAttribute("type", attrType.toString().toLowerCase());

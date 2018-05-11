@@ -3,16 +3,16 @@ package calc.entity.rep;
 import calc.entity.calc.MeteringPoint;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
 import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Immutable
 @Table(name = "calc_group_lines")
 public class GroupLine {
     @Id
+    @SequenceGenerator(name="calc_group_lines_s", sequenceName = "calc_group_lines_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_group_lines_s")
     private Long id;
 
     @ManyToOne

@@ -2,8 +2,6 @@ package calc.entity.rep;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
-
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.util.List;
@@ -11,10 +9,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @Entity
-@Immutable
 @Table(name = "calc_report_sheets")
 public class ReportSheet {
     @Id
+    @SequenceGenerator(name="calc_report_sheets_s", sequenceName = "calc_report_sheets_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_report_sheets_s")
+
     private Long id;
 
     @ManyToOne

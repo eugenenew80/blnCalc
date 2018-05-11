@@ -95,7 +95,7 @@
             <Row/>
         </xsl:if>
 
-        <xsl:if test="@is-title='true'">
+        <xsl:if test="@has-title='true'">
             <Row>
                 <Cell ss:StyleID="tddc"><Data ss:Type="String"><xsl:value-of select="@name"/></Data></Cell>
             </Row>
@@ -103,7 +103,7 @@
 
         <xsl:apply-templates select="section" />
 
-        <xsl:if test="@is-total='true'">
+        <xsl:if test="@has-total='true'">
             <Row>
                 <xsl:for-each select="total/attr">
                     <Cell>
@@ -141,7 +141,7 @@
             <Row/>
         </xsl:if>
 
-        <xsl:if test="@is-title='true'">
+        <xsl:if test="@has-title='true'">
             <Row>
                 <Cell ss:StyleID="tddc"><Data ss:Type="String"><xsl:value-of select="@name"/></Data></Cell>
             </Row>
@@ -149,7 +149,7 @@
 
         <xsl:apply-templates select="row" />
 
-        <xsl:if test="@is-total='true'">
+        <xsl:if test="@has-total='true'">
             <Row>
                 <xsl:for-each select="total/attr">
                     <Cell>
@@ -180,7 +180,6 @@
                 </xsl:for-each>
             </Row>
         </xsl:if>
-
     </xsl:template>
 
     <xsl:template match="table/body/division/section/row">

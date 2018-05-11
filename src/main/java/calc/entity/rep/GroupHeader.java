@@ -2,17 +2,17 @@ package calc.entity.rep;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Immutable
 @Table(name = "calc_group_headers")
 public class GroupHeader {
     @Id
+    @SequenceGenerator(name="calc_group_headers_s", sequenceName = "calc_group_headers_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_group_headers_s")
     private Long id;
 
     @Column(name = "name")

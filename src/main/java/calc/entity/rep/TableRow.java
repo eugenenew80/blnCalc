@@ -3,18 +3,17 @@ package calc.entity.rep;
 import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
-
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @Entity
-@Immutable
 @javax.persistence.Table(name = "calc_table_rows")
 public class TableRow {
     @Id
+    @SequenceGenerator(name="calc_table_rows_s", sequenceName = "calc_table_rows_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_table_rows_s")
     private Long id;
 
     @ManyToOne
@@ -39,6 +38,9 @@ public class TableRow {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "key")
+    private String key;
 
     @Column(name = "is_total")
     @Convert(converter = BooleanToIntConverter.class)
