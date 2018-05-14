@@ -29,6 +29,9 @@ public class TableDivision {
     @JoinColumn(name =  "table_id")
     private ReportTable table;
 
+    @Column(name = "code")
+    private String code;
+
     @Column(name = "name")
     private String name;
 

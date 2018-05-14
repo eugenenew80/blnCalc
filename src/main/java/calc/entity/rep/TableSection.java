@@ -32,6 +32,9 @@ public class TableSection {
     @JoinColumn(name = "division_id")
     private TableDivision division;
 
+    @Column(name = "code")
+    private String code;
+
     @Column(name = "name")
     private String name;
 

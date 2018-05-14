@@ -1,5 +1,8 @@
 package calc;
 
+import calc.entity.rep.Report;
+import calc.entity.rep.ReportTable;
+import calc.entity.rep.TableSection;
 import calc.formula.CalcContext;
 import calc.rep.ReportBuilder;
 import calc.rep.TemplateReportBuilder;
@@ -10,12 +13,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.data.util.Pair;
 import org.w3c.dom.Document;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 @EntityScan(
     basePackageClasses = { App.class, Jsr310JpaConverters.class }
@@ -30,132 +35,134 @@ public class App  {
 
     @PostConstruct
     public void init() throws Exception {
+        Report report = templateReportBuilder.createFromTemplate(1l);
+
+        for (TableSection section : report.getSections()) {
+            List<Pair<String, String>> params = null;
+
+            if (section.getCode()!=null && section.getCode().equals("1.1")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120001", "A-"),
+                    Pair.of("121420300070120002", "A-")
+                );
+            }
+
+            if (section.getCode()!=null && section.getCode().equals("1.2")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120004", "A-"),
+                    Pair.of("121420300070120005", "A-"),
+                    Pair.of("121420300070120007", "A-"),
+                    Pair.of("121420300070120009", "A-"),
+                    Pair.of("121420300070120010", "A-"),
+                    Pair.of("121420300070120012", "A-"),
+                    Pair.of("121420300070120013", "A-"),
+                    Pair.of("121420300070120014", "A-"),
+                    Pair.of("121420300070120003", "A-"),
+                    Pair.of("121420300070120029", "A-")
+                );
+            }
+
+            if (section.getCode()!=null && section.getCode().equals("1.3")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120015", "A-"),
+                    Pair.of("121420300070120016", "A-")
+                );
+            }
+
+
+            reportBuilder.generateSectionRows(35l, Arrays.asList(
+                    Pair.of("121420300070120001", "A+"),
+                    Pair.of("121420300070120002", "A+")
+            ));
+
+            reportBuilder.generateSectionRows(36l, Arrays.asList(
+                    Pair.of("121420300070120004", "A+"),
+                    Pair.of("121420300070120005", "A+"),
+                    Pair.of("121420300070120006", "A+"),
+                    Pair.of("121420300070120007", "A+"),
+                    Pair.of("121420300070120008", "A+"),
+                    Pair.of("121420300070120009", "A+"),
+                    Pair.of("121420300070120010", "A+"),
+                    Pair.of("121420300070120011", "A+"),
+                    Pair.of("121420300070120012", "A+"),
+                    Pair.of("121420300070120013", "A+"),
+                    Pair.of("121420300070120014", "A+"),
+                    Pair.of("121420300070120003", "A+"),
+                    Pair.of("121420300070120029", "A+")
+            ));
+
+            reportBuilder.generateSectionRows(37l, Arrays.asList(
+                    Pair.of("121420300070120030", "A+"),
+                    Pair.of("121420300070120031", "A+"),
+                    Pair.of("121420300070120018", "A+"),
+                    Pair.of("121420300070120033", "A+")
+            ));
+
+            reportBuilder.generateSectionRows(38l, Arrays.asList(
+                    Pair.of("121420300070120021", "A+"),
+                    Pair.of("121420300070120022", "A+"),
+                    Pair.of("121420300070120023", "A+"),
+                    Pair.of("121420300070120039", "A+"),
+                    Pair.of("121420300070120040", "A+"),
+                    Pair.of("121420300070120041", "A+"),
+                    Pair.of("121420300070120042", "A+"),
+                    Pair.of("121420300070120043", "A+"),
+                    Pair.of("121420300070120044", "A+")
+            ));
+
+            reportBuilder.generateSectionRows(39l, Arrays.asList(
+                    Pair.of("121420300070120035", "A+"),
+                    Pair.of("121420300070120036", "A+"),
+                    Pair.of("121420300070120037", "A+"),
+                    Pair.of("121420300070120038", "A+")
+            ));
+
+            reportBuilder.generateSectionRows(40l, Arrays.asList(
+                    Pair.of("121420300070120019", "A-"),
+                    Pair.of("121420300070120020", "A-"),
+                    Pair.of("121420300070120027", "A-"),
+                    Pair.of("121420300070120028", "A-")
+            ));
+
+            reportBuilder.generateSectionRows(41l, Arrays.asList(
+                    Pair.of("121420300070120024", "A-"),
+                    Pair.of("121420300070120025", "A-")
+            ));
+
+            reportBuilder.generateSectionRows(42l, Arrays.asList(
+                    Pair.of("121420300070120026", "A-")
+            ));
+
+            reportBuilder.generateSectionRows(section.getId(), params);
+        }
+
+        for (ReportTable table : report.getTables())
+            reportBuilder.generateTotals(table.getId());
+
+
+
         CalcContext context = CalcContext.builder()
-            .startDate(LocalDate.of(2018, 3, 1))
-            .endDate(LocalDate.of(2018, 3, 31))
-            .orgId(11l)
-            .orgName("Южные МЭС")
-            .reportName("АКТ")
-            .energyObjectType("SUBST")
-            .energyObjectId(11l)
-            .energyObjectName("ПС Шымкент 500")
-            .trace(new HashMap<>())
-            .values(new ArrayList<>())
-            .build();
+                .startDate(LocalDate.of(2018, 3, 1))
+                .endDate(LocalDate.of(2018, 3, 31))
+                .orgId(11l)
+                .orgName("Южные МЭС")
+                .reportName("АКТ")
+                .energyObjectType("SUBST")
+                .energyObjectId(11l)
+                .energyObjectName("ПС Шымкент 500")
+                .trace(new HashMap<>())
+                .values(new ArrayList<>())
+                .build();
 
-        Document document = reportService.buildReport(22l, context);
-        reportService.save(document, "files/doc.xml");
+        Document document = templateReportBuilder.buildReport(22l, context);
+        templateReportBuilder.save(document, "files/doc.xml");
 
-        Document doc = reportService.transform(document);
-        reportService.save(doc, "files/report.xml");
-
-        //reportService.createFromTemplate(1l);
-
-        /*
-        reportBuilder.createRows(32l, Arrays.asList(
-            "121420300070120001",
-            "121420300070120002"
-        ));
-
-        reportBuilder.createRows(33l, Arrays.asList(
-            "121420300070120004",
-            "121420300070120005",
-            "121420300070120007",
-            "121420300070120009",
-            "121420300070120010",
-            "121420300070120012",
-            "121420300070120013",
-            "121420300070120014",
-            "121420300070120003",
-            "121420300070120029"
-        ));
-
-        reportBuilder.createRows(34l, Arrays.asList(
-            "121420300070120015",
-            "121420300070120016"
-        ));
-
-        reportBuilder.createRows(35l, Arrays.asList(
-            "121420300070120001",
-            "121420300070120002"
-        ));
-
-        reportBuilder.createRows(36l, Arrays.asList(
-            "121420300070120004",
-            "121420300070120005",
-            "121420300070120006",
-            "121420300070120007",
-            "121420300070120008",
-            "121420300070120009",
-            "121420300070120010",
-            "121420300070120011",
-            "121420300070120012",
-            "121420300070120013",
-            "121420300070120014",
-            "121420300070120003",
-            "121420300070120029"
-        ));
-
-        reportBuilder.createRows(37l, Arrays.asList(
-            "121420300070120030",
-            "121420300070120031",
-            "121420300070120018",
-            "121420300070120033"
-        ));
-
-        reportBuilder.createRows(38l, Arrays.asList(
-            "121420300070120021",
-            "121420300070120022",
-            "121420300070120023",
-            "121420300070120039",
-            "121420300070120040",
-            "121420300070120041",
-            "121420300070120042",
-            "121420300070120043",
-            "121420300070120044"
-        ));
-
-        reportBuilder.createRows(39l, Arrays.asList(
-            "121420300070120035",
-            "121420300070120036",
-            "121420300070120037",
-            "121420300070120038"
-        ));
-
-        reportBuilder.createRows(40l, Arrays.asList(
-            "121420300070120019",
-            "121420300070120020",
-            "121420300070120027",
-            "121420300070120028"
-        ));
-
-        reportBuilder.createRows(41l, Arrays.asList(
-            "121420300070120024",
-            "121420300070120025"
-        ));
-
-        reportBuilder.createRows(42l, Arrays.asList(
-            "121420300070120026"
-        ));
-        */
-
-        //reportBuilder.createCells(32l, "A-");
-        //reportBuilder.createCells(33l, "A-");
-        //reportBuilder.createCells(34l, "A-");
-
-        //reportBuilder.createCells(35l, "A+");
-        //reportBuilder.createCells(36l, "A+");
-        //reportBuilder.createCells(37l, "A+");
-        //reportBuilder.createCells(38l, "A+");
-        //reportBuilder.createCells(39l, "A+");
-
-        //reportBuilder.createCells(40l, "A-");
-        //reportBuilder.createCells(41l, "A-");
-        //reportBuilder.createCells(42l, "A-");
+        Document doc = templateReportBuilder.transform(document);
+        templateReportBuilder.save(doc, "files/report.xml");
     }
 
     @Autowired
-    private TemplateReportBuilder reportService;
+    private TemplateReportBuilder templateReportBuilder;
 
     @Autowired
     private ReportBuilder reportBuilder;

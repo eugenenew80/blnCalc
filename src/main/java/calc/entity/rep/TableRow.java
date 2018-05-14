@@ -36,11 +36,11 @@ public class TableRow {
     @JoinColumn(name = "section_id")
     private TableSection section;
 
+    @Column(name = "code")
+    private String code;
+
     @Column(name = "name")
     private String name;
-
-    @Column(name = "key")
-    private String key;
 
     @Column(name = "is_total")
     @Convert(converter = BooleanToIntConverter.class)

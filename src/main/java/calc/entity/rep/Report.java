@@ -31,5 +31,14 @@ public class Report {
     private List<ReportSheet> sheets;
 
     @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
+    private List<ReportTable> tables;
+
+    @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
+    private List<TableDivision> divisions;
+
+    @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
+    private List<TableSection> sections;
+
+    @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
     private List<TableCell> cells;
 }
