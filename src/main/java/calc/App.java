@@ -69,13 +69,15 @@ public class App  {
                 );
             }
 
-
-            reportBuilder.generateSectionRows(35l, Arrays.asList(
+            if (section.getCode()!=null && section.getCode().equals("2.1")) {
+                params = Arrays.asList(
                     Pair.of("121420300070120001", "A+"),
                     Pair.of("121420300070120002", "A+")
-            ));
+                );
+            }
 
-            reportBuilder.generateSectionRows(36l, Arrays.asList(
+            if (section.getCode()!=null && section.getCode().equals("2.2")) {
+                params = Arrays.asList(
                     Pair.of("121420300070120004", "A+"),
                     Pair.of("121420300070120005", "A+"),
                     Pair.of("121420300070120006", "A+"),
@@ -89,16 +91,20 @@ public class App  {
                     Pair.of("121420300070120014", "A+"),
                     Pair.of("121420300070120003", "A+"),
                     Pair.of("121420300070120029", "A+")
-            ));
+                );
+            }
 
-            reportBuilder.generateSectionRows(37l, Arrays.asList(
+            if (section.getCode()!=null && section.getCode().equals("2.3")) {
+                params = Arrays.asList(
                     Pair.of("121420300070120030", "A+"),
                     Pair.of("121420300070120031", "A+"),
                     Pair.of("121420300070120018", "A+"),
                     Pair.of("121420300070120033", "A+")
-            ));
+                );
+            }
 
-            reportBuilder.generateSectionRows(38l, Arrays.asList(
+            if (section.getCode()!=null && section.getCode().equals("2.4")) {
+                params = Arrays.asList(
                     Pair.of("121420300070120021", "A+"),
                     Pair.of("121420300070120022", "A+"),
                     Pair.of("121420300070120023", "A+"),
@@ -108,30 +114,39 @@ public class App  {
                     Pair.of("121420300070120042", "A+"),
                     Pair.of("121420300070120043", "A+"),
                     Pair.of("121420300070120044", "A+")
-            ));
+                );
+            }
 
-            reportBuilder.generateSectionRows(39l, Arrays.asList(
+            if (section.getCode()!=null && section.getCode().equals("2.5")) {
+                params = Arrays.asList(
                     Pair.of("121420300070120035", "A+"),
                     Pair.of("121420300070120036", "A+"),
                     Pair.of("121420300070120037", "A+"),
                     Pair.of("121420300070120038", "A+")
-            ));
+                );
+            }
 
-            reportBuilder.generateSectionRows(40l, Arrays.asList(
+            if (section.getCode()!=null && section.getCode().equals("3.1")) {
+                params = Arrays.asList(
                     Pair.of("121420300070120019", "A-"),
                     Pair.of("121420300070120020", "A-"),
                     Pair.of("121420300070120027", "A-"),
                     Pair.of("121420300070120028", "A-")
-            ));
+                );
+            }
 
-            reportBuilder.generateSectionRows(41l, Arrays.asList(
+            if (section.getCode()!=null && section.getCode().equals("3.2")) {
+                params = Arrays.asList(
                     Pair.of("121420300070120024", "A-"),
                     Pair.of("121420300070120025", "A-")
-            ));
+                );
+            }
 
-            reportBuilder.generateSectionRows(42l, Arrays.asList(
+            if (section.getCode()!=null && section.getCode().equals("3.3")) {
+                params = Arrays.asList(
                     Pair.of("121420300070120026", "A-")
-            ));
+                );
+            }
 
             reportBuilder.generateSectionRows(section.getId(), params);
         }
@@ -140,19 +155,18 @@ public class App  {
             reportBuilder.generateTotals(table.getId());
 
 
-
         CalcContext context = CalcContext.builder()
-                .startDate(LocalDate.of(2018, 3, 1))
-                .endDate(LocalDate.of(2018, 3, 31))
-                .orgId(11l)
-                .orgName("Южные МЭС")
-                .reportName("АКТ")
-                .energyObjectType("SUBST")
-                .energyObjectId(11l)
-                .energyObjectName("ПС Шымкент 500")
-                .trace(new HashMap<>())
-                .values(new ArrayList<>())
-                .build();
+            .startDate(LocalDate.of(2018, 3, 1))
+            .endDate(LocalDate.of(2018, 3, 31))
+            .orgId(11l)
+            .orgName("Южные МЭС")
+            .reportName("АКТ")
+            .energyObjectType("SUBST")
+            .energyObjectId(11l)
+            .energyObjectName("ПС Шымкент 500")
+            .trace(new HashMap<>())
+            .values(new ArrayList<>())
+            .build();
 
         Document document = templateReportBuilder.buildReport(22l, context);
         templateReportBuilder.save(document, "files/doc.xml");
@@ -160,6 +174,7 @@ public class App  {
         Document doc = templateReportBuilder.transform(document);
         templateReportBuilder.save(doc, "files/report.xml");
     }
+
 
     @Autowired
     private TemplateReportBuilder templateReportBuilder;
