@@ -6,7 +6,7 @@ import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.service.CalcService;
 import calc.rep.DocumentBuilder;
-import calc.rep.ReportBuilder;
+import calc.rep.TemplateReportBuilder;
 import calc.repo.rep.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,16 +24,13 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class ReportBuilderImpl implements ReportBuilder {
+public class TemplateReportBuilderImpl implements TemplateReportBuilder {
     private final ReportRepo reportRepo;
     private final SheetRepo sheetRepo;
     private final TableRepo tableRepo;
     private final ColumnRepo columnRepo;
     private final DivisionRepo divisionRepo;
     private final SectionRepo sectionRepo;
-    private final RowRepo rowRepo;
-    private final CellRepo cellRepo;
-
     private final CalcService calcService;
     private final DocumentBuilder documentBuilder;
 
@@ -81,6 +78,24 @@ public class ReportBuilderImpl implements ReportBuilder {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         transformer.transform(source, result);
+    }
+
+    @Override
+    public Document transform(Document doc, Source xslSource) throws Exception {
+        Transformer trans = TransformerFactory
+            .newInstance()
+            .newTransformer(xslSource);
+
+        DOMSource source = new DOMSource(doc);
+        DOMResult output = new DOMResult();
+        trans.transform(source, output);
+
+        return (Document) output.getNode();
+    }
+
+    @Override
+    public Document transform(Document doc) throws Exception {
+        return transform(doc, new StreamSource(new File("files/report.xsl")));
     }
 
     @Override
@@ -154,75 +169,5 @@ public class ReportBuilderImpl implements ReportBuilder {
         }
 
         return newReport;
-    }
-
-    @Override
-    public void addRows(Long sectionId, List<String> keys) {
-        TableSection section = sectionRepo.findOne(sectionId);
-        for (String key: keys) {
-            TableRow row = new TableRow();
-            row.setSection(section);
-            row.setDivision(section.getDivision());
-            row.setTable(section.getTable());
-            row.setSheet(section.getSheet());
-            row.setReport(section.getReport());
-            row.setIsTotal(false);
-            row.setName(key);
-            row.setKey(key);
-            rowRepo.save(row);
-        }
-    }
-
-    @Override
-    public void generateCells(Long sectionId, String paramCode) {
-        TableSection section = sectionRepo.findOne(sectionId);
-
-        for (TableRow row: section.getRows()) {
-            for (TableAttr attr : section.getTable().getBodyRowTemplate().getAttrs()) {
-                TableCell cell = new TableCell();
-                cell.setReport(row.getReport());
-                cell.setSheet(row.getSheet());
-                cell.setTable(row.getTable());
-                cell.setDivision(row.getDivision());
-                cell.setSection(row.getSection());
-                cell.setRow(row);
-                cell.setAttr(attr);
-
-                String formula = "";
-                if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName().equals("name"))
-                    formula = "<mp code=\"" + row.getKey() + "\" attr=\"name\" />";
-
-                if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName().equals("end"))
-                    formula = "<at mp=\"" + row.getKey() + "\" param=\"" + paramCode + "\" per=\"end\" />";
-
-                if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName().equals("start"))
-                    formula = "<at mp=\"" + row.getKey() + "\" param=\"" + paramCode + "\" per=\"start\" />";
-
-                if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName().equals("amount"))
-                    formula = "<subtract><at mp=\"" + row.getKey() + "\" param=\"" + paramCode + "\" per=\"end\" /> <at mp=\"" + row.getKey() + "\" param=\"" + paramCode + "\" per=\"start\" /></subtract>";
-
-                cell.setFormula(formula);
-                cellRepo.save(cell);
-            }
-        }
-    }
-
-
-    @Override
-    public Document transform(Document doc, Source xslSource) throws Exception {
-        Transformer trans = TransformerFactory
-            .newInstance()
-            .newTransformer(xslSource);
-
-        DOMSource source = new DOMSource(doc);
-        DOMResult output = new DOMResult();
-        trans.transform(source, output);
-
-        return (Document) output.getNode();
-    }
-
-    @Override
-    public Document transform(Document doc) throws Exception {
-        return transform(doc, new StreamSource(new File("files/report.xsl")));
     }
 }

@@ -1,8 +1,8 @@
 package calc;
 
-import calc.entity.rep.Report;
 import calc.formula.CalcContext;
 import calc.rep.ReportBuilder;
+import calc.rep.TemplateReportBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,19 +43,21 @@ public class App  {
             .values(new ArrayList<>())
             .build();
 
-        Document document = reportService.buildReport(1l, context);
+        Document document = reportService.buildReport(22l, context);
         reportService.save(document, "files/doc.xml");
 
         Document doc = reportService.transform(document);
         reportService.save(doc, "files/report.xml");
 
+        //reportService.createFromTemplate(1l);
+
         /*
-        reportService.addRows(12l, Arrays.asList(
+        reportBuilder.createRows(32l, Arrays.asList(
             "121420300070120001",
             "121420300070120002"
         ));
 
-        reportService.addRows(13l, Arrays.asList(
+        reportBuilder.createRows(33l, Arrays.asList(
             "121420300070120004",
             "121420300070120005",
             "121420300070120007",
@@ -68,17 +70,17 @@ public class App  {
             "121420300070120029"
         ));
 
-        reportService.addRows(14l, Arrays.asList(
+        reportBuilder.createRows(34l, Arrays.asList(
             "121420300070120015",
             "121420300070120016"
         ));
 
-        reportService.addRows(15l, Arrays.asList(
+        reportBuilder.createRows(35l, Arrays.asList(
             "121420300070120001",
             "121420300070120002"
         ));
 
-        reportService.addRows(16l, Arrays.asList(
+        reportBuilder.createRows(36l, Arrays.asList(
             "121420300070120004",
             "121420300070120005",
             "121420300070120006",
@@ -94,14 +96,14 @@ public class App  {
             "121420300070120029"
         ));
 
-        reportService.addRows(17l, Arrays.asList(
+        reportBuilder.createRows(37l, Arrays.asList(
             "121420300070120030",
             "121420300070120031",
             "121420300070120018",
             "121420300070120033"
         ));
 
-        reportService.addRows(18l, Arrays.asList(
+        reportBuilder.createRows(38l, Arrays.asList(
             "121420300070120021",
             "121420300070120022",
             "121420300070120023",
@@ -113,33 +115,48 @@ public class App  {
             "121420300070120044"
         ));
 
-        reportService.addRows(19l, Arrays.asList(
+        reportBuilder.createRows(39l, Arrays.asList(
             "121420300070120035",
             "121420300070120036",
             "121420300070120037",
             "121420300070120038"
         ));
 
-        reportService.addRows(20l, Arrays.asList(
+        reportBuilder.createRows(40l, Arrays.asList(
             "121420300070120019",
             "121420300070120020",
             "121420300070120027",
             "121420300070120028"
         ));
 
-        reportService.addRows(21l, Arrays.asList(
+        reportBuilder.createRows(41l, Arrays.asList(
             "121420300070120024",
             "121420300070120025"
         ));
 
-        reportService.addRows(22l, Arrays.asList(
+        reportBuilder.createRows(42l, Arrays.asList(
             "121420300070120026"
         ));
         */
 
-        reportService.generateCells(12l, "A-");
+        //reportBuilder.createCells(32l, "A-");
+        //reportBuilder.createCells(33l, "A-");
+        //reportBuilder.createCells(34l, "A-");
+
+        //reportBuilder.createCells(35l, "A+");
+        //reportBuilder.createCells(36l, "A+");
+        //reportBuilder.createCells(37l, "A+");
+        //reportBuilder.createCells(38l, "A+");
+        //reportBuilder.createCells(39l, "A+");
+
+        //reportBuilder.createCells(40l, "A-");
+        //reportBuilder.createCells(41l, "A-");
+        //reportBuilder.createCells(42l, "A-");
     }
 
     @Autowired
-    private ReportBuilder reportService;
+    private TemplateReportBuilder reportService;
+
+    @Autowired
+    private ReportBuilder reportBuilder;
 }

@@ -2,7 +2,7 @@ package calc.controller.rest;
 
 import calc.controller.rest.dto.ContextDto;
 import calc.formula.CalcContext;
-import calc.rep.ReportBuilder;
+import calc.rep.TemplateReportBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 @RestController
 @RequiredArgsConstructor
 public class ReportController {
-    private final ReportBuilder reportService;
+    private final TemplateReportBuilder reportService;
 
     @PostMapping(value = "/rest/report/build/{id}", consumes = "application/json;charset=utf-8")
     public void calc(@PathVariable Long id, @RequestBody ContextDto contextDto) throws Exception {
