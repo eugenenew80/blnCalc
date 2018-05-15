@@ -57,6 +57,9 @@ public class App  {
     @Autowired
     private AttrRepo attrRepo;
 
+    @Autowired
+    private RowRepo rowRepo;
+
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
@@ -66,11 +69,11 @@ public class App  {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void init() throws Exception {
         Report templateReport = createActTemplate();
-        Report report = createActReport(templateReport);
-        buildReport(report);
+        Report report = createActReport(templateReport.getCode());
+        buildReport(report.getId());
     }
 
-    private void buildReport(Report report) throws Exception {
+    private void buildReport(Long reportId) throws Exception {
         CalcContext context = CalcContext.builder()
             .startDate(LocalDate.of(2018, 3, 1))
             .endDate(LocalDate.of(2018, 3, 31))
@@ -84,7 +87,7 @@ public class App  {
             .values(new ArrayList<>())
             .build();
 
-        report = reportRepo.findOne(report.getId());
+        Report report = reportRepo.findOne(reportId);
         Document document = executorService.buildReport(report.getId(), context);
         executorService.save(document, "files/doc.xml");
 
@@ -92,147 +95,172 @@ public class App  {
         executorService.save(doc, "files/report.xml");
     }
 
-    private Report createActReport(Report templateReport) {
-        Report report = reportBuilder.createFromTemplate(templateReport.getCode());
+    private Report createActReport(String reportCode) {
+        Report report = reportBuilder.createFromTemplate(reportCode);
 
+        //rows
         for (TableSection section : report.getSections()) {
-            List<Pair<String, String>> params = null;
-
-            if (section.getCode() != null && section.getCode().equals("1.1")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120001", "A-"),
-                    Pair.of("121420300070120002", "A-")
-                );
-            }
-
-            if (section.getCode() != null && section.getCode().equals("1.2")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120004", "A-"),
-                    Pair.of("121420300070120005", "A-"),
-                    Pair.of("121420300070120007", "A-"),
-                    Pair.of("121420300070120009", "A-"),
-                    Pair.of("121420300070120010", "A-"),
-                    Pair.of("121420300070120012", "A-"),
-                    Pair.of("121420300070120013", "A-"),
-                    Pair.of("121420300070120014", "A-"),
-                    Pair.of("121420300070120003", "A-"),
-                    Pair.of("121420300070120029", "A-")
-                );
-            }
-
-            if (section.getCode() != null && section.getCode().equals("1.3")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120015", "A-"),
-                    Pair.of("121420300070120016", "A-")
-                );
-            }
-
-            if (section.getCode() != null && section.getCode().equals("2.1")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120001", "A+"),
-                    Pair.of("121420300070120002", "A+")
-                );
-            }
-
-            if (section.getCode() != null && section.getCode().equals("2.2")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120004", "A+"),
-                    Pair.of("121420300070120005", "A+"),
-                    Pair.of("121420300070120006", "A+"),
-                    Pair.of("121420300070120007", "A+"),
-                    Pair.of("121420300070120008", "A+"),
-                    Pair.of("121420300070120009", "A+"),
-                    Pair.of("121420300070120010", "A+"),
-                    Pair.of("121420300070120011", "A+"),
-                    Pair.of("121420300070120012", "A+"),
-                    Pair.of("121420300070120013", "A+"),
-                    Pair.of("121420300070120014", "A+"),
-                    Pair.of("121420300070120003", "A+"),
-                    Pair.of("121420300070120029", "A+")
-                );
-            }
-
-            if (section.getCode() != null && section.getCode().equals("2.3")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120030", "A+"),
-                    Pair.of("121420300070120031", "A+"),
-                    Pair.of("121420300070120018", "A+"),
-                    Pair.of("121420300070120033", "A+")
-                );
-            }
-
-            if (section.getCode() != null && section.getCode().equals("2.4")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120021", "A+"),
-                    Pair.of("121420300070120022", "A+"),
-                    Pair.of("121420300070120023", "A+"),
-                    Pair.of("121420300070120039", "A+"),
-                    Pair.of("121420300070120040", "A+"),
-                    Pair.of("121420300070120041", "A+"),
-                    Pair.of("121420300070120042", "A+"),
-                    Pair.of("121420300070120043", "A+"),
-                    Pair.of("121420300070120044", "A+")
-                );
-            }
-
-            if (section.getCode() != null && section.getCode().equals("2.5")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120035", "A+"),
-                    Pair.of("121420300070120036", "A+"),
-                    Pair.of("121420300070120037", "A+"),
-                    Pair.of("121420300070120038", "A+")
-                );
-            }
-
-            if (section.getCode() != null && section.getCode().equals("3.1")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120019", "A-"),
-                    Pair.of("121420300070120020", "A-"),
-                    Pair.of("121420300070120027", "A-"),
-                    Pair.of("121420300070120028", "A-")
-                );
-            }
-
-            if (section.getCode() != null && section.getCode().equals("3.2")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120024", "A-"),
-                    Pair.of("121420300070120025", "A-")
-                );
-            }
-
-            if (section.getCode() != null && section.getCode().equals("3.3")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120026", "A-")
-                );
-            }
-
-            reportBuilder.generateSectionRows(section, params);
+            List<Pair<String, String>> params = getParams(section.getCode());
+            List<TableRow> rows = reportBuilder.generateSectionRows(section, params);
+            rowRepo.save(rows);
         }
 
-        report = reportRepo.findOne(report.getId());
+        //totals
         for (ReportTable table : report.getTables()) {
             for (TableDivision division : table.getDivisions()) {
                 if (division.getBelongTo() != TablePartEnum.BODY)
                     continue;
 
                 for (TableSection section : division.getSections()) {
-                    if (section.getHasTotal())
-                        reportBuilder.generateSectionTotals(section);
+                    if (section.getHasTotal()) {
+                        TableRow row = reportBuilder.generateSectionTotals(section);
+                        rowRepo.save(row);
+                    }
                 }
 
-                if (division.getHasTotal())
-                    reportBuilder.generateDivisionTotals(division);
+                if (division.getHasTotal()) {
+                    TableRow row = reportBuilder.generateDivisionTotals(division);
+                    rowRepo.save(row);
+                }
             }
         }
 
-        return report;
+        return reportRepo.findOne(report.getId());
+    }
+
+    private List<Pair<String, String>> getParams(String sectionCode) {
+        List<Pair<String, String>> params = null;
+
+        if (sectionCode != null && sectionCode.equals("1.1")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120001", "A-"),
+                Pair.of("121420300070120002", "A-")
+            );
+        }
+
+        if (sectionCode != null && sectionCode.equals("1.2")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120004", "A-"),
+                Pair.of("121420300070120005", "A-"),
+                Pair.of("121420300070120007", "A-"),
+                Pair.of("121420300070120009", "A-"),
+                Pair.of("121420300070120010", "A-"),
+                Pair.of("121420300070120012", "A-"),
+                Pair.of("121420300070120013", "A-"),
+                Pair.of("121420300070120014", "A-"),
+                Pair.of("121420300070120003", "A-"),
+                Pair.of("121420300070120029", "A-")
+            );
+        }
+
+        if (sectionCode != null && sectionCode.equals("1.3")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120015", "A-"),
+                Pair.of("121420300070120016", "A-")
+            );
+        }
+
+        if (sectionCode != null && sectionCode.equals("2.1")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120001", "A+"),
+                Pair.of("121420300070120002", "A+")
+            );
+        }
+
+        if (sectionCode != null && sectionCode.equals("2.2")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120004", "A+"),
+                Pair.of("121420300070120005", "A+"),
+                Pair.of("121420300070120006", "A+"),
+                Pair.of("121420300070120007", "A+"),
+                Pair.of("121420300070120008", "A+"),
+                Pair.of("121420300070120009", "A+"),
+                Pair.of("121420300070120010", "A+"),
+                Pair.of("121420300070120011", "A+"),
+                Pair.of("121420300070120012", "A+"),
+                Pair.of("121420300070120013", "A+"),
+                Pair.of("121420300070120014", "A+"),
+                Pair.of("121420300070120003", "A+"),
+                Pair.of("121420300070120029", "A+")
+            );
+        }
+
+        if (sectionCode != null && sectionCode.equals("2.3")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120030", "A+"),
+                Pair.of("121420300070120031", "A+"),
+                Pair.of("121420300070120018", "A+"),
+                Pair.of("121420300070120033", "A+")
+            );
+        }
+
+        if (sectionCode != null && sectionCode.equals("2.4")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120021", "A+"),
+                Pair.of("121420300070120022", "A+"),
+                Pair.of("121420300070120023", "A+"),
+                Pair.of("121420300070120039", "A+"),
+                Pair.of("121420300070120040", "A+"),
+                Pair.of("121420300070120041", "A+"),
+                Pair.of("121420300070120042", "A+"),
+                Pair.of("121420300070120043", "A+"),
+                Pair.of("121420300070120044", "A+")
+            );
+        }
+
+        if (sectionCode != null && sectionCode.equals("2.5")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120035", "A+"),
+                Pair.of("121420300070120036", "A+"),
+                Pair.of("121420300070120037", "A+"),
+                Pair.of("121420300070120038", "A+")
+            );
+        }
+
+        if (sectionCode != null && sectionCode.equals("3.1")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120019", "A-"),
+                Pair.of("121420300070120020", "A-"),
+                Pair.of("121420300070120027", "A-"),
+                Pair.of("121420300070120028", "A-")
+            );
+        }
+
+        if (sectionCode != null && sectionCode.equals("3.2")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120024", "A-"),
+                Pair.of("121420300070120025", "A-")
+            );
+        }
+
+        if (sectionCode != null && sectionCode.equals("3.3")) {
+            params = Arrays.asList(
+                Pair.of("121420300070120026", "A-")
+            );
+        }
+        return params;
     }
 
     private Report createActTemplate() {
+        //row templates
+        List<RowTemplate> rowTemplates = new ArrayList<>();
         RowTemplate rowTemplate = new RowTemplate();
         rowTemplate.setName("Баланс по подстанции - табличная часть");
+        rowTemplates.add(rowTemplate);
+
+        RowTemplate footerTemplate = new RowTemplate();
+        footerTemplate.setName("Баланс по подстанции - подвальная часть");
+        rowTemplates.add(footerTemplate);
+
+        RowTemplate totalTemplate = new RowTemplate();
+        totalTemplate.setName("Баланс по подстанции - табличная часть, итоги");
+        rowTemplates.add(totalTemplate);
+
         rowTemplateRepo.save(rowTemplate);
 
+
+        //row attrs
+        List<TableAttr> attrs = new ArrayList<>();
         TableAttr attr = new TableAttr();
         attr.setRowTemplate(rowTemplate);
         attr.setName("num");
@@ -240,7 +268,7 @@ public class App  {
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setDescription("№ п/п");
         attr.setOrderNum(1l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(rowTemplate);
@@ -249,7 +277,7 @@ public class App  {
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setDescription("№ счетчиков");
         attr.setOrderNum(2l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(rowTemplate);
@@ -259,7 +287,7 @@ public class App  {
         attr.setDescription("Наименование объектов");
         attr.setFormulaTemplate("<mp code=\"#code#\" attr=\"#attr#\" />");
         attr.setOrderNum(3l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(rowTemplate);
@@ -270,7 +298,7 @@ public class App  {
         attr.setFormulaTemplate("<at mp=\"#code#\" param=\"#param#\" per=\"end\" />");
         attr.setPrecision(0l);
         attr.setOrderNum(4l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(rowTemplate);
@@ -281,7 +309,7 @@ public class App  {
         attr.setFormulaTemplate("<at mp=\"#code#\" param=\"#param#\" per=\"start\" />");
         attr.setPrecision(0l);
         attr.setOrderNum(5l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(rowTemplate);
@@ -291,7 +319,7 @@ public class App  {
         attr.setDescription("Коэф-т счетчиков");
         attr.setPrecision(2l);
         attr.setOrderNum(6l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(rowTemplate);
@@ -306,7 +334,7 @@ public class App  {
                 "\t<at mp=\"#code#\" param=\"#param#\" per=\"end\" /> \n" +
                 "\t<at mp=\"#code#\" param=\"#param#\" per=\"start\" />\n" +
                 "</subtract>");
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(rowTemplate);
@@ -316,7 +344,7 @@ public class App  {
         attr.setDescription("Доля полученной (отпущенной) электроэнергии");
         attr.setPrecision(4l);
         attr.setOrderNum(8l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(rowTemplate);
@@ -326,7 +354,7 @@ public class App  {
         attr.setDescription("Средне-квадратичная  погрешность");
         attr.setPrecision(4l);
         attr.setOrderNum(9l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(rowTemplate);
@@ -336,12 +364,7 @@ public class App  {
         attr.setDescription("Допустимый небаланс");
         attr.setPrecision(4l);
         attr.setOrderNum(10l);
-        attrRepo.save(attr);
-
-
-        RowTemplate footerTemplate = new RowTemplate();
-        footerTemplate.setName("Баланс по подстанции - подвальная часть");
-        rowTemplateRepo.save(footerTemplate);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(footerTemplate);
@@ -350,35 +373,35 @@ public class App  {
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setDescription("Наименование");
         attr.setOrderNum(1l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(footerTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(2l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(footerTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(3l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(footerTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(4l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(footerTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(5l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(footerTemplate);
@@ -386,7 +409,7 @@ public class App  {
         attr.setAttrType(AttrTypeEnum.STRING);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(6l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(footerTemplate);
@@ -395,33 +418,28 @@ public class App  {
         attr.setValueType(ValueTypeEnum.FORMULA);
         attr.setPrecision(0l);
         attr.setOrderNum(7l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(footerTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(8l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(footerTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(9l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(footerTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(10l);
-        attrRepo.save(attr);
-
-
-        RowTemplate totalTemplate = new RowTemplate();
-        totalTemplate.setName("Баланс по подстанции - табличная часть, итоги");
-        rowTemplateRepo.save(totalTemplate);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(totalTemplate);
@@ -430,42 +448,42 @@ public class App  {
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setDescription("Наименование");
         attr.setOrderNum(1l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(totalTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(2l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(totalTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(3l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(totalTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(4l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(totalTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(5l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(totalTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(6l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(totalTemplate);
@@ -474,36 +492,40 @@ public class App  {
         attr.setValueType(ValueTypeEnum.FORMULA);
         attr.setPrecision(0l);
         attr.setOrderNum(7l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(totalTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(8l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(totalTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(9l);
-        attrRepo.save(attr);
+        attrs.add(attr);
 
         attr = new TableAttr();
         attr.setRowTemplate(totalTemplate);
         attr.setAttrType(AttrTypeEnum.EMPTY);
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(10l);
-        attrRepo.save(attr);
+        attrs.add(attr);
+
+        attrRepo.save(attrs);
 
 
+        //report
         Report templateReport = new Report();
         templateReport.setName("АКТ");
         templateReport.setIsTemplate(true);
         templateReport.setCode("ACT-SUBST");
         reportRepo.save(templateReport);
 
+        //sheet
         ReportSheet templateSheet = new ReportSheet();
         templateSheet.setReport(templateReport);
         templateSheet.setColumnCount(10l);
@@ -512,77 +534,84 @@ public class App  {
         templateSheet.setName("Акт съёма показаний");
         sheetRepo.save(templateSheet);
 
+
+        //sheet columns
+        List<SheetColumn> sheetColumns = new ArrayList<>();
+
         SheetColumn templateColumn = new SheetColumn();
         templateColumn.setReport(templateReport);
         templateColumn.setSheet(templateSheet);
         templateColumn.setOrderNum(1l);
         templateColumn.setWidth(26l);
-        sheetColumnRepo.save(templateColumn);
+        sheetColumns.add(templateColumn);
 
         templateColumn = new SheetColumn();
         templateColumn.setReport(templateReport);
         templateColumn.setSheet(templateSheet);
         templateColumn.setOrderNum(2l);
         templateColumn.setWidth(72l);
-        sheetColumnRepo.save(templateColumn);
+        sheetColumns.add(templateColumn);
 
         templateColumn = new SheetColumn();
         templateColumn.setReport(templateReport);
         templateColumn.setSheet(templateSheet);
         templateColumn.setOrderNum(3l);
         templateColumn.setWidth(186l);
-        sheetColumnRepo.save(templateColumn);
+        sheetColumns.add(templateColumn);
 
         templateColumn = new SheetColumn();
         templateColumn.setReport(templateReport);
         templateColumn.setSheet(templateSheet);
         templateColumn.setOrderNum(4l);
         templateColumn.setWidth(75l);
-        sheetColumnRepo.save(templateColumn);
+        sheetColumns.add(templateColumn);
 
         templateColumn = new SheetColumn();
         templateColumn.setReport(templateReport);
         templateColumn.setSheet(templateSheet);
         templateColumn.setOrderNum(5l);
         templateColumn.setWidth(72l);
-        sheetColumnRepo.save(templateColumn);
+        sheetColumns.add(templateColumn);
 
         templateColumn = new SheetColumn();
         templateColumn.setReport(templateReport);
         templateColumn.setSheet(templateSheet);
         templateColumn.setOrderNum(6l);
         templateColumn.setWidth(60l);
-        sheetColumnRepo.save(templateColumn);
+        sheetColumns.add(templateColumn);
 
         templateColumn = new SheetColumn();
         templateColumn.setReport(templateReport);
         templateColumn.setSheet(templateSheet);
         templateColumn.setOrderNum(7l);
         templateColumn.setWidth(78l);
-        sheetColumnRepo.save(templateColumn);
+        sheetColumns.add(templateColumn);
 
         templateColumn = new SheetColumn();
         templateColumn.setReport(templateReport);
         templateColumn.setSheet(templateSheet);
         templateColumn.setOrderNum(8l);
         templateColumn.setWidth(72l);
-        sheetColumnRepo.save(templateColumn);
+        sheetColumns.add(templateColumn);
 
         templateColumn = new SheetColumn();
         templateColumn.setReport(templateReport);
         templateColumn.setSheet(templateSheet);
         templateColumn.setOrderNum(9l);
         templateColumn.setWidth(66l);
-        sheetColumnRepo.save(templateColumn);
+        sheetColumns.add(templateColumn);
 
         templateColumn = new SheetColumn();
         templateColumn.setReport(templateReport);
         templateColumn.setSheet(templateSheet);
         templateColumn.setOrderNum(10l);
         templateColumn.setWidth(60l);
-        sheetColumnRepo.save(templateColumn);
+        sheetColumns.add(templateColumn);
+
+        sheetColumnRepo.save(sheetColumns);
 
 
+        //table
         ReportTable templateTable = new ReportTable();
         templateTable.setReport(templateReport);
         templateTable.setSheet(templateSheet);
@@ -596,6 +625,10 @@ public class App  {
         tableRepo.save(templateTable);
 
 
+        //table divisions amd table sections
+        List<TableDivision> tableDivisions = new ArrayList<>();
+        List<TableSection> tableSections = new ArrayList<>();
+
         TableDivision templateDivision = new TableDivision();
         templateDivision.setCode("1");
         templateDivision.setName("1. Прием от энергосистемы (импорт)");
@@ -606,7 +639,7 @@ public class App  {
         templateDivision.setReport(templateReport);
         templateDivision.setSheet(templateSheet);
         templateDivision.setTable(templateTable);
-        divisionRepo.save(templateDivision);
+        tableDivisions.add(templateDivision);
 
         TableSection templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -618,7 +651,7 @@ public class App  {
         templateSection.setName("1.1 Шины 500 кВ");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
         templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -630,7 +663,7 @@ public class App  {
         templateSection.setName("1.2 Шины 220 кВ");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
         templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -642,7 +675,7 @@ public class App  {
         templateSection.setName("1.3 Шины 220 кВ Ввода");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
 
         templateDivision = new TableDivision();
@@ -655,7 +688,7 @@ public class App  {
         templateDivision.setReport(templateReport);
         templateDivision.setSheet(templateSheet);
         templateDivision.setTable(templateTable);
-        divisionRepo.save(templateDivision);
+        tableDivisions.add(templateDivision);
 
         templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -667,7 +700,7 @@ public class App  {
         templateSection.setName("2.1 Шины 500 кВ");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
         templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -679,7 +712,7 @@ public class App  {
         templateSection.setName("2.2 Шины 220 кВ");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
         templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -691,7 +724,7 @@ public class App  {
         templateSection.setName("2.3 Шины 35 кВ");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
         templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -703,7 +736,7 @@ public class App  {
         templateSection.setName("2.4 Шины 6 кВ");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
         templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -715,7 +748,7 @@ public class App  {
         templateSection.setName("2.5 Шины 10 кВ УШР");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
 
         templateDivision = new TableDivision();
@@ -728,7 +761,7 @@ public class App  {
         templateDivision.setReport(templateReport);
         templateDivision.setSheet(templateSheet);
         templateDivision.setTable(templateTable);
-        divisionRepo.save(templateDivision);
+        tableDivisions.add(templateDivision);
 
         templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -740,7 +773,7 @@ public class App  {
         templateSection.setName("3.1 Шины 500 кВ");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
         templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -752,7 +785,7 @@ public class App  {
         templateSection.setName("3.2 Шины 0.4 кВ собственные нужды");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
         templateSection = new TableSection();
         templateSection.setReport(templateReport);
@@ -764,7 +797,7 @@ public class App  {
         templateSection.setName("3.3 Шины 0.4 кВ хозяйственные нужды");
         templateSection.setHasTotal(true);
         templateSection.setHasTitle(true);
-        sectionRepo.save(templateSection);
+        tableSections.add(templateSection);
 
 
         templateDivision = new TableDivision();
@@ -777,7 +810,7 @@ public class App  {
         templateDivision.setReport(templateReport);
         templateDivision.setSheet(templateSheet);
         templateDivision.setTable(templateTable);
-        divisionRepo.save(templateDivision);
+        tableDivisions.add(templateDivision);
 
         templateDivision = new TableDivision();
         templateDivision.setCode("5");
@@ -789,7 +822,7 @@ public class App  {
         templateDivision.setReport(templateReport);
         templateDivision.setSheet(templateSheet);
         templateDivision.setTable(templateTable);
-        divisionRepo.save(templateDivision);
+        tableDivisions.add(templateDivision);
 
         templateDivision = new TableDivision();
         templateDivision.setCode("6");
@@ -801,7 +834,11 @@ public class App  {
         templateDivision.setReport(templateReport);
         templateDivision.setSheet(templateSheet);
         templateDivision.setTable(templateTable);
-        divisionRepo.save(templateDivision);
+        tableDivisions.add(templateDivision);
+
+        divisionRepo.save(tableDivisions);
+        sectionRepo.save(tableSections);
+
         return templateReport;
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ActBuilderImpl implements ReportBuilder {
+public class ReportBuilderImpl implements ReportBuilder {
     private final ReportRepo reportRepo;
     private final SheetRepo sheetRepo;
     private final TableRepo tableRepo;
