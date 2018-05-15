@@ -6,7 +6,7 @@ import calc.entity.rep.enums.TablePartEnum;
 import calc.entity.rep.enums.ValueTypeEnum;
 import calc.formula.CalcContext;
 import calc.rep.ReportBuilder;
-import calc.rep.TemplateReportBuilder;
+import calc.rep.ReportExecutorService;
 import calc.repo.rep.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +65,170 @@ public class App  {
     @PostConstruct
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void init() throws Exception {
+        Report templateReport = createActTemplate();
+        Report report = createActReport(templateReport);
+        buildReport(report);
+    }
+
+    private void buildReport(Report report) throws Exception {
+        CalcContext context = CalcContext.builder()
+            .startDate(LocalDate.of(2018, 3, 1))
+            .endDate(LocalDate.of(2018, 3, 31))
+            .orgId(11l)
+            .orgName("Южные МЭС")
+            .reportName("АКТ")
+            .energyObjectType("SUBST")
+            .energyObjectId(11l)
+            .energyObjectName("ПС Шымкент 500")
+            .trace(new HashMap<>())
+            .values(new ArrayList<>())
+            .build();
+
+        report = reportRepo.findOne(report.getId());
+        Document document = executorService.buildReport(report.getId(), context);
+        executorService.save(document, "files/doc.xml");
+
+        Document doc = executorService.transform(document);
+        executorService.save(doc, "files/report.xml");
+    }
+
+    private Report createActReport(Report templateReport) {
+        Report report = reportBuilder.createFromTemplate(templateReport.getCode());
+
+        for (TableSection section : report.getSections()) {
+            List<Pair<String, String>> params = null;
+
+            if (section.getCode() != null && section.getCode().equals("1.1")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120001", "A-"),
+                    Pair.of("121420300070120002", "A-")
+                );
+            }
+
+            if (section.getCode() != null && section.getCode().equals("1.2")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120004", "A-"),
+                    Pair.of("121420300070120005", "A-"),
+                    Pair.of("121420300070120007", "A-"),
+                    Pair.of("121420300070120009", "A-"),
+                    Pair.of("121420300070120010", "A-"),
+                    Pair.of("121420300070120012", "A-"),
+                    Pair.of("121420300070120013", "A-"),
+                    Pair.of("121420300070120014", "A-"),
+                    Pair.of("121420300070120003", "A-"),
+                    Pair.of("121420300070120029", "A-")
+                );
+            }
+
+            if (section.getCode() != null && section.getCode().equals("1.3")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120015", "A-"),
+                    Pair.of("121420300070120016", "A-")
+                );
+            }
+
+            if (section.getCode() != null && section.getCode().equals("2.1")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120001", "A+"),
+                    Pair.of("121420300070120002", "A+")
+                );
+            }
+
+            if (section.getCode() != null && section.getCode().equals("2.2")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120004", "A+"),
+                    Pair.of("121420300070120005", "A+"),
+                    Pair.of("121420300070120006", "A+"),
+                    Pair.of("121420300070120007", "A+"),
+                    Pair.of("121420300070120008", "A+"),
+                    Pair.of("121420300070120009", "A+"),
+                    Pair.of("121420300070120010", "A+"),
+                    Pair.of("121420300070120011", "A+"),
+                    Pair.of("121420300070120012", "A+"),
+                    Pair.of("121420300070120013", "A+"),
+                    Pair.of("121420300070120014", "A+"),
+                    Pair.of("121420300070120003", "A+"),
+                    Pair.of("121420300070120029", "A+")
+                );
+            }
+
+            if (section.getCode() != null && section.getCode().equals("2.3")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120030", "A+"),
+                    Pair.of("121420300070120031", "A+"),
+                    Pair.of("121420300070120018", "A+"),
+                    Pair.of("121420300070120033", "A+")
+                );
+            }
+
+            if (section.getCode() != null && section.getCode().equals("2.4")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120021", "A+"),
+                    Pair.of("121420300070120022", "A+"),
+                    Pair.of("121420300070120023", "A+"),
+                    Pair.of("121420300070120039", "A+"),
+                    Pair.of("121420300070120040", "A+"),
+                    Pair.of("121420300070120041", "A+"),
+                    Pair.of("121420300070120042", "A+"),
+                    Pair.of("121420300070120043", "A+"),
+                    Pair.of("121420300070120044", "A+")
+                );
+            }
+
+            if (section.getCode() != null && section.getCode().equals("2.5")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120035", "A+"),
+                    Pair.of("121420300070120036", "A+"),
+                    Pair.of("121420300070120037", "A+"),
+                    Pair.of("121420300070120038", "A+")
+                );
+            }
+
+            if (section.getCode() != null && section.getCode().equals("3.1")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120019", "A-"),
+                    Pair.of("121420300070120020", "A-"),
+                    Pair.of("121420300070120027", "A-"),
+                    Pair.of("121420300070120028", "A-")
+                );
+            }
+
+            if (section.getCode() != null && section.getCode().equals("3.2")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120024", "A-"),
+                    Pair.of("121420300070120025", "A-")
+                );
+            }
+
+            if (section.getCode() != null && section.getCode().equals("3.3")) {
+                params = Arrays.asList(
+                    Pair.of("121420300070120026", "A-")
+                );
+            }
+
+            reportBuilder.generateSectionRows(section, params);
+        }
+
+        report = reportRepo.findOne(report.getId());
+        for (ReportTable table : report.getTables()) {
+            for (TableDivision division : table.getDivisions()) {
+                if (division.getBelongTo() != TablePartEnum.BODY)
+                    continue;
+
+                for (TableSection section : division.getSections()) {
+                    if (section.getHasTotal())
+                        reportBuilder.generateSectionTotals(section);
+                }
+
+                if (division.getHasTotal())
+                    reportBuilder.generateDivisionTotals(division);
+            }
+        }
+
+        return report;
+    }
+
+    private Report createActTemplate() {
         RowTemplate rowTemplate = new RowTemplate();
         rowTemplate.setName("Баланс по подстанции - табличная часть");
         rowTemplateRepo.save(rowTemplate);
@@ -139,8 +303,8 @@ public class App  {
         attr.setOrderNum(7l);
         attr.setFormulaTemplate("" +
                 "<subtract>\n" +
-                    "\t<at mp=\"#code#\" param=\"#param#\" per=\"end\" /> \n" +
-                    "\t<at mp=\"#code#\" param=\"#param#\" per=\"start\" />\n" +
+                "\t<at mp=\"#code#\" param=\"#param#\" per=\"end\" /> \n" +
+                "\t<at mp=\"#code#\" param=\"#param#\" per=\"start\" />\n" +
                 "</subtract>");
         attrRepo.save(attr);
 
@@ -253,7 +417,6 @@ public class App  {
         attr.setValueType(ValueTypeEnum.CONST);
         attr.setOrderNum(10l);
         attrRepo.save(attr);
-
 
 
         RowTemplate totalTemplate = new RowTemplate();
@@ -555,7 +718,6 @@ public class App  {
         sectionRepo.save(templateSection);
 
 
-
         templateDivision = new TableDivision();
         templateDivision.setCode("3");
         templateDivision.setName("3. Расход на хозяйственные и собственные нужды");
@@ -605,7 +767,6 @@ public class App  {
         sectionRepo.save(templateSection);
 
 
-
         templateDivision = new TableDivision();
         templateDivision.setCode("4");
         templateDivision.setName("4. Потери в э/э понижающих трансформаторах");
@@ -641,154 +802,12 @@ public class App  {
         templateDivision.setSheet(templateSheet);
         templateDivision.setTable(templateTable);
         divisionRepo.save(templateDivision);
-
-
-        templateReport = reportRepo.findByCodeAndIsTemplateIsTrue("ACT-SUBST");
-        Report report = templateReportBuilder.createFromTemplate(templateReport.getId());
-
-        for (TableSection section : report.getSections()) {
-            List<Pair<String, String>> params = null;
-
-            if (section.getCode()!=null && section.getCode().equals("1.1")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120001", "A-"),
-                    Pair.of("121420300070120002", "A-")
-                );
-            }
-
-            if (section.getCode()!=null && section.getCode().equals("1.2")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120004", "A-"),
-                    Pair.of("121420300070120005", "A-"),
-                    Pair.of("121420300070120007", "A-"),
-                    Pair.of("121420300070120009", "A-"),
-                    Pair.of("121420300070120010", "A-"),
-                    Pair.of("121420300070120012", "A-"),
-                    Pair.of("121420300070120013", "A-"),
-                    Pair.of("121420300070120014", "A-"),
-                    Pair.of("121420300070120003", "A-"),
-                    Pair.of("121420300070120029", "A-")
-                );
-            }
-
-            if (section.getCode()!=null && section.getCode().equals("1.3")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120015", "A-"),
-                    Pair.of("121420300070120016", "A-")
-                );
-            }
-
-            if (section.getCode()!=null && section.getCode().equals("2.1")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120001", "A+"),
-                    Pair.of("121420300070120002", "A+")
-                );
-            }
-
-            if (section.getCode()!=null && section.getCode().equals("2.2")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120004", "A+"),
-                    Pair.of("121420300070120005", "A+"),
-                    Pair.of("121420300070120006", "A+"),
-                    Pair.of("121420300070120007", "A+"),
-                    Pair.of("121420300070120008", "A+"),
-                    Pair.of("121420300070120009", "A+"),
-                    Pair.of("121420300070120010", "A+"),
-                    Pair.of("121420300070120011", "A+"),
-                    Pair.of("121420300070120012", "A+"),
-                    Pair.of("121420300070120013", "A+"),
-                    Pair.of("121420300070120014", "A+"),
-                    Pair.of("121420300070120003", "A+"),
-                    Pair.of("121420300070120029", "A+")
-                );
-            }
-
-            if (section.getCode()!=null && section.getCode().equals("2.3")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120030", "A+"),
-                    Pair.of("121420300070120031", "A+"),
-                    Pair.of("121420300070120018", "A+"),
-                    Pair.of("121420300070120033", "A+")
-                );
-            }
-
-            if (section.getCode()!=null && section.getCode().equals("2.4")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120021", "A+"),
-                    Pair.of("121420300070120022", "A+"),
-                    Pair.of("121420300070120023", "A+"),
-                    Pair.of("121420300070120039", "A+"),
-                    Pair.of("121420300070120040", "A+"),
-                    Pair.of("121420300070120041", "A+"),
-                    Pair.of("121420300070120042", "A+"),
-                    Pair.of("121420300070120043", "A+"),
-                    Pair.of("121420300070120044", "A+")
-                );
-            }
-
-            if (section.getCode()!=null && section.getCode().equals("2.5")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120035", "A+"),
-                    Pair.of("121420300070120036", "A+"),
-                    Pair.of("121420300070120037", "A+"),
-                    Pair.of("121420300070120038", "A+")
-                );
-            }
-
-            if (section.getCode()!=null && section.getCode().equals("3.1")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120019", "A-"),
-                    Pair.of("121420300070120020", "A-"),
-                    Pair.of("121420300070120027", "A-"),
-                    Pair.of("121420300070120028", "A-")
-                );
-            }
-
-            if (section.getCode()!=null && section.getCode().equals("3.2")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120024", "A-"),
-                    Pair.of("121420300070120025", "A-")
-                );
-            }
-
-            if (section.getCode()!=null && section.getCode().equals("3.3")) {
-                params = Arrays.asList(
-                    Pair.of("121420300070120026", "A-")
-                );
-            }
-
-            reportBuilder.generateSectionRows(section.getId(), params);
-        }
-
-        report = reportRepo.findOne(report.getId());
-        for (ReportTable table : report.getTables())
-            reportBuilder.generateTotals(table.getId());
-
-
-        CalcContext context = CalcContext.builder()
-            .startDate(LocalDate.of(2018, 3, 1))
-            .endDate(LocalDate.of(2018, 3, 31))
-            .orgId(11l)
-            .orgName("Южные МЭС")
-            .reportName("АКТ")
-            .energyObjectType("SUBST")
-            .energyObjectId(11l)
-            .energyObjectName("ПС Шымкент 500")
-            .trace(new HashMap<>())
-            .values(new ArrayList<>())
-            .build();
-
-        report = reportRepo.findOne(report.getId());
-        Document document = templateReportBuilder.buildReport(report.getId(), context);
-        templateReportBuilder.save(document, "files/doc.xml");
-
-        Document doc = templateReportBuilder.transform(document);
-        templateReportBuilder.save(doc, "files/report.xml");
+        return templateReport;
     }
 
 
     @Autowired
-    private TemplateReportBuilder templateReportBuilder;
+    private ReportExecutorService executorService;
 
     @Autowired
     private ReportBuilder reportBuilder;

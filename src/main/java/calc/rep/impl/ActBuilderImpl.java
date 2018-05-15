@@ -1,44 +1,107 @@
 package calc.rep.impl;
 
 import calc.entity.rep.*;
-import calc.entity.rep.enums.TablePartEnum;
 import calc.entity.rep.enums.ValueTypeEnum;
 import calc.rep.ReportBuilder;
 import calc.repo.rep.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ActBuilderImpl implements ReportBuilder {
+    private final ReportRepo reportRepo;
+    private final SheetRepo sheetRepo;
     private final TableRepo tableRepo;
+    private final ColumnRepo columnRepo;
     private final DivisionRepo divisionRepo;
     private final SectionRepo sectionRepo;
-    private final RowRepo rowRepo;
-    private final CellRepo cellRepo;
 
     @Override
-    public void generateTotals(Long tableId) {
-        ReportTable table = tableRepo.findOne(tableId);
-        for (TableDivision division : table.getDivisions()) {
-            if (division.getBelongTo()!= TablePartEnum.BODY)
-                continue;
+    public Report createFromTemplate(String reportCode) {
+        Report report = reportRepo.findByCodeAndIsTemplateIsTrue(reportCode);
 
-            for (TableSection section : division.getSections()) {
-                if (section.getHasTotal())
-                    generateSectionTotals(section);
+        Report newReport = new Report();
+        newReport.setName(report.getName());
+        newReport.setIsTemplate(false);
+        newReport.setCode(report.getCode());
+        newReport = reportRepo.save(newReport);
+
+        for (ReportSheet sheet : report.getSheets()) {
+            ReportSheet newSheet = new ReportSheet();
+            newSheet.setColumnCount(sheet.getColumnCount());
+            newSheet.setName(sheet.getName());
+            newSheet.setOrderNum(sheet.getOrderNum());
+            newSheet.setRowCount(sheet.getRowCount());
+            newSheet.setCode(sheet.getCode());
+            newSheet.setReport(newReport);
+            newSheet  = sheetRepo.save(newSheet);
+
+            for (ReportTable table : sheet.getTables()) {
+                ReportTable newTable = new ReportTable();
+                newTable.setReport(newReport);
+                newTable.setSheet(newSheet);
+                newTable.setBodyRowTemplate(table.getBodyRowTemplate());
+                newTable.setBodyTotalTemplate(table.getBodyTotalTemplate());
+                newTable.setFooterRowTemplate(table.getFooterRowTemplate());
+                newTable.setHeaderRowTemplate(table.getHeaderRowTemplate());
+                newTable.setHasFooter(table.getHasFooter());
+                newTable.setHasHeader(table.getHasHeader());
+                newTable.setName(table.getName());
+                newTable.setOrderNum(table.getOrderNum());
+                newTable.setCode(table.getCode());
+                newTable = tableRepo.save(newTable);
+
+                for(TableDivision division : table.getDivisions() ) {
+                    TableDivision newDivision = new TableDivision();
+                    newDivision.setReport(newReport);
+                    newDivision.setSheet(newSheet);
+                    newDivision.setTable(newTable);
+                    newDivision.setBelongTo(division.getBelongTo());
+                    newDivision.setHasTitle(division.getHasTitle());
+                    newDivision.setHasTotal(division.getHasTotal());
+                    newDivision.setName(division.getName());
+                    newDivision.setOrderNum(division.getOrderNum());
+                    newDivision.setCode(division.getCode());
+                    newDivision =divisionRepo.save(newDivision);
+
+                    for (TableSection section : division.getSections()) {
+                        TableSection newSection = new TableSection();
+                        newSection.setReport(newReport);
+                        newSection.setSheet(newSheet);
+                        newSection.setTable(newTable);
+                        newSection.setDivision(newDivision);
+                        newSection.setHasTitle(section.getHasTitle());
+                        newSection.setHasTotal(section.getHasTotal());
+                        newSection.setName(section.getName());
+                        newSection.setOrderNum(section.getOrderNum());
+                        newSection.setCode(section.getCode());
+                        sectionRepo.save(newSection);
+                    }
+                }
             }
-            if (division.getHasTotal())
-                generateDivisionTotals(division);
+
+            for (SheetColumn column : sheet.getColumns()) {
+                SheetColumn newColumn = new SheetColumn();
+                newColumn.setReport(newReport);
+                newColumn.setSheet(newSheet);
+                newColumn.setOrderNum(column.getOrderNum());
+                newColumn.setWidth(column.getWidth());
+                columnRepo.save(newColumn);
+            }
         }
+
+        return reportRepo.findOne(newReport.getId());
     }
 
     @Override
-    public void generateSectionRows(Long sectionId, List<Pair<String, String>> params) {
-        TableSection section = sectionRepo.findOne(sectionId);
+    public List<TableRow> generateSectionRows(TableSection section, List<Pair<String, String>> params) {
         Long orderNum=0l;
+        List<TableRow> rows = new ArrayList<>();
         for (Pair<String, String> param: params) {
             TableRow row = new TableRow();
             row.setSection(section);
@@ -51,15 +114,16 @@ public class ActBuilderImpl implements ReportBuilder {
             row.setCode(param.getFirst());
             row.setOrderNum(++orderNum);
             row.setIsIncludeInTotal(true);
-            rowRepo.save(row);
-            generateRowCells(row, param.getSecond());
+            row.setCells(generateRowCells(row, param));
+            rows.add(row);
         }
+        return rows;
     }
 
     @Override
-    public void generateDivisionRows(Long divisionId, List<Pair<String, String>> params) {
-        TableDivision division = divisionRepo.findOne(divisionId);
+    public List<TableRow> generateDivisionRows(TableDivision division, List<Pair<String, String>> params) {
         Long orderNum=0l;
+        List<TableRow> rows = new ArrayList<>();
         for (Pair<String, String> param: params) {
             TableRow row = new TableRow();
             row.setDivision(division);
@@ -70,12 +134,14 @@ public class ActBuilderImpl implements ReportBuilder {
             row.setName(param.getFirst());
             row.setCode(param.getFirst());
             row.setOrderNum(++orderNum);
-            rowRepo.save(row);
-            generateRowCells(row, param.getSecond());
+            row.setCells(generateRowCells(row, param));
+            rows.add(row);
         }
+        return rows;
     }
 
-    private void generateSectionTotals(TableSection section) {
+    @Override
+    public TableRow generateSectionTotals(TableSection section) {
         Long orderNum = 0l;
         TableRow row = new TableRow();
         row.setSection(section);
@@ -86,11 +152,12 @@ public class ActBuilderImpl implements ReportBuilder {
         row.setIsTotal(true);
         row.setName("Итого по подразделу " + section.getCode());
         row.setOrderNum(++orderNum);
-        rowRepo.save(row);
-        generateTotalCells(row, section.getDivision(), section);
+        row.setCells(generateTotalCells(row, section.getRows()));
+        return row;
     }
 
-    private void generateDivisionTotals(TableDivision division) {
+    @Override
+    public TableRow generateDivisionTotals(TableDivision division) {
         Long orderNum = 0l;
         TableRow row = new TableRow();
         row.setDivision(division);
@@ -100,13 +167,47 @@ public class ActBuilderImpl implements ReportBuilder {
         row.setIsTotal(true);
         row.setName("Всего по разделу " + division.getCode());
         row.setOrderNum(++orderNum);
-        rowRepo.save(row);
-        generateTotalCells(row, division, null);
+        row.setCells(generateTotalCells(row, division.getRows()));
+        return row;
     }
 
-    private void generateTotalCells(TableRow totalRow, TableDivision division, TableSection section) {
-        totalRow = rowRepo.findOne(totalRow.getId());
+    @Override
+    public List<TableCell> generateRowCells(TableRow row, Pair<String, String> param) {
+        List<TableCell> cells = new ArrayList<>();
+        for (TableAttr attr : row.getTable().getBodyRowTemplate().getAttrs()) {
+            TableCell cell = new TableCell();
+            cell.setReport(row.getReport());
+            cell.setSheet(row.getSheet());
+            cell.setTable(row.getTable());
+            cell.setDivision(row.getDivision());
+            cell.setSection(row.getSection());
+            cell.setRow(row);
+            cell.setAttr(attr);
 
+            String val = "";
+            String formula = "";
+
+            if (attr.getValueType() == ValueTypeEnum.CONST && StringUtils.equals(attr.getName(), "orderNum") && row.getOrderNum()!=null)
+                val = row.getOrderNum().toString();
+
+            if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getFormulaTemplate()!=null) {
+                formula = attr.getFormulaTemplate()
+                    .replace("#code#",  param.getFirst())
+                    .replace("#param#", param.getSecond())
+                    .replace("#attr#",  attr.getName());
+            }
+
+            cell.setVal(val);
+            cell.setFormula(formula);
+
+            cells.add(cell);
+        }
+        return cells;
+    }
+
+    @Override
+    public List<TableCell> generateTotalCells(TableRow totalRow, List<TableRow> rows) {
+        List<TableCell> cells = new ArrayList<>();
         for (TableAttr attr : totalRow.getTable().getBodyTotalTemplate().getAttrs()) {
             TableCell cell = new TableCell();
             cell.setReport(totalRow.getReport());
@@ -120,30 +221,17 @@ public class ActBuilderImpl implements ReportBuilder {
             String val = "";
             String formula = "";
 
-            if (attr.getValueType() == ValueTypeEnum.CONST && attr.getName()!=null && attr.getName().equals("name"))
+            if (attr.getValueType() == ValueTypeEnum.CONST && attr.getOrderNum().equals(1l))
                 val = totalRow.getName();
 
-            if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName()!=null && attr.getName().equals("amount")) {
-                List<TableRow> rows;
-                if (section!=null)
-                    rows = section.getRows();
-                else
-                    rows = division.getRows();
-
-                if (rows.size()==0)
-                    continue;
-
-                formula =  "";
+            if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName()!=null ) {
                 for (TableRow row : rows) {
-                    if (row.getIsTotal())
-                        continue;
-
-                    if (!row.getIsIncludeInTotal())
+                    if (row.getIsTotal() || !row.getIsIncludeInTotal())
                         continue;
 
                     TableCell amountCell = row.getCells()
                         .stream()
-                        .filter(c -> c.getAttr().getName() != null && c.getAttr().getName().equals(attr.getName()))
+                        .filter(c -> StringUtils.equals(c.getAttr().getName(), attr.getName()))
                         .findFirst().orElse(null);
 
                     if (amountCell!=null) {
@@ -159,47 +247,8 @@ public class ActBuilderImpl implements ReportBuilder {
 
             cell.setVal(val);
             cell.setFormula(formula);
-
-            cellRepo.save(cell);
+            cells.add(cell);
         }
-    }
-
-    private void generateRowCells(TableRow row, String paramCode) {
-        for (TableAttr attr : row.getTable().getBodyRowTemplate().getAttrs()) {
-            TableCell cell = new TableCell();
-            cell.setReport(row.getReport());
-            cell.setSheet(row.getSheet());
-            cell.setTable(row.getTable());
-            cell.setDivision(row.getDivision());
-            cell.setSection(row.getSection());
-            cell.setRow(row);
-            cell.setAttr(attr);
-
-            String val = "";
-            String formula = "";
-
-            if (attr.getValueType() == ValueTypeEnum.CONST && attr.getName()!=null && attr.getName().equals("num") && row.getOrderNum()!=null)
-                val = row.getOrderNum().toString();
-
-            if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName()!=null && attr.getName().equals("name"))
-                formula = "<mp code=\"" + row.getCode() + "\" attr=\"name\" />";
-
-            if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName().equals("end"))
-                formula = "<at mp=\"" + row.getCode() + "\" param=\"" + paramCode + "\" per=\"end\" />";
-
-            if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName().equals("start"))
-                formula = "<at mp=\"" + row.getCode() + "\" param=\"" + paramCode + "\" per=\"start\" />";
-
-            if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName().equals("amount"))
-                formula = "<subtract>" + "\n" +
-                                "\t" + "<at mp=\"" + row.getCode() + "\" param=\"" + paramCode + "\" per=\"end\" /> "  + "\n" +
-                                "\t" +"<at mp=\"" + row.getCode() + "\" param=\"" + paramCode + "\" per=\"start\" />"  + "\n" +
-                          "</subtract>";
-
-            cell.setVal(val);
-            cell.setFormula(formula);
-
-            cellRepo.save(cell);
-        }
+        return cells;
     }
 }
