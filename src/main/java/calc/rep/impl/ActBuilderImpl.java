@@ -126,6 +126,9 @@ public class ActBuilderImpl implements ReportBuilder {
                     if (row.getIsTotal())
                         continue;
 
+                    if (!row.getIsIncludeInTotal())
+                        continue;
+
                     TableCell amountCell = row.getCells()
                         .stream()
                         .filter(c -> c.getAttr().getName() != null && c.getAttr().getName().equals(attr.getName()))

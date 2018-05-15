@@ -1,11 +1,11 @@
 package calc;
 
-import calc.entity.rep.Report;
-import calc.entity.rep.ReportTable;
-import calc.entity.rep.TableSection;
+import calc.entity.rep.*;
+import calc.entity.rep.enums.TablePartEnum;
 import calc.formula.CalcContext;
 import calc.rep.ReportBuilder;
 import calc.rep.TemplateReportBuilder;
+import calc.repo.rep.ReportRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,70 @@ public class App  {
 
     @PostConstruct
     public void init() throws Exception {
-        Report report = templateReportBuilder.createFromTemplate(1l);
+        RowTemplate rowTemplate = new RowTemplate();
+        RowTemplate totalTemplate = new RowTemplate();
+        RowTemplate footerTemplate = new RowTemplate();
+
+        Report templateReport = new Report();
+        templateReport.setName("АКТ");
+        templateReport.setIsTemplate(true);
+        templateReport.setReportType("ACT-SUBST");
+
+        ReportSheet templateSheet = new ReportSheet();
+        templateSheet.setReport(templateReport);
+        templateSheet.setColumnCount(10l);
+        templateSheet.setRowCount(65000l);
+        templateSheet.setOrderNum(1l);
+        templateSheet.setName("Акт съёма показаний");
+
+        ReportTable templateTable = new ReportTable();
+        templateTable.setReport(templateReport);
+        templateTable.setSheet(templateSheet);
+        templateTable.setOrderNum(1l);
+        templateTable.setName("Показания счётчиков");
+        templateTable.setBodyRowTemplate(rowTemplate);
+        templateTable.setBodyTotalTemplate(totalTemplate);
+        templateTable.setFooterRowTemplate(footerTemplate);
+        templateTable.setHasFooter(true);
+        templateTable.setHasHeader(true);
+
+        TableDivision templateDivision = new TableDivision();
+        templateDivision.setCode("1");
+        templateDivision.setName("Приём из энергосистемы");
+        templateDivision.setBelongTo(TablePartEnum.BODY);
+        templateDivision.setHasTitle(true);
+        templateDivision.setHasTotal(true);
+        templateDivision.setOrderNum(1l);
+        templateDivision.setReport(templateReport);
+        templateDivision.setSheet(templateSheet);
+        templateDivision.setTable(templateTable);
+
+        templateDivision = new TableDivision();
+        templateDivision.setCode("2");
+        templateDivision.setName("Отдача в энергосистему");
+        templateDivision.setBelongTo(TablePartEnum.BODY);
+        templateDivision.setHasTitle(true);
+        templateDivision.setHasTotal(true);
+        templateDivision.setOrderNum(2l);
+        templateDivision.setReport(templateReport);
+        templateDivision.setSheet(templateSheet);
+        templateDivision.setTable(templateTable);
+
+        templateDivision = new TableDivision();
+        templateDivision.setCode("3");
+        templateDivision.setName("Хозяйственные нужды");
+        templateDivision.setBelongTo(TablePartEnum.BODY);
+        templateDivision.setHasTitle(true);
+        templateDivision.setHasTotal(true);
+        templateDivision.setOrderNum(3l);
+        templateDivision.setReport(templateReport);
+        templateDivision.setSheet(templateSheet);
+        templateDivision.setTable(templateTable);
+
+
+
+        templateReport = reportRepo.findByReportType("ACT-SUBST");
+        Report report = templateReportBuilder.createFromTemplate(templateReport.getId());
 
         for (TableSection section : report.getSections()) {
             List<Pair<String, String>> params = null;
@@ -181,4 +244,7 @@ public class App  {
 
     @Autowired
     private ReportBuilder reportBuilder;
+
+    @Autowired
+    private ReportRepo reportRepo;
 }

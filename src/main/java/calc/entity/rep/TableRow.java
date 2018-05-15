@@ -46,6 +46,10 @@ public class TableRow {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isTotal;
 
+    @Column(name = "is_include_in_total")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isIncludeInTotal;
+
     @Column(name = "order_num")
     private Long orderNum;
 

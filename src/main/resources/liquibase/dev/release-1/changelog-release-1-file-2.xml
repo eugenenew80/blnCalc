@@ -17,8 +17,8 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="report_type" type="varchar(30)" remarks="Тип шаблона">
-                <constraints nullable="false"/>
+            <column name="code" type="varchar(30)" remarks="Код шаблона">
+                <constraints nullable="true"/>
             </column>
 
             <column name="is_template" type="number" remarks="Является шаблоном?">
@@ -67,6 +67,10 @@
         <createTable tableName="calc_report_sheets" schemaName="apps" remarks="Листы отчета">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
+            </column>
+
+            <column name="code" type="varchar(30)" remarks="Код листа">
+                <constraints nullable="true"/>
             </column>
 
             <column name="name" type="varchar(300)" remarks="Наименование листа">
@@ -131,6 +135,10 @@
         <createTable tableName="calc_report_tables" schemaName="apps" remarks="Таблицы шаблона/отчёта">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
+            </column>
+
+            <column name="code" type="varchar(30)" remarks="Код таблицы">
+                <constraints nullable="true"/>
             </column>
 
             <column name="name" type="varchar(300)" remarks="Наименование таблицы">
@@ -278,6 +286,10 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="code" type="varchar(30)" remarks="Код раздела">
+                <constraints nullable="true"/>
+            </column>
+
             <column name="name" type="varchar(300)" remarks="Наименование раздела">
                 <constraints nullable="false"/>
             </column>
@@ -350,6 +362,10 @@
         <comment>Creating table: calc_sheet_columns</comment>
         <createTable tableName="calc_table_sections" schemaName="apps" remarks="Подразделы таблиц">
             <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="code" type="varchar(300)" remarks="Код подраздела">
                 <constraints nullable="false"/>
             </column>
 
@@ -428,6 +444,10 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="code" type="varchar(30)" remarks="Код строки">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="name" type="varchar(300)" remarks="Наименование подраздела">
                 <constraints nullable="false"/>
             </column>
@@ -456,11 +476,11 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="key" type="varchar(300)" remarks="Ключ для автогенерации формул">
-                <constraints nullable="false"/>
+            <column name="is_total" type="number" remarks="Строка итогов">
+                <constraints nullable="true"/>
             </column>
 
-            <column name="is_total" type="number" remarks="Выводить итоги">
+            <column name="is_include_in_total" type="number" remarks="Включать в итоги">
                 <constraints nullable="true"/>
             </column>
 
