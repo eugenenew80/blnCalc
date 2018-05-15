@@ -24,6 +24,9 @@ public class ReportTable {
     @JoinColumn(name = "sheet_id")
     private ReportSheet sheet;
 
+    @Column(name = "code")
+    private String code;
+
     @Column(name = "name")
     private String name;
 
@@ -46,7 +49,7 @@ public class ReportTable {
     private RowTemplate bodyRowTemplate;
 
     @ManyToOne
-    @JoinColumn(name = "body_total_row_template_id")
+    @JoinColumn(name = "body_total_template_id")
     private RowTemplate bodyTotalTemplate;
 
     @ManyToOne

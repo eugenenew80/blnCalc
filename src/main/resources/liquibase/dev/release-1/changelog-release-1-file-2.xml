@@ -445,7 +445,7 @@
             </column>
 
             <column name="code" type="varchar(30)" remarks="Код строки">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
 
             <column name="name" type="varchar(300)" remarks="Наименование подраздела">
@@ -547,6 +547,10 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="formula_template" type="clob" remarks="Формула для расчёта">
+                <constraints nullable="true"/>
+            </column>
+
             <column name="order_num" type="number" remarks="№ по порядку">
                 <constraints nullable="false"/>
             </column>
@@ -630,7 +634,7 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="formula" type="varchar(4000)" remarks="Формула для расчёта">
+            <column name="formula" type="clob" remarks="Формула для расчёта">
                 <constraints nullable="true"/>
             </column>
 
@@ -1252,7 +1256,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_table_cells"
-                baseColumnNames="row_id"
+                baseColumnNames="attr_id"
                 constraintName="fk_calc_table_cells_7"
                 deferrable="true"
                 initiallyDeferred="true"

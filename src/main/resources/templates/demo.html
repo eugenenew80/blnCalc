@@ -37,7 +37,7 @@
 
                             <ul class="collection with-header" ng-show="data">
                                 <li class="collection-header"><h4>Результат</h4></li>
-                                <li class="collection-item">{{data.result}}</li>
+                                <li class="collection-item">{{data.doubleVal}}</li>
                             </ul>
                         </div>
                     </div>
@@ -67,9 +67,10 @@
                     $scope.data = null;
                     $scope.context.contentBase64 = window.btoa(unescape(encodeURIComponent($scope.formula)));
 
-                    $http.post("/rest/calc/all/", $scope.context, { headers: {'Content-Type': 'application/json;charset=utf-8' } })
+                    $http.post("/rest/calc/text/", $scope.context, { headers: {'Content-Type': 'application/json;charset=utf-8' } })
                         .then(function (response) {
                             $scope.data = response.data;
+                            console.log(response.data);
                         });
                 };
             });

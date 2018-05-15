@@ -53,6 +53,7 @@ public class TemplateReportBuilderImpl implements TemplateReportBuilder {
                     result = calcService.calc(cell.getFormula(), context);
                 }
                 catch (Exception e) {
+                    results.put(cell.getId(), null);
                     e.printStackTrace();
                 }
 
@@ -105,7 +106,7 @@ public class TemplateReportBuilderImpl implements TemplateReportBuilder {
         Report newReport = new Report();
         newReport.setName(report.getName());
         newReport.setIsTemplate(false);
-        newReport.setReportType(report.getReportType());
+        newReport.setCode(report.getCode());
         newReport = reportRepo.save(newReport);
 
         for (ReportSheet sheet : report.getSheets()) {
@@ -114,6 +115,7 @@ public class TemplateReportBuilderImpl implements TemplateReportBuilder {
             newSheet.setName(sheet.getName());
             newSheet.setOrderNum(sheet.getOrderNum());
             newSheet.setRowCount(sheet.getRowCount());
+            newSheet.setCode(sheet.getCode());
             newSheet.setReport(newReport);
             newSheet  = sheetRepo.save(newSheet);
 
@@ -129,6 +131,7 @@ public class TemplateReportBuilderImpl implements TemplateReportBuilder {
                 newTable.setHasHeader(table.getHasHeader());
                 newTable.setName(table.getName());
                 newTable.setOrderNum(table.getOrderNum());
+                newTable.setCode(table.getCode());
                 newTable = tableRepo.save(newTable);
 
                 for(TableDivision division : table.getDivisions() ) {
@@ -141,6 +144,7 @@ public class TemplateReportBuilderImpl implements TemplateReportBuilder {
                     newDivision.setHasTotal(division.getHasTotal());
                     newDivision.setName(division.getName());
                     newDivision.setOrderNum(division.getOrderNum());
+                    newDivision.setCode(division.getCode());
                     newDivision =divisionRepo.save(newDivision);
 
                     for (TableSection section : division.getSections()) {
@@ -153,6 +157,7 @@ public class TemplateReportBuilderImpl implements TemplateReportBuilder {
                         newSection.setHasTotal(section.getHasTotal());
                         newSection.setName(section.getName());
                         newSection.setOrderNum(section.getOrderNum());
+                        newSection.setCode(section.getCode());
                         sectionRepo.save(newSection);
                     }
                 }
@@ -168,6 +173,6 @@ public class TemplateReportBuilderImpl implements TemplateReportBuilder {
             }
         }
 
-        return newReport;
+        return reportRepo.findOne(newReport.getId());
     }
 }

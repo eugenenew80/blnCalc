@@ -29,7 +29,7 @@ public class DocumentBuilderImpl implements DocumentBuilder {
             .newDocument();
 
         Element reportElement = doc.createElement("report");
-        reportElement.setAttribute("type", report.getReportType());
+        reportElement.setAttribute("type", report.getCode());
 
         List<Element> sheetElements = createSheetElements(doc, report.getSheets(), context);
         for (Element sheetElement : sheetElements)
@@ -269,11 +269,13 @@ public class DocumentBuilderImpl implements DocumentBuilder {
         Object val = cell.getVal();
         if (cell.getAttr().getValueType()==ValueTypeEnum.FORMULA && cell.getFormula()!=null) {
             CalcResult calcResult = context.getResults().get(cell.getId());
-            if (attrType == AttrTypeEnum.STRING)
-                val = calcResult.getStringVal();
+            if (calcResult!=null) {
+                if (attrType == AttrTypeEnum.STRING)
+                    val = calcResult.getStringVal();
 
-            if (attrType == AttrTypeEnum.NUMBER)
-                val = calcResult.getDoubleVal();
+                if (attrType == AttrTypeEnum.NUMBER)
+                    val = calcResult.getDoubleVal();
+            }
         }
 
         if (val != null)

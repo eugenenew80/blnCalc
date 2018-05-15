@@ -20,8 +20,8 @@ public class Report {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "report_type")
-    private String reportType;
+    @Column(name = "code")
+    private String code;
 
     @Column(name= "is_template")
     @Convert(converter = BooleanToIntConverter.class)

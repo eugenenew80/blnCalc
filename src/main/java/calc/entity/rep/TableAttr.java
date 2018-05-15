@@ -39,4 +39,7 @@ public class TableAttr {
 
     @Column(name = "order_num")
     private Long orderNum;
+
+    @Column(name = "formula_template")
+    private String formulaTemplate;
 }
