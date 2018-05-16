@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-162" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Load demo data to table: calc_reports</comment>
+        <loadData
+                encoding="UTF-8"
+                relativeToChangelogFile="true"
+                file="data/calc_reports.csv"
+                quotchar='"'
+                schemaName="apps"
+                separator=";"
+                tableName="calc_reports">
+
+            <column name="id" type="NUMERIC"/>
+            <column name="code" type="STRING"/>
+            <column name="name"	type="STRING"/>
+            <column name="is_template"	type="NUMERIC"/>
+        </loadData>
+
+        <rollback>
+            <delete schemaName="apps" tableName="calc_reports" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="calc-eug-163" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Load demo data to table: calc_report_sheets</comment>
+        <loadData
+                encoding="UTF-8"
+                relativeToChangelogFile="true"
+                file="data/calc_report_sheets.csv"
+                quotchar='"'
+                schemaName="apps"
+                separator=";"
+                tableName="calc_report_sheets">
+
+            <column name="id" type="NUMERIC"/>
+            <column name="code" type="STRING"/>
+            <column name="name"	type="STRING"/>
+            <column name="report_id" type="NUMERIC"/>
+            <column name="row_count" type="NUMERIC"/>
+            <column name="column_count" type="NUMERIC"/>
+            <column name="order_num" type="NUMERIC"/>
+        </loadData>
+
+        <rollback>
+            <delete schemaName="apps" tableName="calc_report_sheets" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="calc-eug-164" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Load demo data to table: calc_sheet_columns</comment>
+        <loadData
+                encoding="UTF-8"
+                relativeToChangelogFile="true"
+                file="data/calc_sheet_columns.csv"
+                quotchar='"'
+                schemaName="apps"
+                separator=";"
+                tableName="calc_sheet_columns">
+
+            <column name="id" type="NUMERIC"/>
+            <column name="report_id" type="NUMERIC"/>
+            <column name="sheet_id" type="NUMERIC"/>
+            <column name="order_num" type="NUMERIC"/>
+            <column name="width" type="NUMERIC"/>
+        </loadData>
+
+        <rollback>
+            <delete schemaName="apps" tableName="calc_sheet_columns" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="calc-eug-165" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Load demo data to table: calc_row_templates</comment>
+        <loadData
+                encoding="UTF-8"
+                relativeToChangelogFile="true"
+                file="data/calc_row_templates.csv"
+                quotchar='"'
+                schemaName="apps"
+                separator=";"
+                tableName="calc_row_templates">
+
+            <column name="id" type="NUMERIC"/>
+            <column name="name"	type="STRING"/>
+        </loadData>
+
+        <rollback>
+            <delete schemaName="apps" tableName="calc_row_templates" />
+        </rollback>
+    </changeSet>
+
+    <changeSet id="calc-eug-166" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Load demo data to table: calc_table_attrs</comment>
+        <loadData
+                encoding="UTF-8"
+                relativeToChangelogFile="true"
+                file="data/calc_table_attrs.csv"
+                quotchar='"'
+                schemaName="apps"
+                separator=";"
+                tableName="calc_table_attrs">
+
+            <column name="id" type="NUMERIC"/>
+            <column name="row_template_id" type="NUMERIC"/>
+            <column name="name"	type="STRING"/>
+            <column name="description" type="STRING"/>
+            <column name="attr_type" type="STRING"/>
+            <column name="value_type" type="STRING"/>
+            <column name="precision" type="NUMERIC"/>
+            <column name="order_num" type="NUMERIC"/>
+            <column name="formula_template" type="NUMERIC"/>
+        </loadData>
+
+        <rollback>
+            <delete schemaName="apps" tableName="calc_table_attrs" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -18,6 +18,6 @@ public class RowTemplate {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "rowTemplate", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "rowTemplate", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TableAttr> attrs;
 }

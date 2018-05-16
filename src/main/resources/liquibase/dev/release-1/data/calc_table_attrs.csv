@@ -1,0 +1,31 @@
+﻿id;row_template_id;name;description;attr_type;value_type;precision;order_num;formula_template
+1;1;orderNum;№ п/п;STRING;CONST;null;1;null
+2;1;serial;№ счетчиков;STRING;CONST;null;2;null
+3;1;name;Наименование объектов;STRING;FORMULA;null;3;'<mp code="#code#" attr="#attr#" />'
+4;1;end;Показ. на конец периода;NUMBER;FORMULA;0;4;'<at mp="#code#" param="#param#" per="end" />'
+5;1;start;Показ. на начала периода;NUMBER;FORMULA;0;5;'<at mp="#code#" param="#param#" per="start" />'
+6;1;rate;Коэф-т счетчиков;NUMBER;CONST;2;6;null
+7;1;amount;К-во э/э,  учтенн. Счетчиком, кВт*час;NUMBER;FORMULA;0;7;'<subtract><at mp="#code#" param="#param#" per="end" /><at mp="#code#" param="#param#" per="start" /></subtract>'
+8;1;proportion;Доля полученной (отпущенной) электроэнергии;NUMBER;CONST;4;8;null
+9;1;error;Средне-квадратичная  погрешность;NUMBER;CONST;4;9;null
+10;1;under-count;Допустимый небаланс;NUMBER;CONST;4;10;null
+11;2;name;null;STRING;CONST;null;1;null
+12;2;null;null;EMPTY;CONST;null;2;null
+13;2;null;null;EMPTY;CONST;null;3;null
+14;2;null;null;EMPTY;CONST;null;4;null
+15;2;null;null;EMPTY;CONST;null;5;null
+16;2;unit;null;STRING;CONST;null;6;null
+17;2;amount;null;NUMBER;FORMULA;null;7;null
+18;2;null;null;EMPTY;CONST;null;8;null
+19;2;null;null;EMPTY;CONST;null;9;null
+20;2;null;null;EMPTY;CONST;null;10;null
+21;3;name;null;STRING;CONST;null;1;null
+22;3;null;null;EMPTY;CONST;null;2;null
+23;3;null;null;EMPTY;CONST;null;3;null
+24;3;null;null;EMPTY;CONST;null;4;null
+25;3;null;null;EMPTY;CONST;null;5;null
+26;3;null;null;EMPTY;CONST;null;6;null
+27;3;amount;null;NUMBER;FORMULA;null;7;null
+28;3;null;null;EMPTY;CONST;null;8;null
+29;3;null;null;EMPTY;CONST;null;9;null
+30;3;null;null;EMPTY;CONST;null;10;null

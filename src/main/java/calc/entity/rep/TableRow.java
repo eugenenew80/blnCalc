@@ -53,6 +53,6 @@ public class TableRow {
     @Column(name = "order_num")
     private Long orderNum;
 
-    @OneToMany(mappedBy = "row", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "row", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TableCell> cells;
 }

@@ -4,6 +4,7 @@ import calc.entity.rep.*;
 import calc.entity.rep.enums.ValueTypeEnum;
 import calc.rep.ReportBuilder;
 import calc.repo.rep.*;
+import javafx.scene.control.Cell;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.util.Pair;

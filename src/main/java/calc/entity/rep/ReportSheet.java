@@ -36,9 +36,9 @@ public class ReportSheet {
     @Column(name = "order_num")
     private Long orderNum;
 
-    @OneToMany(mappedBy = "sheet", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sheet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ReportTable> tables;
 
-    @OneToMany(mappedBy = "sheet", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sheet", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<SheetColumn> columns;
 }
