@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ReportRepo extends JpaRepository<Report, Long> {
     Report findByCodeAndIsTemplateIsTrue(String code);
+    Report findByCode(String code);
 }

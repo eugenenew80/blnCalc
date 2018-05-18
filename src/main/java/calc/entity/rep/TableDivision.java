@@ -50,7 +50,7 @@ public class TableDivision {
     @Enumerated(EnumType.STRING)
     private TablePartEnum belongTo;
 
-    @OneToMany(mappedBy = "division", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "division", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TableSection> sections;
 
     @OneToMany(mappedBy = "division", fetch = FetchType.LAZY)

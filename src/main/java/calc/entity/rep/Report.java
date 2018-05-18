@@ -27,7 +27,7 @@ public class Report {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isTemplate;
 
-    @OneToMany(mappedBy = "report", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)
     private List<ReportSheet> sheets;
 
     @OneToMany(mappedBy = "report", fetch = FetchType.LAZY)

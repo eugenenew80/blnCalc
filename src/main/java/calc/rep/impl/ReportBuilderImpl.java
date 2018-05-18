@@ -1,10 +1,10 @@
 package calc.rep.impl;
 
 import calc.entity.rep.*;
+import calc.entity.rep.enums.TablePartEnum;
 import calc.entity.rep.enums.ValueTypeEnum;
 import calc.rep.ReportBuilder;
 import calc.repo.rep.*;
-import javafx.scene.control.Cell;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.util.Pair;
@@ -21,15 +21,16 @@ public class ReportBuilderImpl implements ReportBuilder {
     private final ColumnRepo columnRepo;
     private final DivisionRepo divisionRepo;
     private final SectionRepo sectionRepo;
+    private final RowRepo rowRepo;
 
     @Override
-    public Report createFromTemplate(String reportCode) {
+    public Report createFromTemplate(String reportCode, String newReportCode) {
         Report report = reportRepo.findByCodeAndIsTemplateIsTrue(reportCode);
 
         Report newReport = new Report();
         newReport.setName(report.getName());
         newReport.setIsTemplate(false);
-        newReport.setCode(report.getCode());
+        newReport.setCode(newReportCode);
         newReport = reportRepo.save(newReport);
 
         for (ReportSheet sheet : report.getSheets()) {
@@ -41,6 +42,15 @@ public class ReportBuilderImpl implements ReportBuilder {
             newSheet.setCode(sheet.getCode());
             newSheet.setReport(newReport);
             newSheet  = sheetRepo.save(newSheet);
+
+            for (SheetColumn column : sheet.getColumns()) {
+                SheetColumn newColumn = new SheetColumn();
+                newColumn.setReport(newReport);
+                newColumn.setSheet(newSheet);
+                newColumn.setOrderNum(column.getOrderNum());
+                newColumn.setWidth(column.getWidth());
+                columnRepo.save(newColumn);
+            }
 
             for (ReportTable table : sheet.getTables()) {
                 ReportTable newTable = new ReportTable();
@@ -85,22 +95,41 @@ public class ReportBuilderImpl implements ReportBuilder {
                     }
                 }
             }
-
-            for (SheetColumn column : sheet.getColumns()) {
-                SheetColumn newColumn = new SheetColumn();
-                newColumn.setReport(newReport);
-                newColumn.setSheet(newSheet);
-                newColumn.setOrderNum(column.getOrderNum());
-                newColumn.setWidth(column.getWidth());
-                columnRepo.save(newColumn);
-            }
         }
 
         return reportRepo.findOne(newReport.getId());
     }
 
     @Override
-    public List<TableRow> generateSectionRows(TableSection section, List<Pair<String, String>> params) {
+    public void createSectionRows(TableSection section, List<Pair<String, String>> params) {
+        List<TableRow> rows = generateSectionRows(section, params);
+        rowRepo.save(rows);
+    }
+
+    @Override
+    public void createDivisionRows(TableSection section, List<Pair<String, String>> params) {
+        List<TableRow> rows = generateSectionRows(section, params);
+        rowRepo.save(rows);
+    }
+
+    @Override
+    public  void createTotals(Report report) {
+        report.getTables()
+            .stream()
+            .flatMap(t -> t.getDivisions().stream())
+            .filter(t -> t.getBelongTo() == TablePartEnum.BODY && t.getHasTotal())
+            .forEach(t -> rowRepo.save(generateDivisionTotals(t)));
+
+        report.getTables()
+            .stream()
+            .flatMap(t -> t.getDivisions().stream())
+            .filter(t -> t.getBelongTo() == TablePartEnum.BODY)
+            .flatMap(t -> t.getSections().stream())
+            .filter(t -> t.getHasTotal())
+            .forEach(t -> rowRepo.save(generateSectionTotals(t)));
+    }
+
+    private List<TableRow> generateSectionRows(TableSection section, List<Pair<String, String>> params) {
         Long orderNum=0l;
         List<TableRow> rows = new ArrayList<>();
         for (Pair<String, String> param: params) {
@@ -121,8 +150,7 @@ public class ReportBuilderImpl implements ReportBuilder {
         return rows;
     }
 
-    @Override
-    public List<TableRow> generateDivisionRows(TableDivision division, List<Pair<String, String>> params) {
+    private List<TableRow> generateDivisionRows(TableDivision division, List<Pair<String, String>> params) {
         Long orderNum=0l;
         List<TableRow> rows = new ArrayList<>();
         for (Pair<String, String> param: params) {
@@ -141,8 +169,7 @@ public class ReportBuilderImpl implements ReportBuilder {
         return rows;
     }
 
-    @Override
-    public TableRow generateSectionTotals(TableSection section) {
+    private TableRow generateSectionTotals(TableSection section) {
         Long orderNum = 0l;
         TableRow row = new TableRow();
         row.setSection(section);
@@ -157,8 +184,7 @@ public class ReportBuilderImpl implements ReportBuilder {
         return row;
     }
 
-    @Override
-    public TableRow generateDivisionTotals(TableDivision division) {
+    private TableRow generateDivisionTotals(TableDivision division) {
         Long orderNum = 0l;
         TableRow row = new TableRow();
         row.setDivision(division);
@@ -172,18 +198,10 @@ public class ReportBuilderImpl implements ReportBuilder {
         return row;
     }
 
-    @Override
-    public List<TableCell> generateRowCells(TableRow row, Pair<String, String> param) {
+    private List<TableCell> generateRowCells(TableRow row, Pair<String, String> param) {
         List<TableCell> cells = new ArrayList<>();
         for (TableAttr attr : row.getTable().getBodyRowTemplate().getAttrs()) {
-            TableCell cell = new TableCell();
-            cell.setReport(row.getReport());
-            cell.setSheet(row.getSheet());
-            cell.setTable(row.getTable());
-            cell.setDivision(row.getDivision());
-            cell.setSection(row.getSection());
-            cell.setRow(row);
-            cell.setAttr(attr);
+            TableCell cell = TableCell.fromAttr(row, attr);
 
             String val = "";
             String formula = "";
@@ -206,18 +224,10 @@ public class ReportBuilderImpl implements ReportBuilder {
         return cells;
     }
 
-    @Override
-    public List<TableCell> generateTotalCells(TableRow totalRow, List<TableRow> rows) {
+    private List<TableCell> generateTotalCells(TableRow totalRow, List<TableRow> rows) {
         List<TableCell> cells = new ArrayList<>();
         for (TableAttr attr : totalRow.getTable().getBodyTotalTemplate().getAttrs()) {
-            TableCell cell = new TableCell();
-            cell.setReport(totalRow.getReport());
-            cell.setSheet(totalRow.getSheet());
-            cell.setTable(totalRow.getTable());
-            cell.setDivision(totalRow.getDivision());
-            cell.setSection(totalRow.getSection());
-            cell.setRow(totalRow);
-            cell.setAttr(attr);
+            TableCell cell = TableCell.fromAttr(totalRow, attr);
 
             String val = "";
             String formula = "";
@@ -225,31 +235,36 @@ public class ReportBuilderImpl implements ReportBuilder {
             if (attr.getValueType() == ValueTypeEnum.CONST && attr.getOrderNum().equals(1l))
                 val = totalRow.getName();
 
-            if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName()!=null ) {
-                for (TableRow row : rows) {
-                    if (row.getIsTotal() || !row.getIsIncludeInTotal())
-                        continue;
-
-                    TableCell amountCell = row.getCells()
-                        .stream()
-                        .filter(c -> StringUtils.equals(c.getAttr().getName(), attr.getName()))
-                        .findFirst().orElse(null);
-
-                    if (amountCell!=null) {
-                        if (formula.equals(""))
-                            formula="\n";
-                        formula = formula + amountCell.getFormula() + "\n";
-                    }
-                }
-
-                if (!formula.equals(""))
-                    formula = "<add>" + formula + "</add>";
-            }
+            if (attr.getValueType() == ValueTypeEnum.FORMULA && attr.getName()!=null )
+                formula = generateTotalFormula(attr, rows);
 
             cell.setVal(val);
             cell.setFormula(formula);
             cells.add(cell);
         }
         return cells;
+    }
+
+    private String generateTotalFormula(TableAttr attr, List<TableRow> rows) {
+        String formula = "";
+        for (TableRow row : rows) {
+            if (row.getIsTotal() || !row.getIsIncludeInTotal())
+                continue;
+
+            TableCell amountCell = row.getCells()
+                .stream()
+                .filter(c -> StringUtils.equals(c.getAttr().getName(), attr.getName()))
+                .findFirst().orElse(null);
+
+            if (amountCell!=null) {
+                if (formula.equals(""))
+                    formula="\n";
+                formula = formula + amountCell.getFormula() + "\n";
+            }
+        }
+
+        if (!formula.equals(""))
+            formula = "<add>" + formula + "</add>";
+        return formula;
     }
 }

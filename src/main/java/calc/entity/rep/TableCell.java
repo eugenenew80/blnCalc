@@ -55,4 +55,16 @@ public class TableCell {
 
     @Column(name = "formula")
     private String formula;
+
+    public static TableCell fromAttr(TableRow row, TableAttr attr) {
+        TableCell cell = new TableCell();
+        cell.setReport(row.getReport());
+        cell.setSheet(row.getSheet());
+        cell.setTable(row.getTable());
+        cell.setDivision(row.getDivision());
+        cell.setSection(row.getSection());
+        cell.setRow(row);
+        cell.setAttr(attr);
+        return cell;
+    }
 }

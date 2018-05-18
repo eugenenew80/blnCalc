@@ -58,7 +58,7 @@
                 incrementBy="1"
                 schemaName="apps"
                 sequenceName="calc_reports_s"
-                startValue="1"/>
+                startValue="2"/>
     </changeSet>
 
 
@@ -126,7 +126,7 @@
                 incrementBy="1"
                 schemaName="apps"
                 sequenceName="calc_report_sheets_s"
-                startValue="1"/>
+                startValue="2"/>
     </changeSet>
 
 
@@ -214,7 +214,7 @@
                 incrementBy="1"
                 schemaName="apps"
                 sequenceName="calc_report_tables_s"
-                startValue="1"/>
+                startValue="2"/>
     </changeSet>
 
 
@@ -274,7 +274,7 @@
                 incrementBy="1"
                 schemaName="apps"
                 sequenceName="calc_sheet_columns_s"
-                startValue="1"/>
+                startValue="11"/>
     </changeSet>
 
 
@@ -355,7 +355,7 @@
                 incrementBy="1"
                 schemaName="apps"
                 sequenceName="calc_table_divisions_s"
-                startValue="1"/>
+                startValue="7"/>
     </changeSet>
 
     <changeSet id="calc-eug-79" logicalFilePath="path-independent" author="eugene">
@@ -434,7 +434,7 @@
                 incrementBy="1"
                 schemaName="apps"
                 sequenceName="calc_table_sections_s"
-                startValue="1"/>
+                startValue="12"/>
     </changeSet>
 
     <changeSet id="calc-eug-82" logicalFilePath="path-independent" author="eugene">
@@ -592,7 +592,7 @@
                 incrementBy="1"
                 schemaName="apps"
                 sequenceName="calc_table_attrs_s"
-                startValue="1"/>
+                startValue="31"/>
     </changeSet>
 
     <changeSet id="calc-eug-88" logicalFilePath="path-independent" author="eugene">
