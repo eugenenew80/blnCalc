@@ -6,7 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
 
-    <changeSet id="calc-eug-170" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-152" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_table_group_headers</comment>
         <createTable tableName="calc_table_group_headers" schemaName="apps" remarks="Шаблоны отчётов">
             <column name="id" type="number" remarks="Идентификатор">
@@ -14,14 +14,6 @@
             </column>
 
             <column name="report_id" type="number" remarks="Идентификатор отчёта">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="sheet_id" type="number" remarks="Идентификатор листа">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="table_id" type="number" remarks="Идентификатор тпблицы">
                 <constraints nullable="false"/>
             </column>
 
@@ -59,7 +51,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-171" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-153" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_table_group_headers</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -68,7 +60,7 @@
                 tableName="calc_table_group_headers"/>
     </changeSet>
 
-    <changeSet id="calc-eug-172" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-154" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_table_group_headers</comment>
         <createSequence
                 incrementBy="1"

@@ -109,28 +109,26 @@ public class ReportBuilderImpl implements ReportBuilder {
 
     @Override
     public List<TableRow> createSectionTotals(Report report) {
-        List<TableRow> rows = report.getTables()
+        return report.getSheets()
             .stream()
+            .flatMap(t -> t.getTables().stream())
             .flatMap(t -> t.getDivisions().stream())
             .filter(t -> t.getBelongTo() == TablePartEnum.BODY && t.getHasTotal())
             .map(t -> generateDivisionTotals(t))
             .collect(Collectors.toList());
-
-        return rows;
     }
 
     @Override
     public List<TableRow> createDivisionTotals(Report report) {
-        List<TableRow> rows = report.getTables()
+        return report.getSheets()
             .stream()
+            .flatMap(t -> t.getTables().stream())
             .flatMap(t -> t.getDivisions().stream())
             .filter(t -> t.getBelongTo() == TablePartEnum.BODY)
             .flatMap(t -> t.getSections().stream())
             .filter(t -> t.getHasTotal())
             .map(t -> generateSectionTotals(t))
             .collect(Collectors.toList());
-
-        return rows;
     }
 
 

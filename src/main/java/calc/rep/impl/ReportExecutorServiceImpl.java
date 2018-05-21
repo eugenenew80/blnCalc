@@ -21,18 +21,21 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ReportExecutorServiceImpl implements ReportExecutorService {
     private final ReportRepo reportRepo;
-
     private final CalcService calcService;
     private final DocumentBuilder documentBuilder;
 
     @Override
     public Document buildReport(Long reportId, CalcContext context) throws Exception {
         Report report = reportRepo.findOne(reportId);
+        if (report==null)
+            throw new Exception("Entity not found");
+
         Map<Long, CalcResult> results = calc(report, context);
         context.setResults(results);
         return documentBuilder.buildDocument(report, context);
@@ -40,8 +43,16 @@ public class ReportExecutorServiceImpl implements ReportExecutorService {
 
     @Override
     public Map<Long, CalcResult> calc(Report report, CalcContext context) {
+        List<TableCell> cells = report.getSheets()
+            .stream()
+            .flatMap(t -> t.getTables().stream())
+            .flatMap(t -> t.getDivisions().stream())
+            .flatMap(t -> t.getRows().stream())
+            .flatMap(t -> t.getCells().stream())
+            .collect(Collectors.toList());
+
         Map<Long, CalcResult> results = new HashMap<>();
-        for (TableCell cell : report.getCells()) {
+        for (TableCell cell : cells) {
             if (cell.getAttr().getValueType()== ValueTypeEnum.FORMULA && cell.getFormula()!=null) {
                 CalcResult result = null;
                 try {

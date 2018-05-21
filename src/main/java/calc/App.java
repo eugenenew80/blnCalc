@@ -118,8 +118,11 @@ public class App  {
     }
 
     private List<TableGroupHeader> createTableGroupHeaders(Report report) {
-        List<TableGroupHeader> tableGroupHeaders = report.getSections()
+        List<TableGroupHeader> tableGroupHeaders = report.getSheets()
             .stream()
+            .flatMap(t -> t.getTables().stream())
+            .flatMap(t -> t.getDivisions().stream())
+            .flatMap(t -> t.getSections().stream())
             .map(section -> {
                 String paramCode = "";
                 Long groupHeaderId = null;

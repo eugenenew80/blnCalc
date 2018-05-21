@@ -6,7 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
 
-    <changeSet id="calc-eug-1" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-1" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_formulas</comment>
         <createTable tableName="calc_formulas" schemaName="apps" remarks="Формулы">
             <column name="id" type="number" remarks="Идентификатор">
@@ -55,7 +55,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-2" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-2" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_formulas</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -64,7 +64,7 @@
                 tableName="calc_formulas"/>
     </changeSet>
 
-    <changeSet id="calc-eug-3" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-3" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_formulas</comment>
         <createSequence
                 incrementBy="1"
@@ -73,7 +73,7 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-eug-4" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-4" logicalFilePath="path-independent" author="eugene" context="dev">
         <addUniqueConstraint
                 columnNames="code"
                 constraintName="un_calc_formulas_1"
@@ -83,7 +83,7 @@
                 tableName="calc_formulas" />
     </changeSet>
 
-    <changeSet id="calc-eug-5" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-5" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_formulas</comment>
         <createTable tableName="calc_metering_point_params" schemaName="apps" remarks="Параметры, релевантные для точки учёта">
             <column name="id" type="number" remarks="Идентификатор">
@@ -116,7 +116,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-6" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-6" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_metering_point_params</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -125,7 +125,7 @@
                 tableName="calc_metering_point_params"/>
     </changeSet>
 
-    <changeSet id="calc-eug-7" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-7" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_metering_point_params</comment>
         <createSequence
                 incrementBy="1"
@@ -134,7 +134,7 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-eug-8" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-8" logicalFilePath="path-independent" author="eugene" context="dev">
         <addUniqueConstraint
                 columnNames="metering_point_id, parameter_id"
                 constraintName="un_calc_metering_point_params_1"
@@ -242,7 +242,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="calc-eug-16" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-16" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_priority_lines</comment>
         <createTable tableName="calc_priority_lines" schemaName="apps" remarks="Приоритеты использования - строки">
             <column name="id" type="number" remarks="Идентификатор">
@@ -279,7 +279,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-17" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-17" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_priority_lines</comment>
         <createSequence
                 incrementBy="1"
@@ -372,7 +372,7 @@
         <rollback/>
     </changeSet>
 
-    <changeSet id="calc-eug-28" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-28" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_daily_sheet_headers</comment>
         <createTable tableName="calc_daily_sheet_headers" schemaName="apps" remarks="Заголовок суточной ведомости">
             <column name="id" type="number" remarks="Идентификатор">
@@ -417,7 +417,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-29" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-29" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_daily_sheet_headers</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -426,7 +426,7 @@
                 tableName="calc_daily_sheet_headers"/>
     </changeSet>
 
-    <changeSet id="calc-eug-30" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-30" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_daily_sheet_headers</comment>
         <createSequence
                 incrementBy="1"
@@ -435,7 +435,7 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-eug-31" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-31" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_daily_sheet_lines</comment>
         <createTable tableName="calc_daily_sheet_lines" schemaName="apps" remarks="Строки суточной ведомости">
             <column name="id" type="number" remarks="Идентификатор">
@@ -504,7 +504,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-32" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-32" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_daily_sheet_lines</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -513,7 +513,7 @@
                 tableName="calc_daily_sheet_lines"/>
     </changeSet>
 
-    <changeSet id="calc-eug-33" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-33" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_daily_sheet_lines</comment>
         <createSequence
                 incrementBy="1"
@@ -607,7 +607,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-39" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-39" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_daily_sheet_headers</comment>
         <createTable tableName="calc_metering_data_sources" schemaName="apps" remarks="Источники получения данных">
             <column name="id" type="number" remarks="Идентификатор">
@@ -648,7 +648,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-40" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-40" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_metering_data_sources</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -657,7 +657,7 @@
                 tableName="calc_metering_data_sources"/>
     </changeSet>
 
-    <changeSet id="calc-eug-41" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-41" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_metering_data_sources</comment>
         <createSequence
                 incrementBy="1"
@@ -700,7 +700,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-44" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-44" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_daily_sheet_headers</comment>
         <createTable tableName="calc_metering_data_source_lines" schemaName="apps" remarks="Точки учёта, относящиеся к источникам данных">
             <column name="id" type="number" remarks="Идентификатор">
@@ -811,7 +811,7 @@
                 tableName="calc_metering_data_source_lines"/>
     </changeSet>
 
-    <changeSet id="calc-eug-51" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-51" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_priority_lines</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -820,8 +820,7 @@
                 tableName="calc_priority_lines"/>
     </changeSet>
 
-
-    <changeSet id="calc-eug-52" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-52" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_priority_headers</comment>
         <createTable tableName="calc_priority_headers" schemaName="apps" remarks="Приоритеты использования данных - заголовки">
             <column name="id" type="number" remarks="Идентификатор">
@@ -866,7 +865,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-53" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-53" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_priority_headers</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -875,7 +874,7 @@
                 tableName="calc_priority_headers"/>
     </changeSet>
 
-    <changeSet id="calc-eug-54" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-54" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_priority_headers</comment>
         <createSequence
                 incrementBy="1"
@@ -908,8 +907,7 @@
         </createIndex>
     </changeSet>
 
-
-    <changeSet id="calc-eug-57" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-57" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_priority_metering_points</comment>
         <createTable tableName="calc_priority_metering_points" schemaName="apps" remarks="Приоритеты использования данных - точки учёта">
             <column name="id" type="number" remarks="Идентификатор">
@@ -942,7 +940,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-58" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-58" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_priority_metering_points</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -951,7 +949,7 @@
                 tableName="calc_priority_metering_points"/>
     </changeSet>
 
-    <changeSet id="calc-eug-59" logicalFilePath="path-independent" author="eugene">
+    <changeSet id="calc-eug-59" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_priority_metering_points</comment>
         <createSequence
                 incrementBy="1"
