@@ -11,6 +11,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +22,6 @@ public class ReportBuilderImpl implements ReportBuilder {
     private final ColumnRepo columnRepo;
     private final DivisionRepo divisionRepo;
     private final SectionRepo sectionRepo;
-    private final RowRepo rowRepo;
 
     @Override
     public Report createFromTemplate(String reportCode, String newReportCode) {
@@ -70,7 +70,6 @@ public class ReportBuilderImpl implements ReportBuilder {
                 for(TableDivision division : table.getDivisions() ) {
                     TableDivision newDivision = new TableDivision();
                     newDivision.setReport(newReport);
-                    newDivision.setSheet(newSheet);
                     newDivision.setTable(newTable);
                     newDivision.setBelongTo(division.getBelongTo());
                     newDivision.setHasTitle(division.getHasTitle());
@@ -83,8 +82,6 @@ public class ReportBuilderImpl implements ReportBuilder {
                     for (TableSection section : division.getSections()) {
                         TableSection newSection = new TableSection();
                         newSection.setReport(newReport);
-                        newSection.setSheet(newSheet);
-                        newSection.setTable(newTable);
                         newSection.setDivision(newDivision);
                         newSection.setHasTitle(section.getHasTitle());
                         newSection.setHasTotal(section.getHasTotal());
@@ -101,33 +98,41 @@ public class ReportBuilderImpl implements ReportBuilder {
     }
 
     @Override
-    public void createSectionRows(TableSection section, List<Pair<String, String>> params) {
-        List<TableRow> rows = generateSectionRows(section, params);
-        rowRepo.save(rows);
+    public List<TableRow> createSectionRows(TableSection section, List<Pair<String, String>> params) {
+        return generateSectionRows(section, params);
     }
 
     @Override
-    public void createDivisionRows(TableSection section, List<Pair<String, String>> params) {
-        List<TableRow> rows = generateSectionRows(section, params);
-        rowRepo.save(rows);
+    public List<TableRow> createDivisionRows(TableDivision division, List<Pair<String, String>> params) {
+        return generateDivisionRows(division, params);
     }
 
     @Override
-    public  void createTotals(Report report) {
-        report.getTables()
+    public List<TableRow> createSectionTotals(Report report) {
+        List<TableRow> rows = report.getTables()
             .stream()
             .flatMap(t -> t.getDivisions().stream())
             .filter(t -> t.getBelongTo() == TablePartEnum.BODY && t.getHasTotal())
-            .forEach(t -> rowRepo.save(generateDivisionTotals(t)));
+            .map(t -> generateDivisionTotals(t))
+            .collect(Collectors.toList());
 
-        report.getTables()
+        return rows;
+    }
+
+    @Override
+    public List<TableRow> createDivisionTotals(Report report) {
+        List<TableRow> rows = report.getTables()
             .stream()
             .flatMap(t -> t.getDivisions().stream())
             .filter(t -> t.getBelongTo() == TablePartEnum.BODY)
             .flatMap(t -> t.getSections().stream())
             .filter(t -> t.getHasTotal())
-            .forEach(t -> rowRepo.save(generateSectionTotals(t)));
+            .map(t -> generateSectionTotals(t))
+            .collect(Collectors.toList());
+
+        return rows;
     }
+
 
     private List<TableRow> generateSectionRows(TableSection section, List<Pair<String, String>> params) {
         Long orderNum=0l;
@@ -136,8 +141,6 @@ public class ReportBuilderImpl implements ReportBuilder {
             TableRow row = new TableRow();
             row.setSection(section);
             row.setDivision(section.getDivision());
-            row.setTable(section.getTable());
-            row.setSheet(section.getSheet());
             row.setReport(section.getReport());
             row.setIsTotal(false);
             row.setName(param.getFirst());
@@ -156,8 +159,6 @@ public class ReportBuilderImpl implements ReportBuilder {
         for (Pair<String, String> param: params) {
             TableRow row = new TableRow();
             row.setDivision(division);
-            row.setTable(division.getTable());
-            row.setSheet(division.getSheet());
             row.setReport(division.getReport());
             row.setIsTotal(false);
             row.setName(param.getFirst());
@@ -174,8 +175,6 @@ public class ReportBuilderImpl implements ReportBuilder {
         TableRow row = new TableRow();
         row.setSection(section);
         row.setDivision(section.getDivision());
-        row.setTable(section.getTable());
-        row.setSheet(section.getSheet());
         row.setReport(section.getReport());
         row.setIsTotal(true);
         row.setName("Итого по подразделу " + section.getCode());
@@ -188,8 +187,6 @@ public class ReportBuilderImpl implements ReportBuilder {
         Long orderNum = 0l;
         TableRow row = new TableRow();
         row.setDivision(division);
-        row.setTable(division.getTable());
-        row.setSheet(division.getSheet());
         row.setReport(division.getReport());
         row.setIsTotal(true);
         row.setName("Всего по разделу " + division.getCode());

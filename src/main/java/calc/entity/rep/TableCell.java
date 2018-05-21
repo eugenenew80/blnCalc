@@ -20,22 +20,6 @@ public class TableCell {
     private Report report;
 
     @ManyToOne
-    @JoinColumn(name = "sheet_id")
-    private ReportSheet sheet;
-
-    @ManyToOne
-    @JoinColumn(name = "table_id")
-    private ReportTable table;
-
-    @ManyToOne
-    @JoinColumn(name = "division_id")
-    private TableDivision division;
-
-    @ManyToOne
-    @JoinColumn(name = "section_id")
-    private TableSection section;
-
-    @ManyToOne
     @JoinColumn(name = "row_id")
     private TableRow row;
 
@@ -59,10 +43,6 @@ public class TableCell {
     public static TableCell fromAttr(TableRow row, TableAttr attr) {
         TableCell cell = new TableCell();
         cell.setReport(row.getReport());
-        cell.setSheet(row.getSheet());
-        cell.setTable(row.getTable());
-        cell.setDivision(row.getDivision());
-        cell.setSection(row.getSection());
         cell.setRow(row);
         cell.setAttr(attr);
         return cell;

@@ -21,14 +21,6 @@ public class TableRow {
     private Report report;
 
     @ManyToOne
-    @JoinColumn(name = "sheet_id")
-    private ReportSheet sheet;
-
-    @ManyToOne
-    @JoinColumn(name = "table_id")
-    private ReportTable table;
-
-    @ManyToOne
     @JoinColumn(name = "division_id")
     private TableDivision division;
 
@@ -55,4 +47,10 @@ public class TableRow {
 
     @OneToMany(mappedBy = "row", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TableCell> cells;
+
+
+    @Transient
+    public ReportTable getTable() {
+        return division.getTable();
+    }
 }

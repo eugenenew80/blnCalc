@@ -8,9 +8,11 @@ import java.util.List;
 public interface ReportBuilder {
     Report createFromTemplate(String reportCode, String newReportCode);
 
-    void createSectionRows(TableSection section, List<Pair<String, String>> params);
+    List<TableRow> createSectionRows(TableSection section, List<Pair<String, String>> params);
 
-    void createDivisionRows(TableSection section, List<Pair<String, String>> params);
+    List<TableRow> createDivisionRows(TableDivision division, List<Pair<String, String>> params);
 
-    void createTotals(Report report);
+    List<TableRow> createSectionTotals(Report report);
+
+    List<TableRow> createDivisionTotals(Report report);
 }

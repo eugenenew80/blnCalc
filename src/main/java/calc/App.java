@@ -4,6 +4,7 @@ import calc.entity.rep.*;
 import calc.formula.CalcContext;
 import calc.rep.ReportBuilder;
 import calc.rep.ReportExecutorService;
+import calc.repo.calc.MeteringPointRepo;
 import calc.repo.rep.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.w3c.dom.Document;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @EntityScan(
     basePackageClasses = { App.class, Jsr310JpaConverters.class }
@@ -31,19 +33,22 @@ public class App  {
     private ReportExecutorService executorService;
 
     @Autowired
-
     private ReportBuilder reportBuilder;
+
     @Autowired
     private ReportRepo reportRepo;
 
     @Autowired
-    private RowTemplateRepo rowTemplateRepo;
+    private MeteringPointRepo meteringPointRepo;
 
     @Autowired
-    private DivisionRepo divisionRepo;
+    private GroupHeaderRepo groupHeaderRepo;
 
     @Autowired
-    private SectionRepo sectionRepo;
+    private GroupLineRepo groupLineRepo;
+
+    @Autowired
+    private TableGroupHeaderRepo tableGroupHeaderRepo;
 
     @Autowired
     private RowRepo rowRepo;
@@ -52,15 +57,16 @@ public class App  {
         SpringApplication.run(App.class, args);
     }
 
-
     @PostConstruct
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void init() throws Exception {
         Report templateReport = reportRepo.findByCodeAndIsTemplateIsTrue("ACT-SUBST");
 
         Report report = reportRepo.findByCode("ACT-SUBST#SHYM-500");
-        if (report==null)
+        if (report==null) {
+            createGroupHeaders();
             report = createActReport(templateReport.getCode(), "ACT-SUBST#SHYM-500");
+        }
 
         buildReport(report.getId());
     }
@@ -89,130 +95,493 @@ public class App  {
 
     private Report createActReport(String reportCode, String newReportCode) {
         Report report = reportBuilder.createFromTemplate(reportCode, newReportCode);
-        Map<String, List<Pair<String, String>>> mapParams = createParams();
+        List<TableGroupHeader> tableGroupHeaders = createTableGroupHeaders(report);
 
-        report.getSections()
-            .stream()
-            .forEach(t -> {
-                List<Pair<String, String>> params = mapParams.get(t.getCode());
-                if (params!=null)
-                    reportBuilder.createSectionRows(t, params);
-            });
+        tableGroupHeaders.stream().forEach(header -> {
+            List<Pair<String, String>> params = header.getGroupHeader()
+                .getLines()
+                .stream()
+                .map(line -> Pair.of(line.getMeteringPoint().getCode(), header.getParamCode()))
+                .collect(Collectors.toList());
 
-        reportBuilder.createTotals(report);
+            List<TableRow> rows = reportBuilder.createSectionRows(header.getSection(), params);
+            rowRepo.save(rows);
+        });
+
+        List<TableRow> rows = reportBuilder.createSectionTotals(report);
+        rowRepo.save(rows);
+
+        rows = reportBuilder.createDivisionTotals(report);
+        rowRepo.save(rows);
+
         return reportRepo.findOne(report.getId());
     }
 
-    private Map<String, List<Pair<String, String>>> createParams() {
-        Map<String, List<Pair<String, String>>>  mapParams = new HashMap<>();
+    private List<TableGroupHeader> createTableGroupHeaders(Report report) {
+        List<TableGroupHeader> tableGroupHeaders = report.getSections()
+            .stream()
+            .map(section -> {
+                String paramCode = "";
+                Long groupHeaderId = null;
+                switch (section.getCode()) {
+                    case "1.1":
+                        paramCode = "A-";
+                        groupHeaderId = 1l;
+                        break;
+                    case "1.2":
+                        paramCode = "A-";
+                        groupHeaderId = 2l;
+                        break;
+                    case "1.3":
+                        paramCode = "A-";
+                        groupHeaderId = 3l;
+                        break;
+                    case "2.1":
+                        paramCode = "A+";
+                        groupHeaderId = 4l;
+                        break;
+                    case "2.2":
+                        paramCode = "A+";
+                        groupHeaderId = 5l;
+                        break;
+                    case "2.3":
+                        paramCode = "A+";
+                        groupHeaderId = 6l;
+                        break;
+                    case "2.4":
+                        paramCode = "A+";
+                        groupHeaderId = 7l;
+                        break;
+                    case "2.5":
+                        paramCode = "A+";
+                        groupHeaderId = 8l;
+                        break;
+                    case "3.1":
+                        paramCode = "A-";
+                        groupHeaderId = 9l;
+                        break;
+                    case "3.2":
+                        paramCode = "A-";
+                        groupHeaderId = 10l;
+                        break;
+                    case "3.3":
+                        paramCode = "A-";
+                        groupHeaderId = 11l;
+                        break;
+                }
+                GroupHeader groupHeader = groupHeaderRepo.findOne(groupHeaderId);
 
-        List<Pair<String, String>> params = Arrays.asList(
-            Pair.of("121420300070120001", "A-"),
-            Pair.of("121420300070120002", "A-")
-        );
-        mapParams.put("1.1", params);
+                TableGroupHeader tableGroupHeader = new TableGroupHeader();
+                tableGroupHeader.setGroupHeader(groupHeader);
+                tableGroupHeader.setSection(section);
+                tableGroupHeader.setDivision(section.getDivision());
+                tableGroupHeader.setReport(section.getReport());
+                tableGroupHeader.setParamCode(paramCode);
+                return tableGroupHeader;
+            })
+            .collect(Collectors.toList());
 
+        tableGroupHeaderRepo.save(tableGroupHeaders);
+        return tableGroupHeaders;
+    }
 
-        params = Arrays.asList(
-            Pair.of("121420300070120004", "A-"),
-            Pair.of("121420300070120005", "A-"),
-            Pair.of("121420300070120007", "A-"),
-            Pair.of("121420300070120009", "A-"),
-            Pair.of("121420300070120010", "A-"),
-            Pair.of("121420300070120012", "A-"),
-            Pair.of("121420300070120013", "A-"),
-            Pair.of("121420300070120014", "A-"),
-            Pair.of("121420300070120003", "A-"),
-            Pair.of("121420300070120029", "A-")
-        );
-        mapParams.put("1.2", params);
+    private void createGroupHeaders() {
+        GroupHeader header = new GroupHeader();
+        header.setName("Шины 500 кВ - приём");
 
+        List<GroupLine> lines = new ArrayList<>();
+        GroupLine line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120001"));
+        line.setOrderNum(1l);
+        lines.add(line);
 
-        params = Arrays.asList(
-            Pair.of("121420300070120015", "A-"),
-            Pair.of("121420300070120016", "A-")
-        );
-        mapParams.put("1.3", params);
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120002"));
+        line.setOrderNum(2l);
+        lines.add(line);
 
-
-        params = Arrays.asList(
-            Pair.of("121420300070120001", "A+"),
-            Pair.of("121420300070120002", "A+")
-        );
-        mapParams.put("2.1", params);
-
-
-        params = Arrays.asList(
-            Pair.of("121420300070120004", "A+"),
-            Pair.of("121420300070120005", "A+"),
-            Pair.of("121420300070120006", "A+"),
-            Pair.of("121420300070120007", "A+"),
-            Pair.of("121420300070120008", "A+"),
-            Pair.of("121420300070120009", "A+"),
-            Pair.of("121420300070120010", "A+"),
-            Pair.of("121420300070120011", "A+"),
-            Pair.of("121420300070120012", "A+"),
-            Pair.of("121420300070120013", "A+"),
-            Pair.of("121420300070120014", "A+"),
-            Pair.of("121420300070120003", "A+"),
-            Pair.of("121420300070120029", "A+")
-        );
-        mapParams.put("2.2", params);
-
-
-        params = Arrays.asList(
-            Pair.of("121420300070120030", "A+"),
-            Pair.of("121420300070120031", "A+"),
-            Pair.of("121420300070120018", "A+"),
-            Pair.of("121420300070120033", "A+")
-        );
-        mapParams.put("2.3", params);
-
-
-        params = Arrays.asList(
-            Pair.of("121420300070120021", "A+"),
-            Pair.of("121420300070120022", "A+"),
-            Pair.of("121420300070120023", "A+"),
-            Pair.of("121420300070120039", "A+"),
-            Pair.of("121420300070120040", "A+"),
-            Pair.of("121420300070120041", "A+"),
-            Pair.of("121420300070120042", "A+"),
-            Pair.of("121420300070120043", "A+"),
-            Pair.of("121420300070120044", "A+")
-        );
-        mapParams.put("2.4", params);
-
-
-        params = Arrays.asList(
-            Pair.of("121420300070120035", "A+"),
-            Pair.of("121420300070120036", "A+"),
-            Pair.of("121420300070120037", "A+"),
-            Pair.of("121420300070120038", "A+")
-        );
-        mapParams.put("2.5", params);
-
-
-        params = Arrays.asList(
-            Pair.of("121420300070120019", "A-"),
-            Pair.of("121420300070120020", "A-"),
-            Pair.of("121420300070120027", "A-"),
-            Pair.of("121420300070120028", "A-")
-        );
-        mapParams.put("3.1", params);
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
 
 
-        params = Arrays.asList(
-            Pair.of("121420300070120024", "A-"),
-            Pair.of("121420300070120025", "A-")
-        );
-        mapParams.put("3.2", params);
+        header = new GroupHeader();
+        header.setName("Шины 220 кВ - приём");
+
+        lines = new ArrayList<>();
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120004"));
+        line.setOrderNum(1l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120005"));
+        line.setOrderNum(2l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120009"));
+        line.setOrderNum(3l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120010"));
+        line.setOrderNum(4l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120012"));
+        line.setOrderNum(5l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120013"));
+        line.setOrderNum(6l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120014"));
+        line.setOrderNum(7l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120003"));
+        line.setOrderNum(8l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120029"));
+        line.setOrderNum(9l);
+        lines.add(line);
+
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
 
 
-        params = Arrays.asList(
-            Pair.of("121420300070120026", "A-")
-        );
-        mapParams.put("3.3", params);
+        header = new GroupHeader();
+        header.setName("Шины 220 кВ Ввода");
 
-        return mapParams;
+        lines = new ArrayList<>();
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120015"));
+        line.setOrderNum(1l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120016"));
+        line.setOrderNum(2l);
+        lines.add(line);
+
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
+
+
+        header = new GroupHeader();
+        header.setName("Шины 500 кВ - отдача");
+
+        lines = new ArrayList<>();
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120001"));
+        line.setOrderNum(1l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120002"));
+        line.setOrderNum(2l);
+        lines.add(line);
+
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
+
+
+        header = new GroupHeader();
+        header.setName("Шины 220 кВ - отдача");
+
+        lines = new ArrayList<>();
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120004"));
+        line.setOrderNum(1l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120005"));
+        line.setOrderNum(2l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120006"));
+        line.setOrderNum(3l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120007"));
+        line.setOrderNum(4l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120008"));
+        line.setOrderNum(5l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120009"));
+        line.setOrderNum(6l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120010"));
+        line.setOrderNum(7l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120011"));
+        line.setOrderNum(8l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120012"));
+        line.setOrderNum(9l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120013"));
+        line.setOrderNum(10l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120014"));
+        line.setOrderNum(11l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120003"));
+        line.setOrderNum(12l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120029"));
+        line.setOrderNum(13l);
+        lines.add(line);
+
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
+
+
+        header = new GroupHeader();
+        header.setName("Шины 35 кВ - отдача");
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120030"));
+        line.setOrderNum(1l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120031"));
+        line.setOrderNum(2l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120018"));
+        line.setOrderNum(3l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120033"));
+        line.setOrderNum(4l);
+        lines.add(line);
+
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
+
+
+        header = new GroupHeader();
+        header.setName("Шины 6 кВ - отдача");
+
+        lines = new ArrayList<>();
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120021"));
+        line.setOrderNum(1l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120022"));
+        line.setOrderNum(2l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120023"));
+        line.setOrderNum(3l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120039"));
+        line.setOrderNum(4l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120040"));
+        line.setOrderNum(5l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120041"));
+        line.setOrderNum(6l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120042"));
+        line.setOrderNum(7l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120043"));
+        line.setOrderNum(8l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120044"));
+        line.setOrderNum(9l);
+        lines.add(line);
+
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
+
+
+        header = new GroupHeader();
+        header.setName("Шины 10 кВ - отдача");
+
+        lines = new ArrayList<>();
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120035"));
+        line.setOrderNum(1l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120036"));
+        line.setOrderNum(2l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120037"));
+        line.setOrderNum(3l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120038"));
+        line.setOrderNum(3l);
+        lines.add(line);
+
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
+
+
+        header = new GroupHeader();
+        header.setName("Шины 10 кВ - собственные нужды");
+
+        lines = new ArrayList<>();
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120019"));
+        line.setOrderNum(1l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120020"));
+        line.setOrderNum(2l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120027"));
+        line.setOrderNum(3l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120028"));
+        line.setOrderNum(4l);
+        lines.add(line);
+
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
+
+
+        header = new GroupHeader();
+        header.setName("Шины 0.4 кВ - собственные нужды");
+
+        lines = new ArrayList<>();
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120024"));
+        line.setOrderNum(1l);
+        lines.add(line);
+
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120025"));
+        line.setOrderNum(2l);
+        lines.add(line);
+
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
+
+
+        header = new GroupHeader();
+        header.setName("Шины 0.4 кВ - хозяйственные нужды");
+
+        lines = new ArrayList<>();
+        line = new GroupLine();
+        line.setGroupHeader(header);
+        line.setMeteringPoint(meteringPointRepo.findByCode("121420300070120026"));
+        line.setOrderNum(1l);
+        lines.add(line);
+
+        groupHeaderRepo.save(header);
+        groupLineRepo.save(lines);
     }
 }

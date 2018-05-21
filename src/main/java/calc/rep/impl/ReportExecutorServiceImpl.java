@@ -35,7 +35,6 @@ public class ReportExecutorServiceImpl implements ReportExecutorService {
         Report report = reportRepo.findOne(reportId);
         Map<Long, CalcResult> results = calc(report, context);
         context.setResults(results);
-
         return documentBuilder.buildDocument(report, context);
     }
 

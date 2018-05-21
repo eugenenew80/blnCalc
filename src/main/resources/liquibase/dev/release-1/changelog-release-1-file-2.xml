@@ -298,10 +298,6 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="sheet_id" type="number" remarks="Идентификатор листа">
-                <constraints nullable="false"/>
-            </column>
-
             <column name="table_id" type="number" remarks="Идентификатор таблицы">
                 <constraints nullable="false"/>
             </column>
@@ -377,14 +373,6 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="sheet_id" type="number" remarks="Идентификатор листа">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="table_id" type="number" remarks="Идентификатор таблицы">
-                <constraints nullable="false"/>
-            </column>
-
             <column name="division_id" type="number" remarks="Идентификатор раздела">
                 <constraints nullable="false"/>
             </column>
@@ -453,14 +441,6 @@
             </column>
 
             <column name="report_id" type="number" remarks="Идентификатор отчёта">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="sheet_id" type="number" remarks="Идентификатор листа">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="table_id" type="number" remarks="Идентификатор таблицы">
                 <constraints nullable="false"/>
             </column>
 
@@ -606,22 +586,6 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="sheet_id" type="number" remarks="Идентификатор листа">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="table_id" type="number" remarks="Идентификатор таблицы">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="division_id" type="number" remarks="Идентификатор раздела">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="section_id" type="number" remarks="Идентификатор подраздела">
-                <constraints nullable="true"/>
-            </column>
-
             <column name="row_id" type="number" remarks="Идентификатор строки">
                 <constraints nullable="false"/>
             </column>
@@ -724,13 +688,6 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-97" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_table_divisions</comment>
-        <createIndex indexName="idx_calc_table_divisions_2" schemaName="apps" tableName="calc_table_divisions" unique="false">
-            <column name="sheet_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
     <changeSet id="calc-eug-98" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_divisions</comment>
         <createIndex indexName="idx_calc_table_divisions_3" schemaName="apps" tableName="calc_table_divisions" unique="false">
@@ -746,20 +703,6 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-100" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_table_sections</comment>
-        <createIndex indexName="idx_calc_table_sections_2" schemaName="apps" tableName="calc_table_sections" unique="false">
-            <column name="sheet_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-101" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_table_sections</comment>
-        <createIndex indexName="idx_calc_table_sections_3" schemaName="apps" tableName="calc_table_sections" unique="false">
-            <column name="table_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
     <changeSet id="calc-eug-102" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_table_sections</comment>
         <createIndex indexName="idx_calc_table_sections_4" schemaName="apps" tableName="calc_table_sections" unique="false">
@@ -771,20 +714,6 @@
         <comment>Creating index: calc_table_rows</comment>
         <createIndex indexName="idx_calc_table_rows_1" schemaName="apps" tableName="calc_table_rows" unique="false">
             <column name="report_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-104" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_table_rows</comment>
-        <createIndex indexName="idx_calc_table_rows_2" schemaName="apps" tableName="calc_table_rows" unique="false">
-            <column name="sheet_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-105" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_table_rows</comment>
-        <createIndex indexName="idx_calc_table_rows_3" schemaName="apps" tableName="calc_table_rows" unique="false">
-            <column name="table_id" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -813,34 +742,6 @@
         <comment>Creating index: calc_table_cells</comment>
         <createIndex indexName="idx_calc_table_cells_1" schemaName="apps" tableName="calc_table_cells" unique="false">
             <column name="report_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-110" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_table_cells</comment>
-        <createIndex indexName="idx_calc_table_cells_2" schemaName="apps" tableName="calc_table_cells" unique="false">
-            <column name="sheet_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-111" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_table_cells</comment>
-        <createIndex indexName="idx_calc_table_cells_3" schemaName="apps" tableName="calc_table_cells" unique="false">
-            <column name="table_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-112" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_table_cells</comment>
-        <createIndex indexName="idx_calc_table_cells_4" schemaName="apps" tableName="calc_table_cells" unique="false">
-            <column name="division_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-113" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_table_cells</comment>
-        <createIndex indexName="idx_calc_table_cells_5" schemaName="apps" tableName="calc_table_cells" unique="false">
-            <column name="section_id" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -958,23 +859,6 @@
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
                 referencedTableName="calc_reports"
-                referencedColumnNames="id"
-        />
-    </changeSet>
-
-    <changeSet id="calc-eug-122" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_table_divisions to calc_report_sheets</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="calc_table_divisions"
-                baseColumnNames="sheet_id"
-                constraintName="fk_calc_table_divisions_2"
-                deferrable="true"
-                initiallyDeferred="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="calc_report_sheets"
                 referencedColumnNames="id"
         />
     </changeSet>

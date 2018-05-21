@@ -22,10 +22,6 @@ public class TableDivision {
     private Report report;
 
     @ManyToOne
-    @JoinColumn(name = "sheet_id")
-    private ReportSheet sheet;
-
-    @ManyToOne
     @JoinColumn(name =  "table_id")
     private ReportTable table;
 

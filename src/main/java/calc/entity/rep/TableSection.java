@@ -21,14 +21,6 @@ public class TableSection {
     private Report report;
 
     @ManyToOne
-    @JoinColumn(name = "sheet_id")
-    private ReportSheet sheet;
-
-    @ManyToOne
-    @JoinColumn(name = "table_id")
-    private ReportTable table;
-
-    @ManyToOne
     @JoinColumn(name = "division_id")
     private TableDivision division;
 
