@@ -1,12 +1,15 @@
 package calc.formula.service.impl;
 
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.MeteringPointMeter;
 import calc.formula.CalcContext;
 import calc.formula.service.MeteringPointService;
 import calc.repo.calc.MeteringPointRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,6 +36,12 @@ public class MeteringPointServiceImpl implements MeteringPointService {
 
         if (attr.equals("name"))
             value = meteringPoint.getName();
+
+        if (attr.equals("serial")) {
+            List<MeteringPointMeter> meters = meteringPoint.getMeters();
+            if (!meters.isEmpty())
+                value = meters.get(0).getMeter().getSerialNumber();
+        }
 
         return value;
     }

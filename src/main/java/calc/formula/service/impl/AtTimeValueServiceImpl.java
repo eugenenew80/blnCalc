@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class AtTimeValueServiceImpl implements AtTimeValueService {
-    private final AtTimeValueRepo repo;
+    private final AtTimeValueRepo atTimeValueRepo;
     private final MeteringPointRepo meteringPointRepo;
     private final ParameterRepo parameterRepo;
 
@@ -58,13 +58,9 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
     }
 
     private List<AtTimeValue> findValues(MeteringPoint meteringPoint, Parameter parameter, String per, CalcContext context) {
-        LocalDateTime date;
-        if (per.equals("end"))
-            date = context.getEndDate().atStartOfDay().plusDays(1);
-        else
-            date = context.getStartDate().atStartOfDay();
+        LocalDateTime date = per.equals("end") ? context.getEndDate().atStartOfDay().plusDays(1) : context.getStartDate().atStartOfDay();
 
-        return repo.findAllByMeteringPointIdAndParamIdAndMeteringDate(
+        return atTimeValueRepo.findAllByMeteringPointIdAndParamIdAndMeteringDate(
             meteringPoint.getId(),
             parameter.getId(),
             date

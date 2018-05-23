@@ -42,14 +42,14 @@ public class AtTimeValue {
 
 	public CalcResult toResult() {
 		CalcResult result = new CalcResult();
-		result.setInterval(null);
-		result.setMeteringDate(this.getMeteringDate());
-		result.setMeteringPointId(this.getMeteringPointId());
-		result.setParamId(this.getParamId());
 		result.setParamType("AT");
-		result.setUnitId(this.getUnitId());
-		result.setDoubleVal(this.getVal());
-		result.setSourceType(this.getSourceType());
+		result.setInterval(null);
+		result.setMeteringDate(getMeteringDate());
+		result.setMeteringPointId(getMeteringPointId());
+		result.setParamId(getParamId());
+		result.setUnitId(getUnitId());
+		result.setDoubleVal(getVal());
+		result.setSourceType(getSourceType());
 		return result;
 	}
 }

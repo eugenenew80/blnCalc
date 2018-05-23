@@ -35,4 +35,8 @@ public class MeteringPoint {
     @OneToMany(mappedBy = "meteringPoint")
     @Fetch(FetchMode.SUBSELECT)
     private List<MeteringPointParameter> parameters;
+
+    @OneToMany(mappedBy = "meteringPoint")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<MeteringPointMeter> meters;
 }
