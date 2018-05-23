@@ -73,29 +73,36 @@ public class CalcServiceImpl implements CalcService {
                 Unit unit = parameter.getUnit();
                 DoubleExpression expression = expressionService.parse(formula, parameter.getCode(), context);
 
-                Double[] results;
-                LocalDateTime meteringDate;
-                Long interval;
-                if (parameter.getParamType().equals("PT")) {
-                    results = expression.doubleValues();
-                    meteringDate = context.getStartDate().atStartOfDay();
-                    interval = 3600l;
-                } else {
-                    results = new Double[]{expression.doubleValue()};
-                    meteringDate = context.getEndDate().atStartOfDay().plusDays(1);
-                    interval = null;
+                if (parameter.getIsPt()) {
+                    Double[] results = expression.doubleValues();
+                    LocalDateTime meteringDate = context.getStartDate().atStartOfDay();
+                    for (int i = 0; i < results.length; i++) {
+                        CalcResult result = new CalcResult();
+                        result.setMeteringDate(meteringDate.plusHours(i));
+                        result.setDoubleVal(results[i]);
+                        result.setInterval(3600l);
+                        result.setMeteringPointId(meteringPoint.getId());
+                        result.setParamId(parameter.getId());
+                        result.setUnitId(unit.getId());
+                        result.setParamType("PT");
+                        context.getValues().add(result);
+                    }
                 }
 
-                for (int i = 0; i < results.length; i++) {
-                    CalcResult result = new CalcResult();
-                    result.setMeteringDate(meteringDate.plusHours(i));
-                    result.setDoubleVal(results[i]);
-                    result.setInterval(interval);
-                    result.setMeteringPointId(meteringPoint.getId());
-                    result.setParamId(parameter.getId());
-                    result.setUnitId(unit.getId());
-                    result.setParamType(parameter.getParamType());
-                    context.getValues().add(result);
+                if (parameter.getIsPt()) {
+                    Double[] results = new Double[]{expression.doubleValue()};
+                    LocalDateTime meteringDate = context.getEndDate().atStartOfDay().plusDays(1);
+                    for (int i = 0; i < results.length; i++) {
+                        CalcResult result = new CalcResult();
+                        result.setMeteringDate(meteringDate.plusHours(i));
+                        result.setDoubleVal(results[i]);
+                        result.setInterval(null);
+                        result.setMeteringPointId(meteringPoint.getId());
+                        result.setParamId(parameter.getId());
+                        result.setUnitId(unit.getId());
+                        result.setParamType("AT");
+                        context.getValues().add(result);
+                    }
                 }
             }
         }
