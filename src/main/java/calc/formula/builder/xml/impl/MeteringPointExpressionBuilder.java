@@ -20,6 +20,7 @@ public class MeteringPointExpressionBuilder implements ExpressionBuilder<Meterin
         Long id = null;
         String code = "";
         String attr = "";
+        //noinspection Duplicates
         for (int i=0; i<attributes.getLength(); i++) {
             String attrName = attributes.item(i).getNodeName();
             String attrValue = attributes.item(i).getNodeValue();

@@ -19,6 +19,7 @@ public class PowerTransformerExpressionBuilder implements ExpressionBuilder<Powe
 
         Long id = null;
         String attr = "";
+        //noinspection Duplicates
         for (int i=0; i<attributes.getLength(); i++) {
             String attrName = attributes.item(i).getNodeName();
             String attrValue = attributes.item(i).getNodeValue();
