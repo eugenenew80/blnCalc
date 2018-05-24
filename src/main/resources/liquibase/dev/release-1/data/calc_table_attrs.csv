@@ -1,6 +1,6 @@
 ﻿id;row_template_id;name;description;attr_type;value_type;precision;order_num;formula_template
 1;1;orderNum;№ п/п;STRING;CONST;null;1;null
-2;1;serial;№ счетчиков;STRING;CONST;null;2;'<mp code="#code#" attr="#attr#" />'
+2;1;serial;№ счетчиков;STRING;FORMULA;null;2;'<mp code="#code#" attr="#attr#" />'
 3;1;name;Наименование объектов;STRING;FORMULA;null;3;'<mp code="#code#" attr="#attr#" />'
 4;1;end;Показ. на конец периода;NUMBER;FORMULA;0;4;'<at mp="#code#" param="#param#" per="end" />'
 5;1;start;Показ. на начала периода;NUMBER;FORMULA;0;5;'<at mp="#code#" param="#param#" per="start" />'
