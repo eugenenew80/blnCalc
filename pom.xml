@@ -33,7 +33,7 @@
 
             <properties>
                 <driver>oracle.jdbc.OracleDriver</driver>
-                <url>jdbc:oracle:thin:@10.9.50.151:1521:orcl12c</url>
+                <url>jdbc:oracle:thin:@10.9.40.151:1521:orcl12c</url>
                 <username>system</username>
                 <password>Q1w2e3r4t5</password>
                 <scripts>dev</scripts>

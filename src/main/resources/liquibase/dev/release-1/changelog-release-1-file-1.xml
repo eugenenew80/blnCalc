@@ -196,7 +196,7 @@
     </changeSet>
 
     <changeSet id="calc-eug-12" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: media_period_time_values</comment>
+        <comment>Creating index: calc_formulas</comment>
         <createIndex indexName="idx_calc_formula_1"
                      schemaName="apps"
                      tableName="calc_formulas"
@@ -225,22 +225,6 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-15" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>add Column into table: media_source_types</comment>
-        <addColumn schemaName="apps" tableName="media_source_types">
-            <column name="priority" type="number" remarks="Приоритет">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="is_oper" type="number" remarks="Подходит для оперативного расчёта">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="is_final" type="number" remarks="Подходит для окончательного расчёта">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-    </changeSet>
 
     <changeSet id="calc-eug-16" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_priority_lines</comment>
@@ -312,65 +296,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-22" logicalFilePath="path-independent" author="eugene" context="dev">
-        <preConditions onFail="MARK_RAN" >
-            <columnExists schemaName="apps" tableName="media_period_time_values" columnName="source_metering_point_code" />
-        </preConditions>
 
-        <comment>Dropping columns from table media_period_time_values</comment>
-        <dropColumn schemaName="apps" tableName="media_period_time_values" columnName="source_metering_point_code" />
-        <rollback/>
-    </changeSet>
-
-    <changeSet id="calc-eug-23" logicalFilePath="path-independent" author="eugene" context="dev">
-        <preConditions onFail="MARK_RAN" >
-            <columnExists schemaName="apps" tableName="media_period_time_values" columnName="source_param_code" />
-        </preConditions>
-
-        <comment>Dropping columns from table media_period_time_values</comment>
-        <dropColumn schemaName="apps" tableName="media_period_time_values" columnName="source_param_code" />
-        <rollback/>
-    </changeSet>
-
-    <changeSet id="calc-eug-24" logicalFilePath="path-independent" author="eugene" context="dev">
-        <preConditions onFail="MARK_RAN" >
-            <columnExists schemaName="apps" tableName="media_period_time_values" columnName="source_unit_code" />
-        </preConditions>
-
-        <comment>Dropping columns from table media_period_time_values</comment>
-        <dropColumn schemaName="apps" tableName="media_period_time_values" columnName="source_unit_code" />
-        <rollback/>
-    </changeSet>
-
-    <changeSet id="calc-eug-25" logicalFilePath="path-independent" author="eugene" context="dev">
-        <preConditions onFail="MARK_RAN" >
-            <columnExists schemaName="apps" tableName="media_at_time_values" columnName="source_metering_point_code" />
-        </preConditions>
-
-        <comment>Dropping columns from table media_at_time_values</comment>
-        <dropColumn schemaName="apps" tableName="media_at_time_values" columnName="source_metering_point_code" />
-        <rollback/>
-    </changeSet>
-
-    <changeSet id="calc-eug-26" logicalFilePath="path-independent" author="eugene" context="dev">
-        <preConditions onFail="MARK_RAN" >
-            <columnExists schemaName="apps" tableName="media_at_time_values" columnName="source_param_code" />
-        </preConditions>
-
-        <comment>Dropping columns from table media_at_time_values</comment>
-        <dropColumn schemaName="apps" tableName="media_at_time_values" columnName="source_param_code" />
-        <rollback/>
-    </changeSet>
-
-    <changeSet id="calc-eug-27" logicalFilePath="path-independent" author="eugene" context="dev">
-        <preConditions onFail="MARK_RAN" >
-            <columnExists schemaName="apps" tableName="media_at_time_values" columnName="source_unit_code" />
-        </preConditions>
-
-        <comment>Dropping columns from table media_at_time_values</comment>
-        <dropColumn schemaName="apps" tableName="media_at_time_values" columnName="source_unit_code" />
-        <rollback/>
-    </changeSet>
 
     <changeSet id="calc-eug-28" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_daily_sheet_headers</comment>
