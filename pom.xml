@@ -14,18 +14,6 @@
 
     <profiles>
         <profile>
-            <id>prod</id>
-            <properties>
-                <driver>oracle.jdbc.OracleDriver</driver>
-                <url>jdbc:oracle:thin:@localhost:1521:BLNDEV</url>
-                <username>system</username>
-                <password>${settings.servers.server.ora.password}</password>
-                <scripts>dev</scripts>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
-
-        <profile>
             <id>dev</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -63,6 +51,19 @@
                 <scripts>dev</scripts>
                 <skipTests>false</skipTests>
             </properties>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <driver>oracle.jdbc.OracleDriver</driver>
+                <url>jdbc:oracle:thin:@192.168.82.33:1521:blndprod</url>
+                <username>system</username>
+                <password>${settings.servers.server.ora.password}</password>
+                <scripts>dev</scripts>
+                <skipTests>true</skipTests>
+            </properties>
+
         </profile>
     </profiles>
 
