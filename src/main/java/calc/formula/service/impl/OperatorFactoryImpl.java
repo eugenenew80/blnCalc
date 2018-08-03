@@ -185,6 +185,10 @@ public class OperatorFactoryImpl implements OperatorFactory {
             .value(Math.round(op.doubleValue()*10000d) / 10000d)
             .build();
 
+        UnaryOperator<DoubleExpression> sin = (op) -> DoubleValueExpression.builder()
+            .value(Math.sin(op.doubleValue()))
+            .build();
+
         unaryOperators.put("nothing", nothing);
         unaryOperators.put("minus", minus);
         unaryOperators.put("abs", abs);
@@ -198,5 +202,6 @@ public class OperatorFactoryImpl implements OperatorFactory {
         unaryOperators.put("round-2", round2);
         unaryOperators.put("round-3", round3);
         unaryOperators.put("round-4", round4);
+        unaryOperators.put("sin", sin);
     }
 }

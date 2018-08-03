@@ -24,13 +24,14 @@ public class ReactorExpression implements DoubleExpression, StringExpression {
     }
 
     @Override
-    public Double doubleValue() {
-        return service.getDoubleAttribute(id, attr, context);
-    }
-
-    @Override
     public StringExpression stringExpression() {
         return this;
+    }
+
+
+    @Override
+    public Double doubleValue() {
+        return service.getDoubleAttribute(id, attr, context);
     }
 
     @Override
