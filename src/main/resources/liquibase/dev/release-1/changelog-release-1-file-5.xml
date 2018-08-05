@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-155" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_bypass_modes</comment>
+        <createTable tableName="calc_bypass_modes" schemaName="apps" remarks="Режимы работы обходных выключателей">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="substation_id" type="number" remarks="Идентификатор подстанцмм">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bypass_metering_point_id" type="number" remarks="Идентификатор точки учёта ОВ">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта, на которую работает ОВ">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="TIMESTAMP" remarks="Дата и время включения ОВ">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="TIMESTAMP" remarks="Дата и время выключения ОВ">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-156" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_bypass_modes</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bypass_modes"
+                schemaName="apps"
+                tableName="calc_bypass_modes"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-157" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_bypass_modes</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bypass_modes_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-158" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_bypass_mode_values</comment>
+        <createTable tableName="calc_bypass_mode_values" schemaName="apps" remarks="Показания счётчика при работе ОВ">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bypass_mode_id" type="number" remarks="Идентификатор режима работы ОВ">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_value" type="number" remarks="Показание счётчика на момент включения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_value" type="number" remarks="Показание счётчика на момент выключения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-159" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_bypass_mode_values</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bypass_mode_values"
+                schemaName="apps"
+                tableName="calc_bypass_mode_values"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-160" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_bypass_mode_values</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bypass_mode_values_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-161" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_bypass_mode_values</comment>
+        <createIndex indexName="idx_calc_bypass_mode_values_1" schemaName="apps" tableName="calc_bypass_mode_values">
+            <column name="bypass_mode_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-162" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_bypass_mode_values</comment>
+        <createIndex indexName="idx_calc_bypass_mode_values_2" schemaName="apps" tableName="calc_bypass_mode_values">
+            <column name="param_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-163" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_bypass_modes</comment>
+        <createIndex indexName="idx_calc_bypass_modes_1" schemaName="apps" tableName="calc_bypass_modes">
+            <column name="substation_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-164" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_bypass_modes</comment>
+        <createIndex indexName="idx_calc_bypass_modes_2" schemaName="apps" tableName="calc_bypass_modes">
+            <column name="bypass_metering_point_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-165" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_bypass_modes</comment>
+        <createIndex indexName="idx_calc_bypass_modes_3" schemaName="apps" tableName="calc_bypass_modes">
+            <column name="metering_point_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-166" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bypass_modes to dict_substations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bypass_modes"
+                baseColumnNames="substation_id"
+                constraintName="fk_calc_bypass_modes_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_substations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-167" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bypass_modes to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bypass_modes"
+                baseColumnNames="bypass_metering_point_id"
+                constraintName="fk_calc_bypass_modes_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-168" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bypass_modes to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bypass_modes"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_bypass_modes_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-169" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bypass_mode_values to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bypass_mode_values"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_bypass_mode_values_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-170" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bypass_mode_values to calc_bypass_modes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bypass_mode_values"
+                baseColumnNames="bypass_mode_id"
+                constraintName="fk_calc_bypass_mode_values_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bypass_modes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-171" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_power_transformer_modes</comment>
+        <createTable tableName="calc_power_transformer_modes" schemaName="apps" remarks="Периоды отключенного состояния силовых трансформаьоров">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="substation_id" type="number" remarks="Идентификатор подстанцмм">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="power_transformer_id" type="number" remarks="Идентификатор силового трансформатора">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="TIMESTAMP" remarks="Дата и время отключения силового трансформатора">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="TIMESTAMP" remarks="Дата и время включения силового трансформатора">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-172" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_power_transformer_modes</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_power_transformer_modes"
+                schemaName="apps"
+                tableName="calc_power_transformer_modes"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-173" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_power_transformer_modes</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_power_transformer_modes_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-174" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_power_transformer_modes_tl</comment>
+        <createTable tableName="calc_power_transformer_modes_tl" schemaName="apps" remarks="Перевод - Периоды отключенного состояния силовых трансформаьоров">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="power_transformer_mode_id" type="number" remarks="Идентификатор периода отключенного состояния">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="reason" type="varchar(300)" remarks="Причина отключения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-175" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_power_transformer_modes_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_power_transformer_modes_tl"
+                schemaName="apps"
+                tableName="calc_power_transformer_modes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-176" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_power_transformer_modes_tl</comment>
+        <addUniqueConstraint
+                columnNames="power_transformer_mode_id, lang"
+                constraintName="uk_calc_power_transformer_modes_tl_1"
+                schemaName="apps"
+                tableName="calc_power_transformer_modes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-177" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_power_transformer_modes_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_power_transformer_modes_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-178" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_power_transformer_modes_tl</comment>
+        <createIndex indexName="idx_calc_power_transformer_modes_tl_1" schemaName="apps" tableName="calc_power_transformer_modes_tl">
+            <column name="power_transformer_mode_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-179" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_modes_tl to calc_power_transformer_modes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_modes_tl"
+                baseColumnNames="power_transformer_mode_id"
+                constraintName="fk_calc_power_transformer_modes_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_power_transformer_modes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-179" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_reactor_modes</comment>
+        <createTable tableName="calc_reactor_modes" schemaName="apps" remarks="Периоды отключенного состояния реакторов">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="substation_id" type="number" remarks="Идентификатор подстанцмм">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="reactor_id" type="number" remarks="Идентификатор реактора">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="TIMESTAMP" remarks="Дата и время отключения реактора">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="TIMESTAMP" remarks="Дата и время включения реактора">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-180" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_reactor_modes</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_reactor_modes"
+                schemaName="apps"
+                tableName="calc_reactor_modes"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-181" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_reactor_modes</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_reactor_modes_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-182" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_reactor_modes_tl</comment>
+        <createTable tableName="calc_reactor_modes_tl" schemaName="apps" remarks="Перевод - Периоды отключенного состояния реакторов">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="reactor_id" type="number" remarks="Идентификатор периода отключенного состояния">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="reason" type="varchar(300)" remarks="Причина отключения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-183" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_reactor_modes_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_reactor_modes_tl"
+                schemaName="apps"
+                tableName="calc_reactor_modes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-184" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_reactor_modes</comment>
+        <addUniqueConstraint
+                columnNames="reactor_id, lang"
+                constraintName="uk_calc_reactor_modes_tl_1"
+                schemaName="apps"
+                tableName="calc_reactor_modes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-185" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_reactor_modes_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_reactor_modes_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-186" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_reactor_modes_tl</comment>
+        <createIndex indexName="idx_calc_reactor_modes_tl_1" schemaName="apps" tableName="calc_reactor_modes_tl">
+            <column name="reactor_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-187" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_modes_tl to calc_reactor_modes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_modes_tl"
+                baseColumnNames="reactor_id"
+                constraintName="fk_calc_reactor_modes_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_reactor_modes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-188" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_metering_point_modes</comment>
+        <createTable tableName="calc_metering_point_modes" schemaName="apps" remarks="Периоды отсутствия напряжения в присоединениях">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="substation_id" type="number" remarks="Идентификатор подстанцмм">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учета">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала отсутсвия напряжения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="TIMESTAMP" remarks="Дата и время окончания отсутсвия напряжения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-189" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_metering_point_modes</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_metering_point_modes"
+                schemaName="apps"
+                tableName="calc_metering_point_modes"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-190" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_metering_point_modes</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_metering_point_modes_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-191" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_metering_point_modes_tl</comment>
+        <createTable tableName="calc_metering_point_modes_tl" schemaName="apps" remarks="Перевод - Периоды отсутствия напряжения в присоединениях">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор периода отсутствия напряжения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="reason" type="varchar(300)" remarks="Причина отключения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-192" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_metering_point_modes_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_metering_point_modes_tl"
+                schemaName="apps"
+                tableName="calc_metering_point_modes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-193" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_metering_point_modes</comment>
+        <addUniqueConstraint
+                columnNames="metering_point_id, lang"
+                constraintName="uk_calc_metering_point_modes_tl_1"
+                schemaName="apps"
+                tableName="calc_metering_point_modes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-194" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_metering_point_modes_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_metering_point_modes_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-195" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_metering_point_modes_tl</comment>
+        <createIndex indexName="idx_calc_metering_point_modes_tl_1" schemaName="apps" tableName="calc_metering_point_modes_tl">
+            <column name="metering_point_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-196" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_modes_tl to calc_metering_point_modes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_point_modes_tl"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_metering_point_modes_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_point_modes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+</databaseChangeLog>
