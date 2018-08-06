@@ -694,4 +694,147 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-198" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_power_transformer_modes</comment>
+        <createIndex indexName="idx_calc_power_transformer_modes_1" schemaName="apps" tableName="calc_power_transformer_modes">
+            <column name="substation_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-199" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_power_transformer_modes</comment>
+        <createIndex indexName="idx_calc_power_transformer_modes_2" schemaName="apps" tableName="calc_power_transformer_modes">
+            <column name="power_transformer_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-200" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_reactor_modes</comment>
+        <createIndex indexName="idx_calc_reactor_modes_1" schemaName="apps" tableName="calc_reactor_modes">
+            <column name="substation_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-201" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_reactor_modes</comment>
+        <createIndex indexName="idx_calc_reactor_modes_2" schemaName="apps" tableName="calc_reactor_modes">
+            <column name="reactor_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-202" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_metering_point_modes</comment>
+        <createIndex indexName="idx_calc_metering_point_modes_1" schemaName="apps" tableName="calc_metering_point_modes">
+            <column name="substation_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-203" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_metering_point_modes</comment>
+        <createIndex indexName="idx_calc_metering_point_modes_2" schemaName="apps" tableName="calc_metering_point_modes">
+            <column name="metering_point_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-204" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_modes to dict_substations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_modes"
+                baseColumnNames="substation_id"
+                constraintName="fk_calc_power_transformer_modes_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_substations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-205" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_modes to dict_substations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_modes"
+                baseColumnNames="substation_id"
+                constraintName="fk_calc_reactor_modes_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_substations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-206" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_modes to dict_substations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_point_modes"
+                baseColumnNames="substation_id"
+                constraintName="fk_calc_metering_point_modes_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_substations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-207" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_modes to dict_power_transformers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_modes"
+                baseColumnNames="power_transformer_id"
+                constraintName="fk_calc_power_transformer_modes_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_power_transformers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-208" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_modes to dict_reactors</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_modes"
+                baseColumnNames="reactor_id"
+                constraintName="fk_calc_reactor_modes_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_reactors"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-209" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_modes to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_point_modes"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_metering_point_modes_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
