@@ -311,7 +311,7 @@
 
     <changeSet id="calc-eug-174" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_power_transformer_modes_tl</comment>
-        <createTable tableName="calc_power_transformer_modes_tl" schemaName="apps" remarks="Перевод - Периоды отключенного состояния силовых трансформаьоров">
+        <createTable tableName="calc_power_transformer_modes_tl" schemaName="apps" remarks="Перевод - Периоды отключенного состояния силовых трансформаторов">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
@@ -397,7 +397,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-179" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-180" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_reactor_modes</comment>
         <createTable tableName="calc_reactor_modes" schemaName="apps" remarks="Периоды отключенного состояния реакторов">
             <column name="id" type="number" remarks="Идентификатор">
@@ -438,7 +438,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-180" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-181" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_reactor_modes</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -447,7 +447,7 @@
                 tableName="calc_reactor_modes"/>
     </changeSet>
 
-    <changeSet id="calc-eug-181" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-182" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_reactor_modes</comment>
         <createSequence
                 incrementBy="1"
@@ -457,14 +457,14 @@
     </changeSet>
 
 
-    <changeSet id="calc-eug-182" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-183" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_reactor_modes_tl</comment>
         <createTable tableName="calc_reactor_modes_tl" schemaName="apps" remarks="Перевод - Периоды отключенного состояния реакторов">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="reactor_id" type="number" remarks="Идентификатор периода отключенного состояния">
+            <column name="reactor_mode_id" type="number" remarks="Идентификатор периода отключенного состояния">
                 <constraints nullable="false"/>
             </column>
 
@@ -494,7 +494,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-183" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-184" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_reactor_modes_tl</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -503,16 +503,16 @@
                 tableName="calc_reactor_modes_tl"/>
     </changeSet>
 
-    <changeSet id="calc-eug-184" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-185" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating unique key for table: calc_reactor_modes</comment>
         <addUniqueConstraint
-                columnNames="reactor_id, lang"
+                columnNames="reactor_mode_id, lang"
                 constraintName="uk_calc_reactor_modes_tl_1"
                 schemaName="apps"
                 tableName="calc_reactor_modes_tl"/>
     </changeSet>
 
-    <changeSet id="calc-eug-185" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-186" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_reactor_modes_tl</comment>
         <createSequence
                 incrementBy="1"
@@ -521,19 +521,19 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-eug-186" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-187" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>creating index for table: calc_reactor_modes_tl</comment>
         <createIndex indexName="idx_calc_reactor_modes_tl_1" schemaName="apps" tableName="calc_reactor_modes_tl">
-            <column name="reactor_id"  type="number"/>
+            <column name="reactor_mode_id"  type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-187" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-188" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_reactor_modes_tl to calc_reactor_modes</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_reactor_modes_tl"
-                baseColumnNames="reactor_id"
+                baseColumnNames="reactor_mode_id"
                 constraintName="fk_calc_reactor_modes_tl_1"
                 deferrable="true"
                 initiallyDeferred="true"
@@ -546,7 +546,7 @@
     </changeSet>
 
 
-    <changeSet id="calc-eug-188" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-189" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_metering_point_modes</comment>
         <createTable tableName="calc_metering_point_modes" schemaName="apps" remarks="Периоды отсутствия напряжения в присоединениях">
             <column name="id" type="number" remarks="Идентификатор">
@@ -587,7 +587,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-189" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-190" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_metering_point_modes</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -596,7 +596,7 @@
                 tableName="calc_metering_point_modes"/>
     </changeSet>
 
-    <changeSet id="calc-eug-190" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-191" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_metering_point_modes</comment>
         <createSequence
                 incrementBy="1"
@@ -606,14 +606,14 @@
     </changeSet>
 
 
-    <changeSet id="calc-eug-191" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-192" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_metering_point_modes_tl</comment>
         <createTable tableName="calc_metering_point_modes_tl" schemaName="apps" remarks="Перевод - Периоды отсутствия напряжения в присоединениях">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Идентификатор периода отсутствия напряжения">
+            <column name="metering_point_mode_id" type="number" remarks="Идентификатор периода отсутствия напряжения">
                 <constraints nullable="false"/>
             </column>
 
@@ -643,7 +643,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-192" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-193" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_metering_point_modes_tl</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -652,16 +652,16 @@
                 tableName="calc_metering_point_modes_tl"/>
     </changeSet>
 
-    <changeSet id="calc-eug-193" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-194" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating unique key for table: calc_metering_point_modes</comment>
         <addUniqueConstraint
-                columnNames="metering_point_id, lang"
+                columnNames="metering_point_mode_id, lang"
                 constraintName="uk_calc_metering_point_modes_tl_1"
                 schemaName="apps"
                 tableName="calc_metering_point_modes_tl"/>
     </changeSet>
 
-    <changeSet id="calc-eug-194" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-195" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_metering_point_modes_tl</comment>
         <createSequence
                 incrementBy="1"
@@ -670,19 +670,19 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-eug-195" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-196" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>creating index for table: calc_metering_point_modes_tl</comment>
         <createIndex indexName="idx_calc_metering_point_modes_tl_1" schemaName="apps" tableName="calc_metering_point_modes_tl">
-            <column name="metering_point_id"  type="number"/>
+            <column name="metering_point_mode_id"  type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-196" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-197" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_metering_point_modes_tl to calc_metering_point_modes</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_metering_point_modes_tl"
-                baseColumnNames="metering_point_id"
+                baseColumnNames="metering_point_mode_id"
                 constraintName="fk_calc_metering_point_modes_tl_1"
                 deferrable="true"
                 initiallyDeferred="true"
