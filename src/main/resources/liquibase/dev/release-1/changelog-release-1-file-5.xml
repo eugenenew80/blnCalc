@@ -837,4 +837,13 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-210" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_bypass_mode_values</comment>
+        <addColumn tableName="calc_bypass_mode_values" schemaName="apps">
+            <column name="factor" type="number" remarks="Коэффициент счётчика">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
