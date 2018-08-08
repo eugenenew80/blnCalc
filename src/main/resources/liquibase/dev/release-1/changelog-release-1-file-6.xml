@@ -249,23 +249,6 @@
     </changeSet>
 
     <changeSet id="calc-rus-14" logicalFilePath="path-independent" author="ruslan">
-        <comment>Creating foreign constraint: calc_service_values_reconciliations to dict_metering_points</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="calc_service_values_reconciliations"
-                baseColumnNames="metering_point_id"
-                constraintName="fk_calc_service_values_reconciliations_1"
-                deferrable="true"
-                initiallyDeferred="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="dict_metering_points"
-                referencedColumnNames="id"
-        />
-    </changeSet>
-
-    <changeSet id="calc-rus-15" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_service_values_reconciliations to cm_doc_keg_cte</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -282,7 +265,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-16" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-15" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_service_values_reconciliations to fin_periods</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -299,7 +282,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-17" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-16" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_service_values_reconciliations to wf_states</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
