@@ -204,7 +204,7 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="period_id" type="varchar2(30)" remarks="Идентификатор периода">
+            <column name="period_id" type="number" remarks="Идентификатор периода">
                 <constraints nullable="true"/>
             </column>
 
