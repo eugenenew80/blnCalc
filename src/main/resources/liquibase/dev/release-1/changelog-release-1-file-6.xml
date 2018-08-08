@@ -192,6 +192,10 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="version" type="number" remarks="Версия">
+                <constraints nullable="true"/>
+            </column>
+
             <column name="contract_id" type="number" remarks="Идентификатор договора">
                 <constraints nullable="true"/>
             </column>
