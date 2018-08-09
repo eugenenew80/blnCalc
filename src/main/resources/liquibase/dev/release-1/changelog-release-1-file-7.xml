@@ -298,4 +298,253 @@
         />
     </changeSet>
 
+
+    <changeSet id="calc-eug-227" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_power_transformer_values</comment>
+        <createTable tableName="calc_power_transformer_values" schemaName="apps" remarks="Значения рассчетных потерь в силовых трансформаторах">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="power_transformer_id" type="number" remarks="Идентификатор силового трансформатора">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="calc_date" type="TIMESTAMP" remarks="Дата и время расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="val" type="number" remarks="Значение">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="metering_point_id_h" type="number" remarks="Идентификатор точки учёта на высокой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="metering_point_id_m" type="number" remarks="Идентификатор точки учёта на средней стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="metering_point_id_l" type="number" remarks="Идентификатор точки учёта на низкой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="delta_pr" type="number" remarks="Номинальные потери мощности">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="unom" type="number" remarks="Номинальное значение напряжения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="uavg" type="number" remarks="Среднее значение напряжения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="resist" type="number" remarks="Активное сопротивление">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="resist_h" type="number" remarks="Активное сопротивление на высокой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="resist_m" type="number" remarks="Активное сопротивление на средней стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="resist_l" type="number" remarks="Активное сопротивление на низкой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="total_energy" type="number" remarks="Полная несальдированная энергия">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="total_energy_h" type="number" remarks="Полная несальдированная энергия на высокой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="total_energy_m" type="number" remarks="Полная несальдированная энергия на средней стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="total_energy_l" type="number" remarks="Полная несальдированная энергия на низкой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="operating_time" type="number" remarks="Время работы трансформатора">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="status" type="varchar2(20)" remarks="Статус обработки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="unit_id" type="number" remarks="Идентификатор единицы измерения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="interval" type="number" remarks="Интервал расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="version" type="number" remarks="Версия расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="source_type_id" type="number" remarks="Идентификатор типа источника данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="batch_id" type="number" remarks="Идентификатор пакета данных">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-228" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_power_transformer_values</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_power_transformer_values"
+                schemaName="apps"
+                tableName="calc_power_transformer_values"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-229" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_power_transformer_values</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_power_transformer_values_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-230" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_1"
+                     schemaName="apps"
+                     tableName="calc_power_transformer_values"
+                     unique="false">
+            <column name="power_transformer_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-231" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_2"
+                     schemaName="apps"
+                     tableName="calc_power_transformer_values"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-232" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_3"
+                     schemaName="apps"
+                     tableName="calc_power_transformer_values"
+                     unique="false">
+            <column name="metering_point_id_h" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-233" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_4"
+                     schemaName="apps"
+                     tableName="calc_power_transformer_values"
+                     unique="false">
+            <column name="metering_point_id_m" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-234" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_5"
+                     schemaName="apps"
+                     tableName="calc_power_transformer_values"
+                     unique="false">
+            <column name="metering_point_id_l" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-235" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_6"
+                     schemaName="apps"
+                     tableName="calc_power_transformer_values"
+                     unique="false">
+            <column name="unit_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-236" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_7"
+                     schemaName="apps"
+                     tableName="calc_power_transformer_values"
+                     unique="false">
+            <column name="status" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-237" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_8"
+                     schemaName="apps"
+                     tableName="calc_power_transformer_values"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-238" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_9"
+                     schemaName="apps"
+                     tableName="calc_power_transformer_values"
+                     unique="false">
+            <column name="source_type_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-239" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_10"
+                     schemaName="apps"
+                     tableName="calc_power_transformer_values"
+                     unique="false">
+            <column name="batch_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
