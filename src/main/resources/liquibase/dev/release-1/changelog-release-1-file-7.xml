@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-211" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_reactor_values</comment>
+        <createTable tableName="calc_reactor_values" schemaName="apps" remarks="Значения рассчетных потерь в реакторах">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="reactor_id" type="number" remarks="Идентификатор реактора">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="calc_date" type="TIMESTAMP" remarks="Дата и время расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="val" type="number" remarks="Значение">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта для получения среднего напряжения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="delta_pr" type="number" remarks="Номинальные потери мощности">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="unom" type="number" remarks="Номинальное значение напряжения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="uavg" type="number" remarks="Среднее значение напряжения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="operating_time" type="number" remarks="Время работы трансформатора">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="status" type="varchar2(20)" remarks="Статус обработки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="unit_id" type="number" remarks="Идентификатор единицы измерения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="interval" type="number" remarks="Интервал расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="version" type="number" remarks="Версия расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="source_type_id" type="number" remarks="Идентификатор типа источника данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="batch_id" type="number" remarks="Идентификатор пакета данных">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-212" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_reactor_values</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_reactor_values"
+                schemaName="apps"
+                tableName="calc_reactor_values"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-213" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_reactor_values</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_reactor_values_s"
+                startValue="1"/>
+    </changeSet>
+
+</databaseChangeLog>
