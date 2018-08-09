@@ -109,4 +109,193 @@
                 startValue="1"/>
     </changeSet>
 
+    <changeSet id="calc-eug-214" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_reactor_values</comment>
+        <createIndex indexName="idx_calc_reactor_values_1"
+                     schemaName="apps"
+                     tableName="calc_reactor_values"
+                     unique="false">
+            <column name="reactor_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-215" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_reactor_values</comment>
+        <createIndex indexName="idx_calc_reactor_values_2"
+                     schemaName="apps"
+                     tableName="calc_reactor_values"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-216" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_reactor_values</comment>
+        <createIndex indexName="idx_calc_reactor_values_3"
+                     schemaName="apps"
+                     tableName="calc_reactor_values"
+                     unique="false">
+            <column name="unit_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-216" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_reactor_values</comment>
+        <createIndex indexName="idx_calc_reactor_values_4"
+                     schemaName="apps"
+                     tableName="calc_reactor_values"
+                     unique="false">
+            <column name="status" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-217" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_reactor_values</comment>
+        <createIndex indexName="idx_calc_reactor_values_5"
+                     schemaName="apps"
+                     tableName="calc_reactor_values"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-218" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_reactor_values</comment>
+        <createIndex indexName="idx_calc_reactor_values_6"
+                     schemaName="apps"
+                     tableName="calc_reactor_values"
+                     unique="false">
+            <column name="source_type_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-219" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_reactor_values</comment>
+        <createIndex indexName="idx_calc_reactor_values_7"
+                     schemaName="apps"
+                     tableName="calc_reactor_values"
+                     unique="false">
+            <column name="batch_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-220" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_values to dict_reactors</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_values"
+                baseColumnNames="reactor_id"
+                constraintName="fk_calc_reactor_values_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_reactors"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-221" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_values to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_values"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_reactor_values_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-222" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_values to dict_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_values"
+                baseColumnNames="unit_id"
+                constraintName="fk_calc_reactor_values_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-223" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_values to media_processing_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_values"
+                baseColumnNames="status"
+                constraintName="fk_calc_reactor_values_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_processing_statuses"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-224" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_values to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_values"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_reactor_values_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-225" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_values to media_source_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_values"
+                baseColumnNames="source_type_id"
+                constraintName="fk_calc_reactor_values_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_source_types"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-226" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_values to media_batches</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_values"
+                baseColumnNames="batch_id"
+                constraintName="fk_calc_reactor_values_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batches"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
