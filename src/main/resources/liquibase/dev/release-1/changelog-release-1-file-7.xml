@@ -25,7 +25,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта для получения среднего напряжения">
+            <column name="input_mp_id" type="number" remarks="Идентификатор точки учёта для получения среднего напряжения">
                 <constraints nullable="true"/>
             </column>
 
@@ -41,7 +41,7 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="operating_time" type="number" remarks="Время работы трансформатора">
+            <column name="operating_time" type="number" remarks="Время работы реактора">
                 <constraints nullable="true"/>
             </column>
 
@@ -125,7 +125,7 @@
                      schemaName="apps"
                      tableName="calc_reactor_values"
                      unique="false">
-            <column name="metering_point_id" type="number"/>
+            <column name="input_mp_id" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -201,7 +201,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_reactor_values"
-                baseColumnNames="metering_point_id"
+                baseColumnNames="input_mp_id"
                 constraintName="fk_calc_reactor_values_2"
                 deferrable="true"
                 initiallyDeferred="true"
@@ -326,19 +326,23 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+            <column name="windings_number" type="number" remarks="Количество обмоток в трансформаторах тока">
                 <constraints nullable="true"/>
             </column>
 
-            <column name="metering_point_id_h" type="number" remarks="Идентификатор точки учёта на высокой стороне">
+            <column name="input_mp_id" type="number" remarks="точка учета фиксирующия на вводе ВН">
                 <constraints nullable="true"/>
             </column>
 
-            <column name="metering_point_id_m" type="number" remarks="Идентификатор точки учёта на средней стороне">
+            <column name="input_mp_id_h" type="number" remarks="Ид точки учета для Ввод ВН">
                 <constraints nullable="true"/>
             </column>
 
-            <column name="metering_point_id_l" type="number" remarks="Идентификатор точки учёта на низкой стороне">
+            <column name="input_mp_id_m" type="number" remarks="Ид точки учета для Ввод СН">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="input_mp_id_l" type="number" remarks="Ид точки учета для Ввод НН">
                 <constraints nullable="true"/>
             </column>
 
@@ -361,7 +365,6 @@
             <column name="uavg" type="number" remarks="Среднее значение напряжения">
                 <constraints nullable="true"/>
             </column>
-
 
             <column name="pkz_hm" type="number" remarks="Потери короткого замыкания для пары обмоток высшего и среднего напряжений">
                 <constraints nullable="true"/>
@@ -505,7 +508,7 @@
                      schemaName="apps"
                      tableName="calc_power_transformer_values"
                      unique="false">
-            <column name="metering_point_id" type="number"/>
+            <column name="input_mp_id" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -515,7 +518,7 @@
                      schemaName="apps"
                      tableName="calc_power_transformer_values"
                      unique="false">
-            <column name="metering_point_id_h" type="number"/>
+            <column name="input_mp_id_h" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -525,7 +528,7 @@
                      schemaName="apps"
                      tableName="calc_power_transformer_values"
                      unique="false">
-            <column name="metering_point_id_m" type="number"/>
+            <column name="input_mp_id_m" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -535,7 +538,7 @@
                      schemaName="apps"
                      tableName="calc_power_transformer_values"
                      unique="false">
-            <column name="metering_point_id_l" type="number"/>
+            <column name="input_mp_id_l" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -589,4 +592,173 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="calc-eug-241" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_power_transformers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="power_transformer_id"
+                constraintName="fk_calc_power_transformer_values_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_power_transformers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-242" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="input_mp_id"
+                constraintName="fk_calc_power_transformer_values_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-243" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="input_mp_id_h"
+                constraintName="fk_calc_power_transformer_values_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-244" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="input_mp_id_m"
+                constraintName="fk_calc_power_transformer_values_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-245" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="input_mp_id_l"
+                constraintName="fk_calc_power_transformer_values_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-246" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="unit_id"
+                constraintName="fk_calc_power_transformer_values_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-247" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to media_processing_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="status"
+                constraintName="fk_calc_power_transformer_values_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_processing_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-248" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_power_transformer_values_8"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-249" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to media_source_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="source_type_id"
+                constraintName="fk_calc_power_transformer_values_9"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_source_types"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-250" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to media_batches</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="batch_id"
+                constraintName="fk_calc_power_transformer_values_10"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batches"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
