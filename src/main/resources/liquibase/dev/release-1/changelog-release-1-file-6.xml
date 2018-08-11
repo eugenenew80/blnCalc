@@ -388,7 +388,7 @@
     <changeSet id="calc-rus-21" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating table: calc_bidding_types_tl</comment>
         <createTable tableName="calc_bidding_types_tl" schemaName="apps" remarks="Перевод Справочник кодов БРЭ">
-            <column name="code" type="number" remarks="Код">
+            <column name="code" type="varchar2(10)" remarks="Код">
                 <constraints nullable="false"/>
             </column>
 
