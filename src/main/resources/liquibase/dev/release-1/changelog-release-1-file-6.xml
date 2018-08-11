@@ -544,7 +544,7 @@
     <changeSet id="calc-rus-28" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating primary key for table: calc_load_statuses</comment>
         <addPrimaryKey
-                columnNames="id"
+                columnNames="code"
                 constraintName="pk_calc_load_statuses"
                 schemaName="apps"
                 tableName="calc_load_statuses"/>
