@@ -25,7 +25,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта для получения среднего напряжения">
+            <column name="input_mp_id" type="number" remarks="Идентификатор точки учёта для получения среднего напряжения">
                 <constraints nullable="true"/>
             </column>
 
@@ -41,7 +41,7 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="operating_time" type="number" remarks="Время работы трансформатора">
+            <column name="operating_time" type="number" remarks="Время работы реактора">
                 <constraints nullable="true"/>
             </column>
 
@@ -125,7 +125,7 @@
                      schemaName="apps"
                      tableName="calc_reactor_values"
                      unique="false">
-            <column name="metering_point_id" type="number"/>
+            <column name="input_mp_id" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -201,7 +201,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_reactor_values"
-                baseColumnNames="metering_point_id"
+                baseColumnNames="input_mp_id"
                 constraintName="fk_calc_reactor_values_2"
                 deferrable="true"
                 initiallyDeferred="true"
@@ -326,19 +326,23 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+            <column name="windings_number" type="number" remarks="Количество обмоток в трансформаторах тока">
                 <constraints nullable="true"/>
             </column>
 
-            <column name="metering_point_id_h" type="number" remarks="Идентификатор точки учёта на высокой стороне">
+            <column name="input_mp_id" type="number" remarks="точка учета фиксирующия на вводе ВН">
                 <constraints nullable="true"/>
             </column>
 
-            <column name="metering_point_id_m" type="number" remarks="Идентификатор точки учёта на средней стороне">
+            <column name="input_mp_id_h" type="number" remarks="Ид точки учета для Ввод ВН">
                 <constraints nullable="true"/>
             </column>
 
-            <column name="metering_point_id_l" type="number" remarks="Идентификатор точки учёта на низкой стороне">
+            <column name="input_mp_id_m" type="number" remarks="Ид точки учета для Ввод СН">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="input_mp_id_l" type="number" remarks="Ид точки учета для Ввод НН">
                 <constraints nullable="true"/>
             </column>
 
@@ -361,7 +365,6 @@
             <column name="uavg" type="number" remarks="Среднее значение напряжения">
                 <constraints nullable="true"/>
             </column>
-
 
             <column name="pkz_hm" type="number" remarks="Потери короткого замыкания для пары обмоток высшего и среднего напряжений">
                 <constraints nullable="true"/>
@@ -505,7 +508,7 @@
                      schemaName="apps"
                      tableName="calc_power_transformer_values"
                      unique="false">
-            <column name="metering_point_id" type="number"/>
+            <column name="input_mp_id" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -515,7 +518,7 @@
                      schemaName="apps"
                      tableName="calc_power_transformer_values"
                      unique="false">
-            <column name="metering_point_id_h" type="number"/>
+            <column name="input_mp_id_h" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -525,7 +528,7 @@
                      schemaName="apps"
                      tableName="calc_power_transformer_values"
                      unique="false">
-            <column name="metering_point_id_m" type="number"/>
+            <column name="input_mp_id_m" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -535,7 +538,7 @@
                      schemaName="apps"
                      tableName="calc_power_transformer_values"
                      unique="false">
-            <column name="metering_point_id_l" type="number"/>
+            <column name="input_mp_id_l" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -588,5 +591,674 @@
             <column name="batch_id" type="number"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="calc-eug-241" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_power_transformers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="power_transformer_id"
+                constraintName="fk_calc_power_transformer_values_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_power_transformers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-242" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="input_mp_id"
+                constraintName="fk_calc_power_transformer_values_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-243" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="input_mp_id_h"
+                constraintName="fk_calc_power_transformer_values_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-244" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="input_mp_id_m"
+                constraintName="fk_calc_power_transformer_values_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-245" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="input_mp_id_l"
+                constraintName="fk_calc_power_transformer_values_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-246" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to dict_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="unit_id"
+                constraintName="fk_calc_power_transformer_values_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-247" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to media_processing_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="status"
+                constraintName="fk_calc_power_transformer_values_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_processing_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-248" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_power_transformer_values_8"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-249" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to media_source_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="source_type_id"
+                constraintName="fk_calc_power_transformer_values_9"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_source_types"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-250" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to media_batches</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="batch_id"
+                constraintName="fk_calc_power_transformer_values_10"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batches"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-251" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_tasks</comment>
+        <createTable tableName="calc_tasks" schemaName="apps" remarks="Задачи для выполнения расчётов">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_code" type="varchar2(1)" remarks="Код документа для расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="TIMESTAMP" remarks="Дата начала расчёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="TIMESTAMP" remarks="Дата окончания расчёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="priority" type="number" remarks="Приоритет расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="varchar2(1)" remarks="Статус обработки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-252" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_tasks</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_tasks"
+                schemaName="apps"
+                tableName="calc_tasks"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-253" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_tasks</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_tasks_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-254" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_task_params</comment>
+        <createTable tableName="calc_task_params" schemaName="apps" remarks="Параметры для выполнения задачи">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="task_id" type="number" remarks="Идентификатор задачи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="substation_id" type="number" remarks="Идентификатор подстанции">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="reactor_id" type="number" remarks="Идентификатор реактора">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="power_transformer_id" type="number" remarks="Идентификатор трансформатора">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="power_line_id" type="number" remarks="Идентификатор ЛЭП">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Дата начала расчётного периода">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Дата окончания расчётного периода">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-255" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_task_params</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_task_params"
+                schemaName="apps"
+                tableName="calc_task_params"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-256" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_task_params</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_task_params_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-257" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_task_params</comment>
+        <createIndex indexName="idx_calc_task_params_1"
+                     schemaName="apps"
+                     tableName="calc_task_params"
+                     unique="false">
+            <column name="task_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-258" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_task_params</comment>
+        <createIndex indexName="idx_calc_task_params_2"
+                     schemaName="apps"
+                     tableName="calc_task_params"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-259" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_task_params</comment>
+        <createIndex indexName="idx_calc_task_params_3"
+                     schemaName="apps"
+                     tableName="calc_task_params"
+                     unique="false">
+            <column name="substation_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-260" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_task_params</comment>
+        <createIndex indexName="idx_calc_task_params_4"
+                     schemaName="apps"
+                     tableName="calc_task_params"
+                     unique="false">
+            <column name="reactor_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-261" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_task_params</comment>
+        <createIndex indexName="idx_calc_task_params_5"
+                     schemaName="apps"
+                     tableName="calc_task_params"
+                     unique="false">
+            <column name="power_transformer_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-262" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_task_params</comment>
+        <createIndex indexName="idx_calc_task_params_6"
+                     schemaName="apps"
+                     tableName="calc_task_params"
+                     unique="false">
+            <column name="power_line_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-263" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_task_params</comment>
+        <createIndex indexName="idx_calc_task_params_7"
+                     schemaName="apps"
+                     tableName="calc_task_params"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-264" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_task_params to calc_tasks</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_task_params"
+                baseColumnNames="task_id"
+                constraintName="fk_calc_task_params_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_tasks"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-265" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_task_params to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_task_params"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_task_params_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-266" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_task_params to dict_substations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_task_params"
+                baseColumnNames="substation_id"
+                constraintName="fk_calc_task_params_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_substations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-267" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_task_params to dict_reactors</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_task_params"
+                baseColumnNames="reactor_id"
+                constraintName="fk_calc_task_params_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_reactors"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-268" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_task_params to dict_power_transformers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_task_params"
+                baseColumnNames="power_transformer_id"
+                constraintName="fk_calc_task_params_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_power_transformers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-269" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_task_params to dict_power_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_task_params"
+                baseColumnNames="power_line_id"
+                constraintName="fk_calc_task_params_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_power_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-270" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_task_params to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_task_params"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_task_params_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-271" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_headers</comment>
+        <createTable tableName="calc_balance_subst_headers" schemaName="apps" remarks="Шаблоны для составления баланса по подстанциям - заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="substation_id" type="number" remarks="Идентификатор подстанции">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-272" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_subst_headers"
+                schemaName="apps"
+                tableName="calc_balance_subst_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-273" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_subst_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_subst_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-274" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_subst_headers</comment>
+        <createIndex indexName="idx_calc_balance_subst_headers_1"
+                     schemaName="apps"
+                     tableName="calc_balance_subst_headers"
+                     unique="false">
+            <column name="substation_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-275" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_headers to dict_substations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_headers"
+                baseColumnNames="substation_id"
+                constraintName="fk_calc_balance_subst_headers_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_substations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-276" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_headers</comment>
+        <createTable tableName="calc_balance_subst_lines" schemaName="apps" remarks="Строки для составления баланса по подстанции">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="balance_subst_header_id" type="number" remarks="Идентификатор заголовка шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_inverse" type="number" remarks="Инвертировать направление">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_section_1" type="number" remarks="Включить точку учёта в раздел: Поступление на шины подстанции">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_section_2" type="number" remarks="Включить точку учёта в раздел: Расход на собственные нужды">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_section_3" type="number" remarks="Включить точку учёта в раздел: Расход на хозяйственные нужды">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_section_4" type="number" remarks="Включить точку учёта в раздел: Отпуск с шин подстанции">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-277" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_subst_lines"
+                schemaName="apps"
+                tableName="calc_balance_subst_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-278" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_subst_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_subst_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-279" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_subst_lines</comment>
+        <createIndex indexName="idx_calc_balance_subst_lines_1"
+                     schemaName="apps"
+                     tableName="calc_balance_subst_lines"
+                     unique="false">
+            <column name="balance_subst_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-280" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_subst_lines</comment>
+        <createIndex indexName="idx_calc_balance_subst_lines_2"
+                     schemaName="apps"
+                     tableName="calc_balance_subst_lines"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
 
 </databaseChangeLog>
