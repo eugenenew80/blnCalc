@@ -945,7 +945,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-260" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-261" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_task_params</comment>
         <createIndex indexName="idx_calc_task_params_5"
                      schemaName="apps"
@@ -955,7 +955,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-261" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-262" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_task_params</comment>
         <createIndex indexName="idx_calc_task_params_6"
                      schemaName="apps"
@@ -965,7 +965,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-262" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-263" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_task_params</comment>
         <createIndex indexName="idx_calc_task_params_7"
                      schemaName="apps"
@@ -975,7 +975,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-263" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-264" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_task_params to calc_tasks</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -992,7 +992,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-264" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-265" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_task_params to dict_organizations</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1009,7 +1009,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-265" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-266" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_task_params to dict_substations</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1026,7 +1026,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-266" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-267" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_task_params to dict_reactors</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1043,7 +1043,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-267" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-268" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_task_params to dict_power_transformers</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1060,7 +1060,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-268" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-269" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_task_params to dict_power_lines</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1077,7 +1077,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-269" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-270" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_task_params to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1093,5 +1093,172 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+
+    <changeSet id="calc-eug-271" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_headers</comment>
+        <createTable tableName="calc_balance_subst_headers" schemaName="apps" remarks="Шаблоны для составления баланса по подстанциям - заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="substation_id" type="number" remarks="Идентификатор подстанции">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-272" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_subst_headers"
+                schemaName="apps"
+                tableName="calc_balance_subst_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-273" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_subst_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_subst_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-274" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_subst_headers</comment>
+        <createIndex indexName="idx_calc_balance_subst_headers_1"
+                     schemaName="apps"
+                     tableName="calc_balance_subst_headers"
+                     unique="false">
+            <column name="substation_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-275" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_headers to dict_substations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_headers"
+                baseColumnNames="substation_id"
+                constraintName="fk_calc_balance_subst_headers_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_substations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-276" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_headers</comment>
+        <createTable tableName="calc_balance_subst_lines" schemaName="apps" remarks="Строки для составления баланса по подстанции">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="balance_subst_header_id" type="number" remarks="Идентификатор заголовка шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_inverse" type="number" remarks="Инвертировать направление">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_section_1" type="number" remarks="Включить точку учёта в раздел: Поступление на шины подстанции">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_section_2" type="number" remarks="Включить точку учёта в раздел: Расход на собственные нужды">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_section_3" type="number" remarks="Включить точку учёта в раздел: Расход на хозяйственные нужды">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_section_4" type="number" remarks="Включить точку учёта в раздел: Отпуск с шин подстанции">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-277" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_subst_lines"
+                schemaName="apps"
+                tableName="calc_balance_subst_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-278" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_subst_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_subst_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-279" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_subst_lines</comment>
+        <createIndex indexName="idx_calc_balance_subst_lines_1"
+                     schemaName="apps"
+                     tableName="calc_balance_subst_lines"
+                     unique="false">
+            <column name="balance_subst_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-280" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_subst_lines</comment>
+        <createIndex indexName="idx_calc_balance_subst_lines_2"
+                     schemaName="apps"
+                     tableName="calc_balance_subst_lines"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
 
 </databaseChangeLog>
