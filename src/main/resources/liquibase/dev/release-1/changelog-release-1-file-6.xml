@@ -644,12 +644,12 @@
     </changeSet>
 
     <changeSet id="calc-rus-34" logicalFilePath="path-independent" author="ruslan">
-        <comment>Creating foreign constraint: calc_daily_schedules to dict_metering_points</comment>
+        <comment>Creating foreign constraint: calc_bem_dict to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_daily_schedules"
+                baseTableName="calc_bem_dict"
                 baseColumnNames="consumer_id"
-                constraintName="fk_calc_calc_daily_schedules_3"
+                constraintName="fk_calc_bem_dict_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -661,12 +661,12 @@
     </changeSet>
 
     <changeSet id="calc-rus-35" logicalFilePath="path-independent" author="ruslan">
-        <comment>Creating foreign constraint: calc_daily_schedules to dict_metering_points</comment>
+        <comment>Creating foreign constraint: calc_bem_dict to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_daily_schedules"
+                baseTableName="calc_bem_dict"
                 baseColumnNames="treder_id"
-                constraintName="fk_calc_calc_daily_schedules_4"
+                constraintName="fk_calc_bem_dict_2"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -678,12 +678,12 @@
     </changeSet>
 
     <changeSet id="calc-rus-36" logicalFilePath="path-independent" author="ruslan">
-        <comment>Creating foreign constraint: calc_daily_schedules to dict_metering_points</comment>
+        <comment>Creating foreign constraint: calc_bem_dict to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_daily_schedules"
+                baseTableName="calc_bem_dict"
                 baseColumnNames="energy_source_id"
-                constraintName="fk_calc_calc_daily_schedules_4"
+                constraintName="fk_calc_bem_dict_3"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -695,12 +695,12 @@
     </changeSet>
 
     <changeSet id="calc-rus-37" logicalFilePath="path-independent" author="ruslan">
-        <comment>Creating foreign constraint: calc_daily_schedules to calc_bidding_types</comment>
+        <comment>Creating foreign constraint: calc_bem_dict to calc_bidding_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_daily_schedules"
+                baseTableName="calc_bem_dict"
                 baseColumnNames="bidding_type"
-                constraintName="fk_calc_calc_daily_schedules_4"
+                constraintName="fk_calc_bem_dict_4"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
