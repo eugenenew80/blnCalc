@@ -593,18 +593,18 @@
     </changeSet>
 
     <changeSet id="calc-rus-31" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating foreign constraint: calc_load_statuses_tl to calc_load_statuses_tl</comment>
+        <comment>Creating foreign constraint: calc_load_statuses_tl to calc_load_statuses</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_bidding_types_tl"
+                baseTableName="calc_load_statuses_tl"
                 baseColumnNames="code"
-                constraintName="fk_calc_bidding_types_tl_1"
+                constraintName="fk_calc_load_statuses_tl_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="CASCADE"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="calc_bidding_types"
+                referencedTableName="calc_load_statuses"
                 referencedColumnNames="code"
         />
     </changeSet>
