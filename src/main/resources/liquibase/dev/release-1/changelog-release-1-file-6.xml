@@ -307,7 +307,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="consumer_id" type="numer" remarks="Ид точки учета Потребителя">
+            <column name="consumer_id" type="number" remarks="Ид точки учета Потребителя">
                 <constraints nullable="false"/>
             </column>
 
