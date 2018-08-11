@@ -379,7 +379,7 @@
     <changeSet id="calc-rus-20" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating primary key for table: calc_bidding_types</comment>
         <addPrimaryKey
-                columnNames="id"
+                columnNames="code"
                 constraintName="pk_calc_bidding_types"
                 schemaName="apps"
                 tableName="calc_bidding_types"/>
