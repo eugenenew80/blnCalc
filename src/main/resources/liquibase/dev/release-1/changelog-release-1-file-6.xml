@@ -344,7 +344,7 @@
     <changeSet id="calc-rus-18" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating primary key for table: calc_bem_dict</comment>
         <addPrimaryKey
-                columnNames="id"
+                columnNames="code"
                 constraintName="pk_calc_bem_dict"
                 schemaName="apps"
                 tableName="calc_bem_dict"/>
