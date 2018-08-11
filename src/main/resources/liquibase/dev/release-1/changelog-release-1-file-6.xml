@@ -553,7 +553,7 @@
     <changeSet id="calc-rus-29" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating table: calc_load_statuses_tl</comment>
         <createTable tableName="calc_load_statuses_tl" schemaName="apps" remarks="Перевод Справочник статусы загрузки">
-            <column name="code" type="number" remarks="Код">
+            <column name="code" type="varchar2(10)" remarks="Код">
                 <constraints nullable="false"/>
             </column>
 
