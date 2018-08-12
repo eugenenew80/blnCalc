@@ -785,7 +785,7 @@
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
                 referencedTableName="calc_daily_schedules_h"
-                referencedColumnNames="code"
+                referencedColumnNames="id"
         />
     </changeSet>
 
