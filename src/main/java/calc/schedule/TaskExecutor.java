@@ -17,9 +17,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TaskExecutor {
     private final TaskRepo taskRepo;
-    private final CalcService calcService;
-    private final ExpressionService expressionService;
-    private final BalanceSubstHeaderRepo balanceSubstHeaderRepo;
     private final BalanceSubstServiceImpl balanceSubstService;
 
     @Scheduled(cron = "0 */1 * * * *")
