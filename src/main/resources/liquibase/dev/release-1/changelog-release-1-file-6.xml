@@ -451,7 +451,7 @@
 
     <changeSet id="calc-rus-24" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating table: calc_daily_schedules_h</comment>
-        <createTable tableName="calc_daily_schedules" schemaName="apps" remarks="Суточный график заголовок">
+        <createTable tableName="calc_daily_schedules_h" schemaName="apps" remarks="Суточный график заголовок">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
