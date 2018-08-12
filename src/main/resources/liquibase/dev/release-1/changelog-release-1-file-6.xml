@@ -693,7 +693,7 @@
                 baseTableSchemaName="apps"
                 baseTableName="calc_daily_schedules_l"
                 baseColumnNames="trade_type_code"
-                constraintName="fk_calc_daily_schedules_1"
+                constraintName="fk_calc_daily_schedules_l_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
