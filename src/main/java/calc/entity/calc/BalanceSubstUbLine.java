@@ -26,11 +26,11 @@ public class BalanceSubstUbLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isInverse;
 
-    @Column(name = "is_section1")
+    @Column(name = "is_section_1")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection1;
 
-    @Column(name = "is_section2")
+    @Column(name = "is_section_2")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection2;
 }

@@ -64,6 +64,11 @@ public class PeriodTimeValueExpression implements DoubleExpression {
             .collect(toSet());
     }
 
+    @Override
+    public Formula getFormula() {
+        return formula;
+    }
+
     private List<CalcResult> getValues() {
         return service.getValues(
             meteringPointCode,

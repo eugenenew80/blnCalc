@@ -65,6 +65,12 @@ public class AtTimeValueExpression implements DoubleExpression {
             .collect(toSet());
     }
 
+    @Override
+    public Formula getFormula() {
+        return formula;
+    }
+
+
     @SuppressWarnings("Duplicates")
     private CalcTrace trace(List<CalcResult> list) {
         List<CalcTrace> infoList = context.getTrace().get(formula.getId());

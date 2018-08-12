@@ -29,6 +29,12 @@ public class CalcServiceImpl implements CalcService {
         DoubleExpression expression = expressionService
             .parse(formula, context);
 
+        return calc(expression, context);
+    }
+
+
+    @Override
+    public CalcResult calc(DoubleExpression expression, CalcContext context) throws Exception {
         CalcResult result = new CalcResult();
         result.setDoubleVal(expression.doubleValue());
 
@@ -39,6 +45,7 @@ public class CalcServiceImpl implements CalcService {
 
         return result;
     }
+
 
     @Override
     public List<CalcResult> calc(CalcContext context) throws Exception {

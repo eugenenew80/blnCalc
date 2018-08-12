@@ -38,4 +38,9 @@ public class ReactorExpression implements DoubleExpression, StringExpression {
     public String stringValue() {
         return service.getStringAttribute(id, attr, context);
     }
+
+    @Override
+    public Formula getFormula() {
+        return formula;
+    }
 }

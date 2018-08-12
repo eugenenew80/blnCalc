@@ -45,4 +45,9 @@ public class BinaryExpression implements DoubleExpression {
 
         return new TreeSet<>(set);
     }
+
+    @Override
+    public Formula getFormula() {
+        return formula;
+    }
 }

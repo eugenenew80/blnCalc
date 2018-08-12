@@ -37,4 +37,9 @@ public class PowerTransformerExpression implements DoubleExpression, StringExpre
     public String stringValue() {
         return service.getStringAttribute(id, attr, context);
     }
+
+    @Override
+    public Formula getFormula() {
+        return formula;
+    }
 }

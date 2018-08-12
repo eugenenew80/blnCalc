@@ -38,4 +38,9 @@ public class PowerLineExpression implements DoubleExpression, StringExpression {
     public String stringValue() {
         return service.getStringAttribute(id, code, attr, context);
     }
+
+    @Override
+    public Formula getFormula() {
+        return formula;
+    }
 }

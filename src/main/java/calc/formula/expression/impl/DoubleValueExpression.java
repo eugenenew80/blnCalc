@@ -27,4 +27,9 @@ public class DoubleValueExpression implements DoubleExpression {
     public Double[] doubleValues() {
         return values != null ? values : DoubleExpression.super.doubleValues();
     }
+
+    @Override
+    public Formula getFormula() {
+        return formula;
+    }
 }

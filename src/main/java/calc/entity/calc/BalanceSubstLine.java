@@ -26,19 +26,19 @@ public class BalanceSubstLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isInverse;
 
-    @Column(name = "is_section1")
+    @Column(name = "is_section_1")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection1;
 
-    @Column(name = "is_section2")
+    @Column(name = "is_section_2")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection2;
 
-    @Column(name = "is_section3")
+    @Column(name = "is_section_3")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection3;
 
-    @Column(name = "is_section4")
+    @Column(name = "is_section_4")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection4;
 }

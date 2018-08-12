@@ -37,4 +37,9 @@ public class JsExpression implements DoubleExpression {
 
         return eval!=null ? Double.parseDouble(eval.toString()) : null;
     }
+
+    @Override
+    public Formula getFormula() {
+        return formula;
+    }
 }

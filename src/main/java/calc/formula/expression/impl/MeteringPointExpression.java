@@ -39,4 +39,9 @@ public class MeteringPointExpression implements DoubleExpression, StringExpressi
     public String stringValue() {
         return service.getStringAttribute(id, code, attr, context);
     }
+
+    @Override
+    public Formula getFormula() {
+        return formula;
+    }
 }

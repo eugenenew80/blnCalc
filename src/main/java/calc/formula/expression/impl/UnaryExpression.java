@@ -40,4 +40,9 @@ public class UnaryExpression implements DoubleExpression {
     public Set<String> meteringPoints() {
         return expression.meteringPoints();
     }
+
+    @Override
+    public Formula getFormula() {
+        return formula;
+    }
 }

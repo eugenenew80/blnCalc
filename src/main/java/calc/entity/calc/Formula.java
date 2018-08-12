@@ -23,6 +23,9 @@ public class Formula {
     private String code;
 
     @Column
+    private String param;
+
+    @Column
     private String description;
 
     @Column
