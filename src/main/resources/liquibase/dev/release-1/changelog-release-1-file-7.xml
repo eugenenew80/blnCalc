@@ -1713,4 +1713,23 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-306" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table calc_tasks</comment>
+        <addColumn tableName="calc_tasks" schemaName="apps">
+            <column name="doc_id" type="number" remarks="Идентификатор шаблона документа" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-307" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Change column in table calc_tasks</comment>
+        <modifyDataType
+            tableName="calc_tasks"
+            schemaName="apps"
+            columnName="doc_code"
+            newDataType="varchar2(30)"
+        />
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>

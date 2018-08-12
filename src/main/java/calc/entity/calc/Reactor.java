@@ -7,7 +7,7 @@ import org.hibernate.annotations.Immutable;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "dict_power_transformers")
+@Table(name = "dict_reactors")
 @Immutable
 public class Reactor {
     @Id

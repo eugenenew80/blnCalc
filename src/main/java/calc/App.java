@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.data.util.Pair;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
     basePackageClasses = { App.class, Jsr310JpaConverters.class }
 )
 @SpringBootApplication
+@EnableScheduling
 public class App  {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
@@ -57,7 +59,7 @@ public class App  {
         SpringApplication.run(App.class, args);
     }
 
-    @PostConstruct
+    //@PostConstruct
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void init() throws Exception {
         Report templateReport = reportRepo.findByCodeAndIsTemplateIsTrue("ACT-SUBST");
