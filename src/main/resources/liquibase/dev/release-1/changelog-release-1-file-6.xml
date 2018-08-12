@@ -671,12 +671,12 @@
     </changeSet>
 
     <changeSet id="calc-rus-35" logicalFilePath="path-independent" author="ruslan">
-        <comment>Creating foreign constraint: calc_daily_schedules_h to wf_states</comment>
+        <comment>Creating foreign constraint: calc_daily_schedules_h to calc_load_statuses</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_daily_schedules"
+                baseTableName="calc_daily_schedules_h"
                 baseColumnNames="status"
-                constraintName="fk_calc_calc_daily_schedules_1"
+                constraintName="fk_calc_daily_schedules_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -691,9 +691,9 @@
         <comment>Creating foreign constraint: calc_daily_schedules_l to calc_trade_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_daily_schedules"
+                baseTableName="calc_daily_schedules_l"
                 baseColumnNames="trade_type_code"
-                constraintName="fk_calc_calc_daily_schedules_2"
+                constraintName="fk_calc_daily_schedules_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
