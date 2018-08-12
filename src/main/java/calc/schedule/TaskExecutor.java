@@ -60,7 +60,7 @@ public class TaskExecutor {
 
                     }
 
-                    CalcResult result = calcService.calc("<pt mpCode=\"123456789123456789\" param=\"A+\" />", context);
+                    CalcResult result = calcService.calc(formula.getText(), context);
                 }
                 catch (Exception e) {
                     e.printStackTrace();
