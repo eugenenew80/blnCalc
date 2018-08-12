@@ -794,7 +794,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_daily_schedules_l"
-                baseColumnNames="consumer_id"
+                baseColumnNames="consumer_mp_id"
                 constraintName="fk_calc_daily_schedules_l_3"
                 deferrable="true"
                 initiallyDeferred="true"
