@@ -19,6 +19,9 @@ public class CalcContext {
     private Long energyObjectId;
     private String energyObjectName;
 
+    private String docCode;
+    private Long docId;
+
     private List<CalcResult> values;
     private Map<Long, List<CalcTrace>> trace;
     private Map<Long, CalcResult> results;
