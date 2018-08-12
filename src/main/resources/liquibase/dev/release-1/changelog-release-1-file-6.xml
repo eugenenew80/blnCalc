@@ -582,7 +582,7 @@
     </changeSet>
 
 
-    <changeSet id="calc-rus-24" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-31" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating table: calc_daily_schedules_l</comment>
         <createTable tableName="calc_daily_schedules_l" schemaName="apps" remarks="Суточный график строки">
             <column name="id" type="number" remarks="Идентификатор">
@@ -635,7 +635,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-rus-25" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-32" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating primary key for table: calc_daily_schedules_l</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -644,7 +644,7 @@
                 tableName="calc_daily_schedules_l"/>
     </changeSet>
 
-    <changeSet id="calc-rus-26" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-33" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating sequence for table: calc_daily_schedules_l</comment>
         <createSequence
                 incrementBy="1"
@@ -653,7 +653,7 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-rus-31" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-34" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_load_statuses_tl to calc_load_statuses</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -670,7 +670,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-32" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-35" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_daily_schedules_h to wf_states</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -687,7 +687,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-33" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-36" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_daily_schedules_l to calc_trade_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -704,7 +704,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-34" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-37" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_bem_dict to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -721,7 +721,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-35" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-38" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_bem_dict to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -738,7 +738,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-36" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-39" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_bem_dict to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -755,7 +755,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-37" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-40" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_bem_dict to calc_trade_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -772,7 +772,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-38" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-41" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_daily_schedules_l to calc_daily_schedules_h</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -789,7 +789,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-39" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-42" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_daily_schedules_l to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -806,7 +806,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-40" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-43" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_daily_schedules_l to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -823,7 +823,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-41" logicalFilePath="path-independent" author="ruslan">
+    <changeSet id="calc-rus-44" logicalFilePath="path-independent" author="ruslan">
         <comment>Creating foreign constraint: calc_daily_schedules_l to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
