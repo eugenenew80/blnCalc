@@ -926,7 +926,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_service_values_reconciliations_l"
-                baseColumnNames="contract_id"
+                baseColumnNames="service_values_reconciliation_id"
                 constraintName="fk_calc_service_values_reconciliations_l_2"
                 deferrable="true"
                 initiallyDeferred="true"
