@@ -504,7 +504,6 @@
                 startValue="1"/>
     </changeSet>
 
-
     <changeSet id="calc-rus-27" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating table: calc_load_statuses</comment>
         <createTable tableName="calc_load_statuses" schemaName="apps" remarks="Справочник статусы загрузки">
@@ -1031,4 +1030,738 @@
                 startValue="1"/>
     </changeSet>
 
+    <changeSet id="calc-rus-55" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_doc_asp1_headers</comment>
+        <createTable tableName="calc_doc_asp1_headers" schemaName="apps" remarks="Заголовки шаблонов расчетных документов (Акт съема показаний)">
+            <column name="id" type="number" remarks="Идентификатор шаблона АСП">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_type_code" type="varchar2(50)" remarks="Код типа документа" defaultvalue="CALC_ASP1">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="calc_period_id" type="number" remarks="Расчетный период">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="executer_id" type="number" remarks="Исполнитель">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_template" type="number" remarks="Является шаблоном">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="template_id" type="number" remarks="На основе шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="processing_status_code" type="varchar2(20)" remarks="Статус формирования">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status_code" type="varchar2(20)" remarks="Статус документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-56" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_doc_asp1_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_doc_asp1_headers"
+                schemaName="apps"
+                tableName="calc_doc_asp1_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-57" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_doc_asp1_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_doc_asp1_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-58" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_doc_asp1_headers to fin_periods</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_headers"
+                baseColumnNames="calc_period_id"
+                constraintName="fk_calc_doc_asp1_headers_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="fin_periods"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-59" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_doc_asp1_headers to dm_doc_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_headers"
+                baseColumnNames="doc_type_code"
+                constraintName="fk_calc_doc_asp1_headers_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-60" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_doc_asp1_headers to dict_business_partners</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_headers"
+                baseColumnNames="executer_id"
+                constraintName="fk_calc_doc_asp1_headers_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_business_partners"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-61" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_doc_asp1_headers to calc_doc_asp1_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_headers"
+                baseColumnNames="template_id"
+                constraintName="fk_calc_doc_asp1_headers_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_doc_asp1_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-62" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_doc_asp1_headers to media_batch_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_headers"
+                baseColumnNames="processing_status_code"
+                constraintName="fk_calc_doc_asp1_headers_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batch_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-63" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_doc_asp1_headers to wf_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_headers"
+                baseColumnNames="status_code"
+                constraintName="fk_calc_doc_asp1_headers_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-64" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_doc_asp1_headers_tl</comment>
+        <createTable tableName="calc_doc_asp1_headers_tl" schemaName="apps" remarks="Перевод Заголовки шаблонов расчетных документов (Акт съема показаний)">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="asp1_header_id" type="number" remarks="Ссылка на родительскую запись">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(500)" remarks="Наименование">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-65" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_doc_asp1_headers_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_doc_asp1_headers_tl"
+                schemaName="apps"
+                tableName="calc_doc_asp1_headers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-66" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_doc_asp1_headers_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_doc_asp1_headers_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-67" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating unique key for table: calc_doc_asp1_headers_tl</comment>
+        <addUniqueConstraint
+                columnNames="asp1_header_id,lang"
+                constraintName="uk_calc_doc_asp1_headers_tl"
+                schemaName="apps"
+                tableName="calc_doc_asp1_headers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-68" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_doc_asp1_headers_tl to calc_doc_asp1_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_headers_tl"
+                baseColumnNames="asp1_header_id"
+                constraintName="fk_calc_doc_asp1_headers_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_doc_asp1_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-69" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_doc_asp1_lines</comment>
+        <createTable tableName="calc_doc_asp1_lines" schemaName="apps" remarks="Строки основной таблицы шаблона расчетного документа">
+            <column name="id" type="number" remarks="Идентификатор строки документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="ID заголовка шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="item_num" type="number" remarks="Номер пункта/порядок вывода в документ">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="mp_id" type="number" remarks="Точка учета">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Параметр">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="meter_id" type="number" remarks="ID установленного счетчика">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="meter_serial_number" type="varchar2(30)" remarks="Номер счетчика">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="meter_type_name" type="varchar2(100)" remarks="Тип счетчика">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="meter_value_start" type="number" remarks="Показание счетчика. Начальные">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="meter_value_end" type="number" remarks="Показание счетчика. Конечные">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="meter_value_diff" type="number" remarks="Показание счетчика. Конечные">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="meter_factor" type="number" remarks="Расчетный коэффициент">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="ec_value" type="number" remarks="Объем электроэнергии, кВт.ч/кВар.ч">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="note" type="varchar2(30)" remarks="Примечание">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="treatment_type_code" type="varchar2(10)" remarks="Тип обработки строки:">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-70" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_doc_asp1_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_doc_asp1_lines"
+                schemaName="apps"
+                tableName="calc_doc_asp1_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-71" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_doc_asp1_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_doc_asp1_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-72" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_doc_asp1_lines_tl</comment>
+        <createTable tableName="calc_doc_asp1_lines_tl" schemaName="apps" remarks="Перевод Заголовки шаблонов расчетных документов (Акт съема показаний)">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="asp1_line_id" type="number" remarks="Ссылка на родительскую запись">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_name" type="varchar2(500)" remarks="Наименование">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-73" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_doc_asp1_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_doc_asp1_lines_tl"
+                schemaName="apps"
+                tableName="calc_doc_asp1_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-74" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_doc_asp1_lines_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_doc_asp1_lines_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-75" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating unique key for table: calc_doc_asp1_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="asp1_line_id,lang"
+                constraintName="uk_calc_doc_asp1_lines_tl"
+                schemaName="apps"
+                tableName="calc_doc_asp1_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-76" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_doc_asp1_lines_tl to calc_doc_asp1_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_headers_tl"
+                baseColumnNames="asp1_header_id"
+                constraintName="fk_calc_doc_asp1_headers_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_doc_asp1_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-77" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_doc_asp1_lines_tl</comment>
+        <createTable tableName="calc_treatment_types" schemaName="apps" remarks="Справочник Тип обработки строки">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-78" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_treatment_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_treatment_types"
+                schemaName="apps"
+                tableName="calc_treatment_types"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-79" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_treatment_types_tl</comment>
+        <createTable tableName="calc_treatment_types_tl" schemaName="apps" remarks="Перевод Справочник Тип обработки строки">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(200)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-80" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_treatment_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_treatment_types_tl"
+                schemaName="apps"
+                tableName="calc_treatment_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-81" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_treatment_types_tl to calc_treatment_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_treatment_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_treatment_types_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_treatment_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-82" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_treatment_types</comment>
+        <insert schemaName="apps" tableName="calc_treatment_types">
+            <column name="code" type="varchar2" value="INFO"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_treatment_types">
+            <column name="code" type="varchar2" value="IN"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_treatment_types">
+            <column name="code" type="varchar2" value="OUT"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_treatment_types">
+            <column name="code" type="varchar2" value="EMPTY"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-83" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_treatment_types_tl</comment>
+        <insert schemaName="apps" tableName="calc_treatment_types_tl">
+            <column name="code" type="varchar2" value="INFO"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="информационная"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_treatment_types_tl">
+            <column name="code" type="varchar2" value="INFO"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="информационная"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_treatment_types_tl">
+            <column name="code" type="varchar2" value="IN"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="входная"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_treatment_types_tl">
+            <column name="code" type="varchar2" value="IN"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="входная"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_treatment_types_tl">
+            <column name="code" type="varchar2" value="OUT"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="выходная"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_treatment_types_tl">
+            <column name="code" type="varchar2" value="OUT"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="выходная"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_treatment_types_tl">
+            <column name="code" type="varchar2" value="EMPTY"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="нет действия"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_treatment_types_tl">
+            <column name="code" type="varchar2" value="EMPTY"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="нет действия"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-rus-84" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_doc_asp1_lines to calc_doc_asp1_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_lines"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_doc_asp1_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_doc_asp1_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-85" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_doc_asp1_lines to calc_doc_asp1_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_lines"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_doc_asp1_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_doc_asp1_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-86" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_doc_asp1_lines to calc_doc_asp1_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_lines"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_doc_asp1_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_doc_asp1_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-87" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_doc_asp1_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_lines"
+                baseColumnNames="mp_id"
+                constraintName="fk_calc_doc_asp1_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-88" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_doc_asp1_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_lines"
+                baseColumnNames="mp_id"
+                constraintName="fk_calc_doc_asp1_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-89" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_doc_asp1_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_doc_asp1_lines_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-90" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_doc_asp1_lines to mdfem_eem_base</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_lines"
+                baseColumnNames="meter_id"
+                constraintName="fk_calc_doc_asp1_lines_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_eem_base"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-91" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_doc_asp1_lines to calc_treatment_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_doc_asp1_lines"
+                baseColumnNames="treatment_type_code"
+                constraintName="fk_calc_doc_asp1_lines_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_eem_base"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
