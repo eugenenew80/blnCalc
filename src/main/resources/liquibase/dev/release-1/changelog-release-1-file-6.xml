@@ -840,8 +840,6 @@
         />
     </changeSet>
 
-
-
     <changeSet id="calc-rus-45" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating table: calc_service_values_reconciliations_l</comment>
         <createTable tableName="calc_service_values_reconciliations_l" schemaName="apps" remarks="Акт сверки обьемов оказанных услуг строки">
@@ -892,7 +890,7 @@
         <comment>Creating primary key for table: calc_service_values_reconciliations_l</comment>
         <addPrimaryKey
                 columnNames="id"
-                constraintName="pk_calc_service_values_reconciliations_l"
+                constraintName="pk_calc_service_values_reconciliations_l_1"
                 schemaName="apps"
                 tableName="calc_service_values_reconciliations_l"/>
     </changeSet>
