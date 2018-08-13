@@ -944,7 +944,7 @@
                 baseTableSchemaName="apps"
                 baseTableName="calc_service_values_reconciliations_l"
                 baseColumnNames="cptri_type_code"
-                constraintName="fk_calc_service_values_reconciliations_l_2"
+                constraintName="fk_calc_service_values_reconciliations_l_3"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
