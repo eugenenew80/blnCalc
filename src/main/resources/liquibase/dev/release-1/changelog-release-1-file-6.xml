@@ -1037,7 +1037,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="doc_type_code" type="varchar2(50)" remarks="Код типа документа" defaultvalue="CALC_ASP1">
+            <column name="doc_type_code" type="varchar2(50)" remarks="Код типа документа" defaultValue="CALC_ASP1">
                 <constraints nullable="false"/>
             </column>
 
@@ -1452,40 +1452,40 @@
         <comment>Creating foreign constraint: calc_doc_asp1_lines_tl to calc_doc_asp1_lines</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_doc_asp1_headers_tl"
-                baseColumnNames="asp1_header_id"
-                constraintName="fk_calc_doc_asp1_headers_tl_1"
+                baseTableName="calc_doc_asp1_lines_tl"
+                baseColumnNames="asp1_line_id"
+                constraintName="fkcalc_doc_asp1_lines_tl_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="CASCADE"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="calc_doc_asp1_headers"
+                referencedTableName="calc_doc_asp1_lines"
                 referencedColumnNames="id"
         />
     </changeSet>
 
     <changeSet id="calc-rus-77" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating table: calc_doc_asp1_lines_tl</comment>
+        <comment>Creating table: calc_treatment_types</comment>
         <createTable tableName="calc_treatment_types" schemaName="apps" remarks="Справочник Тип обработки строки">
             <column name="code" type="varchar2(10)" remarks="Код">
                 <constraints nullable="false"/>
             </column>
 
             <column name="create_by" type="number" remarks="Автор">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
 
             <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
 
             <column name="last_update_by" type="number" remarks="Автор обновления">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
 
             <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
@@ -1515,19 +1515,19 @@
             </column>
 
             <column name="create_by" type="number" remarks="Автор">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
 
             <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
 
             <column name="last_update_by" type="number" remarks="Автор обновления">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
 
             <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
