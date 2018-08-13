@@ -841,4 +841,137 @@
     </changeSet>
 
 
+
+    <changeSet id="calc-rus-45" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_service_values_reconciliations_l</comment>
+        <createTable tableName="calc_service_values_reconciliations_l" schemaName="apps" remarks="Акт сверки обьемов оказанных услуг строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учета">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="service_values_reconciliation_id" type="number" remarks="Идентификатор акта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="cptri_type_code" type="varchar2(30)" remarks="Код типа">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="period_id" type="number" remarks="Ид периода">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="volume" type="number" remarks="Обьем">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-46" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_service_values_reconciliations_l</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_service_values_reconciliations_l"
+                schemaName="apps"
+                tableName="calc_service_values_reconciliations_l"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-47" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_service_values_reconciliations_l</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_metering_point_settings_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-48" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations_l to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations_l"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_service_values_reconciliations_l_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-49" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations_l to calc_service_values_reconciliations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations_l"
+                baseColumnNames="contract_id"
+                constraintName="fk_calc_service_values_reconciliations_l_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_service_values_reconciliations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-50" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations_l to cm_doc_cptri_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations_l"
+                baseColumnNames="cptri_type_code"
+                constraintName="fk_calc_service_values_reconciliations_l_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_cptri_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-51" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations_l to fin_periods</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations_l"
+                baseColumnNames="period_id"
+                constraintName="fk_calc_service_values_reconciliations_l_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="fin_periods"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
