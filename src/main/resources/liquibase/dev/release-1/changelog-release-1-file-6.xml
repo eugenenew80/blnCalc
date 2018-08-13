@@ -1013,7 +1013,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-rus-52" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-53" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating primary key for table: calc_signatories</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -1022,7 +1022,7 @@
                 tableName="calc_signatories"/>
     </changeSet>
 
-    <changeSet id="calc-rus-53" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-54" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating sequence for table: calc_signatories</comment>
         <createSequence
                 incrementBy="1"
