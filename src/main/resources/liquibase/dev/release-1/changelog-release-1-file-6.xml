@@ -900,7 +900,7 @@
         <createSequence
                 incrementBy="1"
                 schemaName="apps"
-                sequenceName="calc_metering_point_settings_s"
+                sequenceName="calc_service_values_reconciliations_l_s"
                 startValue="1"/>
     </changeSet>
 
@@ -972,4 +972,69 @@
         />
     </changeSet>
 
+<!--
+    <changeSet id="calc-rus-52" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_service_values_reconciliations_l</comment>
+        <createTable tableName="calc_service_values_reconciliations_l" schemaName="apps" remarks="Акт сверки обьемов оказанных услуг строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учета">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="service_values_reconciliation_id" type="number" remarks="Идентификатор акта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="cptri_type_code" type="varchar2(30)" remarks="Код типа">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="period_id" type="number" remarks="Ид периода">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="volume" type="number" remarks="Обьем">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-46" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_service_values_reconciliations_l</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_service_values_reconciliations_l_1"
+                schemaName="apps"
+                tableName="calc_service_values_reconciliations_l"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-47" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_service_values_reconciliations_l</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_metering_point_settings_s"
+                startValue="1"/>
+    </changeSet>
+-->
 </databaseChangeLog>
