@@ -1452,15 +1452,15 @@
         <comment>Creating foreign constraint: calc_doc_asp1_lines_tl to calc_doc_asp1_lines</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_doc_asp1_headers_tl"
-                baseColumnNames="asp1_header_id"
-                constraintName="fk_calc_doc_asp1_headers_tl_1"
+                baseTableName="calc_doc_asp1_lines_tl"
+                baseColumnNames="asp1_line_id"
+                constraintName="fkcalc_doc_asp1_lines_tl_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="CASCADE"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="calc_doc_asp1_headers"
+                referencedTableName="calc_doc_asp1_lines"
                 referencedColumnNames="id"
         />
     </changeSet>
