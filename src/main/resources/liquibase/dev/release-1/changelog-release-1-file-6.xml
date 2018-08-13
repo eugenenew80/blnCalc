@@ -972,32 +972,27 @@
         />
     </changeSet>
 
-<!--
     <changeSet id="calc-rus-52" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating table: calc_service_values_reconciliations_l</comment>
-        <createTable tableName="calc_service_values_reconciliations_l" schemaName="apps" remarks="Акт сверки обьемов оказанных услуг строки">
+        <comment>Creating table: calc_signatories</comment>
+        <createTable tableName="calc_signatories" schemaName="apps" remarks="Акт сверки обьемов оказанных услуг строки">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Идентификатор точки учета">
+            <column name="table_name" type="varchar2(50)" remarks="Наименование таблицы">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="service_values_reconciliation_id" type="number" remarks="Идентификатор акта">
+            <column name="table_id" type="number" remarks="Идентификатор в таблице">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="cptri_type_code" type="varchar2(30)" remarks="Код типа">
+            <column name="name_1" type="varchar2(50)" remarks="Имя первого подписанта">
                 <constraints nullable="true"/>
             </column>
 
-            <column name="period_id" type="number" remarks="Ид периода">
+            <column name="name_2" type="number" remarks="Имя второго подписанта">
                 <constraints nullable="true"/>
-            </column>
-
-            <column name="volume" type="number" remarks="Обьем">
-                <constraints nullable="false"/>
             </column>
 
             <column name="create_by" type="number" remarks="Автор">
@@ -1018,22 +1013,21 @@
         </createTable>
     </changeSet>
 
-
-    <changeSet id="calc-rus-46" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating primary key for table: calc_service_values_reconciliations_l</comment>
+    <changeSet id="calc-rus-52" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_signatories</comment>
         <addPrimaryKey
                 columnNames="id"
-                constraintName="pk_calc_service_values_reconciliations_l_1"
+                constraintName="pk_calc_signatories"
                 schemaName="apps"
-                tableName="calc_service_values_reconciliations_l"/>
+                tableName="calc_signatories"/>
     </changeSet>
 
-    <changeSet id="calc-rus-47" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating sequence for table: calc_service_values_reconciliations_l</comment>
+    <changeSet id="calc-rus-53" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_signatories</comment>
         <createSequence
                 incrementBy="1"
                 schemaName="apps"
-                sequenceName="calc_metering_point_settings_s"
+                sequenceName="calc_signatories_s"
                 startValue="1"/>
     </changeSet>
 -->
