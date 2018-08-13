@@ -298,4 +298,547 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+
+
+    <changeSet id="calc-rus-17" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_bem_dict</comment>
+        <createTable tableName="calc_bem_dict" schemaName="apps" remarks="Справочник кодов БРЭ">
+            <column name="code" type="varchar2(30)" remarks="код БРЭ">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="consumer_id" type="number" remarks="Ид точки учета Потребителя">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="trader_id" type="number" remarks="Ид точки учета трейдера">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="energy_source_id" type="number" remarks="Ид точки учета энергоисточника">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="trade_type" type="varchar2(10)" remarks="Код вида торгов">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="power_grid_region_id" type="number" remarks="Ид участка сети">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-18" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_bem_dict</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_bem_dict"
+                schemaName="apps"
+                tableName="calc_bem_dict"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-19" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_trade_types</comment>
+        <createTable tableName="calc_trade_types" schemaName="apps" remarks="Справочник виды торгов">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-20" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_trade_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_trade_types"
+                schemaName="apps"
+                tableName="calc_trade_types"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-21" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_trade_types_tl</comment>
+        <createTable tableName="calc_trade_types_tl" schemaName="apps" remarks="Перевод Справочник кодов БРЭ">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(200)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-22" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_trade_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_trade_types_tl"
+                schemaName="apps"
+                tableName="calc_trade_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-23" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_trade_types_tl to calc_trade_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_trade_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_trade_types_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_trade_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-24" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_daily_schedules_h</comment>
+        <createTable tableName="calc_daily_schedules_h" schemaName="apps" remarks="Суточный график заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="schedule_date" type="date" remarks="Дата графика">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="version" type="number" remarks="версия">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="status" type="varchar2(10)" remarks="Стаус">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-25" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_daily_schedules_h</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_daily_schedules_h"
+                schemaName="apps"
+                tableName="calc_daily_schedules_h"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-26" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_daily_schedules_h</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_daily_schedules_h_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-27" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_load_statuses</comment>
+        <createTable tableName="calc_load_statuses" schemaName="apps" remarks="Справочник статусы загрузки">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-28" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_load_statuses</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_load_statuses"
+                schemaName="apps"
+                tableName="calc_load_statuses"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-29" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_load_statuses_tl</comment>
+        <createTable tableName="calc_load_statuses_tl" schemaName="apps" remarks="Перевод Справочник статусы загрузки">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(200)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-30" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_load_statuses_tl</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_load_statuses_tl"
+                schemaName="apps"
+                tableName="calc_load_statuses_tl"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-31" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_daily_schedules_l</comment>
+        <createTable tableName="calc_daily_schedules_l" schemaName="apps" remarks="Суточный график строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="consumer_mp_id" type="number" remarks="Идентификатор точки учета потребителя">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="traider_mp_id" type="number" remarks="Идентификатор точки учета трэйдера">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="energy_source_mp_id" type="number" remarks="Идентификатор точки учета энергоисточника">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="trade_type_code" type="varchar2(10)" remarks="Код вида торгов">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="power_grid_region_id" type="number" remarks="ID еденицы баланса">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="total_per_day" type="number" remarks="Обьем энергии за сутки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-32" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_daily_schedules_l</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_daily_schedules_l"
+                schemaName="apps"
+                tableName="calc_daily_schedules_l"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-33" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_daily_schedules_l</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_daily_schedules_l_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-34" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_load_statuses_tl to calc_load_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_load_statuses_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_load_statuses_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_load_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-35" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_daily_schedules_h to calc_load_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_schedules_h"
+                baseColumnNames="status"
+                constraintName="fk_calc_daily_schedules_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_load_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-36" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_daily_schedules_l to calc_trade_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_schedules_l"
+                baseColumnNames="trade_type_code"
+                constraintName="fk_calc_daily_schedules_l_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_trade_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-37" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_bem_dict to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bem_dict"
+                baseColumnNames="consumer_id"
+                constraintName="fk_calc_bem_dict_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-38" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_bem_dict to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bem_dict"
+                baseColumnNames="trader_id"
+                constraintName="fk_calc_bem_dict_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-39" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_bem_dict to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bem_dict"
+                baseColumnNames="energy_source_id"
+                constraintName="fk_calc_bem_dict_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-40" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_bem_dict to calc_trade_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bem_dict"
+                baseColumnNames="trade_type"
+                constraintName="fk_calc_bem_dict_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_trade_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-41" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_daily_schedules_l to calc_daily_schedules_h</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_schedules_l"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_daily_schedules_l_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_daily_schedules_h"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-42" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_daily_schedules_l to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_schedules_l"
+                baseColumnNames="consumer_mp_id"
+                constraintName="fk_calc_daily_schedules_l_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-43" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_daily_schedules_l to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_schedules_l"
+                baseColumnNames="traider_mp_id"
+                constraintName="fk_calc_daily_schedules_l_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-44" logicalFilePath="path-independent" author="ruslan">
+        <comment>Creating foreign constraint: calc_daily_schedules_l to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_schedules_l"
+                baseColumnNames="energy_source_mp_id"
+                constraintName="fk_calc_daily_schedules_l_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
 </databaseChangeLog>
