@@ -1037,7 +1037,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="doc_type_code" type="varchar2(50)" remarks="Код типа документа" defaultvalue="CALC_ASP1">
+            <column name="doc_type_code" type="varchar2(50)" remarks="Код типа документа" defaultValue="CALC_ASP1">
                 <constraints nullable="false"/>
             </column>
 
