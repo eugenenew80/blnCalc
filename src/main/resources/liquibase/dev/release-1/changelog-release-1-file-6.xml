@@ -1710,8 +1710,8 @@
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="mdfem_eem_base"
-                referencedColumnNames="id"
+                referencedTableName="calc_treatment_types"
+                referencedColumnNames="code"
         />
     </changeSet>
 
