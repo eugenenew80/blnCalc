@@ -1647,80 +1647,30 @@
     </changeSet>
 
     <changeSet id="calc-rus-85" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating foreign constraint: calc_doc_asp1_lines to calc_doc_asp1_headers</comment>
+        <comment>Creating foreign constraint: calc_doc_asp1_lines to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_doc_asp1_lines"
-                baseColumnNames="header_id"
+                baseColumnNames="mp_id"
                 constraintName="fk_calc_doc_asp1_lines_2"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="calc_doc_asp1_headers"
+                referencedTableName="dict_metering_points"
                 referencedColumnNames="id"
         />
     </changeSet>
+
 
     <changeSet id="calc-rus-86" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating foreign constraint: calc_doc_asp1_lines to calc_doc_asp1_headers</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="calc_doc_asp1_lines"
-                baseColumnNames="header_id"
-                constraintName="fk_calc_doc_asp1_lines_3"
-                deferrable="true"
-                initiallyDeferred="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="calc_doc_asp1_headers"
-                referencedColumnNames="id"
-        />
-    </changeSet>
-
-    <changeSet id="calc-rus-87" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating foreign constraint: calc_doc_asp1_lines to dict_metering_points</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="calc_doc_asp1_lines"
-                baseColumnNames="mp_id"
-                constraintName="fk_calc_doc_asp1_lines_4"
-                deferrable="true"
-                initiallyDeferred="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="dict_metering_points"
-                referencedColumnNames="id"
-        />
-    </changeSet>
-
-    <changeSet id="calc-rus-88" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating foreign constraint: calc_doc_asp1_lines to dict_metering_points</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="calc_doc_asp1_lines"
-                baseColumnNames="mp_id"
-                constraintName="fk_calc_doc_asp1_lines_5"
-                deferrable="true"
-                initiallyDeferred="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="dict_metering_points"
-                referencedColumnNames="id"
-        />
-    </changeSet>
-
-    <changeSet id="calc-rus-89" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_doc_asp1_lines to media_parameters</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_doc_asp1_lines"
                 baseColumnNames="param_id"
-                constraintName="fk_calc_doc_asp1_lines_6"
+                constraintName="fk_calc_doc_asp1_lines_3"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1731,13 +1681,13 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-90" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-87" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_doc_asp1_lines to mdfem_eem_base</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_doc_asp1_lines"
                 baseColumnNames="meter_id"
-                constraintName="fk_calc_doc_asp1_lines_7"
+                constraintName="fk_calc_doc_asp1_lines_4"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1748,13 +1698,13 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-91" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-88" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_doc_asp1_lines to calc_treatment_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_doc_asp1_lines"
                 baseColumnNames="treatment_type_code"
-                constraintName="fk_calc_doc_asp1_lines_8"
+                constraintName="fk_calc_doc_asp1_lines_5"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1765,7 +1715,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-92" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-89" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating table: calc_doc_notes</comment>
         <createTable tableName="calc_doc_notes" schemaName="apps" remarks="Примечания к документу и строки документа">
             <column name="id" type="number" remarks="Идентификатор примечания ">
@@ -1802,7 +1752,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-rus-93" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-90" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating primary key for table: calc_doc_notes</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -1811,7 +1761,7 @@
                 tableName="calc_doc_notes"/>
     </changeSet>
 
-    <changeSet id="calc-rus-94" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-91" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating sequence for table: calc_doc_notes</comment>
         <createSequence
                 incrementBy="1"
@@ -1821,7 +1771,7 @@
     </changeSet>
 
 
-    <changeSet id="calc-rus-95" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-92" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating table: calc_doc_notes_tl</comment>
         <createTable tableName="calc_doc_notes_tl" schemaName="apps" remarks="Перевод Примечания к документу и строки документа">
             <column name="id" type="number" remarks="Идентификатор">
@@ -1858,7 +1808,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-rus-96" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-93" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating primary key for table: calc_doc_notes_tl</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -1867,7 +1817,7 @@
                 tableName="calc_doc_notes_tl"/>
     </changeSet>
 
-    <changeSet id="calc-rus-97" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-94" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating sequence for table: calc_doc_notes_tl</comment>
         <createSequence
                 incrementBy="1"
@@ -1876,7 +1826,7 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-rus-98" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-95" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating unique key for table: calc_doc_notes_tl</comment>
         <addUniqueConstraint
                 columnNames="doc_notes_id,lang"
@@ -1885,7 +1835,7 @@
                 tableName="calc_doc_notes_tl"/>
     </changeSet>
 
-    <changeSet id="calc-rus-99" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-96" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_doc_notes_tl to calc_doc_notes</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1902,7 +1852,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-100" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-97" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_doc_notes to calc_doc_asp1_headers</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1919,7 +1869,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-101" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-98" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating table: calc_doc_messages</comment>
         <createTable tableName="calc_doc_messages" schemaName="apps" remarks="Список ошибок при составлении документа">
             <column name="id" type="number" remarks="Идентификатор примечания ">
@@ -1960,7 +1910,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-rus-102" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-99" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating primary key for table: calc_doc_messages</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -1969,7 +1919,7 @@
                 tableName="calc_doc_messages"/>
     </changeSet>
 
-    <changeSet id="calc-rus-103" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-100" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating sequence for table: calc_doc_messages</comment>
         <createSequence
                 incrementBy="1"
@@ -1979,7 +1929,7 @@
     </changeSet>
 
 
-    <changeSet id="calc-rus-104" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-101" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating table: calc_doc_messages_tl</comment>
         <createTable tableName="calc_doc_messages_tl" schemaName="apps" remarks="Перевод Список ошибок при составлении документа">
             <column name="id" type="number" remarks="Идентификатор">
@@ -2016,7 +1966,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-rus-105" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-102" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating primary key for table: calc_doc_messages_tl</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -2025,7 +1975,7 @@
                 tableName="calc_doc_messages_tl"/>
     </changeSet>
 
-    <changeSet id="calc-rus-106" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-103" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating sequence for table: calc_doc_messages_tl</comment>
         <createSequence
                 incrementBy="1"
@@ -2034,7 +1984,7 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-rus-107" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-104" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating unique key for table: calc_doc_messages_tl</comment>
         <addUniqueConstraint
                 columnNames="messages_id,lang"
@@ -2043,7 +1993,7 @@
                 tableName="calc_doc_messages_tl"/>
     </changeSet>
 
-    <changeSet id="calc-rus-108" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-105" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_doc_messages_tl to calc_doc_messages</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -2060,7 +2010,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-109" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-106" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_doc_messages to calc_doc_asp1_headers</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
