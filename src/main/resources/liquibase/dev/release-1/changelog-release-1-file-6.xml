@@ -1840,7 +1840,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_doc_notes_tl"
-                baseColumnNames="asp1_header_id"
+                baseColumnNames="doc_notes_id"
                 constraintName="fk_calc_doc_notes_tl_1"
                 deferrable="true"
                 initiallyDeferred="true"
