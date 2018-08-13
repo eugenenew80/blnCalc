@@ -2689,5 +2689,17 @@
         <rollback />
     </changeSet>
 
+    <changeSet id="calc-eug-374" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table calc_balance_subst_headers</comment>
+        <addColumn tableName="calc_balance_subst_headers" schemaName="apps">
+            <column name="description" type="varchar2(300)" remarks="Комментарий к шаблону">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_default" type="number" remarks="Применять данный шаблон по умолчанию" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
