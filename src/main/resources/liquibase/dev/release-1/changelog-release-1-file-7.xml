@@ -2033,5 +2033,182 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-327" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_ub_lines_tl</comment>
+        <createTable tableName="calc_balance_subst_ub_lines_tl" schemaName="apps" remarks="Перевод - примечания для небаланса по ПС">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="balance_subst_ub_line_id" type="number" remarks="Идентификатор строки небаланса">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note" type="varchar(300)" remarks="Примечание">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-328" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_ub_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_subst_ub_lines_tl"
+                schemaName="apps"
+                tableName="calc_balance_subst_ub_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-329" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_balance_subst_ub_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="balance_subst_ub_line_id, lang"
+                constraintName="uk_calc_balance_subst_ub_lines_tl_1"
+                schemaName="apps"
+                tableName="calc_balance_subst_ub_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-330" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_subst_ub_lines_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_subst_lines_ub_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-331" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_subst_ub_lines_tl</comment>
+        <createIndex indexName="idx_calc_balance_subst_ub_lines_tl_1" schemaName="apps" tableName="calc_balance_subst_ub_lines_tl">
+            <column name="balance_subst_ub_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-332" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_ub_lines_tl to calc_balance_subst_ub_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_ub_lines_tl"
+                baseColumnNames="balance_subst_ub_line_id"
+                constraintName="fk_calc_balance_subst_ub_lines_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_subst_ub_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-333" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_pe_lines_tl</comment>
+        <createTable tableName="calc_balance_subst_pe_lines_tl" schemaName="apps" remarks="Перевод - примечания силового оборудования">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="balance_subst_pe_line_id" type="number" remarks="Идентификатор строки силового оборудования">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note" type="varchar(300)" remarks="Примечание">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-334" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_pe_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_subst_pe_lines_tl"
+                schemaName="apps"
+                tableName="calc_balance_subst_pe_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-335" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_balance_subst_pe_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="balance_subst_pe_line_id, lang"
+                constraintName="uk_calc_balance_subst_pe_lines_tl_1"
+                schemaName="apps"
+                tableName="calc_balance_subst_pe_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-336" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_subst_pe_lines_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_subst_lines_pe_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-337" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_subst_pe_lines_tl</comment>
+        <createIndex indexName="idx_calc_balance_subst_pe_lines_tl_1" schemaName="apps" tableName="calc_balance_subst_pe_lines_tl">
+            <column name="balance_subst_pe_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-338" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_pe_lines_tl to calc_balance_subst_pe_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_pe_lines_tl"
+                baseColumnNames="balance_subst_pe_line_id"
+                constraintName="fk_calc_balance_subst_pe_lines_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_subst_pe_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
