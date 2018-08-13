@@ -1857,7 +1857,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_doc_notes"
-                baseColumnNames="asp1_header_id"
+                baseColumnNames="header_id"
                 constraintName="fk_calc_doc_notes_1"
                 deferrable="true"
                 initiallyDeferred="true"
@@ -2015,7 +2015,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_doc_messages"
-                baseColumnNames="asp1_header_id"
+                baseColumnNames="header_id"
                 constraintName="fk_calc_doc_messages_1"
                 deferrable="true"
                 initiallyDeferred="true"
