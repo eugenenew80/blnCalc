@@ -2210,5 +2210,18 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-339" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding fields for table: calc_bypass_modes</comment>
+        <addColumn tableName="calc_bypass_modes" schemaName="apps">
+            <column name="is_bus_section" type="number" defaultValue="0" remarks="Флаг - включен между мекциями шин">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bus_section_reason" type="varchar2(300)" remarks="Причина включения ОВ между секциями шин">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
