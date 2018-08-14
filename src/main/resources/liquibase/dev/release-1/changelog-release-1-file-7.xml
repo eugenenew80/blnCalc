@@ -3715,5 +3715,48 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-437" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_formula_types_tl</comment>
+        <createTable tableName="calc_formula_types_tl" schemaName="apps" remarks="Типы формул  - переводы">
+            <column name="code" type="varchar(10)" remarks="Операция">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Описание типа формулы">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-438" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_formula_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_formula_types_tl"
+                schemaName="apps"
+                tableName="calc_formula_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-439" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_types_tl to calc_formula_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_formula_types_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formula_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
