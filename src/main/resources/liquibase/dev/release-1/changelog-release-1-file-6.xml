@@ -2026,4 +2026,12 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-107" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint</comment>
+        <dropNotNullConstraint columnDataType="number"
+                               columnName="metering_point_id"
+                               schemaName="apps"
+                               tableName="CALC_BYPASS_MODES"/>
+    </changeSet>
 </databaseChangeLog>
