@@ -38,7 +38,7 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
-        return null;
+        return 1d;
     }
 
     @Override

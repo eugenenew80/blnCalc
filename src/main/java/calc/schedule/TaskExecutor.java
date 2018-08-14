@@ -48,8 +48,12 @@ public class TaskExecutor {
                     formulaVar = formulaVar + "</param>";
                     formulaVar = formulaVar + "</params>";
 
+                    String src = "Math.pow(a0,2)";
+
+                    formulaVar = "<js><src>" + formula.getText() + "</src>" + formulaVar + "</js>";
+
                     System.out.println(formulaVar);
-                    /*
+
                     try {
                         CalcContext context = createContext(taskParam);
                         CalcResult calcResult = calcService.calc(formulaVar, context);
@@ -58,7 +62,7 @@ public class TaskExecutor {
                     catch (Exception e) {
                         e.printStackTrace();
                     }
-                    */
+
                 }
             }
         }
