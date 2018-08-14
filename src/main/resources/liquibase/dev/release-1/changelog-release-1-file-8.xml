@@ -620,7 +620,7 @@
 
     <changeSet id="calc-rus-147" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>drop foreign constraint: calc_metering_data_sources_tl to calc_metering_data_sources_tl</comment>
-        <dropForeignKeyConstraint baseTableName="calc_metering_data_sources_tl" constraintName="fk_calc_metering_data_sources_tl_1" referencedTableSchemaName="apps"/>
+        <dropForeignKeyConstraint baseTableName="calc_metering_data_sources_tl" constraintName="fk_calc_metering_data_sources_tl_1" baseTableSchemaName="apps"/>
     </changeSet>
 
 
