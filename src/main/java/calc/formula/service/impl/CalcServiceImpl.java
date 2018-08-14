@@ -37,6 +37,7 @@ public class CalcServiceImpl implements CalcService {
     public CalcResult calc(DoubleExpression expression, CalcContext context) throws Exception {
         CalcResult result = new CalcResult();
         result.setDoubleVal(expression.doubleValue());
+        result.setDoubleValues(expression.doubleValues());
 
         if (expression instanceof StringExpression) {
             StringExpression stringExpression = (StringExpression) expression;

@@ -1,11 +1,13 @@
 package calc.entity.calc;
 
+import calc.entity.calc.enums.FormulaTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -22,14 +24,22 @@ public class Formula {
     @Column
     private String code;
 
-    @Column
-    private String param;
+    @Column(name="formula_type")
+    @Enumerated(EnumType.STRING)
+    private FormulaTypeEnum formulaType;
+
+    @ManyToOne
+    @JoinColumn(name = "param_id")
+    private Parameter param;
 
     @Column
     private String description;
 
     @Column
     private String text;
+
+    @Column(name = "text_dialog")
+    private String textDialog;
 
     @ManyToOne
     @JoinColumn(name="metering_point_id")
@@ -40,4 +50,7 @@ public class Formula {
 
     @Column(name = "end_date")
     private LocalDateTime endDate;
+
+    @OneToMany(mappedBy = "formula", fetch = FetchType.LAZY)
+    private List<FormulaVar> vars;
 }

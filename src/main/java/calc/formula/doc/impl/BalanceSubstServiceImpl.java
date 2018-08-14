@@ -1,9 +1,6 @@
 package calc.formula.doc.impl;
 
-import calc.entity.calc.BalanceSubstHeader;
-import calc.entity.calc.BalanceSubstLine;
-import calc.entity.calc.Formula;
-import calc.entity.calc.TaskParam;
+import calc.entity.calc.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.doc.DocService;
@@ -11,17 +8,20 @@ import calc.formula.expression.DoubleExpression;
 import calc.formula.service.CalcService;
 import calc.formula.service.ExpressionService;
 import calc.repo.calc.BalanceSubstHeaderRepo;
+import calc.repo.calc.ParameterRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstServiceImpl implements DocService {
     private final CalcService calcService;
     private final ExpressionService expressionService;
     private final BalanceSubstHeaderRepo balanceSubstHeaderRepo;
+    private final ParameterRepo parameterRepo;
 
     public Map<String, List<CalcResult>> calc(TaskParam taskParam) throws Exception {
         Map<String, List<CalcResult>> allResults = new HashMap<>();
@@ -98,11 +98,14 @@ public class BalanceSubstServiceImpl implements DocService {
         String mpCode = line.getMeteringPoint().getCode();
         List<Formula> formulas= new ArrayList<>();
         for (String param : getParams(line)) {
+
+            Parameter parameter = parameterRepo.findByCode(param);
+
             Formula formula = new Formula();
             formula.setCode(mpCode);
             formula.setText("<pt mp=\"" + mpCode + "\" param=\"" + param + "\" />");
             formula.setMeteringPoint(line.getMeteringPoint());
-            formula.setParam(param);
+            formula.setParam(parameter);
             formulas.add(formula);
         }
         return formulas;
