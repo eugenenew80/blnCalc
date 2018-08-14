@@ -513,4 +513,132 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-138" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_signatories</comment>
+        <dropColumn columnName="user_id"
+                    schemaName="apps"
+                    tableName="calc_signatories"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-139" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_signatories">
+            <column name="name" type="varchar2(500)" remarks="ФИО, Должность"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-140" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_service_values_reconciliations_l</comment>
+        <dropColumn columnName="period_id"
+                    schemaName="apps"
+                    tableName="calc_service_values_reconciliations_l"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-141" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_service_values_reconciliations_l_tl</comment>
+        <createTable tableName="calc_service_values_reconciliations_l_tl" schemaName="apps" remarks="Перевод Акт сверки обьемов оказанных услуг строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="service_values_reconciliation_l_id" type="number" remarks="Ссылка на родительскую запись">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(300)" remarks="Наименование">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-142" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_service_values_reconciliations_l_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_service_values_reconciliations_l_tl"
+                schemaName="apps"
+                tableName="calc_service_values_reconciliations_l_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-143" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_service_values_reconciliations_l_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_service_values_reconciliations_l_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-145" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating unique key for table: calc_service_values_reconciliations_l_tl</comment>
+        <addUniqueConstraint
+                columnNames="service_values_reconciliation_l_id,lang"
+                constraintName="uk_calc_service_values_reconciliations_l_tl"
+                schemaName="apps"
+                tableName="calc_service_values_reconciliations_l_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-146" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations_l_tl to calc_service_values_reconciliations_l</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations_l_tl"
+                baseColumnNames="m_data_source_id"
+                constraintName="fk_calc_service_values_reconciliations_l_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_service_values_reconciliations_l"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-rus-147" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop foreign constraint: calc_metering_data_sources_tl to calc_metering_data_sources_tl</comment>
+        <dropForeignKeyConstraint baseTableName="calc_metering_data_sources_tl" constraintName="fk_calc_metering_data_sources_tl_1" referencedTableSchemaName="apps"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-148" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_sources_tl to calc_metering_data_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_sources_tl"
+                baseColumnNames="m_data_source_id"
+                constraintName="fk_calc_metering_data_sources_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
