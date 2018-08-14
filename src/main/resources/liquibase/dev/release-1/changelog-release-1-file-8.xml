@@ -67,8 +67,8 @@
     </changeSet>
 
     <changeSet id="calc-rus-111" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating table: calc_period_types_tl</comment>
-        <createTable tableName="calc_period_types_tl" schemaName="apps" remarks="Перевод Источники получения данных">
+        <comment>Creating table: calc_metering_data_sources_tl</comment>
+        <createTable tableName="calc_metering_data_sources_tl" schemaName="apps" remarks="Перевод Источники получения данных">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
@@ -108,45 +108,45 @@
     </changeSet>
 
     <changeSet id="calc-rus-112" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating primary key for table: calc_period_types_tl</comment>
+        <comment>Creating primary key for table: calc_metering_data_sources_tl</comment>
         <addPrimaryKey
                 columnNames="id"
-                constraintName="pk_calc_period_types_tl"
+                constraintName="pk_calc_metering_data_sources_tl"
                 schemaName="apps"
-                tableName="calc_period_types_tl"/>
+                tableName="calc_metering_data_sources_tl"/>
     </changeSet>
 
     <changeSet id="calc-rus-113" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating sequence for table: calc_period_types_tl</comment>
+        <comment>Creating sequence for table: calc_metering_data_sources_tl</comment>
         <createSequence
                 incrementBy="1"
                 schemaName="apps"
-                sequenceName="calc_period_types_tl_s"
+                sequenceName="calc_metering_data_sources_tl_s"
                 startValue="1"/>
     </changeSet>
 
     <changeSet id="calc-rus-114" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating unique key for table: calc_period_types_tl</comment>
+        <comment>Creating unique key for table: calc_metering_data_sources_tl</comment>
         <addUniqueConstraint
                 columnNames="m_data_source_id,lang"
-                constraintName="uk_calc_period_types_tl"
+                constraintName="uk_calc_metering_data_sources_tl"
                 schemaName="apps"
-                tableName="calc_period_types_tl"/>
+                tableName="calc_metering_data_sources_tl"/>
     </changeSet>
 
     <changeSet id="calc-rus-115" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating foreign constraint: calc_period_types_tl to calc_period_types</comment>
+        <comment>Creating foreign constraint: calc_metering_data_sources_tl to calc_metering_data_sources</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_period_types_tl"
+                baseTableName="calc_metering_data_sources_tl"
                 baseColumnNames="messages_id"
-                constraintName="fk_calc_period_types_tl_1"
+                constraintName="fk_calc_metering_data_sources_tl_1"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="CASCADE"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="calc_period_types_tl"
+                referencedTableName="calc_metering_data_sources_tl"
                 referencedColumnNames="id"
         />
     </changeSet>
