@@ -2721,5 +2721,179 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-eug-375" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_metering_data_source_types</comment>
+        <createTable tableName="calc_metering_data_source_types" schemaName="apps" remarks="Типы источников данных для съема показаний">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(100)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="priority" type="number" remarks="Приоритет источника данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-376" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_metering_data_source_types</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_metering_data_source_types"
+                schemaName="apps"
+                tableName="calc_metering_data_source_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-377" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_metering_data_source_types</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_metering_data_source_types_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-378" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_metering_reading_sources</comment>
+        <addColumn tableName="calc_metering_reading_sources" schemaName="apps">
+            <column name="metering_data_source_type_id" type="number" remarks="Идентификатор типа источника данных">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-379" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_metering_data_sources</comment>
+        <createIndex indexName="idx_calc_metering_data_sources_2"
+                     schemaName="apps"
+                     tableName="calc_metering_data_sources"
+                     unique="false">
+            <column name="metering_data_source_type_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-380" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_sources to calc_metering_data_source_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_sources"
+                baseColumnNames="metering_data_source_type_id"
+                constraintName="fk_calc_metering_data_sources_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_source_types"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-381" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_period_types</comment>
+        <createTable tableName="calc_period_types" schemaName="apps" remarks="Типы периодов для ввода показаний счётчмков">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(100)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-382" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_period_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_period_types"
+                schemaName="apps"
+                tableName="calc_period_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-380" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_headers to calc_period_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_headers"
+                baseColumnNames="period_type"
+                constraintName="fk_calc_daily_sheet_headers_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-381" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="meter_rate" type="number" remarks="Коэффициент счетчика" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_ignore" type="number" remarks="Игнорировать показания" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_manual_start_val" type="number" remarks="Флаг - разрешено вручную указать начальное показание счётчика" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_metering_date" type="TIMESTAMP" remarks="Дата и время предыдущих показаний">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_metering_date" type="TIMESTAMP" remarks="Дата и время текущих показаний">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-382" logicalFilePath="path-independent" author="eugene" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_daily_sheet_lines</comment>
+        <dropColumn tableName="calc_daily_sheet_lines" schemaName="apps" >
+            <column name="is_oper" />
+        </dropColumn>
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
 
