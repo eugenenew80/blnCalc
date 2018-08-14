@@ -107,7 +107,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-rus-111" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-112" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating primary key for table: calc_period_types_tl</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -116,7 +116,7 @@
                 tableName="calc_period_types_tl"/>
     </changeSet>
 
-    <changeSet id="calc-rus-112" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-113" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating sequence for table: calc_period_types_tl</comment>
         <createSequence
                 incrementBy="1"
@@ -125,7 +125,7 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-rus-113" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-114" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating unique key for table: calc_period_types_tl</comment>
         <addUniqueConstraint
                 columnNames="m_data_source_id,lang"
@@ -134,7 +134,7 @@
                 tableName="calc_period_types_tl"/>
     </changeSet>
 
-    <changeSet id="calc-rus-114" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-115" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_period_types_tl to calc_period_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -151,7 +151,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-115" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-116" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Add comments to the columns CALC_DAILY_SHEET_LINES</comment>
         <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
             comment on column apps.CALC_DAILY_SHEET_LINES.SOURCE_TYPE_ID
@@ -159,7 +159,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="calc-rus-116" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-117" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Add comments to the columns CALC_DAILY_SHEET_LINES</comment>
         <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
             comment on column apps.CALC_DAILY_SHEET_LINES.IS_UNDER_COUNT
@@ -167,7 +167,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="calc-rus-117" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-118" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Add comments to the columns CALC_DAILY_SHEET_LINES</comment>
         <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
             comment on column apps.CALC_DAILY_SHEET_HEADERS.METERING_DATA_SOURCE_ID
@@ -175,7 +175,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="calc-rus-117" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-119" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Add comments to the columns CALC_DAILY_SHEET_LINES</comment>
         <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
             comment on column apps.CALC_DAILY_SHEET_HEADERS.PERIOD_TYPE
