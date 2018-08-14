@@ -139,7 +139,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_metering_data_sources_tl"
-                baseColumnNames="messages_id"
+                baseColumnNames="m_data_source_id"
                 constraintName="fk_calc_metering_data_sources_tl_1"
                 deferrable="true"
                 initiallyDeferred="true"
