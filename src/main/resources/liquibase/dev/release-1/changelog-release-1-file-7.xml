@@ -3680,5 +3680,40 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-434" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_formula_types</comment>
+        <createTable tableName="calc_formula_types" schemaName="apps" remarks="Типы формул">
+            <column name="code" type="varchar(10)" remarks="Операция">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-435" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_formula_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_formula_types"
+                schemaName="apps"
+                tableName="calc_formula_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-436" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formulas to calc_formula_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formulas"
+                baseColumnNames="formula_type"
+                constraintName="fk_calc_formulas_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formula_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
