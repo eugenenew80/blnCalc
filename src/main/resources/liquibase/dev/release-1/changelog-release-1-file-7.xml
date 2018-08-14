@@ -2854,7 +2854,15 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="is_manual_start_val" type="number" remarks="Флаг - разрешено вручную указать начальное показание счётчика" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="start_metering_date" type="TIMESTAMP" remarks="Дата и время предыдущих показаний">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_metering_date" type="TIMESTAMP" remarks="Дата и время текущих показаний">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
