@@ -412,4 +412,105 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-132" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns calc_doc_messages</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            comment on column apps.calc_doc_messages.id
+            is 'Идентификатор ошибки';
+        </sql>
+    </changeSet>
+
+    <changeSet id="calc-rus-133" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns calc_doc_messages</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            comment on column apps.calc_doc_messages.header_id
+            is 'Идентификатор заголовка';
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-134" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_bs_result_messages</comment>
+        <createTable tableName="calc_bs_result_messages" schemaName="apps" remarks="Список ошибок при формирования(Баланса подстанции, Акт съема показаний, Расчет Допустимого небаланса, Расчет потерь)">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="section_type" type="varchar2(10)" remarks="тип раздела(Баланс подстанции, Акт съема показаний, Расчет Допустимого небаланса, Расчет потерь)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки документа">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="message_type_code" type="varchar2(10)" remarks="Тип ошибки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="error_code" type="varchar2(10)" remarks="Код ошибки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="msg_text" type="varchar2(500)" remarks="Текст ошибки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-135" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_bs_result_messages</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bs_result_messages"
+                schemaName="apps"
+                tableName="calc_bs_result_messages"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-136" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_bs_result_messages</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bs_result_messages_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-137" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_messages to calc_bs_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_messages"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_bs_result_messages_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
