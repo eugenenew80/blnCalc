@@ -2773,8 +2773,8 @@
     </changeSet>
 
     <changeSet id="calc-eug-378" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Adding column to table: calc_metering_reading_sources</comment>
-        <addColumn tableName="calc_metering_reading_sources" schemaName="apps">
+        <comment>Adding column to table: calc_metering_data_sources</comment>
+        <addColumn tableName="calc_metering_data_sources" schemaName="apps">
             <column name="metering_data_source_type_id" type="number" remarks="Идентификатор типа источника данных">
                 <constraints nullable="false"/>
             </column>
@@ -2846,7 +2846,7 @@
                 tableName="calc_period_types"/>
     </changeSet>
 
-    <changeSet id="calc-eug-380" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-383" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_daily_sheet_headers to calc_period_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -2863,7 +2863,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-381" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-384" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Adding column to table calc_daily_sheet_lines</comment>
         <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
             <column name="meter_rate" type="number" remarks="Коэффициент счетчика" defaultValue="0">
@@ -2888,7 +2888,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="calc-eug-382" logicalFilePath="path-independent" author="eugene" context="dev" failOnError="false">
+    <changeSet id="calc-eug-385" logicalFilePath="path-independent" author="eugene" context="dev" failOnError="false">
         <comment>Drop columns from table: calc_daily_sheet_lines</comment>
         <dropColumn tableName="calc_daily_sheet_lines" schemaName="apps" >
             <column name="is_oper" />
