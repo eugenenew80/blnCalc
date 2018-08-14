@@ -2843,5 +2843,29 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-381" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="meter_rate" type="number" remarks="Коэффициент счетчика" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_ignore" type="number" remarks="Игнорировать показания" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_metering_date" type="TIMESTAMP" remarks="Дата и время предыдущих показаний">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-382" logicalFilePath="path-independent" author="eugene" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_daily_sheet_lines</comment>
+        <dropColumn tableName="calc_daily_sheet_lines" schemaName="apps" >
+            <column name="is_oper" />
+        </dropColumn>
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
 
