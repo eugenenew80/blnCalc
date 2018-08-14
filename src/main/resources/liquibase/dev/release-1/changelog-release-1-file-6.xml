@@ -2028,7 +2028,7 @@
     </changeSet>
 
     <changeSet id="calc-rus-107" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>drop not null constraint</comment>
+        <comment>drop not null constraint calc_bypass_modes</comment>
         <dropNotNullConstraint columnDataType="number"
                                columnName="metering_point_id"
                                schemaName="apps"

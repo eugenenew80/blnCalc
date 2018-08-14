@@ -182,4 +182,234 @@
             is 'Тип периода';
         </sql>
     </changeSet>
-   </databaseChangeLog>
+
+
+    <changeSet id="calc-rus-120" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_signatories_types</comment>
+        <createTable tableName="calc_signatories_types" schemaName="apps" remarks="Справочник Типы подписантов">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-121" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_signatories_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_signatories_types"
+                schemaName="apps"
+                tableName="calc_signatories_types"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-122" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_signatories_types_tl</comment>
+        <createTable tableName="calc_signatories_types_tl" schemaName="apps" remarks="Перевод Справочник Типы подписантов">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(200)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-123" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_signatories_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code,lang"
+                constraintName="pk_calc_signatories_types_tl"
+                schemaName="apps"
+                tableName="calc_signatories_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-124" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_signatories_types_tl to calc_signatories_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_signatories_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_signatories_types_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_signatories_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-125" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_signatories_types</comment>
+        <insert schemaName="apps" tableName="calc_signatories_types">
+            <column name="code" type="varchar2" value="ACT_RESPONSIBLE"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types">
+            <column name="code" type="varchar2" value="ACT_TAKE"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types">
+            <column name="code" type="varchar2" value="UNBALANCE_HEAD"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types">
+            <column name="code" type="varchar2" value="UNBALANCE_CALC"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types">
+            <column name="code" type="varchar2" value="LOSS_CALC"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-126" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_signatories_types_tl</comment>
+        <insert schemaName="apps" tableName="calc_signatories_types_tl">
+            <column name="code" type="varchar2" value="ACT_RESPONSIBLE"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Ответственный за организацию снятия показаний"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types_tl">
+            <column name="code" type="varchar2" value="ACT_RESPONSIBLE"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Ответственный за организацию снятия показаний"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types_tl">
+            <column name="code" type="varchar2" value="ACT_TAKE"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Показания счетчиков снял"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types_tl">
+            <column name="code" type="varchar2" value="ACT_TAKE"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Показания счетчиков снял"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types_tl">
+            <column name="code" type="varchar2" value="UNBALANCE_HEAD"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Начальник подразделения"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types_tl">
+            <column name="code" type="varchar2" value="UNBALANCE_HEAD"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Начальник подразделения"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types_tl">
+            <column name="code" type="varchar2" value="UNBALANCE_CALC"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Расчет произвел"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types_tl">
+            <column name="code" type="varchar2" value="UNBALANCE_CALC"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Расчет произвел"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types_tl">
+            <column name="code" type="varchar2" value="LOSS_CALC"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Расчет произвел"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_signatories_types_tl">
+            <column name="code" type="varchar2" value="LOSS_CALC"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Расчет произвел"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-rus-127" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_signatories</comment>
+        <dropColumn columnName="name_1"
+                    schemaName="apps"
+                    tableName="calc_signatories"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-128" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_signatories</comment>
+        <dropColumn columnName="name_2"
+                    schemaName="apps"
+                    tableName="calc_signatories"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-129" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_signatories">
+            <column name="user_id" type="number"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-130" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_signatories">
+            <column name="user_type" type="varchar2(30)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-131" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_signatories to calc_signatories_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_signatories"
+                baseColumnNames="user_type"
+                constraintName="fk_calc_signatories_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_signatories_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+</databaseChangeLog>
