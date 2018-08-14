@@ -3577,5 +3577,108 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="calc-eug-427" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_var_det to calc_formulas</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_var_det"
+                baseColumnNames="formula_id"
+                constraintName="fk_calc_formula_var_det_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formulas"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-428" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_var_det to calc_formula_vars</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_var_det"
+                baseColumnNames="formula_var_id"
+                constraintName="fk_calc_formula_var_det_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formula_vars"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-429" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_var_det to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_var_det"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_formula_var_det_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-430" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_var_det to dict_params</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_var_det"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_formula_var_det_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-431" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_formula_signs</comment>
+        <createTable tableName="calc_formula_signs" schemaName="apps" remarks="Операции для обработки формул">
+            <column name="code" type="varchar(10)" remarks="Операция">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-432" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_formula_signs</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_formula_signs"
+                schemaName="apps"
+                tableName="calc_formula_signs"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-433" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_var_det to calc_formula_signs</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_var_det"
+                baseColumnNames="sign"
+                constraintName="fk_calc_formula_var_det_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formula_signs"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
