@@ -3347,5 +3347,235 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-412" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_formulas</comment>
+        <addColumn tableName="calc_formulas" schemaName="apps">
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="formula_type" type="varchar2(30)" remarks="Тип формулы">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-413" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_formulas</comment>
+        <createIndex indexName="idx_calc_formulas_2"
+                     schemaName="apps"
+                     tableName="calc_formulas"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-414" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formulas to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formulas"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_formulas_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-415" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_formula_vars</comment>
+        <createTable tableName="calc_formula_vars" schemaName="apps" remarks="Компоненты формулы">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="formula_id" type="number" remarks="Идентификатор формулы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="var_name" type="varchar2(2)" remarks="Обозначение">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="varchar2(100)" remarks="Описание формулы">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-416" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_formula_vars</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_formula_vars"
+                schemaName="apps"
+                tableName="calc_formula_vars"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-417" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_formula_vars</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_formula_vars_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-418" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_formula_vars</comment>
+        <createIndex indexName="idx_calc_formula_vars_1"
+                     schemaName="apps"
+                     tableName="calc_formula_vars"
+                     unique="false">
+            <column name="formula_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-419" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_vars to calc_formulas</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_vars"
+                baseColumnNames="formula_id"
+                constraintName="fk_calc_formula_vars_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formulas"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-420" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_formula_var_det</comment>
+        <createTable tableName="calc_formula_var_det" schemaName="apps" remarks="Расшифровка для конкретного компонента формулы">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="formula_id" type="number" remarks="Идентификатор формулы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="formula_var_id" type="number" remarks="Идентификатор компонента формулы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="rate" type="number" remarks="Множитель">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sign" type="varchar2(1)" remarks="Знак">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-421" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_formula_var_det</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_formula_var_det"
+                schemaName="apps"
+                tableName="calc_formula_var_det"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-422" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: pk_calc_formula_var_det</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="pk_calc_formula_var_det_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-423" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: pk_calc_formula_var_det</comment>
+        <createIndex indexName="idx_pk_calc_formula_var_det_1"
+                     schemaName="apps"
+                     tableName="calc_formula_var_det"
+                     unique="false">
+            <column name="formula_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-424" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: pk_calc_formula_var_det</comment>
+        <createIndex indexName="idx_pk_calc_formula_var_det_2"
+                     schemaName="apps"
+                     tableName="calc_formula_var_det"
+                     unique="false">
+            <column name="formula_var_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-425" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: pk_calc_formula_var_det</comment>
+        <createIndex indexName="idx_pk_calc_formula_var_det_3"
+                     schemaName="apps"
+                     tableName="calc_formula_var_det"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-426" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: pk_calc_formula_var_det</comment>
+        <createIndex indexName="idx_pk_calc_formula_var_det_4"
+                     schemaName="apps"
+                     tableName="calc_formula_var_det"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
 
