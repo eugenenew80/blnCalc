@@ -921,4 +921,52 @@
             <column name="section5_total" type="number" remarks="Итого по разделу 5"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-rus-171" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into cm_doc_signatories_groups</comment>
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups">
+            <column name="code" type="varchar2" value="PROVIDER_AGREED"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-172" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into cm_doc_signatories_groups_tl</comment>
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups_tl">
+            <column name="code" type="varchar2" value="PROVIDER_AGREED"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Поставщик-согласующий"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups_tl">
+            <column name="code" type="varchar2" value="PROVIDER_AGREED"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Поставщик-согласующий"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-rus-173" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_signatories">
+            <column name="signatories_group" type="varchar2(30)" remarks="Группа подписантов"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-174" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_nb_lines to cm_doc_signatories_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_signatories"
+                baseColumnNames="signatories_group"
+                constraintName="fk_calc_signatories_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_signatories_groups"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>
