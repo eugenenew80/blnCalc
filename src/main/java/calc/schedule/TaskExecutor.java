@@ -39,6 +39,9 @@ public class TaskExecutor {
             if (header.getStatus() != BatchStatusEnum.W)
                 continue;
 
+            for (BalanceSubstResultMrLine mrLine : header.getMrLines())
+                balanceSubstResultMrLineRepo.delete(mrLine);
+
             updateStatus(header, BatchStatusEnum.P);
             try {
                 CalcContext context = CalcContext.builder()
