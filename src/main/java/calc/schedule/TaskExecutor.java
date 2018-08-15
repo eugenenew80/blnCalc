@@ -31,7 +31,9 @@ public class TaskExecutor {
         System.out.println("started");
 
         Parameter parAp = parameterRepo.findByCode("A+");
-        Parameter parAr = parameterRepo.findByCode("A-");
+        Parameter parAm = parameterRepo.findByCode("A-");
+        Parameter parRp = parameterRepo.findByCode("R+");
+        Parameter parRm = parameterRepo.findByCode("R-");
         Unit aUnitCode = unitRepo.findByCode("kW.h");
 
         List<BalanceSubstResultHeader> headers = balanceSubstResultHeaderRepo.findAll();
@@ -60,7 +62,7 @@ public class TaskExecutor {
                 List<BalanceSubstMrLine> mrLines = header.getHeader().getMrLines();
                 for (BalanceSubstMrLine mrLine : mrLines) {
                     List<MeterHistory> meters = mrLine.getMeteringPoint().getMeters();
-                    for (Parameter param : Arrays.asList(parAp, parAr)) {
+                    for (Parameter param : Arrays.asList(parAp, parAm, parAp, parRm)) {
                         Map<String, Formula> formulas = createFormulas(mrLine, param);
                         BalanceSubstResultMrLine line = calcMrLines(formulas, context);
 
@@ -122,7 +124,6 @@ public class TaskExecutor {
             Formula formula = formulas.get(key);
             String formulaText = formulaToString(formula);
             try {
-                System.out.println(formulaText);
                 CalcResult result = calcService.calc(formulaText, context);
                 if (key.equals("start-val"))
                     line.setStartVal(result.getDoubleVal());
@@ -134,6 +135,7 @@ public class TaskExecutor {
                     line.setDelta(result.getDoubleVal());
             }
             catch (Exception e) {
+                System.out.println(formulaText);
                 e.printStackTrace();
             }
         }
