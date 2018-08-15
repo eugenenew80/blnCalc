@@ -3767,5 +3767,105 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-eug-441" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_headers</comment>
+        <addColumn tableName="calc_balance_subst_headers" schemaName="apps">
+            <column name="org_id" type="number" remarks="Ид филиала" defaultValue="11">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-442" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_headers</comment>
+        <addColumn tableName="calc_bs_result_headers" schemaName="apps">
+            <column name="org_id" type="number" remarks="Ид филиала" defaultValue="11">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-443" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop not null constraint for table: calc_bs_result_mr_lines</comment>
+        <dropNotNullConstraint tableName="calc_bs_result_mr_lines" schemaName="apps" columnName="meter_id" />
+    </changeSet>
+
+    <changeSet id="calc-eug-444" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop not null constraint for table: calc_bs_result_mr_lines</comment>
+        <dropForeignKeyConstraint baseTableName="calc_bs_result_mr_lines" baseTableSchemaName="apps" constraintName="fk_calc_bs_result_mr_lines_3" />
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-445" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_mr_lines to dict_meters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_mr_lines"
+                baseColumnNames="meter_id"
+                constraintName="fk_calc_bs_result_mr_lines_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_eem_base"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-446" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_subst_headers</comment>
+        <createIndex indexName="idx_calc_balance_subst_headers_2"
+                     schemaName="apps"
+                     tableName="calc_balance_subst_headers"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-447" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_bs_result_headers_4"
+                     schemaName="apps"
+                     tableName="calc_bs_result_headers"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-448" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_balance_subst_headers_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-449" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_bs_result_headers_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
