@@ -641,4 +641,355 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-149" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_signatories">
+            <column name="post" type="varchar2(100)" remarks="Должность"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-150" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_signatories">
+            <column name="user_id" type="number" remarks="Идентификатор ползователя"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-151" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_balance_subst_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_subst_headers">
+            <column name="order_number_and_date" type="varchar2(200)" remarks="Номер и дата приказа о составе комиссии"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-152" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_balance_subst_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_subst_headers">
+            <column name="approve_doc" type="varchar2(200)" remarks="Документ об утверждении состава присоединений и ТУ"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-153" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_balance_subst_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_subst_headers">
+            <column name="chief_engineer" type="varchar2(200)" remarks="Главный инженер"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-154" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_balance_subst_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_subst_headers">
+            <column name="user_id" type="number" remarks="Идентификатор исполнителя"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-155" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="nbf_val" type="number" remarks="Фактический небаланс, кВт.ч."/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-156" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="nbf_proc" type="number" remarks="Фактический небаланс, %"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-157" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="nbd_val" type="number" remarks="Допустимый небаланс, кВт.ч."/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-158" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="nbd_proc" type="number" remarks="Допустимый небаланс, %"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-159" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="nbdiff_val" type="number" remarks="Превышение фактического небаланса над допустимым, кВт.ч."/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-160" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="nbdiff_proc" type="number" remarks="Превышение фактического небаланса над допустимым, %"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-161" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns calc_bs_result_mr_lines</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            comment on column apps.calc_bs_result_mr_lines.param_id
+            is 'Идентификатор параметра';
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-162" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_bs_result_nb_lines</comment>
+        <createTable tableName="calc_bs_result_nb_lines" schemaName="apps" remarks="Строки расчета значения небаланса">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="direction" type="number" remarks="Индикатор направления: 1 - прием, 2 - отпуск">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="mp_id" type="number" remarks="Идентификатор точки учета">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bu_proc" type="number" remarks="Предел допускаемой погрешности по напряжению трансформатора напряжения, %">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="bl_proc" type="number" remarks="Предел допустимых потерь напряжения в линии присоединения сч-ка эл.энергии к тр-ру напряжения, %">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="bso_proc" type="number" remarks="Основная допустимая погрешность счетчика электроэнергии, %">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="bi_proc" type="number" remarks="Предел допускаемой токовой погрешности при измерении тока, %">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="b_proc" type="number" remarks="Предел допустимой относительной погрешности измерительного комплекса">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="wa" type="number" remarks="Объем активной электроэнергии, прошедший через присоединение">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="doi" type="number" remarks="Доля электроэнергии, прошедшей через измерительный комплекс">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="b2doi2" type="number" remarks="Произведение квадратов погрешности КУЭ и доли прошедней эл.энергии">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="tt_star" type="number" remarks="Назначение неоднозначно, пусть пока будет всегда пустое">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="ttac_proc" type="number" remarks="Класс точности тр-ра тока">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="i1_nom" type="number" remarks="Номинальный ток первичной обмотки, А">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="trab" type="number" remarks="Кол-во часов в работе присоединения, час">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="uavg" type="number" remarks="Среднее напряжение в месте установки тр-ра тока">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="i1avg_val" type="number" remarks="Средний ток первичной обмотки, А">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="i1avg_proc" type="number" remarks="Средний ток первичной обмотки, %">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="btt_factor" type="number" remarks="Коэффициент, учитывающий повышенную погрешность тр-ра тока">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="btt_proc" type="number" remarks="Предел допускаемой погрешности тр-ра тока">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-163" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_bs_result_nb_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bs_result_nb_lines"
+                schemaName="apps"
+                tableName="calc_bs_result_nb_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-164" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_bs_result_nb_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bs_result_nb_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-165" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_nb_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_nb_lines"
+                baseColumnNames="mp_id"
+                constraintName="fk_calc_bs_result_nb_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-166" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="section1_total" type="number" remarks="Итого по разделу 1"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-167" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="section2_total" type="number" remarks="Итого по разделу 2"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-168" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="section3_total" type="number" remarks="Итого по разделу 3"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-169" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="section4_total" type="number" remarks="Итого по разделу 4"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-170" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="section5_total" type="number" remarks="Итого по разделу 5"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-171" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into cm_doc_signatories_groups</comment>
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups">
+            <column name="code" type="varchar2" value="PROVIDER_AGREED"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-172" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into cm_doc_signatories_groups_tl</comment>
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups_tl">
+            <column name="code" type="varchar2" value="PROVIDER_AGREED"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Поставщик-согласующий"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups_tl">
+            <column name="code" type="varchar2" value="PROVIDER_AGREED"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Поставщик-согласующий"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-rus-173" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_signatories">
+            <column name="signatories_group" type="varchar2(30)" remarks="Группа подписантов"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-174" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_nb_lines to cm_doc_signatories_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_signatories"
+                baseColumnNames="signatories_group"
+                constraintName="fk_calc_signatories_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_signatories_groups"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-175" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into cm_doc_signatories_groups</comment>
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups">
+            <column name="code" type="varchar2" value="CONSUMER_AGREED"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-176" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into cm_doc_signatories_groups_tl</comment>
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups_tl">
+            <column name="code" type="varchar2" value="CONSUMER_AGREED"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Потребитель-согласующий"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups_tl">
+            <column name="code" type="varchar2" value="CONSUMER_AGREED"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Потребитель-согласующий"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
