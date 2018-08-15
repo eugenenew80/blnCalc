@@ -992,4 +992,177 @@
             <column name="name" type="varchar2" value="Потребитель-согласующий"/>
         </insert>
     </changeSet>
+
+    <changeSet id="calc-rus-177" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addColumn tableName="calc_bs_result_nb_lines" schemaName="apps">
+            <column name="w" type="number" remarks="Обьем активной электроэнергии прошедший направлении direction">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-178" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addColumn tableName="calc_bs_result_nb_lines" schemaName="apps">
+            <column name="wr" type="number" remarks="Объем реактив-ной электро-энергии, про-шедший через присоединение в обоих направлениях ">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-179" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addColumn tableName="calc_bs_result_nb_lines" schemaName="apps">
+            <column name="bs_result_header_id" type="number" remarks="Ссылка на заголовок">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-180" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_nb_lines to calc_bs_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_nb_lines"
+                baseColumnNames="bs_result_header_id"
+                constraintName="fk_calc_bs_result_nb_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-181" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_balance_subst_u_lines</comment>
+        <dropColumn columnName="note"
+                    schemaName="apps"
+                    tableName="calc_balance_subst_u_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-182" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_balance_subst_u_lines</comment>
+        <dropColumn columnName="note_order"
+                    schemaName="apps"
+                    tableName="calc_balance_subst_u_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-183" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_result_u_lines</comment>
+        <createTable tableName="calc_balance_result_u_lines" schemaName="apps" remarks="Строки для посчитаного расчёта средних напряжений">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bs_result_header_id" type="number" remarks="Идентификатор заголовка шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="ti_num" type="number" remarks="Номер ТИ в ОИК">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="ti_name" type="varchar(100)" remarks="Наименование ТИ в ОИК">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="amount" type="number" remarks="сумма">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-184" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_result_u_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_result_u_lines"
+                schemaName="apps"
+                tableName="calc_balance_result_u_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-185" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_result_u_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_result_u_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-186" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_result_u_lines</comment>
+        <createIndex indexName="idx_calc_balance_result_u_lines_1"
+                     schemaName="apps"
+                     tableName="calc_balance_result_u_lines"
+                     unique="false">
+            <column name="bs_result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-187" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_result_u_lines</comment>
+        <createIndex indexName="idx_calc_balance_result_u_lines_2"
+                     schemaName="apps"
+                     tableName="calc_balance_result_u_lines"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-188" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_result_u_lines to calc_bs_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_result_u_lines"
+                baseColumnNames="bs_result_header_id"
+                constraintName="fk_calc_balance_result_u_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-189" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_result_u_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_result_u_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_balance_result_u_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
