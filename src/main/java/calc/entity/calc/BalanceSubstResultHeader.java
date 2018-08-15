@@ -45,4 +45,7 @@ public class BalanceSubstResultHeader {
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<BalanceSubstResultMrLine> mrLines;
+
+    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
+    private List<BalanceSubstResultULine> uLines;
 }

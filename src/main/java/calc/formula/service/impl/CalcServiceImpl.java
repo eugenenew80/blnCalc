@@ -1,6 +1,8 @@
 package calc.formula.service.impl;
 
 import calc.entity.calc.*;
+import calc.entity.calc.enums.FormulaTypeEnum;
+import calc.entity.calc.enums.ParamTypeEnum;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
@@ -30,6 +32,12 @@ public class CalcServiceImpl implements CalcService {
             .parse(formula, context);
 
         return calc(expression, context);
+    }
+
+    @Override
+    public CalcResult calc(Formula formula, CalcContext context) throws Exception {
+        String formulaText = formulaToString(formula);
+        return calc(formulaText, context);
     }
 
 
@@ -116,5 +124,106 @@ public class CalcServiceImpl implements CalcService {
         }
 
         return context.getValues();
+    }
+
+
+    private String formulaToString(Formula formula) {
+        if (formula.getFormulaType() != FormulaTypeEnum.DIALOG)
+            return "";
+
+        String params = "<params>";
+        for (FormulaVar var : formula.getVars())
+            params = params + varToString(var);
+        params = params + "</params>";
+
+        return  "<js><src>" + formula.getText() + "</src>" + params + "</js>";
+    }
+
+    private String varToString(FormulaVar var) {
+        String formulaVar =  "<param name=\"" + var.getVarName() + "\">" + "<add>";
+        for (FormulaVarDet det : var.getDetails()) {
+            String formulaDet = detToString(det);
+            formulaVar = formulaVar + formulaDet;
+        }
+        return formulaVar + "</add>" + "</param>";
+    }
+
+    private String detToString(FormulaVarDet det) {
+        String mp = det.getMeteringPoint().getCode();
+        String param = det.getParam().getCode();
+        String per = "end";
+
+        String paramType = "pt";
+        if (det.getParamType() == ParamTypeEnum.PT )
+            paramType = "pt";
+
+        if (det.getParamType() == ParamTypeEnum.AT || det.getParamType() == ParamTypeEnum.ATS || det.getParamType() == ParamTypeEnum.ATE)
+            paramType = "at";
+
+        if (det.getParamType() == ParamTypeEnum.ATS)
+            per = "start";
+
+        if (det.getParamType() == ParamTypeEnum.ATE)
+            per = "end";
+
+        String formula = "<" + paramType + " mp=\"" + mp + "\" param=\"" + param + "\" per=\"" + per + "\" />";
+
+        if (det.getSign()!=null && det.getSign().equals("-"))
+            formula = "<minus>" + formula + "</minus>";
+
+        if (det.getRate()!=null && det.getRate()!=1d)
+            formula = "<multiply>" + "<number val=\"" + det.getRate().toString() + "\" />"  + formula + "</multiply>";
+
+        return formula;
+    }
+
+
+    public Formula createFormula(MeteringPoint meteringPoint, Parameter parameter, ParamTypeEnum paramType) {
+        Formula formula = new Formula();
+        formula.setText("a0");
+        formula.setMeteringPoint(meteringPoint);
+        formula.setFormulaType(FormulaTypeEnum.DIALOG);
+        formula.setVars(new ArrayList<>());
+
+        FormulaVar var = new FormulaVar();
+        formula.getVars().add(var);
+
+        var.setFormula(formula);
+        var.setVarName("a0");
+        var.setDetails(new ArrayList<>());
+
+        FormulaVarDet det = new FormulaVarDet();
+        var.getDetails().add(det);
+        if (paramType == ParamTypeEnum.DELTA) {
+            det.setFormula(formula);
+            det.setFormulaVar(var);
+            det.setMeteringPoint(meteringPoint);
+            det.setParamType(ParamTypeEnum.ATE);
+            det.setRate(1d);
+            det.setSign("+");
+            det.setParam(parameter);
+
+            det = new FormulaVarDet();
+            var.getDetails().add(det);
+
+            det.setFormula(formula);
+            det.setFormulaVar(var);
+            det.setMeteringPoint(meteringPoint);
+            det.setParamType(ParamTypeEnum.ATS);
+            det.setRate(1d);
+            det.setSign("-");
+            det.setParam(parameter);
+        }
+        else {
+            det.setFormula(formula);
+            det.setFormulaVar(var);
+            det.setMeteringPoint(meteringPoint);
+            det.setParamType(paramType);
+            det.setRate(1d);
+            det.setSign("+");
+            det.setParam(parameter);
+        }
+
+        return formula;
     }
 }

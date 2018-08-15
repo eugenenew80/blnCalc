@@ -1,9 +1,7 @@
 package calc.entity.calc;
 
-import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
 
 @Data

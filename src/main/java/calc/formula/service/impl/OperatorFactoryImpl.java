@@ -34,6 +34,19 @@ public class OperatorFactoryImpl implements OperatorFactory {
     }
 
     private void binaryOperators() {
+        BinaryOperator<DoubleExpression> count = (op1, op2) -> {
+            Pair<Double, Double> doublePair = validate(op1, op2, 0d);
+
+            Double n = 0d;
+            if (doublePair.getLeft()!=null && doublePair.getLeft()!=0) n+=1;
+            if (doublePair.getRight()!=null && doublePair.getRight()!=0) n+=1;
+
+            return DoubleValueExpression.builder()
+                .value(n)
+                .build();
+        };
+        count = arrOperator(count);
+
         BinaryOperator<DoubleExpression> add = (op1, op2) -> {
             Pair<Double, Double> doublePair = validate(op1, op2, 0d);
             return DoubleValueExpression.builder()
@@ -90,6 +103,7 @@ public class OperatorFactoryImpl implements OperatorFactory {
         };
         min = arrOperator(min);
 
+        binaryOperators.put("count", count);
         binaryOperators.put("add", add);
         binaryOperators.put("subtract", subtract);
         binaryOperators.put("multiply", multiply);
