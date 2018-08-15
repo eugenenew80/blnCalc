@@ -1,5 +1,6 @@
 package calc.formula.service.impl;
 
+import calc.entity.calc.MeterHistory;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.MeteringPointMeter;
 import calc.formula.CalcContext;
@@ -38,7 +39,7 @@ public class MeteringPointServiceImpl implements MeteringPointService {
             value = meteringPoint.getName();
 
         if (attr.equals("serial")) {
-            List<MeteringPointMeter> meters = meteringPoint.getMeters();
+            List<MeterHistory> meters = meteringPoint.getMeters();
             if (!meters.isEmpty())
                 value = meters.get(0).getMeter().getSerialNumber();
         }

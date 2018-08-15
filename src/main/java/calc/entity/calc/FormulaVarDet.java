@@ -1,5 +1,6 @@
 package calc.entity.calc;
 
+import calc.entity.calc.enums.ParamTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
@@ -30,6 +31,10 @@ public class FormulaVarDet {
     @ManyToOne
     @JoinColumn(name = "param_id")
     private Parameter param;
+
+    @Column(name="param_type")
+    @Enumerated(EnumType.STRING)
+    private ParamTypeEnum paramType;
 
     @Column(name = "rate")
     private Double rate;

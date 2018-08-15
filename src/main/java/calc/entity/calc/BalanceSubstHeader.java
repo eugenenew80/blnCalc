@@ -18,6 +18,13 @@ public class BalanceSubstHeader {
     @JoinColumn(name = "substation_id")
     private Substation substation;
 
+    @ManyToOne
+    @JoinColumn(name = "org_id")
+    private Organization organization;
+
+    @Column(name = "description")
+    private String description;
+
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<BalanceSubstLine> lines;
 

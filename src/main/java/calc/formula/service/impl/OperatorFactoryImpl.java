@@ -134,59 +134,59 @@ public class OperatorFactoryImpl implements OperatorFactory {
 
     private void unaryOperators() {
         UnaryOperator<DoubleExpression> nothing = (op) -> DoubleValueExpression.builder()
-            .value(op.doubleValue())
+            .value(op == null ? null : op.doubleValue())
             .build();
 
         UnaryOperator<DoubleExpression> minus = (op) -> DoubleValueExpression.builder()
-            .value(-1*op.doubleValue())
+            .value(op.doubleValue() == null ? null : -1*op.doubleValue())
             .build();
 
         UnaryOperator<DoubleExpression> abs = (op) -> DoubleValueExpression.builder()
-            .value(Math.abs(op.doubleValue()))
+            .value(op.doubleValue() == null ? null : Math.abs(op.doubleValue()))
             .build();
 
         UnaryOperator<DoubleExpression> ceil = (op) -> DoubleValueExpression.builder()
-            .value(Math.ceil(op.doubleValue()))
+            .value(op.doubleValue() == null ? null : Math.ceil(op.doubleValue()))
             .build();
 
         UnaryOperator<DoubleExpression> floor = (op) -> DoubleValueExpression.builder()
-            .value(Math.floor(op.doubleValue()))
+            .value(op.doubleValue() == null ? null : Math.floor(op.doubleValue()))
             .build();
 
         UnaryOperator<DoubleExpression> sqrt = (op) -> DoubleValueExpression.builder()
-            .value(Math.sqrt(op.doubleValue()))
+            .value(op.doubleValue() == null ? null : Math.sqrt(op.doubleValue()))
             .build();
 
         UnaryOperator<DoubleExpression> pow2 = (op) -> DoubleValueExpression.builder()
-            .value(Math.pow(op.doubleValue(),2))
+            .value(op.doubleValue() == null ? null : Math.pow(op.doubleValue(),2))
             .build();
 
         UnaryOperator<DoubleExpression> sign = (op) -> DoubleValueExpression.builder()
-            .value(Math.signum(op.doubleValue()))
+            .value(op.doubleValue() == null ? null : Math.signum(op.doubleValue()))
             .build();
 
         UnaryOperator<DoubleExpression> round = (op) -> DoubleValueExpression.builder()
-            .value(Math.round(op.doubleValue()*1d) / 1d)
+            .value(op.doubleValue() == null ? null : Math.round(op.doubleValue()*1d) / 1d)
             .build();
 
         UnaryOperator<DoubleExpression> round1 = (op) -> DoubleValueExpression.builder()
-            .value(Math.round(op.doubleValue()*10d) / 10d)
+            .value(op.doubleValue() == null ? null : Math.round(op.doubleValue()*10d) / 10d)
             .build();
 
         UnaryOperator<DoubleExpression> round2 = (op) -> DoubleValueExpression.builder()
-            .value(Math.round(op.doubleValue()*100d) / 100d)
+            .value(op.doubleValue() == null ? null : Math.round(op.doubleValue()*100d) / 100d)
             .build();
 
         UnaryOperator<DoubleExpression> round3 = (op) -> DoubleValueExpression.builder()
-            .value(Math.round(op.doubleValue()*1000d) / 1000d)
+            .value(op.doubleValue() == null ? null : Math.round(op.doubleValue()*1000d) / 1000d)
             .build();
 
         UnaryOperator<DoubleExpression> round4 = (op) -> DoubleValueExpression.builder()
-            .value(Math.round(op.doubleValue()*10000d) / 10000d)
+            .value(op.doubleValue() == null ? null : Math.round(op.doubleValue()*10000d) / 10000d)
             .build();
 
         UnaryOperator<DoubleExpression> sin = (op) -> DoubleValueExpression.builder()
-            .value(Math.sin(op.doubleValue()))
+            .value(op == null ? null : Math.sin(op.doubleValue()))
             .build();
 
         unaryOperators.put("nothing", nothing);

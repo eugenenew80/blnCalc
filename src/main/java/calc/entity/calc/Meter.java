@@ -12,14 +12,11 @@ import javax.persistence.Table;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "dict_meters")
+@Table(name = "MDFEM_EEM_BASE")
 @Immutable
 public class Meter {
 	@Id
 	private Long id;
-
-	@Column(name = "name")
-	private String name;
 
 	@Column(name = "serial_number")
 	private String serialNumber;

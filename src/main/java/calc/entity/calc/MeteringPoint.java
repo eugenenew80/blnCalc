@@ -38,5 +38,5 @@ public class MeteringPoint {
 
     @OneToMany(mappedBy = "meteringPoint")
     @Fetch(FetchMode.SUBSELECT)
-    private List<MeteringPointMeter> meters;
+    private List<MeterHistory> meters;
 }
