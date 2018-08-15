@@ -117,7 +117,8 @@ public class BalanceSubstMrServiceImpl {
         for (String key : formulas.keySet()) {
             Formula formula = formulas.get(key);
             try {
-                CalcResult result = calcService.calc(formula, context);
+                String formulaText = calcService.formulaToString(formula);
+                CalcResult result = calcService.calc(formulaText, context);
                 if (key.equals("start-val"))
                     line.setStartVal(result.getDoubleVal());
 

@@ -44,7 +44,7 @@ public class BalanceSubstUServiceImpl {
             List<BalanceSubstResultULine> resultLines = new ArrayList<>();
             List<BalanceSubstULine> uLines = header.getHeader().getULines();
             for (BalanceSubstULine uLine : uLines) {
-                Formula formula = createFormula(uLine, parU, ParamTypeEnum.PT);
+                Formula formula = createFormula(uLine.getMeteringPoint(), parU, ParamTypeEnum.PT);
                 BalanceSubstResultULine resultLine = calcLine(formula, context);
                 resultLine.setHeader(header);
                 resultLine.setMeteringPoint(uLine.getMeteringPoint());
@@ -80,7 +80,10 @@ public class BalanceSubstUServiceImpl {
     private BalanceSubstResultULine calcLine(Formula formula, CalcContext context) {
         BalanceSubstResultULine line = new BalanceSubstResultULine();
         try {
-            CalcResult result = calcService.calc(formula, context);
+            String formulaText = calcService.formulaToString(formula);
+            System.out.println(formulaText);
+
+            CalcResult result = calcService.calc(formulaText, context);
             line.setVal(result.getDoubleVal());
         }
         catch (Exception e) {
@@ -89,10 +92,10 @@ public class BalanceSubstUServiceImpl {
         return line;
     }
 
-    private Formula createFormula(BalanceSubstULine uLine, Parameter parameter, ParamTypeEnum paramType) {
+    private Formula createFormula(MeteringPoint meteringPoint, Parameter parameter, ParamTypeEnum paramType) {
         Formula formula = new Formula();
         formula.setText("a0");
-        formula.setMeteringPoint(uLine.getMeteringPoint());
+        formula.setMeteringPoint(meteringPoint);
         formula.setFormulaType(FormulaTypeEnum.DIALOG);
         formula.setVars(new ArrayList<>());
 
@@ -108,7 +111,7 @@ public class BalanceSubstUServiceImpl {
 
         det.setFormula(formula);
         det.setFormulaVar(var);
-        det.setMeteringPoint(uLine.getMeteringPoint());
+        det.setMeteringPoint(meteringPoint);
         det.setParamType(paramType);
         det.setRate(1d);
         det.setSign("+");

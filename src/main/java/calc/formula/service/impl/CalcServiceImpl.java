@@ -35,13 +35,6 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-    public CalcResult calc(Formula formula, CalcContext context) throws Exception {
-        String formulaText = formulaToString(formula);
-        return calc(formulaText, context);
-    }
-
-
-    @Override
     public CalcResult calc(DoubleExpression expression, CalcContext context) throws Exception {
         CalcResult result = new CalcResult();
         result.setDoubleVal(expression.doubleValue());
@@ -54,7 +47,6 @@ public class CalcServiceImpl implements CalcService {
 
         return result;
     }
-
 
     @Override
     public List<CalcResult> calc(CalcContext context) throws Exception {
@@ -127,7 +119,7 @@ public class CalcServiceImpl implements CalcService {
     }
 
 
-    private String formulaToString(Formula formula) {
+    public String formulaToString(Formula formula) {
         if (formula.getFormulaType() != FormulaTypeEnum.DIALOG)
             return "";
 
@@ -182,6 +174,7 @@ public class CalcServiceImpl implements CalcService {
         Formula formula = new Formula();
         formula.setText("a0");
         formula.setMeteringPoint(meteringPoint);
+        formula.setParam(parameter);
         formula.setFormulaType(FormulaTypeEnum.DIALOG);
         formula.setVars(new ArrayList<>());
 

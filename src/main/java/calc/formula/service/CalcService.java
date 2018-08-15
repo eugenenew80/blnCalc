@@ -12,8 +12,8 @@ import java.util.List;
 
 public interface CalcService {
     Formula createFormula(MeteringPoint meteringPoint, Parameter parameter, ParamTypeEnum paramType);
+    String formulaToString(Formula formula);
     CalcResult calc(String formula, CalcContext context) throws Exception;
-    CalcResult calc(Formula formula, CalcContext context) throws Exception;
     CalcResult calc(DoubleExpression expression, CalcContext context) throws Exception;
     List<CalcResult> calc(CalcContext context) throws Exception;
 }
