@@ -969,4 +969,27 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-175" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into cm_doc_signatories_groups</comment>
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups">
+            <column name="code" type="varchar2" value="CONSUMER_AGREED"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-176" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into cm_doc_signatories_groups_tl</comment>
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups_tl">
+            <column name="code" type="varchar2" value="CONSUMER_AGREED"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Потребитель-согласующий"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="cm_doc_signatories_groups_tl">
+            <column name="code" type="varchar2" value="CONSUMER_AGREED"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Потребитель-согласующий"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
