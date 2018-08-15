@@ -62,7 +62,7 @@ public class TaskExecutor {
                 List<BalanceSubstMrLine> mrLines = header.getHeader().getMrLines();
                 for (BalanceSubstMrLine mrLine : mrLines) {
                     List<MeterHistory> meters = mrLine.getMeteringPoint().getMeters();
-                    for (Parameter param : Arrays.asList(parAp, parAm, parAp, parRm)) {
+                    for (Parameter param : Arrays.asList(parAp, parAm, parRp, parRm)) {
                         Map<String, Formula> formulas = createFormulas(mrLine, param);
                         BalanceSubstResultMrLine line = calcMrLines(formulas, context);
 
