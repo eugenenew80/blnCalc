@@ -882,4 +882,43 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-166" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="section1_total" type="number" remarks="Итого по разделу 1"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-167" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="section2_total" type="number" remarks="Итого по разделу 2"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-168" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="section3_total" type="number" remarks="Итого по разделу 3"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-169" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="section4_total" type="number" remarks="Итого по разделу 4"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-170" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_bs_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_bs_result_headers">
+            <column name="section5_total" type="number" remarks="Итого по разделу 5"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
