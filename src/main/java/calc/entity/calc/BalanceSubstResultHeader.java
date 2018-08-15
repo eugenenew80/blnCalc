@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -41,4 +42,7 @@ public class BalanceSubstResultHeader {
     @Column(name="period_type")
     @Enumerated(EnumType.STRING)
     private PeriodTypeEnum periodType;
+
+    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
+    private List<BalanceSubstResultMrLine> mrLines;
 }

@@ -97,6 +97,7 @@
     </changeSet>
 
     <changeSet id="calc-eug-148" logicalFilePath="path-independent" author="eugene" context="dev">
+        <validCheckSum>ANY</validCheckSum>
         <comment>Load demo data to table: calc_table_attrs</comment>
         <loadData
                 encoding="UTF-8"
