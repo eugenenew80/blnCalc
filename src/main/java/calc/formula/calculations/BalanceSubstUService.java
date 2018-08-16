@@ -1,4 +1,4 @@
-package calc.formula.doc.impl;
+package calc.formula.calculations;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
@@ -8,7 +8,6 @@ import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.service.CalcService;
 import calc.repo.calc.*;
-import calc.schedule.TaskExecutor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +19,8 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class BalanceSubstUServiceImpl {
-    private static final Logger logger = LoggerFactory.getLogger(BalanceSubstUServiceImpl.class);
+public class BalanceSubstUService {
+    private static final Logger logger = LoggerFactory.getLogger(BalanceSubstUService.class);
     private final CalcService calcService;
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;

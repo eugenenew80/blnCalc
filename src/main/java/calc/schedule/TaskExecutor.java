@@ -2,10 +2,10 @@ package calc.schedule;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.formula.doc.impl.BalanceSubstMrServiceImpl;
-import calc.formula.doc.impl.BalanceSubstPeServiceImpl;
-import calc.formula.doc.impl.BalanceSubstUServiceImpl;
-import calc.formula.doc.impl.BalanceSubstUbServiceImpl;
+import calc.formula.calculations.BalanceSubstMrService;
+import calc.formula.calculations.BalanceSubstPeService;
+import calc.formula.calculations.BalanceSubstUService;
+import calc.formula.calculations.BalanceSubstUbService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -19,10 +19,10 @@ import java.util.*;
 public class TaskExecutor {
     private static final Logger logger = LoggerFactory.getLogger(TaskExecutor.class);
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
-    private final BalanceSubstMrServiceImpl balanceSubstMrService;
-    private final BalanceSubstUbServiceImpl balanceSubstUbService;
-    private final BalanceSubstUServiceImpl balanceSubstUService;
-    private final BalanceSubstPeServiceImpl balanceSubstPeService;
+    private final BalanceSubstMrService balanceSubstMrService;
+    private final BalanceSubstUbService balanceSubstUbService;
+    private final BalanceSubstUService balanceSubstUService;
+    private final BalanceSubstPeService balanceSubstPeService;
 
     @Scheduled(cron = "*/30 * * * * *")
     public void run() {

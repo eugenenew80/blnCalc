@@ -1,4 +1,4 @@
-package calc.formula.doc.impl;
+package calc.formula.calculations;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
@@ -19,11 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-@SuppressWarnings("ALL")
 @Service
 @RequiredArgsConstructor
-public class BalanceSubstMrServiceImpl {
-    private static final Logger logger = LoggerFactory.getLogger(BalanceSubstMrServiceImpl.class);
+public class BalanceSubstMrService {
+    private static final Logger logger = LoggerFactory.getLogger(BalanceSubstMrService.class);
     private final CalcService calcService;
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
@@ -128,7 +127,6 @@ public class BalanceSubstMrServiceImpl {
             String formulaText = calcService.formulaToString(formula);
             System.out.println(formulaText);
             try {
-
                 CalcResult result = calcService.calc(formulaText, context);
                 if (key.equals("start-val"))
                     line.setStartVal(result.getDoubleVal());
@@ -150,8 +148,8 @@ public class BalanceSubstMrServiceImpl {
     private Map<String, Formula> createFormulas(BalanceSubstMrLine mrLine, Parameter parameter) {
         Map<String, Formula> map = new HashMap<>();
         map.putIfAbsent("start-val", calcService.createFormula(mrLine.getMeteringPoint(), parameter, ParamTypeEnum.ATS));
-        map.putIfAbsent("end-val",  calcService.createFormula(mrLine.getMeteringPoint(), parameter, ParamTypeEnum.ATE));
-        map.putIfAbsent("delta",    calcService.createFormula(mrLine.getMeteringPoint(), parameter, ParamTypeEnum.DELTA));
+        map.putIfAbsent("end-val",   calcService.createFormula(mrLine.getMeteringPoint(), parameter, ParamTypeEnum.ATE));
+        map.putIfAbsent("delta",     calcService.createFormula(mrLine.getMeteringPoint(), parameter, ParamTypeEnum.DELTA));
         return map;
     }
 }

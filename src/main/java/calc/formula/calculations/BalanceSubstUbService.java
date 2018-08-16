@@ -1,6 +1,6 @@
-package calc.formula.doc.impl;
+package calc.formula.calculations;
 
-import calc.entity.calc.*;
+import calc.entity.calc.BalanceSubstResultHeader;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import lombok.RequiredArgsConstructor;
@@ -12,23 +12,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class BalanceSubstPeServiceImpl {
-    private static final Logger logger = LoggerFactory.getLogger(BalanceSubstPeServiceImpl.class);
+public class BalanceSubstUbService {
+    private static final Logger logger = LoggerFactory.getLogger(BalanceSubstUbService.class);
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
-            logger.info("Power equipment values for header " + header.getId() + " started");
+            logger.info("Unbalance for header " + header.getId() + " started");
             updateStatus(header, BatchStatusEnum.P);
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
             calcValues(header);
             updateStatus(header, BatchStatusEnum.C);
-            logger.info("Power equipment values for header " + header.getId() + " completed");
+            logger.info("Unbalance for header " + header.getId() + " completed");
         }
 
         catch (Exception e) {
             updateStatus(header, BatchStatusEnum.E);
-            logger.error("Power equipment values for header " + header.getId() + " terminated with exception");
+            logger.error("Unbalance for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
         }
     }
@@ -40,6 +40,6 @@ public class BalanceSubstPeServiceImpl {
     }
 
     private void calcValues(BalanceSubstResultHeader header) {
-        balanceSubstResultHeaderRepo.calcPeValues(header.getId());
+        balanceSubstResultHeaderRepo.calcUnbalance(header.getId());
     }
 }

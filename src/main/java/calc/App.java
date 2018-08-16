@@ -89,7 +89,7 @@ public class App  {
 
         Report report = reportRepo.findOne(reportId);
         Document document = executorService.buildReport(report.getId(), context);
-        executorService.save(document, "files/doc.xml");
+        executorService.save(document, "files/calculations.xml");
 
         Document doc = executorService.transform(document);
         executorService.save(doc, "files/report.xml");
