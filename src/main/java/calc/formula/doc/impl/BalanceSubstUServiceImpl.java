@@ -87,6 +87,7 @@ public class BalanceSubstUServiceImpl {
         System.out.println(formulaText);
         try {
             CalcResult result = calcService.calc(formulaText, context);
+            System.out.println(Arrays.deepToString(result.getDoubleValues()));
 
             Double sum = 0d;
             Double count = 0d;

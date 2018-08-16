@@ -10,6 +10,8 @@ import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,16 +54,48 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         List<CalcResult> list = getValues();
         list.forEach(t -> t.setDoubleVal(t.getDoubleVal() * rate));
 
-        Double[] results = new Double[24];
-        Arrays.fill(results, null);
+        Double[] result;
+        Double[] sum = new Double[24];
+        Double[] count = new Double[24];
+        Double[] avg = new Double[24];
+        Arrays.fill(sum, null);
+        Arrays.fill(count, null);
+        Arrays.fill(avg, null);
 
         CalcTrace calcInfo = trace(list);
-        list.stream()
-            .filter( t -> t.getSourceType().equals(calcInfo.getSourceType()) )
-            .forEach(t -> results[t.getMeteringDate().getHour()] = t.getDoubleVal());
 
-        calcInfo.setValues(results);
-        return results;
+        list.stream()
+            .map(t -> t.getMeteringDate().toLocalDate())
+            .distinct()
+            .sorted()
+            .forEach(d -> {
+                list.stream()
+                    .filter(t -> t.getMeteringDate().toLocalDate().equals(d))
+                    .filter(t -> t.getSourceType().equals(calcInfo.getSourceType()))
+                    .forEach(t -> {
+                        if (t.getDoubleVal()!=null && !t.getDoubleVal().isNaN()) {
+                            int ind = t.getMeteringDate().getHour();
+
+                            if (sum[ind]==null || sum[ind].isNaN())
+                                sum[ind] = 0d;
+
+                            if (count[ind]==null || count[ind].isNaN())
+                                count[ind] = 0d;
+
+                            sum[ind] = sum[ind] + t.getDoubleVal();
+                            count[ind] = count[ind] + 1;
+                        }
+                    });
+            });
+
+        for (int i=0; i<sum.length; i++)
+            if (sum[i]!=null && count[i]!=null) avg[i] = sum[i] / count[i];
+
+        if (parameterCode.equals("U")) result = avg;
+        else result = sum;
+
+        calcInfo.setValues(result);
+        return result;
     }
 
     @Override
