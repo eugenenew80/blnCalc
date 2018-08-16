@@ -68,9 +68,11 @@ public class BalanceSubstUServiceImpl {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteLines(BalanceSubstResultHeader header) {
-        for (BalanceSubstResultULine uLine : header.getULines())
-            balanceSubstResultULineRepo.delete(uLine);
-        header.getULines().clear();
+        for (BalanceSubstResultULine line : header.getULines())
+            header.getULines().remove(line);
+
+        balanceSubstResultHeaderRepo.save(header);
+        balanceSubstResultHeaderRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

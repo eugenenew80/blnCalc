@@ -101,9 +101,11 @@ public class BalanceSubstMrServiceImpl {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteLines(BalanceSubstResultHeader header) {
-        for (BalanceSubstResultMrLine mrLine : header.getMrLines())
-            balanceSubstResultMrLineRepo.delete(mrLine);
-        header.getULines().clear();
+        for (BalanceSubstResultMrLine line : header.getMrLines())
+            header.getMrLines().remove(line);
+
+        balanceSubstResultHeaderRepo.save(header);
+        balanceSubstResultHeaderRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -117,8 +119,9 @@ public class BalanceSubstMrServiceImpl {
 
         for (String key : formulas.keySet()) {
             Formula formula = formulas.get(key);
+            String formulaText = calcService.formulaToString(formula);
             try {
-                String formulaText = calcService.formulaToString(formula);
+
                 CalcResult result = calcService.calc(formulaText, context);
                 if (key.equals("start-val"))
                     line.setStartVal(result.getDoubleVal());
@@ -130,6 +133,7 @@ public class BalanceSubstMrServiceImpl {
                     line.setDelta(result.getDoubleVal());
             }
             catch (Exception e) {
+                System.out.println(formulaText);
                 e.printStackTrace();
             }
         }
