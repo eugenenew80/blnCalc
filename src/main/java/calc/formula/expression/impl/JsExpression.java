@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import javax.script.*;
+import java.util.Arrays;
 import java.util.Map;
 
 @Builder
@@ -19,6 +20,15 @@ public class JsExpression implements DoubleExpression {
     @Override
     public DoubleExpression doubleExpression() {
         return this;
+    }
+
+
+    @Override
+    public Double[] doubleValues() {
+        attributes.keySet().stream()
+                .forEach(key -> System.out.println(Arrays.deepToString(attributes.get(key).doubleValues())));
+
+        return new Double[0];
     }
 
     @Override

@@ -69,7 +69,6 @@ public class BalanceSubstUServiceImpl {
     public void deleteLines(BalanceSubstResultHeader header) {
         for (BalanceSubstResultULine uLine : header.getULines())
             balanceSubstResultULineRepo.delete(uLine);
-
         header.getULines().clear();
     }
 
