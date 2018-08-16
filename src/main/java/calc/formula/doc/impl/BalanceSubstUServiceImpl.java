@@ -12,10 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -68,9 +66,7 @@ public class BalanceSubstUServiceImpl {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteLines(BalanceSubstResultHeader header) {
-        for (BalanceSubstResultULine line : header.getULines())
-            header.getULines().remove(line);
-
+        header.getULines().clear();
         balanceSubstResultHeaderRepo.save(header);
         balanceSubstResultHeaderRepo.flush();
     }

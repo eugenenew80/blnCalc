@@ -101,9 +101,7 @@ public class BalanceSubstMrServiceImpl {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteLines(BalanceSubstResultHeader header) {
-        for (BalanceSubstResultMrLine line : header.getMrLines())
-            header.getMrLines().remove(line);
-
+        header.getMrLines().clear();
         balanceSubstResultHeaderRepo.save(header);
         balanceSubstResultHeaderRepo.flush();
     }
