@@ -25,8 +25,8 @@ public class JsExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        attributes.keySet().stream()
-                .forEach(key -> System.out.println(Arrays.deepToString(attributes.get(key).doubleValues())));
+        //System.out.println(Arrays.deepToString(attributes.get("a0").doubleValues()));
+        //System.out.println(attributes.get("a0").doubleValue());
 
         return new Double[0];
     }
