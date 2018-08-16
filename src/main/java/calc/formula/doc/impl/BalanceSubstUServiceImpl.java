@@ -82,9 +82,6 @@ public class BalanceSubstUServiceImpl {
         String formulaText = calcService.formulaToString(formula);
         try {
             CalcResult result = calcService.calc(formulaText, context);
-
-            System.out.println(Arrays.deepToString(result.getDoubleValues()));
-
             line.setVal(result.getDoubleVal());
         }
         catch (Exception e) {
