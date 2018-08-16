@@ -118,6 +118,7 @@ public class BalanceSubstMrServiceImpl {
         for (String key : formulas.keySet()) {
             Formula formula = formulas.get(key);
             String formulaText = calcService.formulaToString(formula);
+            System.out.println(formulaText);
             try {
 
                 CalcResult result = calcService.calc(formulaText, context);
@@ -131,7 +132,6 @@ public class BalanceSubstMrServiceImpl {
                     line.setDelta(result.getDoubleVal());
             }
             catch (Exception e) {
-                System.out.println(formulaText);
                 e.printStackTrace();
             }
         }
