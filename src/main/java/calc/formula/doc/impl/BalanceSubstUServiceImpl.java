@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -80,14 +81,16 @@ public class BalanceSubstUServiceImpl {
 
     private BalanceSubstResultULine calcLine(Formula formula, CalcContext context) {
         BalanceSubstResultULine line = new BalanceSubstResultULine();
+        String formulaText = calcService.formulaToString(formula);
         try {
-            String formulaText = calcService.formulaToString(formula);
-            System.out.println(formulaText);
-
             CalcResult result = calcService.calc(formulaText, context);
+
+            System.out.println(Arrays.deepToString(result.getDoubleValues()));
+
             line.setVal(result.getDoubleVal());
         }
         catch (Exception e) {
+            System.out.println(formulaText);
             e.printStackTrace();
         }
         return line;

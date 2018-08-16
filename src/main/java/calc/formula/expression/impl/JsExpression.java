@@ -25,14 +25,16 @@ public class JsExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        //System.out.println(Arrays.deepToString(attributes.get("a0").doubleValues()));
-        //System.out.println(attributes.get("a0").doubleValue());
-
-        return new Double[0];
+        if (src.equals("a0") && attributes.size()==1)
+            return attributes.get("a0").doubleValues();
+        return DoubleExpression.super.doubleValues();
     }
 
     @Override
     public Double doubleValue() {
+        if (src.equals("a0") && attributes.size()==1)
+            return attributes.get("a0").doubleValue();
+
         Object eval = null;
         try {
             final ScriptContext ctx = new SimpleScriptContext();
