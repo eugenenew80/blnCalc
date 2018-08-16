@@ -3867,5 +3867,106 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-450" logicalFilePath="path-independent" author="eugene" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_reactor_values</comment>
+        <dropColumn tableName="calc_reactor_values" schemaName="apps" >
+            <column name="calc_date" />
+            <column name="status" />
+            <column name="interval" />
+            <column name="version" />
+            <column name="source_type_id" />
+            <column name="batch_id" />
+            <column name="param_id" />
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-451" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table calc_reactor_values</comment>
+        <addColumn tableName="calc_reactor_values" schemaName="apps">
+            <column name="bs_result_header_id" type="number" remarks="Идентификатор заголовка результата расчёта" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-452" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_reactor_values</comment>
+        <createIndex indexName="idx_calc_reactor_values_4"
+                 schemaName="apps"
+                 tableName="calc_reactor_values"
+                 unique="false">
+            <column name="bs_result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-453" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_reactor_values to bs_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_reactor_values"
+                baseColumnNames="bs_result_header_id"
+                constraintName="fk_calc_reactor_values_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-454" logicalFilePath="path-independent" author="eugene" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_power_transformer_values</comment>
+        <dropColumn tableName="calc_power_transformer_values" schemaName="apps" >
+            <column name="calc_date" />
+            <column name="status" />
+            <column name="interval" />
+            <column name="version" />
+            <column name="source_type_id" />
+            <column name="batch_id" />
+            <column name="param_id" />
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-455" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table calc_power_transformer_values</comment>
+        <addColumn tableName="calc_power_transformer_values" schemaName="apps">
+            <column name="bs_result_header_id" type="number" remarks="Идентификатор заголовка результата расчёта" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-456" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_power_transformer_values</comment>
+        <createIndex indexName="idx_calc_power_transformer_values_7"
+                 schemaName="apps"
+                 tableName="calc_power_transformer_values"
+                 unique="false">
+            <column name="bs_result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-457" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_power_transformer_values to bs_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_transformer_values"
+                baseColumnNames="bs_result_header_id"
+                constraintName="fk_calc_power_transformer_values_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 

@@ -8,7 +8,10 @@ import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.service.CalcService;
 import calc.repo.calc.*;
+import calc.schedule.TaskExecutor;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstUServiceImpl {
+    private static final Logger logger = LoggerFactory.getLogger(BalanceSubstUServiceImpl.class);
     private final CalcService calcService;
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
@@ -25,6 +29,7 @@ public class BalanceSubstUServiceImpl {
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
+            logger.info("Uavg for header " + header.getId() + " started");
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
@@ -57,14 +62,15 @@ public class BalanceSubstUServiceImpl {
 
             balanceSubstResultULineRepo.save(resultLines);
             updateStatus(header, BatchStatusEnum.C);
+            logger.info("Uavg for header " + header.getId() + " completed");
         }
 
         catch (Exception e) {
             updateStatus(header, BatchStatusEnum.E);
-            e.printStackTrace();
+            logger.error("Uavg for header " + header.getId() + " terminated with exception");
+            logger.error(e.toString() + ": " + e.getMessage());
         }
     }
-
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteLines(BalanceSubstResultHeader header) {
@@ -87,12 +93,10 @@ public class BalanceSubstUServiceImpl {
         System.out.println(formulaText);
         try {
             CalcResult result = calcService.calc(formulaText, context);
-            System.out.println(Arrays.deepToString(result.getDoubleValues()));
-
             Double sum = 0d;
             Double count = 0d;
             for (Double d : result.getDoubleValues()) {
-                if (d!=null) {
+                if (d != null) {
                     sum+=d;
                     count++;
                 }
@@ -100,8 +104,7 @@ public class BalanceSubstUServiceImpl {
             line.setVal(sum / count);
         }
         catch (Exception e) {
-            System.out.println(formulaText);
-            e.printStackTrace();
+            logger.error("ERROR: " + e.toString() + ", " + e.getMessage());
         }
         return line;
     }

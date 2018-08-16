@@ -11,6 +11,8 @@ import calc.repo.calc.BalanceSubstResultMrLineRepo;
 import calc.repo.calc.ParameterRepo;
 import calc.repo.calc.UnitRepo;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstMrServiceImpl {
+    private static final Logger logger = LoggerFactory.getLogger(BalanceSubstMrServiceImpl.class);
     private final CalcService calcService;
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
@@ -29,6 +32,7 @@ public class BalanceSubstMrServiceImpl {
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
+            logger.info("Metering reading for header " + header.getId() + " started");
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
@@ -92,11 +96,13 @@ public class BalanceSubstMrServiceImpl {
 
             balanceSubstResultMrLineRepo.save(resultLines);
             updateStatus(header, BatchStatusEnum.C);
+            logger.info("Metering reading for header " + header.getId() + " completed");
         }
 
         catch (Exception e) {
             updateStatus(header, BatchStatusEnum.E);
-            e.printStackTrace();
+            logger.error("Metering reading for header " + header.getId() + " terminated with exception");
+            logger.error(e.toString() + ": " + e.getMessage());
         }
     }
 
@@ -134,7 +140,7 @@ public class BalanceSubstMrServiceImpl {
                     line.setDelta(result.getDoubleVal());
             }
             catch (Exception e) {
-                e.printStackTrace();
+                logger.error("ERROR: " + e.toString() + ", " + e.getMessage());
             }
         }
 

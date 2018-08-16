@@ -13,6 +13,19 @@ import java.util.List;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_bs_result_headers")
+@NamedStoredProcedureQueries({
+    @NamedStoredProcedureQuery(
+            name = "BalanceSubstResultHeader.calcPeValues",
+            procedureName = "calc_calculations.do_pe_values",
+            parameters = { @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_header_id", type = Long.class) }
+    ),
+
+    @NamedStoredProcedureQuery(
+            name = "BalanceSubstResultHeader.calcUnbalance",
+            procedureName = "calc_calculations.do_unbalance",
+            parameters = { @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_header_id", type = Long.class) }
+    )
+})
 public class BalanceSubstResultHeader {
     @Id
     private Long id;
