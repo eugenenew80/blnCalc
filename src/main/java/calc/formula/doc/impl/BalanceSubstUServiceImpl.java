@@ -80,6 +80,7 @@ public class BalanceSubstUServiceImpl {
     private BalanceSubstResultULine calcLine(Formula formula, CalcContext context) {
         BalanceSubstResultULine line = new BalanceSubstResultULine();
         String formulaText = calcService.formulaToString(formula);
+        System.out.println(formulaText);
         try {
             CalcResult result = calcService.calc(formulaText, context);
             line.setVal(result.getDoubleVal());
