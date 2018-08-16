@@ -27,6 +27,7 @@ public class JsExpression implements DoubleExpression {
     public Double[] doubleValues() {
         if (src.equals("a0") && attributes.size()==1)
             return attributes.get("a0").doubleValues();
+
         return DoubleExpression.super.doubleValues();
     }
 
