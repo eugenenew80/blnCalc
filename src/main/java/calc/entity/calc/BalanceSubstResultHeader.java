@@ -42,10 +42,4 @@ public class BalanceSubstResultHeader {
     @Column(name="period_type")
     @Enumerated(EnumType.STRING)
     private PeriodTypeEnum periodType;
-
-    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<BalanceSubstResultMrLine> mrLines;
-
-    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<BalanceSubstResultULine> uLines;
 }

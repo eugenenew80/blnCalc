@@ -26,7 +26,8 @@ public class BalanceSubstUServiceImpl {
     public void calc(BalanceSubstResultHeader header)  {
         try {
             updateStatus(header, BatchStatusEnum.P);
-            Parameter parU = parameterRepo.findByCode("U");
+            deleteLines(header);
+            header = balanceSubstResultHeaderRepo.findOne(header.getId());
 
             CalcContext context = CalcContext.builder()
                 .startDate(header.getStartDate())
@@ -40,6 +41,8 @@ public class BalanceSubstUServiceImpl {
                 .values(new ArrayList<>())
                 .build();
 
+            Parameter parU = parameterRepo.findByCode("U");
+
             List<BalanceSubstResultULine> resultLines = new ArrayList<>();
             List<BalanceSubstULine> uLines = header.getHeader().getULines();
             for (BalanceSubstULine uLine : uLines) {
@@ -52,7 +55,6 @@ public class BalanceSubstUServiceImpl {
                 resultLines.add(resultLine);
             }
 
-            deleteLines(header);
             balanceSubstResultULineRepo.save(resultLines);
             updateStatus(header, BatchStatusEnum.C);
         }
@@ -64,11 +66,13 @@ public class BalanceSubstUServiceImpl {
     }
 
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteLines(BalanceSubstResultHeader header) {
-        header.getULines().clear();
-        balanceSubstResultHeaderRepo.save(header);
-        balanceSubstResultHeaderRepo.flush();
+        List<BalanceSubstResultULine> lines = balanceSubstResultULineRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<lines.size(); i++)
+            balanceSubstResultULineRepo.delete(lines.get(i));
+        balanceSubstResultULineRepo.flush();
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -30,6 +30,8 @@ public class BalanceSubstMrServiceImpl {
     public void calc(BalanceSubstResultHeader header)  {
         try {
             updateStatus(header, BatchStatusEnum.P);
+            deleteLines(header);
+            header = balanceSubstResultHeaderRepo.findOne(header.getId());
 
             Parameter parAp = parameterRepo.findByCode("A+");
             Parameter parAm = parameterRepo.findByCode("A-");
@@ -88,7 +90,6 @@ public class BalanceSubstMrServiceImpl {
                 }
             }
 
-            deleteLines(header);
             balanceSubstResultMrLineRepo.save(resultLines);
             updateStatus(header, BatchStatusEnum.C);
         }
@@ -99,11 +100,12 @@ public class BalanceSubstMrServiceImpl {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteLines(BalanceSubstResultHeader header) {
-        header.getMrLines().clear();
-        balanceSubstResultHeaderRepo.save(header);
-        balanceSubstResultHeaderRepo.flush();
+        List<BalanceSubstResultMrLine> lines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<lines.size(); i++)
+            balanceSubstResultMrLineRepo.delete(lines.get(i));
+        balanceSubstResultMrLineRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
