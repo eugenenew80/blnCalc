@@ -1165,4 +1165,36 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-190" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns CALC_DOC_ASP1_LINES</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            -- Add comments to the columns
+            comment on column apps.CALC_DOC_ASP1_LINES.meter_value_diff
+            is 'Показание счетчика. Разность';
+        </sql>
+    </changeSet>
+
+    <changeSet id="calc-rus-191" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addColumn tableName="calc_formula_var_det" schemaName="apps">
+            <column name="param_type" type="varchar2(10)" remarks="Тип параметра" defaultValue="AT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-192" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addDefaultValue columnDataType="int"
+                         columnName="is_template"
+                         defaultValueNumeric="0"
+                         schemaName="apps"
+                         tableName="calc_doc_asp1_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-193" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <dropNotNullConstraint columnDataType="number"
+                               columnName="template_id"
+                               schemaName="apps"
+                               tableName="calc_doc_asp1_headers"/>
+    </changeSet>
+
 </databaseChangeLog>
