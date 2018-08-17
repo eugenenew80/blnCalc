@@ -15,9 +15,6 @@
     <profiles>
         <profile>
             <id>blntest</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
                 <driver>oracle.jdbc.OracleDriver</driver>
                 <url>jdbc:oracle:thin:@10.9.44.240:1521:BLNDEV</url>
