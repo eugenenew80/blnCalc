@@ -17,13 +17,13 @@ import java.util.List;
     @NamedStoredProcedureQuery(
             name = "BalanceSubstResultHeader.calcPeValues",
             procedureName = "calc_calculations.do_pe_values",
-            parameters = { @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_header_id", type = Long.class) }
+            parameters = { @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_bs_result_header_id", type = Long.class) }
     ),
 
     @NamedStoredProcedureQuery(
             name = "BalanceSubstResultHeader.calcUnbalance",
             procedureName = "calc_calculations.do_unbalance",
-            parameters = { @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_header_id", type = Long.class) }
+            parameters = { @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_bs_result_header_id", type = Long.class) }
     )
 })
 public class BalanceSubstResultHeader {

@@ -13,10 +13,10 @@ import java.util.List;
 @Repository
 public interface BalanceSubstResultHeaderRepo extends JpaRepository<BalanceSubstResultHeader, Long> {
     @Procedure(name = "BalanceSubstResultHeader.calcPeValues")
-    void calcPeValues(@Param("p_header_id") Long headerId);
+    void calcPeValues(@Param("p_bs_result_header_id") Long headerId);
 
     @Procedure(name = "BalanceSubstResultHeader.calcUnbalance")
-    void calcUnbalance(@Param("p_header_id") Long headerId);
+    void calcUnbalance(@Param("p_bs_result_header_id") Long headerId);
 
     List<BalanceSubstResultHeader> findAllByStatus(BatchStatusEnum status);
 }
