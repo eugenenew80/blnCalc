@@ -23,6 +23,6 @@ public class CalcContext {
     private Long docId;
 
     private List<CalcResult> values;
-    private Map<Long, List<CalcTrace>> trace;
+    private Map<String, List<CalcTrace>> trace;
     private Map<Long, CalcResult> results;
 }

@@ -1,12 +1,10 @@
 package calc.formula.expression.impl;
 
-import calc.entity.calc.Formula;
 import calc.formula.expression.DoubleExpression;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import javax.script.*;
-import java.util.Arrays;
 import java.util.Map;
 
 @Builder
@@ -15,7 +13,6 @@ public class JsExpression implements DoubleExpression {
     private final String src;
     private final Map<String, DoubleExpression> attributes;
     private final ScriptEngine engine;
-    private final Formula formula;
 
     @Override
     public DoubleExpression doubleExpression() {
@@ -49,10 +46,5 @@ public class JsExpression implements DoubleExpression {
         }
 
         return eval!=null ? Double.parseDouble(eval.toString()) : null;
-    }
-
-    @Override
-    public Formula getFormula() {
-        return formula;
     }
 }

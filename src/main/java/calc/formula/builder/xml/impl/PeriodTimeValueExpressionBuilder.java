@@ -59,7 +59,6 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
             .rate(rate)
             .startHour(startHour)
             .endHour(endHour)
-            .formula(formula)
             .service(service)
             .context(context)
             .build();

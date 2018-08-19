@@ -13,8 +13,13 @@ import calc.repo.calc.FormulaRepo;
 import calc.repo.calc.SourceTypeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -28,14 +33,12 @@ public class CalcServiceImpl implements CalcService {
         Formula formula = new Formula();
         formula.setText(text);
 
-        DoubleExpression expression = expressionService
-            .parse(formula, context);
-
-        return calc(expression, context);
+        DoubleExpression expression = expressionService.parse(formula, context);
+        return calc(expression);
     }
 
     @Override
-    public CalcResult calc(DoubleExpression expression, CalcContext context) throws Exception {
+    public CalcResult calc(DoubleExpression expression) {
         CalcResult result = new CalcResult();
         result.setDoubleVal(expression.doubleValue());
         result.setDoubleValues(expression.doubleValues());
@@ -49,6 +52,36 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
+    public List<CalcResult> calc(List<DoubleExpression> expressions) {
+        Map<String, DoubleExpression> expressionMap = new HashMap<>();
+
+        List<CalcResult> results1 = new ArrayList<>();
+        for (DoubleExpression expression : expressions) {
+            if (expression.codes().size()==1 && expression.codes().contains(expression.code()))
+                results1.add(calc(expression));
+            else
+                expressionMap.putIfAbsent(expression.code(), expression);
+        }
+
+        List<CalcResult> results2;
+        try {
+            List<String> codes = expressionService.sort(expressionMap);
+            System.out.println(codes);
+            results2 = codes.stream()
+                .map(c -> expressionMap.get(c))
+                .map(e -> calc(e))
+                .collect(toList());
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            results2 = Collections.emptyList();
+        }
+
+        return Stream.concat(results1.stream(), results2.stream()).collect(toList());
+    }
+
+
     public List<CalcResult> calc(CalcContext context) throws Exception {
         Map<String, DoubleExpression> expressionMap = new HashMap<>();
         Map<String, Formula>  formulaMap = new HashMap<>();
@@ -117,7 +150,6 @@ public class CalcServiceImpl implements CalcService {
 
         return context.getValues();
     }
-
 
     public String formulaToString(Formula formula) {
         if (formula.getFormulaType() != FormulaTypeEnum.DIALOG)

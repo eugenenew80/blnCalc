@@ -1,6 +1,5 @@
 package calc.formula.expression.impl;
 
-import calc.entity.calc.Formula;
 import calc.formula.expression.DoubleExpression;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -15,7 +14,7 @@ import static java.util.stream.Collectors.toList;
 public class UnaryExpression implements DoubleExpression {
     private final DoubleExpression expression;
     private final UnaryOperator<DoubleExpression> operator;
-    private final Formula formula;
+    private final String code;
 
     @Override
     public DoubleExpression doubleExpression() {
@@ -37,12 +36,12 @@ public class UnaryExpression implements DoubleExpression {
     }
 
     @Override
-    public Set<String> meteringPoints() {
-        return expression.meteringPoints();
+    public String code() {
+        return code;
     }
 
     @Override
-    public Formula getFormula() {
-        return formula;
+    public Set<String> codes() {
+        return expression.codes();
     }
 }

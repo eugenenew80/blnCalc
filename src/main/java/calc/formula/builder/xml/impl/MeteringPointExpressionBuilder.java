@@ -41,7 +41,6 @@ public class MeteringPointExpressionBuilder implements ExpressionBuilder<Meterin
             .id(id)
             .code(code)
             .attr(attr)
-            .formula(formula)
             .service(service)
             .context(context)
             .build();

@@ -36,7 +36,6 @@ public class PowerTransformerExpressionBuilder implements ExpressionBuilder<Powe
         return  PowerTransformerExpression.builder()
             .id(id)
             .attr(attr)
-            .formula(formula)
             .service(service)
             .context(context)
             .build();

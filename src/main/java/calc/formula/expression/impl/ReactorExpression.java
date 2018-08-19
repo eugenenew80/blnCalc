@@ -1,6 +1,5 @@
 package calc.formula.expression.impl;
 
-import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.StringExpression;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 public class ReactorExpression implements DoubleExpression, StringExpression {
     private final Long id;
     private final String attr;
-    private final Formula formula;
     private final ReactorService service;
     private final CalcContext context;
 
@@ -37,10 +35,5 @@ public class ReactorExpression implements DoubleExpression, StringExpression {
     @Override
     public String stringValue() {
         return service.getStringAttribute(id, attr, context);
-    }
-
-    @Override
-    public Formula getFormula() {
-        return formula;
     }
 }

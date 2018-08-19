@@ -1,6 +1,5 @@
 package calc.formula.expression.impl;
 
-import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.StringExpression;
@@ -15,7 +14,6 @@ public class PowerLineExpression implements DoubleExpression, StringExpression {
     private final Long id;
     private final String code;
     private final String attr;
-    private final Formula formula;
     private final PowerLineService service;
     private final CalcContext context;
 
@@ -37,10 +35,5 @@ public class PowerLineExpression implements DoubleExpression, StringExpression {
     @Override
     public String stringValue() {
         return service.getStringAttribute(id, code, attr, context);
-    }
-
-    @Override
-    public Formula getFormula() {
-        return formula;
     }
 }

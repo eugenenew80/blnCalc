@@ -36,7 +36,6 @@ public class ReactorExpressionBuilder implements ExpressionBuilder<ReactorExpres
         return  ReactorExpression.builder()
             .id(id)
             .attr(attr)
-            .formula(formula)
             .context(context)
             .service(service)
             .build();

@@ -56,7 +56,6 @@ public class JsExpressionBuilder implements ExpressionBuilder<JsExpression> {
         return  JsExpression.builder()
             .src(src)
             .attributes(attributes)
-            .formula(formula)
             .engine(engine)
             .build();
     }

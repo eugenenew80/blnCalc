@@ -3,11 +3,9 @@ package calc.formula.service.impl;
 import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
-import calc.formula.expression.StringExpression;
 import calc.formula.expression.impl.BinaryExpression;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.builder.ExpressionBuilderFactory;
-import calc.formula.expression.impl.MeteringPointExpression;
 import calc.formula.service.OperatorFactory;
 import calc.formula.service.XmlExpressionService;
 import lombok.RequiredArgsConstructor;
@@ -134,18 +132,14 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         return parse(node, formula, parameterCode, context);
     }
 
-
     public List<String> sort(Map<String, DoubleExpression> expressionMap) throws Exception {
         DefaultDirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
         for (String key : expressionMap.keySet())
             graph.addVertex(key);
 
         for (String key : expressionMap.keySet()) {
-            DoubleExpression expression = expressionMap.get(key);
-            for (String mp : expression.meteringPoints()) {
-                if (graph.containsVertex(mp))
-                    graph.addEdge(mp, key);
-            }
+            for (String mp : expressionMap.get(key).codes())
+                if (graph.containsVertex(mp)) graph.addEdge(mp, key);
         }
 
         Set<String> detectedCycles = detectCycles(graph);

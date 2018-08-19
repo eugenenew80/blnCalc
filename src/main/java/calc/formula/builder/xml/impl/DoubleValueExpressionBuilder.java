@@ -27,7 +27,6 @@ public class DoubleValueExpressionBuilder implements ExpressionBuilder<DoubleVal
 
         return DoubleValueExpression.builder()
             .value(val)
-            .formula(formula)
             .build();
     }
 }

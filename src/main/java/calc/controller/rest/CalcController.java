@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.PostConstruct;
 import java.nio.charset.Charset;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,19 +32,5 @@ public class CalcController {
             .build();
 
         return calcService.calc(formula, context);
-    }
-
-    @PostMapping(value = "/rest/calc/all", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
-    public List<CalcResult> calcAll(@RequestBody ContextDto contextDto) throws Exception {
-        CalcContext context = CalcContext.builder()
-            .startDate(contextDto.getStartDate())
-            .endDate(contextDto.getEndDate())
-            .orgId(11l)
-            .build();
-
-        List<CalcResult> list = calcService.calc(context);
-        list.stream().forEach( t -> System.out.println(t));
-
-        return context.getValues();
     }
 }

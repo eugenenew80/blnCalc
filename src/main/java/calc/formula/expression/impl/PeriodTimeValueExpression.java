@@ -10,8 +10,6 @@ import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +27,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
     private final String interval;
     private final Byte startHour;
     private final Byte endHour;
-    private final Formula formula;
     private final PeriodTimeValueService service;
     private final CalcContext context;
 
@@ -62,7 +59,7 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         Arrays.fill(count, null);
         Arrays.fill(avg, null);
 
-        CalcTrace calcInfo = trace(list);
+        CalcTrace calcTrace = trace(list);
 
         list.stream()
             .map(t -> t.getMeteringDate().toLocalDate())
@@ -71,7 +68,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
             .forEach(d -> {
                 list.stream()
                     .filter(t -> t.getMeteringDate().toLocalDate().equals(d))
-                    .filter(t -> t.getSourceType().equals(calcInfo.getSourceType()))
                     .forEach(t -> {
                         if (t.getDoubleVal()!=null && !t.getDoubleVal().isNaN()) {
                             int ind = t.getMeteringDate().getHour();
@@ -94,19 +90,19 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         if (parameterCode.equals("U")) result = avg;
         else result = sum;
 
-        calcInfo.setValues(result);
+        calcTrace.setValues(result);
         return result;
     }
 
     @Override
-    public Set<String> meteringPoints() {
-        return Stream.of(meteringPointCode)
-            .collect(toSet());
+    public String code() {
+        return meteringPointCode;
     }
 
     @Override
-    public Formula getFormula() {
-        return formula;
+    public Set<String> codes() {
+        return Stream.of(meteringPointCode)
+            .collect(toSet());
     }
 
     private List<CalcResult> getValues() {
@@ -121,35 +117,23 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @SuppressWarnings("Duplicates")
     private CalcTrace trace(List<CalcResult> list) {
-        List<CalcTrace> infoList = context.getTrace().get(formula.getId());
-        if (infoList == null)
-            infoList = new ArrayList<>();
+        List<CalcTrace> traces = context.getTrace().get(meteringPointCode);
+        if (traces == null)
+            traces = new ArrayList<>();
 
         List<SourceType> sourceTypeList = list.stream()
             .map(t -> t.getSourceType())
             .distinct()
             .collect(toList());
 
-        CalcTrace calcInfo = CalcTrace.builder()
-            .sourceType(selectSourceType(sourceTypeList))
+        CalcTrace calcTrace = CalcTrace.builder()
             .sourceTypeCount(sourceTypeList.size())
             .meteringPointCode(meteringPointCode)
             .parameterCode(parameterCode)
             .build();
 
-        infoList.add(calcInfo);
-        context.getTrace().putIfAbsent(formula.getId(), infoList);
-        return calcInfo;
-    }
-
-    private SourceType selectSourceType(List<SourceType> sourceTypeList) {
-        sourceTypeList.stream()
-            .distinct()
-            .collect(toList());
-
-        if (!sourceTypeList.isEmpty())
-            return sourceTypeList.get(0);
-
-        return null;
+        traces.add(calcTrace);
+        context.getTrace().putIfAbsent(meteringPointCode, traces);
+        return calcTrace;
     }
 }

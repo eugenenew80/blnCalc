@@ -54,7 +54,6 @@ public class AtTimeValueExpressionBuilder implements ExpressionBuilder<AtTimeVal
             .parameterCode(param)
             .per(per)
             .rate(rate)
-            .formula(formula)
             .service(service)
             .context(context)
             .build();
