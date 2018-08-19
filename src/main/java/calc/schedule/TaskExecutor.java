@@ -60,22 +60,22 @@ public class TaskExecutor {
         formula1.setText(formulaStr1);
         System.out.println(formulaStr1);
 
-        //Formula formula2 = formulaRepo.findOne(2l);
-        //String formulaStr2 = calcService.formulaToString(formula2);
-        //formula2.setText(formulaStr2);
-        //System.out.println(formulaStr2);
+        Formula formula2 = formulaRepo.findOne(2l);
+        String formulaStr2 = calcService.formulaToString(formula2);
+        formula2.setText(formulaStr2);
+        System.out.println(formulaStr2);
 
         DoubleExpression expression1 = null;
-        //DoubleExpression expression2 = null;
+        DoubleExpression expression2 = null;
         try {
             expression1 = expressionService.parse(formula1, formula1.getParam().getCode(), context);
-            //expression2 = expressionService.parse(formula2, formula2.getParam().getCode(), context);
+            expression2 = expressionService.parse(formula2, formula2.getParam().getCode(), context);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
 
-        List<CalcResult> results = calcService.calc(Arrays.asList(expression1));
+        List<CalcResult> results = calcService.calc(Arrays.asList(expression1, expression2));
         results.stream().forEach(r -> System.out.println(r.getDoubleVal()));
 
 
