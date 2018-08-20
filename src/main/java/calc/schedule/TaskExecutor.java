@@ -61,14 +61,18 @@ public class TaskExecutor {
 
 
         Formula formula1 = formulaRepo.findOne(1l);
+        Formula formula2 = formulaRepo.findOne(2l);
+        Map<String, Formula> formulas = new HashMap<>();
+        formulas.putIfAbsent(formula1.getMeteringPoint().getCode(), formula1);
+        formulas.putIfAbsent(formula2.getMeteringPoint().getCode(), formula2);
+
+
         String formulaStr1 = calcService.formulaToString(formula1);
         formula1.setText(formulaStr1);
-        System.out.println(formulaStr1);
 
-        Formula formula2 = formulaRepo.findOne(2l);
         String formulaStr2 = calcService.formulaToString(formula2);
         formula2.setText(formulaStr2);
-        System.out.println(formulaStr2);
+
 
         DoubleExpression expression1 = null;
         DoubleExpression expression2 = null;
@@ -81,9 +85,6 @@ public class TaskExecutor {
         }
         List<DoubleExpression> expressions = Arrays.asList(expression1, expression2);
 
-        Map<String, Formula> formulas = new HashMap<>();
-        formulas.putIfAbsent(formula1.getMeteringPoint().getCode(), formula1);
-        formulas.putIfAbsent(formula2.getMeteringPoint().getCode(), formula2);
 
         Map<String, DoubleExpression> expressionMap = new HashMap<>();
         List<CalcResult> results1 = new ArrayList<>();

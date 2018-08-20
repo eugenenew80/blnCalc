@@ -20,9 +20,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class CalcServiceImpl implements CalcService {
     private final ExpressionService expressionService;
-    private final FormulaRepo formulaRepo;
-    private final MeteringPointRepo meteringPointRepo;
-    private final ParameterRepo parameterRepo;
 
     @Override
     public CalcResult calc(String text, CalcContext context) throws Exception {
