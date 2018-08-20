@@ -1,6 +1,7 @@
 package calc.entity.calc;
 
 import calc.entity.calc.enums.FormulaTypeEnum;
+import calc.entity.calc.enums.ParamTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
@@ -53,4 +54,8 @@ public class Formula {
 
     @OneToMany(mappedBy = "formula", fetch = FetchType.LAZY)
     private List<FormulaVar> vars;
+
+    @Column(name="param_type")
+    @Enumerated(EnumType.STRING)
+    private ParamTypeEnum paramType;
 }

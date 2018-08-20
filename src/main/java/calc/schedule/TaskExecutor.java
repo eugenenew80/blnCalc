@@ -81,6 +81,10 @@ public class TaskExecutor {
         }
         List<DoubleExpression> expressions = Arrays.asList(expression1, expression2);
 
+        Map<String, Formula> formulas = new HashMap<>();
+        formulas.putIfAbsent(formula1.getMeteringPoint().getCode(), formula1);
+        formulas.putIfAbsent(formula2.getMeteringPoint().getCode(), formula2);
+
         Map<String, DoubleExpression> expressionMap = new HashMap<>();
         List<CalcResult> results1 = new ArrayList<>();
         for (DoubleExpression expression : expressions) {
@@ -101,16 +105,13 @@ public class TaskExecutor {
                 CalcResult result = calcService.calc(e);
                 list.add(result);
 
-                MeteringPoint meteringPoint = meteringPointRepo.findByCode(c);
-                if (meteringPoint!=null) {
-                    Parameter parameter = parameterRepo.findByCode("A+");
-                    result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
-                    result.setMeteringPointId(meteringPoint.getId());
-                    result.setParamId(parameter.getId());
-                    result.setUnitId(parameter.getUnit().getId());
-                    result.setParamType("AT");
-                    context.getValues().add(result);
-                }
+                Formula formula = formulas.get(e.code());
+                result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
+                result.setMeteringPointId(formula.getMeteringPoint().getId());
+                result.setParamId(formula.getParam().getId());
+                result.setUnitId(formula.getParam().getUnit().getId());
+                result.setParamType(formula.getParamType().name());
+                context.getValues().add(result);
             }
             results2 = list;
 
@@ -122,39 +123,6 @@ public class TaskExecutor {
 
         List<CalcResult> results = Stream.concat(results1.stream(), results2.stream()).collect(toList());
         results.stream().forEach(r -> System.out.println(r.getDoubleVal()));
-
-
-        /*
-        DoubleExpression expression1 = AtTimeValueExpression.builder()
-            .context(context)
-            .meteringPointCode("111111111111111111")
-            .parameterCode("A+")
-            .per("end")
-            .rate(1d)
-            .service(atTimeValueService)
-            .build();
-
-        DoubleExpression expression2 = AtTimeValueExpression.builder()
-            .context(context)
-            .meteringPointCode("111111111111111111")
-            .parameterCode("A+")
-            .per("start")
-            .rate(1d)
-            .service(atTimeValueService)
-            .build();
-
-        BinaryExpression expression3 = BinaryExpression.builder()
-            .expressions(Arrays.asList(expression1, expression2))
-            .operator(operatorFactory.binary("subtract"))
-            .code("3333333333333333333")
-            .build();
-
-        BinaryExpression expression4 = BinaryExpression.builder()
-            .expressions(Arrays.asList(expression1, expression2, expression3))
-            .operator(operatorFactory.binary("add"))
-            .code("444444444444444444")
-            .build();
-        */
 
 
         /*
