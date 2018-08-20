@@ -57,6 +57,7 @@ public class JsExpressionBuilder implements ExpressionBuilder<JsExpression> {
             .src(src)
             .attributes(attributes)
             .engine(engine)
+            .code(formula.getMeteringPoint().getCode())
             .build();
     }
 }

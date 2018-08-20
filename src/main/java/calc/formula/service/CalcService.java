@@ -8,12 +8,9 @@ import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.expression.DoubleExpression;
 
-import java.util.List;
 
 public interface CalcService {
     CalcResult calc(DoubleExpression expression);
-
-    List<CalcResult> calc(List<DoubleExpression> expressions);
 
     CalcResult calc(String formula, CalcContext context) throws Exception;
 

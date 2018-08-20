@@ -10,6 +10,8 @@ import calc.formula.expression.StringExpression;
 import calc.formula.service.CalcService;
 import calc.formula.service.ExpressionService;
 import calc.repo.calc.FormulaRepo;
+import calc.repo.calc.MeteringPointRepo;
+import calc.repo.calc.ParameterRepo;
 import calc.repo.calc.SourceTypeRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,8 @@ import static java.util.stream.Collectors.toList;
 public class CalcServiceImpl implements CalcService {
     private final ExpressionService expressionService;
     private final FormulaRepo formulaRepo;
-    private final SourceTypeRepo sourceTypeRepo;
+    private final MeteringPointRepo meteringPointRepo;
+    private final ParameterRepo parameterRepo;
 
     @Override
     public CalcResult calc(String text, CalcContext context) throws Exception {
@@ -49,36 +52,6 @@ public class CalcServiceImpl implements CalcService {
         }
 
         return result;
-    }
-
-    @Override
-    public List<CalcResult> calc(List<DoubleExpression> expressions) {
-        Map<String, DoubleExpression> expressionMap = new HashMap<>();
-
-        List<CalcResult> results1 = new ArrayList<>();
-        for (DoubleExpression expression : expressions) {
-            if (expression.codes().size()==1 && expression.codes().contains(expression.code()))
-                results1.add(calc(expression));
-            else
-                expressionMap.putIfAbsent(expression.code(), expression);
-        }
-
-        List<CalcResult> results2;
-        try {
-            List<String> codes = expressionService.sort(expressionMap);
-            System.out.println(codes);
-            results2 = codes.stream()
-                .map(c -> expressionMap.get(c))
-                .map(e -> calc(e))
-                .collect(toList());
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            results2 = Collections.emptyList();
-        }
-
-        return Stream.concat(results1.stream(), results2.stream()).collect(toList());
     }
 
 
@@ -130,7 +103,7 @@ public class CalcServiceImpl implements CalcService {
                     }
                 }
 
-                if (parameter.getIsPt()) {
+                if (parameter.getIsAt()) {
                     Double[] results = new Double[]{expression.doubleValue()};
                     LocalDateTime meteringDate = context.getEndDate().atStartOfDay().plusDays(1);
                     for (int i = 0; i < results.length; i++) {

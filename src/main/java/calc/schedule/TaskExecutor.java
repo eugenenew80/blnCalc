@@ -26,6 +26,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 @RequiredArgsConstructor
@@ -41,12 +44,14 @@ public class TaskExecutor {
     private final OperatorFactory operatorFactory;
     private final FormulaRepo formulaRepo;
     private final ExpressionService expressionService;
+    private final MeteringPointRepo meteringPointRepo;
+    private final ParameterRepo parameterRepo;
 
     @Scheduled(cron = "*/30 * * * * *")
     public void run() {
         CalcContext context = CalcContext.builder()
-            .startDate(LocalDate.of(2018, Month.AUGUST, 19))
-            .endDate(LocalDate.of(2018, Month.AUGUST, 19))
+            .startDate(LocalDate.of(2018, Month.AUGUST, 13))
+            .endDate(LocalDate.of(2018, Month.AUGUST, 13))
             .orgId(1l)
             .energyObjectType("SUBSTATION")
             .energyObjectId(1l)
@@ -74,8 +79,48 @@ public class TaskExecutor {
         catch (Exception e) {
             e.printStackTrace();
         }
+        List<DoubleExpression> expressions = Arrays.asList(expression1, expression2);
 
-        List<CalcResult> results = calcService.calc(Arrays.asList(expression1, expression2));
+        Map<String, DoubleExpression> expressionMap = new HashMap<>();
+        List<CalcResult> results1 = new ArrayList<>();
+        for (DoubleExpression expression : expressions) {
+            if (expression.codes().size()==1 && expression.codes().contains(expression.code()))
+                results1.add(calcService.calc(expression));
+            else
+                expressionMap.putIfAbsent(expression.code(), expression);
+        }
+
+
+        List<CalcResult> results2;
+        try {
+            List<String> codes = expressionService.sort(expressionMap);
+
+            List<CalcResult> list = new ArrayList<>();
+            for (String c : codes) {
+                DoubleExpression e = expressionMap.get(c);
+                CalcResult result = calcService.calc(e);
+                list.add(result);
+
+                MeteringPoint meteringPoint = meteringPointRepo.findByCode(c);
+                if (meteringPoint!=null) {
+                    Parameter parameter = parameterRepo.findByCode("A+");
+                    result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
+                    result.setMeteringPointId(meteringPoint.getId());
+                    result.setParamId(parameter.getId());
+                    result.setUnitId(parameter.getUnit().getId());
+                    result.setParamType("AT");
+                    context.getValues().add(result);
+                }
+            }
+            results2 = list;
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            results2 = Collections.emptyList();
+        }
+
+        List<CalcResult> results = Stream.concat(results1.stream(), results2.stream()).collect(toList());
         results.stream().forEach(r -> System.out.println(r.getDoubleVal()));
 
 
