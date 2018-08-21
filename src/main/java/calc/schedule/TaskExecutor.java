@@ -36,34 +36,7 @@ public class TaskExecutor {
 
     @Scheduled(cron = "*/30 * * * * *")
     public void run() {
-        CalcContext context = CalcContext.builder()
-            .startDate(LocalDate.of(2018, Month.AUGUST, 14))
-            .endDate(LocalDate.of(2018, Month.AUGUST, 15))
-            .orgId(1l)
-            .energyObjectType("SUBSTATION")
-            .energyObjectId(1l)
-            .trace(new HashMap<>())
-            .values(new HashMap<>())
-            .build();
-
-
-        //MeteringPoint meteringPoint1 = meteringPointRepo.findOne(3l);
-        //MeteringPoint meteringPoint2 = meteringPointRepo.findOne(4l);
-        MeteringPoint meteringPoint3 = meteringPointRepo.findOne(5l);
-
-        List<CalcResult> results;
-        try {
-            results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint3), context);
-            //results.stream().forEach(r -> System.out.println(r.getDoubleValue()));
-            results.stream().forEach(r -> System.out.println( Arrays.deepToString(r.getDoubleValues())));
-        }
-        catch (CycleDetectionException e) {
-            logger.error("Циклическая формула для точки учёта: " + e.getCode());
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        test();
 
         List<BalanceSubstResultHeader> headers = balanceSubstResultHeaderRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
@@ -76,6 +49,31 @@ public class TaskExecutor {
             balanceSubstUService.calc(header);
             balanceSubstPeService.calc(header);
             logger.info("Header " + header.getId() + " completed");
+        }
+    }
+
+    private void test() {
+        CalcContext context = CalcContext.builder()
+            .startDate(LocalDate.of(2018, Month.AUGUST, 14))
+            .endDate(LocalDate.of(2018, Month.AUGUST, 15))
+            .orgId(1l)
+            .energyObjectType("SUBSTATION")
+            .energyObjectId(1l)
+            .trace(new HashMap<>())
+            .values(new HashMap<>())
+            .build();
+
+
+        List<CalcResult> results;
+        try {
+            results = calcService.calcMeteringPoints(Arrays.asList(meteringPointRepo.findOne(5l)), context);
+            results.stream().forEach(r -> System.out.println( Arrays.deepToString(r.getDoubleValues())));
+        }
+        catch (CycleDetectionException e) {
+            logger.error("Циклическая формула для точки учёта: " + e.getCode());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
