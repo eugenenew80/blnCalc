@@ -3,14 +3,12 @@ package calc.formula.service.impl;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
 import calc.entity.calc.PeriodTimeValue;
-import calc.entity.calc.SourceTypePriority;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.formula.service.PeriodTimeValueService;
 import calc.repo.calc.MeteringPointRepo;
 import calc.repo.calc.ParameterRepo;
 import calc.repo.calc.PeriodTimeValueRepo;
-import calc.repo.calc.SourceTypePriorityRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +23,6 @@ import static java.util.stream.Collectors.toList;
 public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     private final PeriodTimeValueRepo repo;
     private final MeteringPointRepo meteringPointRepo;
-    private final SourceTypePriorityRepo sourceTypePriorityRepo;
     private final ParameterRepo parameterRepo;
 
     @Override
@@ -45,15 +42,16 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
         if (meteringPoint == null || parameter == null)
             return Collections.emptyList();
 
-        List<CalcResult> list = context.getValues()
-            .stream()
-            .filter(t -> t.getParamType().equals("PT"))
-            .filter(t -> t.getMeteringPointId().equals(meteringPoint.getId()))
-            .filter(t -> t.getParamId().equals(parameter.getId()))
-            .collect(toList());
+        if (context.getValues().containsKey(meteringPointCode)) {
+            List<CalcResult> list = context.getValues().get(meteringPointCode)
+                .stream()
+                .filter(t -> t.getParamType().equals("PT"))
+                .filter(t -> t.getParam().getCode().equals(parameterCode))
+                .collect(toList());
 
-        if (!list.isEmpty())
-            return list;
+            if (!list.isEmpty())
+                return list;
+        }
 
         return findValues(meteringPoint, parameter, context)
             .stream()

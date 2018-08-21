@@ -14,7 +14,6 @@ import static java.util.stream.Collectors.toList;
 public class UnaryExpression implements DoubleExpression {
     private final DoubleExpression expression;
     private final UnaryOperator<DoubleExpression> operator;
-    private final String code;
 
     @Override
     public DoubleExpression doubleExpression() {
@@ -36,12 +35,7 @@ public class UnaryExpression implements DoubleExpression {
     }
 
     @Override
-    public String code() {
-        return code;
-    }
-
-    @Override
-    public Set<String> codes() {
-        return expression.codes();
+    public Set<String> pointCodes() {
+        return expression.pointCodes();
     }
 }

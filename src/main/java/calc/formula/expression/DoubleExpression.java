@@ -14,9 +14,7 @@ public interface DoubleExpression {
         return new Double[] {v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v};
     }
 
-    default String code() { return ""; }
-
-    default Set<String> codes() {
+    default Set<String> pointCodes() {
         return Collections.emptySet();
     }
 

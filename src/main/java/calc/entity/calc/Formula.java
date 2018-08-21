@@ -2,10 +2,10 @@ package calc.entity.calc;
 
 import calc.entity.calc.enums.FormulaTypeEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,4 +58,8 @@ public class Formula {
     @Column(name="param_type")
     @Enumerated(EnumType.STRING)
     private ParamTypeEnum paramType;
+
+    @Column(name="period_type")
+    @Enumerated(EnumType.STRING)
+    private PeriodTypeEnum periodType;
 }

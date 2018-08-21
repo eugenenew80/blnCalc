@@ -1,4 +1,4 @@
-package calc.formula.calculations;
+package calc.formula.calculation;
 
 import calc.entity.calc.BalanceSubstResultHeader;
 import calc.entity.calc.enums.BatchStatusEnum;

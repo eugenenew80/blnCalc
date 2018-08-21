@@ -35,14 +35,9 @@ public class BinaryExpression implements DoubleExpression {
     }
 
     @Override
-    public String code() {
-        return code;
-    }
-
-    @Override
-    public Set<String> codes() {
+    public Set<String> pointCodes() {
         Set<String> set = expressions.stream()
-            .flatMap(t -> t.codes().stream())
+            .flatMap(t -> t.pointCodes().stream())
             .collect(toSet());
 
         return new TreeSet<>(set);

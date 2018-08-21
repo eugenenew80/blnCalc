@@ -29,7 +29,7 @@ public class ReportController {
             .energyObjectId(11l)
             .energyObjectName("ПС Шымкент 500")
             .trace(new HashMap<>())
-            .values(new ArrayList<>())
+            .values(new HashMap<>())
             .build();
 
         Document document = reportService.buildReport(id, context);

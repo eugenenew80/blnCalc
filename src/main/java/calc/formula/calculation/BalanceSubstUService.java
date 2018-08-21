@@ -1,11 +1,12 @@
-package calc.formula.calculations;
+package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.FormulaTypeEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
+import calc.formula.expression.DoubleExpression;
 import calc.formula.service.CalcService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class BalanceSubstUService {
                 .docCode("ACT")
                 .docId(header.getId())
                 .trace(new HashMap<>())
-                .values(new ArrayList<>())
+                .values(new HashMap<>())
                 .build();
 
             Parameter parU = parameterRepo.findByCode("U");
@@ -50,8 +51,7 @@ public class BalanceSubstUService {
             List<BalanceSubstResultULine> resultLines = new ArrayList<>();
             List<BalanceSubstULine> uLines = header.getHeader().getULines();
             for (BalanceSubstULine uLine : uLines) {
-                Formula formula = createFormula(uLine.getMeteringPoint(), parU, ParamTypeEnum.PT);
-                BalanceSubstResultULine resultLine = calcLine(formula, context);
+                BalanceSubstResultULine resultLine = calcLine(uLine.getMeteringPoint(), parU, context);
                 resultLine.setHeader(header);
                 resultLine.setMeteringPoint(uLine.getMeteringPoint());
                 resultLine.setTiNum(uLine.getTiNum());
@@ -86,12 +86,11 @@ public class BalanceSubstUService {
         balanceSubstResultHeaderRepo.save(header);
     }
 
-    private BalanceSubstResultULine calcLine(Formula formula, CalcContext context) {
+    private BalanceSubstResultULine calcLine(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
         BalanceSubstResultULine line = new BalanceSubstResultULine();
-        String formulaText = calcService.formulaToString(formula);
-        System.out.println(formulaText);
         try {
-            CalcResult result = calcService.calc(formulaText, context);
+            DoubleExpression expression = calcService.buildExpression(meteringPoint, parameter, ParamTypeEnum.PT, PeriodTypeEnum.H, context);
+            CalcResult result = calcService.calc(expression);
             Double sum = 0d;
             Double count = 0d;
             for (Double d : result.getDoubleValues()) {
@@ -106,33 +105,5 @@ public class BalanceSubstUService {
             logger.error("ERROR: " + e.toString() + ", " + e.getMessage());
         }
         return line;
-    }
-
-    private Formula createFormula(MeteringPoint meteringPoint, Parameter parameter, ParamTypeEnum paramType) {
-        Formula formula = new Formula();
-        formula.setText("a0");
-        formula.setMeteringPoint(meteringPoint);
-        formula.setFormulaType(FormulaTypeEnum.DIALOG);
-        formula.setVars(new ArrayList<>());
-
-        FormulaVar var = new FormulaVar();
-        formula.getVars().add(var);
-
-        var.setFormula(formula);
-        var.setVarName("a0");
-        var.setDetails(new ArrayList<>());
-
-        FormulaVarDet det = new FormulaVarDet();
-        var.getDetails().add(det);
-
-        det.setFormula(formula);
-        det.setFormulaVar(var);
-        det.setMeteringPoint(meteringPoint);
-        det.setParamType(paramType);
-        det.setRate(1d);
-        det.setSign("+");
-        det.setParam(parameter);
-
-        return formula;
     }
 }

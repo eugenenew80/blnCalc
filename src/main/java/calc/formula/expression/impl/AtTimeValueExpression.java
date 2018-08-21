@@ -39,11 +39,11 @@ public class AtTimeValueExpression implements DoubleExpression {
             per,
             context
         );
-        list.forEach(t -> t.setDoubleVal(t.getDoubleVal() * rate));
+        list.forEach(t -> t.setDoubleValue(t.getDoubleValue() * rate));
 
         CalcTrace calcTrace = trace(list);
         Double result = list.stream()
-            .map(t -> t.getDoubleVal())
+            .map(t -> t.getDoubleValue())
             .reduce((t1, t2) -> t1 + t2)
             .orElse(null);
 
@@ -56,14 +56,8 @@ public class AtTimeValueExpression implements DoubleExpression {
         return new Double[0];
     }
 
-
     @Override
-    public String code() {
-        return meteringPointCode;
-    }
-
-    @Override
-    public Set<String> codes() {
+    public Set<String> pointCodes() {
         return Stream.of(meteringPointCode)
             .collect(toSet());
     }
