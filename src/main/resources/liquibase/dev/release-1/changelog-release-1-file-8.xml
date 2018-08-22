@@ -1197,4 +1197,217 @@
                                tableName="calc_doc_asp1_headers"/>
     </changeSet>
 
+    <changeSet id="calc-rus-208" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint CALC_METERING_DATA_SOURCES.METERING_DATA_SOURCE_TYPE_ID</comment>
+        <dropNotNullConstraint columnDataType="number"
+                               columnName="METERING_DATA_SOURCE_TYPE_ID"
+                               schemaName="apps"
+                               tableName="CALC_METERING_DATA_SOURCES"/>
+    <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-209" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_calculations_types</comment>
+        <createTable tableName="calc_calculations_types" schemaName="apps" remarks="Справочник Типы расчетов">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-210" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_calculations_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_calculations_types"
+                schemaName="apps"
+                tableName="calc_calculations_types"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-211" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_calculations_types_tl</comment>
+        <createTable tableName="calc_calculations_types_tl" schemaName="apps" remarks="Перевод Справочник Типы расчетов">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(100)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="description" type="varchar2(300)" remarks="Описание">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-212" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_calculations_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code,lang"
+                constraintName="pk_calc_calculations_types_tl"
+                schemaName="apps"
+                tableName="calc_calculations_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-213" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_calculations_types_tl to calc_calculations_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_calculations_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_calculations_types_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_calculations_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-214" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_calculations_types</comment>
+        <insert schemaName="apps" tableName="calc_calculations_types">
+            <column name="code" type="varchar2" value="MONTH"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculations_types">
+            <column name="code" type="varchar2" value="DAY"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculations_types">
+            <column name="code" type="varchar2" value="FINAL"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-215" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_calculations_types_tl</comment>
+        <insert schemaName="apps" tableName="calc_calculations_types_tl">
+            <column name="code" type="varchar2" value="DAY"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Оперативный расчет за сутки"/>
+            <column name="description" type="varchar2" value="Оперативный расчет за сутки"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculations_types_tl">
+            <column name="code" type="varchar2" value="DAY"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Оперативный расчет за сутки"/>
+            <column name="description" type="varchar2" value="Оперативный расчет за сутки"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculations_types_tl">
+            <column name="code" type="varchar2" value="DAY"/>
+            <column name="lang" type="varchar2" value="EN"/>
+            <column name="name" type="varchar2" value="Operative for a day"/>
+            <column name="description" type="varchar2" value="Operative calculation for a day"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculations_types_tl">
+            <column name="code" type="varchar2" value="MONTH"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="За месяц по актам"/>
+            <column name="description" type="varchar2" value="Оперативный расчет за расчетный период (по актам)"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculations_types_tl">
+            <column name="code" type="varchar2" value="MONTH"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="За месяц по актам"/>
+            <column name="description" type="varchar2" value="Оперативный расчет за расчетный период (по актам)"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculations_types_tl">
+            <column name="code" type="varchar2" value="MONTH"/>
+            <column name="lang" type="varchar2" value="EN"/>
+            <column name="name" type="varchar2" value="For the month according to the act"/>
+            <column name="description" type="varchar2" value="Operative calculation for the billing period (according to the acts)"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculations_types_tl">
+            <column name="code" type="varchar2" value="FINAL"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Окончательный по ФБПП"/>
+            <column name="description" type="varchar2" value="Окончательный расчет по фактическому балансу производства потребления электроэнергии в РК"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculations_types_tl">
+            <column name="code" type="varchar2" value="FINAL"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Окончательный по ФБПП"/>
+            <column name="description" type="varchar2" value="Окончательный расчет по фактическому балансу производства потребления электроэнергии в РК"/>
+        </insert>
+        <insert schemaName="apps" tableName="calc_calculations_types_tl">
+            <column name="code" type="varchar2" value="FINAL"/>
+            <column name="lang" type="varchar2" value="EN"/>
+            <column name="name" type="varchar2" value="The final calculation"/>
+            <column name="description" type="varchar2" value="The final calculation of the actual balance of electricity consumption in the Republic of Kazakhstan"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-rus-216" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns calc_signatories.name</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            comment on column apps.calc_signatories.name
+            is 'ФИО';
+        </sql>
+    </changeSet>
+
+    <changeSet id="calc-rus-217" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns calc_signatories.name</comment>
+        <addNotNullConstraint columnDataType="varchar2(30)"
+                              columnName="signatories_group"
+                              schemaName="apps"
+                              tableName="calc_signatories"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-218" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_service_values_reconciliations_l_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_metering_data_source_lines_s"
+                startValue="1"/>
+    </changeSet>
 </databaseChangeLog>
