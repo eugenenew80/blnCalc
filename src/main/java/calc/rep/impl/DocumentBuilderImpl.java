@@ -271,10 +271,10 @@ public class DocumentBuilderImpl implements DocumentBuilder {
             CalcResult calcResult = context.getResults().get(cell.getId());
             if (calcResult!=null) {
                 if (attrType == AttrTypeEnum.STRING)
-                    val = calcResult.getStringVal();
+                    val = calcResult.getStringValue();
 
                 if (attrType == AttrTypeEnum.NUMBER)
-                    val = calcResult.getDoubleVal();
+                    val = calcResult.getDoubleValue();
             }
         }
 

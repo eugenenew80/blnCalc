@@ -1,7 +1,6 @@
 package calc.formula.expression.impl;
 
 import calc.formula.CalcResult;
-import calc.entity.calc.Formula;
 import calc.entity.calc.SourceType;
 import calc.formula.CalcContext;
 import calc.formula.CalcTrace;
@@ -24,7 +23,6 @@ public class AtTimeValueExpression implements DoubleExpression {
     private final String parameterCode;
     private final String per;
     private final Double rate;
-    private final Formula formula;
     private final AtTimeValueService service;
     private final CalcContext context;
 
@@ -41,16 +39,15 @@ public class AtTimeValueExpression implements DoubleExpression {
             per,
             context
         );
-        list.forEach(t -> t.setDoubleVal(t.getDoubleVal() * rate));
+        list.forEach(t -> t.setDoubleValue(t.getDoubleValue() * rate));
 
-        CalcTrace calcInfo = trace(list);
+        CalcTrace calcTrace = trace(list);
         Double result = list.stream()
-            .filter(t -> t.getSourceType().equals(calcInfo.getSourceType()))
-            .map(t -> t.getDoubleVal())
+            .map(t -> t.getDoubleValue())
             .reduce((t1, t2) -> t1 + t2)
             .orElse(null);
 
-        calcInfo.setValue(result);
+        calcTrace.setValue(result);
         return result;
     }
 
@@ -60,48 +57,31 @@ public class AtTimeValueExpression implements DoubleExpression {
     }
 
     @Override
-    public Set<String> meteringPoints() {
+    public Set<String> pointCodes() {
         return Stream.of(meteringPointCode)
             .collect(toSet());
-    }
-
-    @Override
-    public Formula getFormula() {
-        return formula;
     }
 
 
     @SuppressWarnings("Duplicates")
     private CalcTrace trace(List<CalcResult> list) {
-        List<CalcTrace> infoList = context.getTrace().get(formula.getId());
-        if (infoList == null)
-            infoList = new ArrayList<>();
+        List<CalcTrace> traces = context.getTrace().get(meteringPointCode);
+        if (traces == null)
+            traces = new ArrayList<>();
 
         List<SourceType> sourceTypeList = list.stream()
             .map(t -> t.getSourceType())
             .distinct()
             .collect(toList());
 
-        CalcTrace calcInfo = CalcTrace.builder()
-            .sourceType(selectSourceType(sourceTypeList))
+        CalcTrace calcTrace = CalcTrace.builder()
             .sourceTypeCount(sourceTypeList.size())
             .meteringPointCode(meteringPointCode)
             .parameterCode(parameterCode)
             .build();
 
-        infoList.add(calcInfo);
-        context.getTrace().putIfAbsent(formula.getId(), infoList);
-        return calcInfo;
-    }
-
-    private SourceType selectSourceType(List<SourceType> sourceTypeList) {
-        sourceTypeList.stream()
-            .distinct()
-            .collect(toList());
-
-        if (!sourceTypeList.isEmpty())
-            return sourceTypeList.get(0);
-
-        return null;
+        traces.add(calcTrace);
+        context.getTrace().putIfAbsent(meteringPointCode, traces);
+        return calcTrace;
     }
 }

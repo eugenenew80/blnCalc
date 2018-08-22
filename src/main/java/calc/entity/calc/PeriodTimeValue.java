@@ -1,5 +1,6 @@
 package calc.entity.calc;
 
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
 import lombok.*;
 import javax.persistence.*;
@@ -18,14 +19,17 @@ public class PeriodTimeValue  {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "media_period_time_values_s")
 	private Long id;
 
-	@Column(name = "metering_point_id")
-	private Long meteringPointId;
+	@ManyToOne
+	@JoinColumn(name = "metering_point_id")
+	private MeteringPoint meteringPoint;
 
-	@Column(name = "param_id")
-	private Long paramId;
+	@ManyToOne
+	@JoinColumn(name = "param_id")
+	private Parameter param;
 
-	@Column(name = "unit_id")
-	private Long unitId;
+	@ManyToOne
+	@JoinColumn(name = "unit_id")
+	private Unit unit;
 
 	@Column(name = "metering_date")
 	private LocalDateTime meteringDate;
@@ -43,16 +47,21 @@ public class PeriodTimeValue  {
 	@JoinColumn(name = "source_type_id")
 	private SourceType sourceType;
 
+	@Transient
+	private PeriodTypeEnum getPeriodType() {
+		return interval.equals(3600) ? PeriodTypeEnum.H : PeriodTypeEnum.D;
+	}
+
 	public CalcResult toResult() {
 		CalcResult result = new CalcResult();
-		result.setInterval(this.getInterval());
-		result.setMeteringDate(this.getMeteringDate());
-		result.setMeteringPointId(this.getMeteringPointId());
-		result.setParamId(this.getParamId());
 		result.setParamType("PT");
-		result.setUnitId(this.getUnitId());
-		result.setDoubleVal(this.getVal());
-		result.setSourceType(this.getSourceType());
+		result.setPeriodType(getPeriodType());
+		result.setMeteringDate(getMeteringDate());
+		result.setMeteringPoint(getMeteringPoint());
+		result.setParam(getParam());
+		result.setUnit(getUnit());
+		result.setDoubleValue(getVal());
+		result.setSourceType(getSourceType());
 		return result;
 	}
 }

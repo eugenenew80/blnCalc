@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.PostConstruct;
 import java.nio.charset.Charset;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class CalcController {
     @PostConstruct
     private void init() { }
 
-    @PostMapping(value = "/rest/calc/text", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
+    @PostMapping(value = "/rest/calcXmlExpression/text", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
     public CalcResult calc(@RequestBody ContextDto contextDto) throws Exception {
         byte[] contentAsBytes = Base64.decodeBase64(contextDto.getContentBase64());
         String formula = new String(contentAsBytes, Charset.forName("UTF-8"));
@@ -32,20 +31,6 @@ public class CalcController {
             .orgId(contextDto.getOrgId())
             .build();
 
-        return calcService.calc(formula, context);
-    }
-
-    @PostMapping(value = "/rest/calc/all", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
-    public List<CalcResult> calcAll(@RequestBody ContextDto contextDto) throws Exception {
-        CalcContext context = CalcContext.builder()
-            .startDate(contextDto.getStartDate())
-            .endDate(contextDto.getEndDate())
-            .orgId(11l)
-            .build();
-
-        List<CalcResult> list = calcService.calc(context);
-        list.stream().forEach( t -> System.out.println(t));
-
-        return context.getValues();
+        return null;
     }
 }

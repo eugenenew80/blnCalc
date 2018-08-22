@@ -41,15 +41,16 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
         if (meteringPoint == null || parameter == null)
             return Collections.emptyList();
 
-        List<CalcResult> list = context.getValues()
-            .stream()
-            .filter(t -> t.getParamType().equals("AT"))
-            .filter(t -> t.getMeteringPointId().equals(meteringPoint.getId()))
-            .filter(t -> t.getParamId().equals(parameter.getId()))
-            .collect(toList());
+        if (context.getValues().containsKey(meteringPointCode)) {
+            List<CalcResult> list = context.getValues().get(meteringPointCode)
+                .stream()
+                .filter(t -> t.getParamType().equals("AT"))
+                .filter(t -> t.getParam().getCode().equals(parameter.getCode()))
+                .collect(toList());
 
-        if (!list.isEmpty())
-            return list;
+            if (!list.isEmpty())
+                return list;
+        }
 
         return findValues(meteringPoint, parameter, per, context)
             .stream()

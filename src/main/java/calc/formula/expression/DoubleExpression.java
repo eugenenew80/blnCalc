@@ -1,6 +1,5 @@
 package calc.formula.expression;
 
-import calc.entity.calc.Formula;
 import calc.formula.expression.impl.UnaryExpression;
 import java.util.Collections;
 import java.util.Set;
@@ -15,7 +14,7 @@ public interface DoubleExpression {
         return new Double[] {v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v, v};
     }
 
-    default Set<String> meteringPoints() {
+    default Set<String> pointCodes() {
         return Collections.emptySet();
     }
 
@@ -25,6 +24,4 @@ public interface DoubleExpression {
             .operator(operator)
             .build();
     }
-
-    Formula getFormula();
 }

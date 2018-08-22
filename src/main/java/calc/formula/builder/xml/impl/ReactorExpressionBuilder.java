@@ -1,6 +1,5 @@
 package calc.formula.builder.xml.impl;
 
-import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.ReactorExpression;
@@ -14,7 +13,7 @@ public class ReactorExpressionBuilder implements ExpressionBuilder<ReactorExpres
     private final ReactorService service;
 
     @Override
-    public ReactorExpression build(Node node, Formula formula, CalcContext context) {
+    public ReactorExpression build(Node node, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         Long id = null;
@@ -36,7 +35,6 @@ public class ReactorExpressionBuilder implements ExpressionBuilder<ReactorExpres
         return  ReactorExpression.builder()
             .id(id)
             .attr(attr)
-            .formula(formula)
             .context(context)
             .service(service)
             .build();

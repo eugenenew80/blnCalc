@@ -1,6 +1,5 @@
 package calc.formula.builder.xml.impl;
 
-import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.DoubleValueExpression;
@@ -12,7 +11,7 @@ import org.w3c.dom.Node;
 public class DoubleValueExpressionBuilder implements ExpressionBuilder<DoubleValueExpression> {
 
     @Override
-    public DoubleValueExpression build(Node node, Formula formula, CalcContext context) {
+    public DoubleValueExpression build(Node node, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
         Double val = 0d;
         for (int i=0; i<attributes.getLength(); i++) {
@@ -27,7 +26,6 @@ public class DoubleValueExpressionBuilder implements ExpressionBuilder<DoubleVal
 
         return DoubleValueExpression.builder()
             .value(val)
-            .formula(formula)
             .build();
     }
 }

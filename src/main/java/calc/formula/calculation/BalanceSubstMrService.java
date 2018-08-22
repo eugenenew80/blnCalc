@@ -1,10 +1,13 @@
-package calc.formula.calculations;
+package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
-import calc.formula.CalcResult;
+import calc.formula.expression.DoubleExpression;
+import calc.formula.expression.impl.AtTimeValueExpression;
+import calc.formula.service.AtTimeValueService;
 import calc.formula.service.CalcService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultMrLineRepo;
@@ -16,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 
 @Service
@@ -28,6 +30,7 @@ public class BalanceSubstMrService {
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final ParameterRepo parameterRepo;
     private final UnitRepo unitRepo;
+    private final AtTimeValueService atTimeValueService;
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
@@ -51,7 +54,7 @@ public class BalanceSubstMrService {
                 .docCode("ACT")
                 .docId(header.getId())
                 .trace(new HashMap<>())
-                .values(new ArrayList<>())
+                .values(new HashMap<>())
                 .build();
 
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
@@ -59,8 +62,7 @@ public class BalanceSubstMrService {
             for (BalanceSubstMrLine mrLine : mrLines) {
                 List<MeterHistory> meters = mrLine.getMeteringPoint().getMeters();
                 for (Parameter param : Arrays.asList(parAp, parAm, parRp, parRm)) {
-                    Map<String, Formula> formulas = createFormulas(mrLine, param);
-                    BalanceSubstResultMrLine line = calcLine(formulas, context);
+                    BalanceSubstResultMrLine line = calcLine(mrLine, param, context);
 
                     if (mrLine.getIsSection1()) line.setSection("1");
                     if (mrLine.getIsSection2()) line.setSection("2");
@@ -119,37 +121,31 @@ public class BalanceSubstMrService {
         balanceSubstResultHeaderRepo.save(header);
     }
 
-    private BalanceSubstResultMrLine calcLine(Map<String, Formula> formulas, CalcContext context) {
+    private BalanceSubstResultMrLine calcLine(BalanceSubstMrLine mrLine, Parameter parameter, CalcContext context) {
         BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
 
-        for (String key : formulas.keySet()) {
-            Formula formula = formulas.get(key);
-            String formulaText = calcService.formulaToString(formula);
-            System.out.println(formulaText);
-            try {
-                CalcResult result = calcService.calc(formulaText, context);
-                if (key.equals("start-val"))
-                    line.setStartVal(result.getDoubleVal());
+        DoubleExpression start = AtTimeValueExpression.builder()
+            .meteringPointCode(mrLine.getMeteringPoint().getCode())
+            .parameterCode(parameter.getCode())
+            .rate(1d)
+            .per("start")
+            .context(context)
+            .service(atTimeValueService)
+            .build();
 
-                if (key.equals("end-val"))
-                    line.setEndVal(result.getDoubleVal());
+        DoubleExpression end  = AtTimeValueExpression.builder()
+            .meteringPointCode(mrLine.getMeteringPoint().getCode())
+            .parameterCode(parameter.getCode())
+            .rate(1d)
+            .per("end")
+            .context(context)
+            .service(atTimeValueService)
+            .build();
 
-                if (key.equals("delta"))
-                    line.setDelta(result.getDoubleVal());
-            }
-            catch (Exception e) {
-                logger.error("ERROR: " + e.toString() + ", " + e.getMessage());
-            }
-        }
+        line.setStartVal(start.doubleValue());
+        line.setEndVal(end.doubleValue());
+        line.setDelta(Optional.ofNullable(line.getEndVal()).orElse(0d) - Optional.ofNullable(line.getStartVal()).orElse(0d));
 
         return line;
-    }
-
-    private Map<String, Formula> createFormulas(BalanceSubstMrLine mrLine, Parameter parameter) {
-        Map<String, Formula> map = new HashMap<>();
-        map.putIfAbsent("start-val", calcService.createFormula(mrLine.getMeteringPoint(), parameter, ParamTypeEnum.ATS));
-        map.putIfAbsent("end-val",   calcService.createFormula(mrLine.getMeteringPoint(), parameter, ParamTypeEnum.ATE));
-        map.putIfAbsent("delta",     calcService.createFormula(mrLine.getMeteringPoint(), parameter, ParamTypeEnum.DELTA));
-        return map;
     }
 }

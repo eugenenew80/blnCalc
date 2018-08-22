@@ -1,16 +1,13 @@
 package calc.formula.expression.impl;
 
-import calc.entity.calc.Formula;
 import calc.formula.expression.DoubleExpression;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BinaryOperator;
-
 import static java.util.stream.Collectors.toSet;
 
 @Builder
@@ -18,7 +15,7 @@ import static java.util.stream.Collectors.toSet;
 public class BinaryExpression implements DoubleExpression {
     private final List<DoubleExpression> expressions;
     private final BinaryOperator<DoubleExpression> operator;
-    private final Formula formula;
+    private final String code;
 
     @Override
     public DoubleExpression doubleExpression() {
@@ -38,16 +35,11 @@ public class BinaryExpression implements DoubleExpression {
     }
 
     @Override
-    public Set<String> meteringPoints() {
+    public Set<String> pointCodes() {
         Set<String> set = expressions.stream()
-            .flatMap(t -> t.meteringPoints().stream())
+            .flatMap(t -> t.pointCodes().stream())
             .collect(toSet());
 
         return new TreeSet<>(set);
-    }
-
-    @Override
-    public Formula getFormula() {
-        return formula;
     }
 }

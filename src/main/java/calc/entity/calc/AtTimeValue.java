@@ -18,14 +18,17 @@ public class AtTimeValue {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "media_at_time_values_s")
 	private Long id;
 
-	@Column(name = "metering_point_id")
-	private Long meteringPointId;
+	@ManyToOne
+	@JoinColumn(name = "metering_point_id")
+	private MeteringPoint meteringPoint;
 
-	@Column(name = "param_id")
-	private Long paramId;
+	@ManyToOne
+	@JoinColumn(name = "param_id")
+	private Parameter param;
 
-	@Column(name = "unit_id")
-	private Long unitId;
+	@ManyToOne
+	@JoinColumn(name = "unit_id")
+	private Unit unit;
 
 	@Column(name = "metering_date")
 	private LocalDateTime meteringDate;
@@ -43,12 +46,12 @@ public class AtTimeValue {
 	public CalcResult toResult() {
 		CalcResult result = new CalcResult();
 		result.setParamType("AT");
-		result.setInterval(null);
+		result.setPeriodType(null);
 		result.setMeteringDate(getMeteringDate());
-		result.setMeteringPointId(getMeteringPointId());
-		result.setParamId(getParamId());
-		result.setUnitId(getUnitId());
-		result.setDoubleVal(getVal());
+		result.setMeteringPoint(getMeteringPoint());
+		result.setParam(getParam());
+		result.setUnit(getUnit());
+		result.setDoubleValue(getVal());
 		result.setSourceType(getSourceType());
 		return result;
 	}

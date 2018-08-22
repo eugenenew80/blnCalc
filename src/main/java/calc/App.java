@@ -84,12 +84,12 @@ public class App  {
             .energyObjectId(11l)
             .energyObjectName("ПС Шымкент 500")
             .trace(new HashMap<>())
-            .values(new ArrayList<>())
+            .values(new HashMap<>())
             .build();
 
         Report report = reportRepo.findOne(reportId);
         Document document = executorService.buildReport(report.getId(), context);
-        executorService.save(document, "files/calculations.xml");
+        executorService.save(document, "files/calculation.xml");
 
         Document doc = executorService.transform(document);
         executorService.save(doc, "files/report.xml");

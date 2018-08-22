@@ -3968,5 +3968,69 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-458" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_formulas</comment>
+        <addColumn tableName="calc_formulas" schemaName="apps">
+            <column name="period_type" type="varchar2(20)" remarks="Тип периода" defaultValue="D">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-459" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_formulas</comment>
+        <createIndex indexName="idx_calc_formulas_3"
+                     schemaName="apps"
+                     tableName="calc_formulas"
+                     unique="false">
+            <column name="period_type" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-460" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formulas to calc_period_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formulas"
+                baseColumnNames="period_type"
+                constraintName="fk_calc_formulas_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-461" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_bs_result_headers_5"
+                     schemaName="apps"
+                     tableName="calc_bs_result_headers"
+                     unique="false">
+            <column name="status" type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-462" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_headers to media_batch_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_headers"
+                baseColumnNames="status"
+                constraintName="fk_calc_bs_result_headers_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batch_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 

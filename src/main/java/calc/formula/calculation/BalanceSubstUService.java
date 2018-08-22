@@ -1,12 +1,15 @@
-package calc.formula.calculations;
+package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.FormulaTypeEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
+import calc.formula.expression.DoubleExpression;
+import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.CalcService;
+import calc.formula.service.PeriodTimeValueService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -25,6 +28,7 @@ public class BalanceSubstUService {
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private final ParameterRepo parameterRepo;
+    private final PeriodTimeValueService periodTimeValueService;
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
@@ -42,7 +46,7 @@ public class BalanceSubstUService {
                 .docCode("ACT")
                 .docId(header.getId())
                 .trace(new HashMap<>())
-                .values(new ArrayList<>())
+                .values(new HashMap<>())
                 .build();
 
             Parameter parU = parameterRepo.findByCode("U");
@@ -50,8 +54,7 @@ public class BalanceSubstUService {
             List<BalanceSubstResultULine> resultLines = new ArrayList<>();
             List<BalanceSubstULine> uLines = header.getHeader().getULines();
             for (BalanceSubstULine uLine : uLines) {
-                Formula formula = createFormula(uLine.getMeteringPoint(), parU, ParamTypeEnum.PT);
-                BalanceSubstResultULine resultLine = calcLine(formula, context);
+                BalanceSubstResultULine resultLine = calcLine(uLine.getMeteringPoint(), parU, context);
                 resultLine.setHeader(header);
                 resultLine.setMeteringPoint(uLine.getMeteringPoint());
                 resultLine.setTiNum(uLine.getTiNum());
@@ -86,15 +89,24 @@ public class BalanceSubstUService {
         balanceSubstResultHeaderRepo.save(header);
     }
 
-    private BalanceSubstResultULine calcLine(Formula formula, CalcContext context) {
+    private BalanceSubstResultULine calcLine(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
         BalanceSubstResultULine line = new BalanceSubstResultULine();
-        String formulaText = calcService.formulaToString(formula);
-        System.out.println(formulaText);
         try {
-            CalcResult result = calcService.calc(formulaText, context);
+            DoubleExpression expression = PeriodTimeValueExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(parameter.getCode())
+                .rate(1d)
+                .startHour((byte) 0)
+                .endHour((byte) 23)
+                .periodType(PeriodTypeEnum.H)
+                .context(context)
+                .service(periodTimeValueService)
+                .build();
+
+            Double[] values = expression.doubleValues();
             Double sum = 0d;
             Double count = 0d;
-            for (Double d : result.getDoubleValues()) {
+            for (Double d : values) {
                 if (d != null) {
                     sum+=d;
                     count++;
@@ -106,33 +118,5 @@ public class BalanceSubstUService {
             logger.error("ERROR: " + e.toString() + ", " + e.getMessage());
         }
         return line;
-    }
-
-    private Formula createFormula(MeteringPoint meteringPoint, Parameter parameter, ParamTypeEnum paramType) {
-        Formula formula = new Formula();
-        formula.setText("a0");
-        formula.setMeteringPoint(meteringPoint);
-        formula.setFormulaType(FormulaTypeEnum.DIALOG);
-        formula.setVars(new ArrayList<>());
-
-        FormulaVar var = new FormulaVar();
-        formula.getVars().add(var);
-
-        var.setFormula(formula);
-        var.setVarName("a0");
-        var.setDetails(new ArrayList<>());
-
-        FormulaVarDet det = new FormulaVarDet();
-        var.getDetails().add(det);
-
-        det.setFormula(formula);
-        det.setFormulaVar(var);
-        det.setMeteringPoint(meteringPoint);
-        det.setParamType(paramType);
-        det.setRate(1d);
-        det.setSign("+");
-        det.setParam(parameter);
-
-        return formula;
     }
 }

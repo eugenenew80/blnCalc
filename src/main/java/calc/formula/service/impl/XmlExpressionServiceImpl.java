@@ -3,11 +3,10 @@ package calc.formula.service.impl;
 import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
-import calc.formula.expression.StringExpression;
+import calc.formula.exception.CycleDetectionException;
 import calc.formula.expression.impl.BinaryExpression;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.builder.ExpressionBuilderFactory;
-import calc.formula.expression.impl.MeteringPointExpression;
 import calc.formula.service.OperatorFactory;
 import calc.formula.service.XmlExpressionService;
 import lombok.RequiredArgsConstructor;
@@ -34,19 +33,19 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
     private final OperatorFactory operatorFactory;
 
     @Override
-    public DoubleExpression parse(Node node, Formula formula, String parameterCode, CalcContext context) {
+    public DoubleExpression parse(Node node, String parameterCode, CalcContext context) {
         String nodeType = getNodeType(node);
         if (nodeType.equals("binary"))
-            return buildBinary(node, formula, parameterCode, context);
+            return buildBinary(node, parameterCode, context);
 
         if (nodeType.equals("unary"))
-            return buildUnary(node, formula, parameterCode, context);
+            return buildUnary(node, parameterCode, context);
 
         if (nodeType.equals("doubleExpression"))
-            return buildExpression(node, formula, parameterCode, context);
+            return buildExpression(node, parameterCode, context);
 
         if (nodeType.equals("stringExpression"))
-            return buildExpression(node, formula, parameterCode, context);
+            return buildExpression(node, parameterCode, context);
 
         throw new IllegalArgumentException("Invalid operation: " + node.getNodeName());
     }
@@ -68,7 +67,7 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
             .getParentNode()
             .getFirstChild();
 
-        return parse(node, formula, parameterCode, context);
+        return parse(node, parameterCode, context);
     }
 
 
@@ -89,9 +88,9 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         return "doubleExpression";
     }
 
-    private DoubleExpression buildBinary(Node node, Formula formula, String parameterCode, CalcContext context) {
+    private DoubleExpression buildBinary(Node node, String parameterCode, CalcContext context) {
         BinaryOperator<DoubleExpression> binaryOperator = operatorFactory.binary(node.getNodeName());
-        List<DoubleExpression> expressions = buildExpressions(node, formula, parameterCode, context);
+        List<DoubleExpression> expressions = buildExpressions(node, parameterCode, context);
 
         BinaryExpression expression = BinaryExpression.builder()
             .operator(binaryOperator)
@@ -101,7 +100,7 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         return expression;
     }
 
-    private DoubleExpression buildUnary(Node node, Formula formula, String parameterCode, CalcContext context) {
+    private DoubleExpression buildUnary(Node node, String parameterCode, CalcContext context) {
         int k=-1;
         for (int i=0; i<node.getChildNodes().getLength(); i++) {
             if (node.getChildNodes().item(i).getNodeType()==1) {
@@ -111,46 +110,42 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         }
 
         UnaryOperator<DoubleExpression> operator = operatorFactory.unary(node.getNodeName());
-        DoubleExpression expression = buildExpression(node.getChildNodes().item(k), formula, parameterCode, context);
+        DoubleExpression expression = buildExpression(node.getChildNodes().item(k), parameterCode, context);
         return expression.andThen(operator);
     }
 
-    private List<DoubleExpression> buildExpressions(Node node, Formula formula, String parameterCode, CalcContext context) {
+    private List<DoubleExpression> buildExpressions(Node node, String parameterCode, CalcContext context) {
         List<DoubleExpression> expressions = new ArrayList<>();
         for (int i=0; i<node.getChildNodes().getLength(); i++) {
             if (node.getChildNodes().item(i).getNodeType()==3) continue;
-            DoubleExpression expression = buildExpression(node.getChildNodes().item(i), formula, parameterCode, context);
+            DoubleExpression expression = buildExpression(node.getChildNodes().item(i), parameterCode, context);
             expressions.add(expression);
         }
 
         return expressions;
     }
 
-    private DoubleExpression buildExpression(Node node, Formula formula, String parameterCode, CalcContext context) {
+    private DoubleExpression buildExpression(Node node, String parameterCode, CalcContext context) {
         ExpressionBuilder builder = builderFactory.getBuilder(node.getNodeName(), this);
         if (builder!=null)
-            return builder.build(node, formula, parameterCode, context);
+            return builder.build(node, parameterCode, context);
 
-        return parse(node, formula, parameterCode, context);
+        return parse(node, parameterCode, context);
     }
 
-
-    public List<String> sort(Map<String, DoubleExpression> expressionMap) throws Exception {
+    public List<String> sort(Map<String, Set<String>> pointCodesMap) throws CycleDetectionException {
         DefaultDirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        for (String key : expressionMap.keySet())
+        for (String key : pointCodesMap.keySet())
             graph.addVertex(key);
 
-        for (String key : expressionMap.keySet()) {
-            DoubleExpression expression = expressionMap.get(key);
-            for (String mp : expression.meteringPoints()) {
-                if (graph.containsVertex(mp))
-                    graph.addEdge(mp, key);
-            }
+        for (String parentPointCode : pointCodesMap.keySet()) {
+            for (String childPointCode : pointCodesMap.get(parentPointCode))
+                if (graph.containsVertex(childPointCode)) graph.addEdge(childPointCode, parentPointCode);
         }
 
         Set<String> detectedCycles = detectCycles(graph);
         if (!detectedCycles.isEmpty())
-            throw new Exception("Cycles detected: " + detectedCycles.iterator().next());
+            throw new CycleDetectionException("Cycles detected", detectedCycles.iterator().next());
 
         List<String> ordered = new ArrayList<>();
         TopologicalOrderIterator<String, DefaultEdge> orderIterator = new TopologicalOrderIterator<>(graph);

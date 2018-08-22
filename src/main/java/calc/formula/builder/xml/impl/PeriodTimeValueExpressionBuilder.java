@@ -1,6 +1,7 @@
 package calc.formula.builder.xml.impl;
 
 import calc.entity.calc.Formula;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
@@ -15,12 +16,12 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
     private final PeriodTimeValueService service;
 
     @Override
-    public PeriodTimeValueExpression build(Node node, Formula formula, CalcContext context) {
-        return build(node, formula, null, context);
+    public PeriodTimeValueExpression build(Node node, CalcContext context) {
+        return build(node,null, context);
     }
 
     @Override
-    public PeriodTimeValueExpression build(Node node, Formula formula, String parameterCode, CalcContext context) {
+    public PeriodTimeValueExpression build(Node node, String parameterCode, CalcContext context) {
         NamedNodeMap attributes = node.getAttributes();
 
         String mp = "";
@@ -28,6 +29,7 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
         Double rate = 1d;
         Byte startHour = 0;
         Byte endHour = 23;
+        PeriodTypeEnum periodType = PeriodTypeEnum.D;
         for (int i=0; i<attributes.getLength(); i++) {
             String attrName = attributes.item(i).getNodeName();
             String attrValue = attributes.item(i).getNodeValue();
@@ -37,6 +39,9 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
                     break;
                 case "param":
                     param = attrValue;
+                    break;
+                case "interval":
+                    periodType = PeriodTypeEnum.valueOf(attrValue);
                     break;
                 case "rate":
                     rate = Double.parseDouble(attrValue);
@@ -56,10 +61,10 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
         return PeriodTimeValueExpression.builder()
             .meteringPointCode(mp)
             .parameterCode(param)
+            .periodType(periodType)
             .rate(rate)
             .startHour(startHour)
             .endHour(endHour)
-            .formula(formula)
             .service(service)
             .context(context)
             .build();
