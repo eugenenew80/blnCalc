@@ -2,8 +2,6 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
-import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.AtTimeValueExpression;
@@ -19,7 +17,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -60,8 +61,26 @@ public class BalanceSubstMrService {
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             List<BalanceSubstMrLine> mrLines = header.getHeader().getMrLines();
             for (BalanceSubstMrLine mrLine : mrLines) {
-                List<MeterHistory> meters = mrLine.getMeteringPoint().getMeters();
-                for (Parameter param : Arrays.asList(parAp, parAm, parRp, parRm)) {
+
+                List<BypassMode> bypassModes = mrLine.getMeteringPoint().getBypassModes();
+                System.out.println(bypassModes.size());
+
+                List<UndercountHeader> undercountHeaders = mrLine.getMeteringPoint().getUndercountHeaders();
+                System.out.println(undercountHeaders.size());
+
+                List<MeterHistory> meterHistory = mrLine.getMeteringPoint().getMeterHistory();
+                List<MeterHistory> curMeterHistory = getCurrentMeterHistory(meterHistory, context);
+
+                List<Parameter> parameters = new ArrayList<>();
+                if (curMeterHistory!=null && curMeterHistory.size()>0) {
+                    if (curMeterHistory.get(0).getMeter().getIsAm()) parameters.add(parAm);
+                    if (curMeterHistory.get(0).getMeter().getIsAp()) parameters.add(parAp);
+                    if (curMeterHistory.get(0).getMeter().getIsRm()) parameters.add(parRm);
+                    if (curMeterHistory.get(0).getMeter().getIsRp()) parameters.add(parRp);
+                }
+                if (parameters.isEmpty()) continue;
+
+                for (Parameter param : parameters) {
                     BalanceSubstResultMrLine line = calcLine(mrLine, param, context);
 
                     if (mrLine.getIsSection1()) line.setSection("1");
@@ -80,9 +99,9 @@ public class BalanceSubstMrService {
                     if (line.getStartVal() == null && line.getEndVal()==null)
                         line.setDelta(null);
 
-                    if (meters.size()>0) {
-                        line.setMeter(meters.get(0).getMeter());
-                        line.setMeterRate(meters.get(0).getFactor());
+                    if (meterHistory.size()>0) {
+                        line.setMeter(meterHistory.get(0).getMeter());
+                        line.setMeterRate(meterHistory.get(0).getFactor());
                         if (line.getMeterRate()!=null && line.getDelta()!=null)
                             line.setVal(line.getDelta() * line.getMeterRate());
                     }
@@ -105,6 +124,19 @@ public class BalanceSubstMrService {
             logger.error("Metering reading for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
         }
+    }
+
+    private List<MeterHistory> getCurrentMeterHistory(List<MeterHistory> meterHistory, CalcContext context) {
+        LocalDateTime startPer = context.getStartDate().atStartOfDay();
+        LocalDateTime endPer = context.getEndDate().atStartOfDay().plusDays(1);
+
+        return meterHistory.stream()
+            .filter(t -> {
+                LocalDateTime startDateTime = t.getStartDateTime() == null ? startPer : t.getStartDateTime();
+                LocalDateTime endDateTime = t.getEndDateTime() == null ? endPer : t.getEndDateTime();
+                return (startDateTime.isEqual(startPer) || startDateTime.isBefore(startPer)) && (endDateTime.isEqual(endPer) || endDateTime.isAfter(endPer));
+            })
+            .collect(Collectors.toList());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

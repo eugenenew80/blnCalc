@@ -6,6 +6,7 @@ import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -31,8 +32,8 @@ public class MeterHistory {
     private String serial;
 
     @Column(name = "start_datetime")
-    private LocalDate startDateTime;
+    private LocalDateTime startDateTime;
 
     @Column(name = "end_datetime")
-    private LocalDate endDateTime;
+    private LocalDateTime endDateTime;
 }

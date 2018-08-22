@@ -36,7 +36,7 @@ public class TaskExecutor {
 
     @Scheduled(cron = "*/30 * * * * *")
     public void run() {
-        test();
+        //test();
 
         List<BalanceSubstResultHeader> headers = balanceSubstResultHeaderRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;

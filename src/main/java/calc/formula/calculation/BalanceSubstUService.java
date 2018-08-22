@@ -71,6 +71,7 @@ public class BalanceSubstUService {
             updateStatus(header, BatchStatusEnum.E);
             logger.error("Uavg for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -112,7 +113,10 @@ public class BalanceSubstUService {
                     count++;
                 }
             }
-            line.setVal(sum / count);
+            if (count != 0)
+                line.setVal(sum / count);
+            else
+                line.setVal(0d);
         }
         catch (Exception e) {
             logger.error("ERROR: " + e.toString() + ", " + e.getMessage());

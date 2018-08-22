@@ -28,15 +28,18 @@ public class MeteringPoint {
     @Column(name = "metering_point_type_id")
     private Long meteringPointTypeId;
 
-    @OneToMany(mappedBy = "meteringPoint")
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
     private List<Formula> formulas;
 
-    @OneToMany(mappedBy = "meteringPoint")
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
     private List<MeteringPointParameter> parameters;
 
-    @OneToMany(mappedBy = "meteringPoint")
-    @Fetch(FetchMode.SUBSELECT)
-    private List<MeterHistory> meters;
+    @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
+    private List<MeterHistory> meterHistory;
+
+    @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
+    private List<UndercountHeader> undercountHeaders;
+
+    @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
+    private List<BypassMode> bypassModes;
 }
