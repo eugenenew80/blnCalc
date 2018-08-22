@@ -71,4 +71,8 @@ public class BalanceSubstResultMrLine {
     @Column(name = "is_bypass_bus_section")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isBypassSection;
+
+    @ManyToOne
+    @JoinColumn(name = "under_count_id")
+    private Undercount undercount;
 }

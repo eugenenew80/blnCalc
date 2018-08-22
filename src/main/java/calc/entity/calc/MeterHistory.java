@@ -32,8 +32,8 @@ public class MeterHistory {
     private String serial;
 
     @Column(name = "start_datetime")
-    private LocalDateTime startDateTime;
+    private LocalDateTime startDate;
 
     @Column(name = "end_datetime")
-    private LocalDateTime endDateTime;
+    private LocalDateTime endDate;
 }

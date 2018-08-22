@@ -2,8 +2,7 @@ package calc.entity.calc;
 
 import lombok.*;
 import javax.persistence.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+
 import org.hibernate.annotations.Immutable;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class MeteringPoint {
     private List<MeterHistory> meterHistory;
 
     @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
-    private List<UndercountHeader> undercountHeaders;
+    private List<Undercount> undercountHeaders;
 
     @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
     private List<BypassMode> bypassModes;

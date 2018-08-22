@@ -7,10 +7,7 @@ import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.AtTimeValueExpression;
 import calc.formula.service.AtTimeValueService;
 import calc.formula.service.CalcService;
-import calc.repo.calc.BalanceSubstResultHeaderRepo;
-import calc.repo.calc.BalanceSubstResultMrLineRepo;
-import calc.repo.calc.ParameterRepo;
-import calc.repo.calc.UnitRepo;
+import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +27,11 @@ public class BalanceSubstMrService {
     private final ParameterRepo parameterRepo;
     private final UnitRepo unitRepo;
     private final AtTimeValueService atTimeValueService;
+    private final BypassModeRepo bypassModeRepo;
+    private final UndercountRepo undercountRepo;
+    private final MeterHistoryRepo meterHistoryRepo;
 
-    public void calc(BalanceSubstResultHeader header)  {
+    public void calc(BalanceSubstResultHeader header) {
         try {
             logger.info("Metering reading for header " + header.getId() + " started");
             updateStatus(header, BatchStatusEnum.P);
@@ -61,31 +59,32 @@ public class BalanceSubstMrService {
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             List<BalanceSubstMrLine> mrLines = header.getHeader().getMrLines();
             for (BalanceSubstMrLine mrLine : mrLines) {
-                List<MeterHistory> meterHistory = mrLine.getMeteringPoint().getMeterHistory();
-                List<BypassMode> bypassModes = mrLine.getMeteringPoint().getBypassModes();
-                List<UndercountHeader> undercountHeaders = mrLine.getMeteringPoint().getUndercountHeaders();
 
+                List<MeterHistory> meterHistory = meterHistoryRepo.findAllByMeteringPointIdAndDate(
+                    mrLine.getMeteringPoint().getId(),
+                    context.getStartDate().atStartOfDay()
+                );
 
+                List<BypassMode> bypassModes = bypassModeRepo.findAllByMeteringPointIdAndDate(
+                    mrLine.getMeteringPoint().getId(),
+                    context.getStartDate().atStartOfDay()
+                );
 
-                List<MeterHistory> curMeterHistory = getCurrentMeterHistory(meterHistory, context);
+                List<Undercount> undercounts = undercountRepo.findAllByMeteringPointIdAndDate(
+                    mrLine.getMeteringPoint().getId(),
+                    context.getStartDate().atStartOfDay()
+                );
 
                 List<Parameter> parameters = new ArrayList<>();
-                if (curMeterHistory!=null && curMeterHistory.size()>0) {
-                    if (curMeterHistory.get(0).getMeter().getIsAm()) parameters.add(parAm);
-                    if (curMeterHistory.get(0).getMeter().getIsAp()) parameters.add(parAp);
-                    if (curMeterHistory.get(0).getMeter().getIsRm()) parameters.add(parRm);
-                    if (curMeterHistory.get(0).getMeter().getIsRp()) parameters.add(parRp);
+                if (meterHistory!=null && meterHistory.size()>0) {
+                    if (meterHistory.get(0).getMeter().getIsAm()) parameters.add(parAm);
+                    if (meterHistory.get(0).getMeter().getIsAp()) parameters.add(parAp);
+                    if (meterHistory.get(0).getMeter().getIsRm()) parameters.add(parRm);
+                    if (meterHistory.get(0).getMeter().getIsRp()) parameters.add(parRp);
                 }
-                if (parameters.isEmpty()) continue;
 
                 for (Parameter param : parameters) {
                     BalanceSubstResultMrLine line = calcLine(mrLine, param, context);
-
-                    if (mrLine.getIsSection1()) line.setSection("1");
-                    if (mrLine.getIsSection2()) line.setSection("2");
-                    if (mrLine.getIsSection3()) line.setSection("3");
-                    if (mrLine.getIsSection4()) line.setSection("4");
-                    if (mrLine.getIsSection5()) line.setSection("5");
 
                     line.setHeader(header);
                     line.setMeteringPoint(mrLine.getMeteringPoint());
@@ -93,9 +92,6 @@ public class BalanceSubstMrService {
                     line.setUnit(aUnitCode);
                     line.setStartMeteringDate(context.getStartDate().atStartOfDay());
                     line.setEndMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
-
-                    if (line.getStartVal() == null && line.getEndVal()==null)
-                        line.setDelta(null);
 
                     if (meterHistory.size()>0) {
                         line.setMeter(meterHistory.get(0).getMeter());
@@ -107,6 +103,28 @@ public class BalanceSubstMrService {
                     line.setIsIgnore(false);
                     line.setIsBypassSection(false);
                     line.setBypassMeteringPoint(null);
+
+                    if (bypassModes.size()>0) {
+                        BypassMode bypassMode = bypassModes.get(0);
+                        BypassModeValue bypassModeValue = bypassMode.getValues()
+                            .stream()
+                            .filter(v -> v.getParameter().equals(param))
+                            .findFirst()
+                            .orElse(null);
+
+                        if (bypassModeValue!=null)
+                            line.setBypassMeteringPoint(bypassMode.getBypassMeteringPoint());
+                    }
+
+                    if (undercounts.size()>0) {
+                        Undercount undercount = undercounts.stream()
+                            .filter(u -> u.getParameter().equals(param))
+                            .findFirst()
+                            .orElse(null);
+
+                        if (undercount!=null)
+                            line.setUndercount(undercount);
+                    }
 
                     resultLines.add(line);
                 }
@@ -122,19 +140,6 @@ public class BalanceSubstMrService {
             logger.error("Metering reading for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
         }
-    }
-
-    private List<MeterHistory> getCurrentMeterHistory(List<MeterHistory> meterHistory, CalcContext context) {
-        LocalDateTime startPer = context.getStartDate().atStartOfDay();
-        LocalDateTime endPer = context.getEndDate().atStartOfDay().plusDays(1);
-
-        return meterHistory.stream()
-            .filter(t -> {
-                LocalDateTime startDateTime = t.getStartDateTime() == null ? startPer : t.getStartDateTime();
-                LocalDateTime endDateTime = t.getEndDateTime() == null ? endPer : t.getEndDateTime();
-                return (startDateTime.isEqual(startPer) || startDateTime.isBefore(startPer)) && (endDateTime.isEqual(endPer) || endDateTime.isAfter(endPer));
-            })
-            .collect(Collectors.toList());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -174,7 +179,17 @@ public class BalanceSubstMrService {
 
         line.setStartVal(start.doubleValue());
         line.setEndVal(end.doubleValue());
-        line.setDelta(Optional.ofNullable(line.getEndVal()).orElse(0d) - Optional.ofNullable(line.getStartVal()).orElse(0d));
+
+        if (line.getStartVal() == null && line.getEndVal()==null)
+            line.setDelta(null);
+        else
+            line.setDelta(Optional.ofNullable(line.getEndVal()).orElse(0d) - Optional.ofNullable(line.getStartVal()).orElse(0d));
+
+        if (mrLine.getIsSection1()) line.setSection("1");
+        if (mrLine.getIsSection2()) line.setSection("2");
+        if (mrLine.getIsSection3()) line.setSection("3");
+        if (mrLine.getIsSection4()) line.setSection("4");
+        if (mrLine.getIsSection5()) line.setSection("5");
 
         return line;
     }

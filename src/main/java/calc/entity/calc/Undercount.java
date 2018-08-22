@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "mdfem_undercount_header")
 @Immutable
-public class UndercountHeader {
+public class Undercount {
 
     @Id
     private Long id;
@@ -30,10 +30,10 @@ public class UndercountHeader {
     private MeteringPoint meteringPoint;
 
     @Column(name = "violation_datetime")
-    private LocalDateTime violationDateTime;
+    private LocalDateTime startDate;
 
     @Column(name = "restoration_datetime")
-    private LocalDateTime restorationDateTime;
+    private LocalDateTime endDate;
 
     @Column(name = "loss_amount")
     private Double val;
