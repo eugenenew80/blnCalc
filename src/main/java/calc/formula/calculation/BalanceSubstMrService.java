@@ -61,14 +61,12 @@ public class BalanceSubstMrService {
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             List<BalanceSubstMrLine> mrLines = header.getHeader().getMrLines();
             for (BalanceSubstMrLine mrLine : mrLines) {
-
-                List<BypassMode> bypassModes = mrLine.getMeteringPoint().getBypassModes();
-                System.out.println(bypassModes.size());
-
-                List<UndercountHeader> undercountHeaders = mrLine.getMeteringPoint().getUndercountHeaders();
-                System.out.println(undercountHeaders.size());
-
                 List<MeterHistory> meterHistory = mrLine.getMeteringPoint().getMeterHistory();
+                List<BypassMode> bypassModes = mrLine.getMeteringPoint().getBypassModes();
+                List<UndercountHeader> undercountHeaders = mrLine.getMeteringPoint().getUndercountHeaders();
+
+
+
                 List<MeterHistory> curMeterHistory = getCurrentMeterHistory(meterHistory, context);
 
                 List<Parameter> parameters = new ArrayList<>();
