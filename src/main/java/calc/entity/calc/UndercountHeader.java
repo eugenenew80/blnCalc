@@ -38,7 +38,7 @@ public class UndercountHeader {
     @Column(name = "loss_amount")
     private Double val;
 
-    @Column(name = "is_ignore_metering_reading")
+    @Column(name = "is_ignore_meter_reading")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isIgnoreMeteringReading;
 
