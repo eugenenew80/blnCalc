@@ -56,7 +56,7 @@ public class ReportExecutorServiceImpl implements ReportExecutorService {
             if (cell.getAttr().getValueType()== ValueTypeEnum.FORMULA && cell.getFormula()!=null) {
                 CalcResult result = null;
                 try {
-                    result = calcService.calc(cell.getFormula(), context);
+                    result = calcService.calcStr(cell.getFormula(), context);
                 }
                 catch (Exception e) {
                     results.put(cell.getId(), null);

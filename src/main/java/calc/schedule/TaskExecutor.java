@@ -54,8 +54,8 @@ public class TaskExecutor {
 
     private void test() {
         CalcContext context = CalcContext.builder()
-            .startDate(LocalDate.of(2018, Month.AUGUST, 14))
-            .endDate(LocalDate.of(2018, Month.AUGUST, 15))
+            .startDate(LocalDate.of(2018, Month.AUGUST, 13))
+            .endDate(LocalDate.of(2018, Month.AUGUST, 13))
             .orgId(1l)
             .energyObjectType("SUBSTATION")
             .energyObjectId(1l)
@@ -66,7 +66,8 @@ public class TaskExecutor {
 
         List<CalcResult> results;
         try {
-            results = calcService.calcMeteringPoints(Arrays.asList(meteringPointRepo.findOne(5l)), context);
+            results = calcService.calcMeteringPoints(Arrays.asList(meteringPointRepo.findOne(9020l)), context);
+            //results.stream().forEach(r -> System.out.println( r.getDoubleValue() ));
             results.stream().forEach(r -> System.out.println( Arrays.deepToString(r.getDoubleValues())));
         }
         catch (CycleDetectionException e) {

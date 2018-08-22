@@ -13,15 +13,13 @@ import calc.formula.expression.DoubleExpression;
 import java.util.List;
 
 public interface CalcService {
-    CalcResult calc(DoubleExpression expression);
+    CalcResult calcStr(String formula, CalcContext context) throws Exception;
 
-    CalcResult calc(String formula, CalcContext context) throws Exception;
+    CalcResult calcExpression(DoubleExpression expression);
 
-    List<CalcResult> calc(List<Formula> formulas, CalcContext context) throws CycleDetectionException;
+    List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws CycleDetectionException;
 
     List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, CalcContext context) throws CycleDetectionException;
-
-    DoubleExpression buildExpression(MeteringPoint meteringPoint, Parameter parameter, ParamTypeEnum paramType, PeriodTypeEnum periodType, CalcContext context);
 
     DoubleExpression buildExpression(Formula formula, CalcContext context);
 }

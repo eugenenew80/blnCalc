@@ -7,7 +7,9 @@ import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.expression.DoubleExpression;
+import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.CalcService;
+import calc.formula.service.PeriodTimeValueService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -26,6 +28,7 @@ public class BalanceSubstUService {
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private final ParameterRepo parameterRepo;
+    private final PeriodTimeValueService periodTimeValueService;
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
@@ -89,11 +92,21 @@ public class BalanceSubstUService {
     private BalanceSubstResultULine calcLine(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
         BalanceSubstResultULine line = new BalanceSubstResultULine();
         try {
-            DoubleExpression expression = calcService.buildExpression(meteringPoint, parameter, ParamTypeEnum.PT, PeriodTypeEnum.H, context);
-            CalcResult result = calcService.calc(expression);
+            DoubleExpression expression = PeriodTimeValueExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(parameter.getCode())
+                .rate(1d)
+                .startHour((byte) 0)
+                .endHour((byte) 23)
+                .periodType(PeriodTypeEnum.H)
+                .context(context)
+                .service(periodTimeValueService)
+                .build();
+
+            Double[] values = expression.doubleValues();
             Double sum = 0d;
             Double count = 0d;
-            for (Double d : result.getDoubleValues()) {
+            for (Double d : values) {
                 if (d != null) {
                     sum+=d;
                     count++;

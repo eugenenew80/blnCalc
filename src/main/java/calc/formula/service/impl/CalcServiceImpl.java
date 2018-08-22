@@ -3,7 +3,6 @@ package calc.formula.service.impl;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.FormulaTypeEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
-import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.formula.exception.CycleDetectionException;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-
 @SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
@@ -32,17 +30,16 @@ public class CalcServiceImpl implements CalcService {
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
 
-    @Override
-    public CalcResult calc(String text, CalcContext context) throws Exception {
+    public CalcResult calcStr(String text, CalcContext context) throws Exception {
         Formula formula = new Formula();
         formula.setText(text);
 
         DoubleExpression expression = expressionService.parse(formula, context);
-        return calc(expression);
+        return calcExpression(expression);
     }
 
     @Override
-    public CalcResult calc(DoubleExpression expression) {
+    public CalcResult calcExpression(DoubleExpression expression) {
         CalcResult result = new CalcResult();
         result.setDoubleValue(expression.doubleValue());
         result.setDoubleValues(expression.doubleValues());
@@ -56,7 +53,7 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-    public List<CalcResult> calc(List<Formula> formulas, CalcContext context) throws CycleDetectionException {
+    public List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws CycleDetectionException {
         Map<String, Formula> formulaMap = new HashMap<>();
         Map<String, DoubleExpression> expressionMap = new HashMap<>();
         Map<String, Set<String>> codesMap = new HashMap<>();
@@ -119,7 +116,7 @@ public class CalcServiceImpl implements CalcService {
             .flatMap(p -> p.getFormulas().stream())
             .collect(Collectors.toList());
 
-        List<CalcResult> results = calc(formulas, context);
+        List<CalcResult> results = calcFormulas(formulas, context);
 
         return results.stream()
             .filter(r -> points.stream().filter(t -> t.getCode().equals(r.getMeteringPoint().getCode())).findFirst().isPresent())
@@ -169,56 +166,6 @@ public class CalcServiceImpl implements CalcService {
             }
         }
     }
-
-    @Override
-    public DoubleExpression buildExpression(MeteringPoint meteringPoint, Parameter parameter, ParamTypeEnum paramType, PeriodTypeEnum periodType, CalcContext context) {
-        AtTimeValueExpression start = AtTimeValueExpression.builder()
-            .meteringPointCode(meteringPoint.getCode())
-            .parameterCode(parameter.getCode())
-            .rate(1d)
-            .per("start")
-            .context(context)
-            .service(atTimeValueService)
-            .build();
-
-        AtTimeValueExpression end = AtTimeValueExpression.builder()
-            .meteringPointCode(meteringPoint.getCode())
-            .parameterCode(parameter.getCode())
-            .rate(1d)
-            .per("end")
-            .context(context)
-            .service(atTimeValueService)
-            .build();
-
-        if (paramType == ParamTypeEnum.AT || paramType == ParamTypeEnum.ATE)
-            return end;
-
-        if (paramType == ParamTypeEnum.ATS)
-            return start;
-
-        if (paramType == ParamTypeEnum.DELTA) {
-            return BinaryExpression.builder()
-                .expressions(Arrays.asList(end, start))
-                .operator(operatorFactory.binary("subtract"))
-                .build();
-        }
-
-        if (paramType == ParamTypeEnum.PT) {
-            return PeriodTimeValueExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(parameter.getCode())
-                .rate(1d)
-                .startHour((byte) 0)
-                .endHour((byte) 23)
-                .periodType(periodType)
-                .context(context)
-                .service(periodTimeValueService)
-                .build();
-        }
-
-        return DoubleValueExpression.builder().build();
-    }
-
     @Override
     public DoubleExpression buildExpression(Formula formula, CalcContext context) {
         if (formula.getFormulaType() != FormulaTypeEnum.DIALOG)

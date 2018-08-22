@@ -55,7 +55,7 @@ public class PeriodTimeValueExpression implements DoubleExpression {
                 .map(t -> t.getDoubleValue())
                 .reduce((t1, t2) -> {
                     if (t1 == null && t2 == null) return null;
-                    return Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t1).orElse(0d);
+                    return Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d);
                 })
                 .orElse(null);
 

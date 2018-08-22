@@ -6,6 +6,8 @@ import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
+import calc.formula.expression.impl.AtTimeValueExpression;
+import calc.formula.service.AtTimeValueService;
 import calc.formula.service.CalcService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultMrLineRepo;
@@ -28,6 +30,7 @@ public class BalanceSubstMrService {
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final ParameterRepo parameterRepo;
     private final UnitRepo unitRepo;
+    private final AtTimeValueService atTimeValueService;
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
@@ -121,8 +124,23 @@ public class BalanceSubstMrService {
     private BalanceSubstResultMrLine calcLine(BalanceSubstMrLine mrLine, Parameter parameter, CalcContext context) {
         BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
 
-        DoubleExpression start = calcService.buildExpression(mrLine.getMeteringPoint(), parameter, ParamTypeEnum.ATS, PeriodTypeEnum.D, context);
-        DoubleExpression end   = calcService.buildExpression(mrLine.getMeteringPoint(), parameter, ParamTypeEnum.ATE, PeriodTypeEnum.D, context);
+        DoubleExpression start = AtTimeValueExpression.builder()
+            .meteringPointCode(mrLine.getMeteringPoint().getCode())
+            .parameterCode(parameter.getCode())
+            .rate(1d)
+            .per("start")
+            .context(context)
+            .service(atTimeValueService)
+            .build();
+
+        DoubleExpression end  = AtTimeValueExpression.builder()
+            .meteringPointCode(mrLine.getMeteringPoint().getCode())
+            .parameterCode(parameter.getCode())
+            .rate(1d)
+            .per("end")
+            .context(context)
+            .service(atTimeValueService)
+            .build();
 
         line.setStartVal(start.doubleValue());
         line.setEndVal(end.doubleValue());

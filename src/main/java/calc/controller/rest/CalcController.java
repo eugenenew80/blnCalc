@@ -20,7 +20,7 @@ public class CalcController {
     @PostConstruct
     private void init() { }
 
-    @PostMapping(value = "/rest/calc/text", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
+    @PostMapping(value = "/rest/calcXmlExpression/text", produces = "application/json;charset=utf-8", consumes = "application/json;charset=utf-8")
     public CalcResult calc(@RequestBody ContextDto contextDto) throws Exception {
         byte[] contentAsBytes = Base64.decodeBase64(contextDto.getContentBase64());
         String formula = new String(contentAsBytes, Charset.forName("UTF-8"));
@@ -31,6 +31,6 @@ public class CalcController {
             .orgId(contextDto.getOrgId())
             .build();
 
-        return calcService.calc(formula, context);
+        return null;
     }
 }
