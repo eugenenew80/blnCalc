@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +41,17 @@ public class BalanceSubstMrService {
             deleteLines(header);
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
 
-            Parameter parAp = parameterRepo.findByCode("A+");
-            Parameter parAm = parameterRepo.findByCode("A-");
-            Parameter parRp = parameterRepo.findByCode("R+");
-            Parameter parRm = parameterRepo.findByCode("R-");
-            Unit aUnitCode = unitRepo.findByCode("kW.h");
+            Map<String, Parameter> mapParams = new HashMap<>();
+            mapParams.put("A-", parameterRepo.findByCode("A-"));
+            mapParams.put("A+", parameterRepo.findByCode("A+"));
+            mapParams.put("R-", parameterRepo.findByCode("R-"));
+            mapParams.put("R+", parameterRepo.findByCode("R+"));
+
+            Map<String, Unit> mapUnits = new HashMap<>();
+            mapUnits.put("A-", unitRepo.findByCode("kW.h"));
+            mapUnits.put("A+", unitRepo.findByCode("kW.h"));
+            mapUnits.put("R-", unitRepo.findByCode("kVAR.h"));
+            mapUnits.put("R+", unitRepo.findByCode("kVAR.h"));
 
             CalcContext context = CalcContext.builder()
                 .startDate(header.getStartDate())
@@ -56,77 +65,48 @@ public class BalanceSubstMrService {
                 .values(new HashMap<>())
                 .build();
 
+            LocalDateTime startDate = context.getStartDate().atStartOfDay();
+            LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
+
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
-            List<BalanceSubstMrLine> mrLines = header.getHeader().getMrLines();
-            for (BalanceSubstMrLine mrLine : mrLines) {
-
-                List<MeterHistory> meterHistory = meterHistoryRepo.findAllByMeteringPointIdAndDate(
-                    mrLine.getMeteringPoint().getId(),
-                    context.getStartDate().atStartOfDay()
-                );
-
-                List<BypassMode> bypassModes = bypassModeRepo.findAllByMeteringPointIdAndDate(
-                    mrLine.getMeteringPoint().getId(),
-                    context.getStartDate().atStartOfDay()
-                );
-
-                List<Undercount> undercounts = undercountRepo.findAllByMeteringPointIdAndDate(
-                    mrLine.getMeteringPoint().getId(),
-                    context.getStartDate().atStartOfDay()
-                );
-
-                List<Parameter> parameters = new ArrayList<>();
-                if (meterHistory!=null && meterHistory.size()>0) {
-                    if (meterHistory.get(0).getMeter().getIsAm()) parameters.add(parAm);
-                    if (meterHistory.get(0).getMeter().getIsAp()) parameters.add(parAp);
-                    if (meterHistory.get(0).getMeter().getIsRm()) parameters.add(parRm);
-                    if (meterHistory.get(0).getMeter().getIsRp()) parameters.add(parRp);
-                }
-
-                for (Parameter param : parameters) {
-                    BalanceSubstResultMrLine line = calcLine(mrLine, param, context);
-
+            for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
+                List<BalanceSubstResultMrLine> lines = calcLines(mrLine.getMeteringPoint(), null, mapParams, context);
+                for (BalanceSubstResultMrLine line : lines) {
                     line.setHeader(header);
                     line.setMeteringPoint(mrLine.getMeteringPoint());
-                    line.setParam(param);
-                    line.setUnit(aUnitCode);
-                    line.setStartMeteringDate(context.getStartDate().atStartOfDay());
-                    line.setEndMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
-
-                    if (meterHistory.size()>0) {
-                        line.setMeter(meterHistory.get(0).getMeter());
-                        line.setMeterRate(meterHistory.get(0).getFactor());
-                        if (line.getMeterRate()!=null && line.getDelta()!=null)
-                            line.setVal(line.getDelta() * line.getMeterRate());
-                    }
-
+                    line.setUnit(mapUnits.get(line.getParam().getCode()));
+                    line.setSection(getSection(mrLine));
                     line.setIsIgnore(false);
                     line.setIsBypassSection(false);
                     line.setBypassMeteringPoint(null);
 
-                    if (bypassModes.size()>0) {
-                        BypassMode bypassMode = bypassModes.get(0);
-                        BypassModeValue bypassModeValue = bypassMode.getValues()
-                            .stream()
-                            .filter(v -> v.getParameter().equals(param))
-                            .findFirst()
-                            .orElse(null);
+                    if (line.getStartVal() != null || line.getEndVal() !=null)
+                        line.setDelta(Optional.ofNullable(line.getEndVal()).orElse(0d) - Optional.ofNullable(line.getStartVal()).orElse(0d));
 
-                        if (bypassModeValue!=null)
-                            line.setBypassMeteringPoint(bypassMode.getBypassMeteringPoint());
+                    if (line.getMeterRate()!=null && line.getDelta()!=null)
+                        line.setVal(line.getDelta() * line.getMeterRate());
+                }
+                resultLines.addAll(lines);
+
+
+                for (BypassMode bypassMode : bypassModeRepo.findAllByMeteringPointIdAndDate(mrLine.getMeteringPoint().getId(), startDate, endDate)) {
+                    lines = calcLines(bypassMode.getBypassMeteringPoint(), bypassMode, mapParams, context);
+                    for (BalanceSubstResultMrLine line : lines) {
+                        line.setHeader(header);
+                        line.setMeteringPoint(mrLine.getMeteringPoint());
+                        line.setBypassMeteringPoint(bypassMode.getBypassMeteringPoint());
+                        line.setUnit(mapUnits.get(line.getParam().getCode()));
+                        line.setSection(getSection(mrLine));
+                        line.setIsIgnore(false);
+                        line.setIsBypassSection(bypassMode.getIsBusSection());
+
+                        if (line.getStartVal() != null || line.getEndVal() !=null)
+                            line.setDelta(Optional.ofNullable(line.getEndVal()).orElse(0d) - Optional.ofNullable(line.getStartVal()).orElse(0d));
+
+                        if (line.getMeterRate()!=null && line.getDelta()!=null)
+                            line.setVal(line.getDelta() * line.getMeterRate());
                     }
-
-                    if (undercounts.size()>0) {
-                        Undercount undercount = undercounts.stream()
-                            .filter(u -> u.getParameter().equals(param))
-                            .findFirst()
-                            .orElse(null);
-
-                        if (undercount!=null)
-                            line.setUndercount(undercount);
-                    }
-
-                    resultLines.add(line);
+                    resultLines.addAll(lines);
                 }
             }
 
@@ -139,6 +119,7 @@ public class BalanceSubstMrService {
             updateStatus(header, BatchStatusEnum.E);
             logger.error("Metering reading for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -156,41 +137,144 @@ public class BalanceSubstMrService {
         balanceSubstResultHeaderRepo.save(header);
     }
 
-    private BalanceSubstResultMrLine calcLine(BalanceSubstMrLine mrLine, Parameter parameter, CalcContext context) {
-        BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
+    private List<BalanceSubstResultMrLine> calcLines(MeteringPoint meteringPoint, BypassMode bypassMode, Map<String, Parameter> mapParams, CalcContext context) {
+        LocalDateTime startDate = context.getStartDate().atStartOfDay();
+        LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
 
-        DoubleExpression start = AtTimeValueExpression.builder()
-            .meteringPointCode(mrLine.getMeteringPoint().getCode())
-            .parameterCode(parameter.getCode())
-            .rate(1d)
-            .per("start")
-            .context(context)
-            .service(atTimeValueService)
-            .build();
+        List<MeterHistory> meters = meterHistoryRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate);
+        List<Parameter> parameters = getParameters(meters, mapParams);
 
-        DoubleExpression end  = AtTimeValueExpression.builder()
-            .meteringPointCode(mrLine.getMeteringPoint().getCode())
-            .parameterCode(parameter.getCode())
+        List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
+        for (Parameter param : parameters) {
+            if (meters.size() == 0) {
+                BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
+                line.setParam(param);
+                line.setStartMeteringDate(startDate);
+                line.setEndMeteringDate(endDate);
+                DoubleExpression start = getStartBalance(meteringPoint, param, context);
+                line.setStartVal(start.doubleValue());
+                DoubleExpression end = getEndBalance(meteringPoint, param, context);
+                line.setEndVal(end.doubleValue());
+                resultLines.add(line);
+                continue;
+            }
+
+            for (MeterHistory meter : meters) {
+                BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
+                line.setParam(param);
+                line.setMeteringPoint(meteringPoint);
+                line.setMeter(meter.getMeter());
+                line.setMeterRate(meter.getFactor());
+
+                if (bypassMode == null) {
+                    if (meter.getStartDate() == null || meter.getStartDate().isBefore(startDate)) {
+                        DoubleExpression start = getStartBalance(meteringPoint, param, context);
+                        line.setStartVal(start.doubleValue());
+                        line.setStartMeteringDate(startDate);
+                    }
+                    if (meter.getStartDate() != null && !meter.getStartDate().isBefore(startDate)) {
+                        line.setStartVal(getNewVal(meter, param));
+                        line.setStartMeteringDate(meter.getStartDate());
+                    }
+                    if (meter.getEndDate() == null || meter.getEndDate().isAfter(endDate)) {
+                        DoubleExpression end = getEndBalance(meteringPoint, param, context);
+                        line.setEndVal(end.doubleValue());
+                        line.setEndMeteringDate(endDate);
+                    }
+                    if (meter.getEndDate() != null && !meter.getEndDate().isAfter(endDate)) {
+                        line.setEndVal(getPrevVal(meter, param));
+                        line.setEndMeteringDate(meter.getEndDate());
+                    }
+                }
+
+                if (bypassMode!=null) {
+                    if (meter.getStartDate() == null || meter.getStartDate().isBefore(startDate)) {
+                        if (bypassMode.getStartDate()==null || bypassMode.getStartDate().isBefore(startDate)) {
+                            DoubleExpression start = getStartBalance(meteringPoint, param, context);
+                            line.setStartVal(start.doubleValue());
+                            line.setStartMeteringDate(startDate);
+                        }
+                    }
+                    if (meter.getStartDate() != null && !meter.getStartDate().isBefore(startDate)) {
+                        line.setStartVal(getNewVal(meter, param));
+                        line.setStartMeteringDate(meter.getStartDate());
+                    }
+                    if (meter.getEndDate() == null || meter.getEndDate().isAfter(endDate)) {
+                        DoubleExpression end = getEndBalance(meteringPoint, param, context);
+                        line.setEndVal(end.doubleValue());
+                        line.setEndMeteringDate(endDate);
+                    }
+                    if (meter.getEndDate() != null && !meter.getEndDate().isAfter(endDate)) {
+                        line.setEndVal(getPrevVal(meter, param));
+                        line.setEndMeteringDate(meter.getEndDate());
+                    }
+                }
+
+                if (meter.getUndercount()!=null && meter.getUndercount().getParameter().equals(param))
+                    line.setUndercount(meter.getUndercount());
+
+                resultLines.add(line);
+            }
+        }
+        return resultLines;
+    }
+
+    private String getSection(BalanceSubstMrLine mrLine) {
+        if (mrLine.getIsSection1()) return "1";
+        if (mrLine.getIsSection2()) return "2";
+        if (mrLine.getIsSection3()) return "3";
+        if (mrLine.getIsSection4()) return "4";
+        if (mrLine.getIsSection5()) return "5";
+        return "";
+    }
+
+    private List<Parameter> getParameters(List<MeterHistory> meters, Map<String, Parameter> mapParams ) {
+        if (meters==null || meters.size()==0)
+            return mapParams.values().stream().collect(toList());
+
+        List<Parameter> parameters = new ArrayList<>();
+        if (meters.get(0).getMeter().getIsAm()) parameters.add(mapParams.get("A-"));
+        if (meters.get(0).getMeter().getIsAp()) parameters.add(mapParams.get("A+"));
+        if (meters.get(0).getMeter().getIsRm()) parameters.add(mapParams.get("R-"));
+        if (meters.get(0).getMeter().getIsRp()) parameters.add(mapParams.get("R+"));
+        return parameters;
+    }
+
+    private Double getPrevVal(MeterHistory meter, Parameter param) {
+        if (param.getCode().equals("A+")) return meter.getApPrev();
+        if (param.getCode().equals("A-")) return meter.getAmPrev();
+        if (param.getCode().equals("R+")) return meter.getRpPrev();
+        if (param.getCode().equals("R-")) return meter.getRmPrev();
+        return null;
+    }
+
+    private Double getNewVal(MeterHistory meter, Parameter param) {
+        if (param.getCode().equals("A+")) return meter.getApNew();
+        if (param.getCode().equals("A-")) return meter.getAmNew();
+        if (param.getCode().equals("R+")) return meter.getRpNew();
+        if (param.getCode().equals("R-")) return meter.getRmNew();
+        return null;
+    }
+
+    private DoubleExpression getEndBalance(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
+        return AtTimeValueExpression.builder()
+            .meteringPointCode(meteringPoint.getCode())
+            .parameterCode(param.getCode())
             .rate(1d)
             .per("end")
             .context(context)
             .service(atTimeValueService)
             .build();
+    }
 
-        line.setStartVal(start.doubleValue());
-        line.setEndVal(end.doubleValue());
-
-        if (line.getStartVal() == null && line.getEndVal()==null)
-            line.setDelta(null);
-        else
-            line.setDelta(Optional.ofNullable(line.getEndVal()).orElse(0d) - Optional.ofNullable(line.getStartVal()).orElse(0d));
-
-        if (mrLine.getIsSection1()) line.setSection("1");
-        if (mrLine.getIsSection2()) line.setSection("2");
-        if (mrLine.getIsSection3()) line.setSection("3");
-        if (mrLine.getIsSection4()) line.setSection("4");
-        if (mrLine.getIsSection5()) line.setSection("5");
-
-        return line;
+    private DoubleExpression getStartBalance(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
+        return AtTimeValueExpression.builder()
+            .meteringPointCode(meteringPoint.getCode())
+            .parameterCode(param.getCode())
+            .rate(1d)
+            .per("start")
+            .context(context)
+            .service(atTimeValueService)
+            .build();
     }
 }

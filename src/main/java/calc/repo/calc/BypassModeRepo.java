@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface BypassModeRepo extends JpaRepository<BypassMode, Long> {
 
-    @Query("select m from BypassMode m where m.meteringPoint.id = ?1 and (m.startDate is null or m.startDate <= ?2) and (m.endDate is null or m.endDate > ?2) order by m.startDate, m.endDate" )
-    List<BypassMode> findAllByMeteringPointIdAndDate(Long meteringPointId, LocalDateTime dateTime);
+    @Query("select t from BypassMode t where t.meteringPoint.id = ?1 and ( (t.startDate is null or t.startDate <= ?2) and (t.endDate is null or t.endDate > ?3) or t.startDate between ?2 and ?3 or t.endDate between ?2 and ?3) order by t.startDate, t.endDate" )
+    List<BypassMode> findAllByMeteringPointIdAndDate(Long meteringPointId, LocalDateTime startDate, LocalDateTime endDateTime);
 }
