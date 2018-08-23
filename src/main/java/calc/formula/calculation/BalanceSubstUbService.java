@@ -6,6 +6,7 @@ import calc.formula.CalcContext;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultMrLineRepo;
 import calc.repo.calc.MeterHistoryRepo;
+import calc.repo.calc.MeteringPointModeRepo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class BalanceSubstUbService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstUbService.class);
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
+    private final MeteringPointModeRepo meteringPointModeRepo;
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
@@ -82,10 +84,10 @@ public class BalanceSubstUbService {
 
                 List<MeterHistory> meterHistory = mrLines.stream()
                     .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
-                    .filter(t -> t.getParam().getCode().equals("A+"))
                     .filter(t -> !t.getIsIgnore())
                     .filter(t -> t.getMeter() != null && t.getMeterHistory() != null)
                     .map(t -> t.getMeterHistory())
+                    .distinct()
                     .collect(toList());
 
 
