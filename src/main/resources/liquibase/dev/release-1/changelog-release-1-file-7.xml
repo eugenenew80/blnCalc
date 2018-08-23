@@ -4038,6 +4038,9 @@
             <column name="under_count_val" type="number" remarks="Недоучёт">
                 <constraints nullable="true"/>
             </column>
+            <column name="meter_history_id" type="number" remarks="Идентификатор акта замены/установки прибора учёта">
+                <constraints nullable="true"/>
+            </column>
         </addColumn>
     </changeSet>
 

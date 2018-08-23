@@ -32,6 +32,10 @@ public class BalanceSubstResultMrLine {
     private Meter meter;
 
     @ManyToOne
+    @JoinColumn(name = "meter_history_id")
+    private MeterHistory meterHistory;
+
+    @ManyToOne
     @JoinColumn(name = "param_id")
     private Parameter param;
 

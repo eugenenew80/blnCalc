@@ -17,13 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstUbService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstUbService.class);
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
-    private final MeterHistoryRepo meterHistoryRepo;
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
@@ -79,20 +80,13 @@ public class BalanceSubstUbService {
                     .reduce((t1, t2) -> t1 + t2)
                     .get();
 
-                Meter meter = mrLines.stream()
+                List<MeterHistory> meterHistory = mrLines.stream()
                     .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
                     .filter(t -> t.getParam().getCode().equals("A+"))
                     .filter(t -> !t.getIsIgnore())
-                    .filter(t -> t.getMeter() != null)
-                    .map(t -> t.getMeter())
-                    .findFirst()
-                    .orElse(null);
-
-                MeterHistory meterHistory = meterHistoryRepo.findAllByMeteringPointIdAndDate(ubLine.getMeteringPoint().getId(), context.getStartDate().atStartOfDay())
-                    .stream()
-                    .filter(t -> t.getMeter().equals(meter))
-                    .findFirst()
-                    .orElse(null);
+                    .filter(t -> t.getMeter() != null && t.getMeterHistory() != null)
+                    .map(t -> t.getMeterHistory())
+                    .collect(toList());
 
 
             }
