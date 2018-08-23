@@ -36,4 +36,8 @@ public class MeterHistory {
 
     @Column(name = "end_datetime")
     private LocalDateTime endDate;
+
+    @ManyToOne
+    @JoinColumn(name = "tt_type_id")
+    private TtType ttType;
 }

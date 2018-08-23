@@ -56,6 +56,9 @@ public class BalanceSubstResultMrLine {
     @Column(name = "val")
     private Double val;
 
+    @Column(name = "under_count_val")
+    private Double underCountVal;
+
     @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
