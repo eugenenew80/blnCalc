@@ -27,18 +27,12 @@ public class MeteringPoint {
     @Column(name = "metering_point_type_id")
     private Long meteringPointTypeId;
 
+    @Column(name = "rated_voltage")
+    private Double ratedVoltage;
+
     @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
     private List<Formula> formulas;
 
     @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
     private List<MeteringPointParameter> parameters;
-
-    @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
-    private List<MeterHistory> meterHistory;
-
-    @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
-    private List<Undercount> undercountHeaders;
-
-    @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
-    private List<BypassMode> bypassModes;
 }

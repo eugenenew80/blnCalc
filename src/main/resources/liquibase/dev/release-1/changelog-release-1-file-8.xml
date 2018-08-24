@@ -1410,4 +1410,463 @@
                 sequenceName="calc_metering_data_source_lines_s"
                 startValue="1"/>
     </changeSet>
+
+
+    <changeSet id="calc-rus-219" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_power_equipment_types</comment>
+        <createTable tableName="calc_power_equipment_types" schemaName="apps" remarks="Справочник Типы силового оборудования">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-220" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_power_equipment_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_power_equipment_types"
+                schemaName="apps"
+                tableName="calc_power_equipment_types"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-221" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_power_equipment_types_tl</comment>
+        <createTable tableName="calc_power_equipment_types_tl" schemaName="apps" remarks="Перевод Справочник Типы силового оборудования">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(100)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-222" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_power_equipment_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code,lang"
+                constraintName="pk_calc_power_equipment_types_tl"
+                schemaName="apps"
+                tableName="calc_power_equipment_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-223" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_power_equipment_types_tl to calc_power_equipment_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_power_equipment_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_power_equipment_types_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_power_equipment_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-224" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_power_equipment_types</comment>
+        <insert schemaName="apps" tableName="calc_power_equipment_types">
+            <column name="code" type="varchar2" value="T"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_power_equipment_types">
+            <column name="code" type="varchar2" value="R"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-226" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_power_equipment_types_tl</comment>
+        <insert schemaName="apps" tableName="calc_power_equipment_types_tl">
+            <column name="code" type="varchar2" value="T"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Трансформатор"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_power_equipment_types_tl">
+            <column name="code" type="varchar2" value="T"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Трансформатор"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_power_equipment_types_tl">
+            <column name="code" type="varchar2" value="R"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Реактор"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_power_equipment_types_tl">
+            <column name="code" type="varchar2" value="R"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Реактор"/>
+        </insert>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-227" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_calculation_algorithm</comment>
+        <createTable tableName="calc_calculation_algorithm" schemaName="apps" remarks="Справочник Алгоритм расчета">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-228" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_calculation_algorithm</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_calculation_algorithm"
+                schemaName="apps"
+                tableName="calc_calculation_algorithm"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-229" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table:calc_calculation_algorithm_tl</comment>
+        <createTable tableName="calc_calculation_algorithm_tl" schemaName="apps" remarks="Перевод Справочник Алгоритм расчета">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(100)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-230" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_calculation_algorithm_tl</comment>
+        <addPrimaryKey
+                columnNames="code,lang"
+                constraintName="pk_calc_calculation_algorithm_tl"
+                schemaName="apps"
+                tableName="calc_calculation_algorithm_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-231" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_calculation_algorithm_tl to calc_calculation_algorithm</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_calculation_algorithm_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_calculation_algorithm_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_calculation_algorithm"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-232" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_calculation_algorithm</comment>
+        <insert schemaName="apps" tableName="calc_calculation_algorithm">
+            <column name="code" type="varchar2" value="M"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculation_algorithm">
+            <column name="code" type="varchar2" value="C"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-233" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_calculation_algorithm_tl</comment>
+        <insert schemaName="apps" tableName="calc_calculation_algorithm_tl">
+            <column name="code" type="varchar2" value="M"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="По счетчикам"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculation_algorithm_tl">
+            <column name="code" type="varchar2" value="M"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="По счетчикам"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculation_algorithm_tl">
+            <column name="code" type="varchar2" value="C"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Расчетным способом"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_calculation_algorithm_tl">
+            <column name="code" type="varchar2" value="C"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Расчетным способом"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-rus-234" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addColumn tableName="calc_balance_subst_pe_lines" schemaName="apps">
+            <column name="power_equipment_types" type="varchar2(10)" remarks="Тип силового оборудования">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-235" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addColumn tableName="calc_balance_subst_pe_lines" schemaName="apps">
+            <column name="calculation_algorithm" type="varchar2(10)" remarks="Алгоритм расчета">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-236" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addColumn tableName="calc_balance_subst_pe_lines" schemaName="apps">
+            <column name="is_losses" type="number" remarks="Учитывать в Потери всего">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-237" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_pe_lines to calc_calculation_algorithm</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_pe_lines"
+                baseColumnNames="calculation_algorithm"
+                constraintName="fk_calc_balance_subst_pe_lines_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_calculation_algorithm"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-238" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_pe_lines to calc_power_equipment_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_pe_lines"
+                baseColumnNames="power_equipment_types"
+                constraintName="fk_calc_balance_subst_pe_lines_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_power_equipment_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-239" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column to calc_service_values_reconciliations</comment>
+        <addColumn tableName="calc_service_values_reconciliations" schemaName="apps">
+            <column name="send_date" type="TIMESTAMP" remarks="Дата отправки в подсистему Финансы">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-240" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>rename column calc_service_values_reconciliations.status to state</comment>
+        <renameColumn columnDataType="varchar2(20)"
+                      newColumnName="state"
+                      oldColumnName="status"
+                      remarks="Статус согласования"
+                      schemaName="apps"
+                      tableName="calc_service_values_reconciliations"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-241" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column to calc_service_values_reconciliations</comment>
+        <addColumn tableName="calc_service_values_reconciliations" schemaName="apps">
+            <column name="status" type="varchar2(30)" remarks="Статус формирвоания">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn></changeSet>
+
+    <changeSet id="calc-rus-242" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations to media_batch_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations"
+                baseColumnNames="status"
+                constraintName="fk_calc_service_values_reconciliations_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batch_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-rus-243" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_service_values_messages</comment>
+        <createTable tableName="calc_service_values_messages" schemaName="apps" remarks="Список ошибок для Акты сверки объемов оказанных услуг">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="service_values_reconciliation_id" type="number" remarks="Идентификатор акта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки документа">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="message_type_code" type="varchar2(10)" remarks="Тип ошибки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="error_code" type="varchar2(10)" remarks="Код ошибки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="msg_text" type="varchar2(500)" remarks="Текст ошибки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-244" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_service_values_messages</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_service_values_messages"
+                schemaName="apps"
+                tableName="calc_service_values_messages"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-245" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_service_values_messages</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_service_values_messages_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-246" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_service_values_messages to calc_service_values_reconciliations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_messages"
+                baseColumnNames="service_values_reconciliation_id"
+                constraintName="fk_calc_service_values_messages_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_service_values_reconciliations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-247" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column to calc_metering_point_settings</comment>
+        <addColumn tableName="calc_metering_point_settings" schemaName="apps">
+            <column name="is_total" type="number" remarks="итого по договору">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

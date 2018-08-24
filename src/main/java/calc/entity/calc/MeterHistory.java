@@ -64,4 +64,8 @@ public class MeterHistory {
     @ManyToOne
     @JoinColumn(name = "undercount_header_id")
     private Undercount undercount;
+
+    @ManyToOne
+    @JoinColumn(name = "tt_type_id")
+    private TtType ttType;
 }

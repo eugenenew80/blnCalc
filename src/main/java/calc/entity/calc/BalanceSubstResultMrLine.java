@@ -32,6 +32,10 @@ public class BalanceSubstResultMrLine {
     private Meter meter;
 
     @ManyToOne
+    @JoinColumn(name = "meter_history_id")
+    private MeterHistory meterHistory;
+
+    @ManyToOne
     @JoinColumn(name = "param_id")
     private Parameter param;
 
@@ -55,6 +59,9 @@ public class BalanceSubstResultMrLine {
 
     @Column(name = "val")
     private Double val;
+
+    @Column(name = "under_count_val")
+    private Double underCountVal;
 
     @ManyToOne
     @JoinColumn(name = "unit_id")
