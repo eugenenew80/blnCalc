@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -63,7 +62,7 @@ public class MeterHistory {
 
     @ManyToOne
     @JoinColumn(name = "undercount_header_id")
-    private Undercount undercount;
+    private UnderCount undercount;
 
     @ManyToOne
     @JoinColumn(name = "tt_type_id")

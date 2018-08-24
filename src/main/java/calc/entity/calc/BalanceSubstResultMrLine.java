@@ -81,5 +81,5 @@ public class BalanceSubstResultMrLine {
 
     @ManyToOne
     @JoinColumn(name = "under_count_id")
-    private Undercount undercount;
+    private UnderCount undercount;
 }
