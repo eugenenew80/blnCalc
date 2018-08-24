@@ -151,100 +151,160 @@ public class BalanceSubstMrService {
                 line.setParam(param);
                 line.setStartMeteringDate(startDate);
                 line.setEndMeteringDate(endDate);
-                DoubleExpression start = getStartBalance(meteringPoint, param, context);
-                line.setStartVal(start.doubleValue());
-                DoubleExpression end = getEndBalance(meteringPoint, param, context);
-                line.setEndVal(end.doubleValue());
+                line.setStartVal(getStartVal(meteringPoint, param, context));
+                line.setEndVal(getEndVal(meteringPoint, param, context));
                 resultLines.add(line);
                 continue;
             }
 
             for (MeterHistory meterHistory : meterHistories) {
+                LocalDateTime meterStartDate = Optional.ofNullable(meterHistory.getStartDate()).orElse(LocalDateTime.MIN);
+                LocalDateTime meterEndDate = Optional.ofNullable(meterHistory.getEndDate()).orElse(LocalDateTime.MAX);
+
                 BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
                 line.setParam(param);
                 line.setMeteringPoint(meteringPoint);
                 line.setMeter(meterHistory.getMeter());
                 line.setMeterHistory(meterHistory);
                 line.setMeterRate(meterHistory.getFactor());
+                line.setBypassMode(bypassMode);
 
                 if (bypassMode == null) {
-                    if (meterHistory.getStartDate() == null || meterHistory.getStartDate().isBefore(startDate)) {
-                        DoubleExpression start = getStartBalance(meteringPoint, param, context);
-                        line.setStartVal(start.doubleValue());
+                    if (meterStartDate.isBefore(startDate)) {
+                        line.setStartVal(getStartVal(meteringPoint, param, context));
                         line.setStartMeteringDate(startDate);
                     }
-                    if (meterHistory.getStartDate() != null && !meterHistory.getStartDate().isBefore(startDate)) {
-                        line.setStartVal(getNewVal(meterHistory, param));
+
+                    if (!meterStartDate.isBefore(startDate)) {
+                        line.setStartVal(getMeterStartVal(meterHistory, param));
                         line.setStartMeteringDate(meterHistory.getStartDate());
                     }
-                    if (meterHistory.getEndDate() == null || meterHistory.getEndDate().isAfter(endDate)) {
-                        DoubleExpression end = getEndBalance(meteringPoint, param, context);
-                        line.setEndVal(end.doubleValue());
+
+                    if (meterEndDate.isAfter(endDate)) {
+                        line.setEndVal(getEndVal(meteringPoint, param, context));
                         line.setEndMeteringDate(endDate);
                     }
-                    if (meterHistory.getEndDate() != null && !meterHistory.getEndDate().isAfter(endDate)) {
-                        line.setEndVal(getPrevVal(meterHistory, param));
+
+                    if (!meterEndDate.isAfter(endDate)) {
+                        line.setEndVal(getMeterEndVal(meterHistory, param));
                         line.setEndMeteringDate(meterHistory.getEndDate());
                     }
                 }
 
                 if (bypassMode!=null) {
-                    if (meterHistory.getStartDate() == null || meterHistory.getStartDate().isBefore(startDate)) {
-                        if (bypassMode.getStartDate()==null || bypassMode.getStartDate().isBefore(startDate)) {
-                            DoubleExpression start = getStartBalance(meteringPoint, param, context);
-                            line.setStartVal(start.doubleValue());
+                    LocalDateTime bypassStartDate = Optional.ofNullable(bypassMode.getStartDate()).orElse(LocalDateTime.MIN);
+                    LocalDateTime bypassEndDate = Optional.ofNullable(bypassMode.getEndDate()).orElse(LocalDateTime.MAX);
+
+                    if (meterStartDate.isBefore(startDate)) {
+                        if (bypassStartDate.isBefore(startDate)) {
+                            line.setStartVal(getStartVal(meteringPoint, param, context));
                             line.setStartMeteringDate(startDate);
                         }
                         else {
-                            Double startVal = bypassMode.getValues()
-                                .stream()
-                                .filter(v -> v.getParameter().equals(param))
-                                .map(v -> v.getStartValue())
-                                .findFirst()
-                                .orElse(null);
-
-                            line.setStartVal(startVal);
+                            line.setStartVal(getBypassStartVal(bypassMode, param));
                             line.setStartMeteringDate(bypassMode.getStartDate());
                         }
                     }
 
-                    if (meterHistory.getEndDate() == null || meterHistory.getEndDate().isAfter(endDate)) {
-                        if (bypassMode.getEndDate()==null || bypassMode.getEndDate().isAfter(endDate)) {
-                            DoubleExpression end = getEndBalance(meteringPoint, param, context);
-                            line.setEndVal(end.doubleValue());
+                    if (meterEndDate.isAfter(endDate)) {
+                        if (bypassEndDate.isAfter(endDate)) {
+                            line.setEndVal(getEndVal(meteringPoint, param, context));
                             line.setEndMeteringDate(endDate);
                         }
                         else {
-                            Double endVal = bypassMode.getValues()
-                                .stream()
-                                .filter(v -> v.getParameter().equals(param))
-                                .map(v -> v.getEndValue())
-                                .findFirst()
-                                .orElse(null);
-
-                            line.setEndVal(endVal);
+                            line.setEndVal(getBypassEndVal(bypassMode, param));
                             line.setEndMeteringDate(bypassMode.getEndDate());
                         }
                     }
 
-                    if (meterHistory.getStartDate() != null && !meterHistory.getStartDate().isBefore(startDate)) {
-                        line.setStartVal(getNewVal(meterHistory, param));
-                        line.setStartMeteringDate(meterHistory.getStartDate());
+                    if (!meterStartDate.isBefore(startDate)) {
+                        if (bypassStartDate.isBefore(meterStartDate)) {
+                            line.setStartVal(getMeterStartVal(meterHistory, param));
+                            line.setStartMeteringDate(meterHistory.getStartDate());
+                        }
+                        else {
+                            line.setStartVal(getBypassStartVal(bypassMode, param));
+                            line.setStartMeteringDate(bypassMode.getStartDate());
+                        }
                     }
 
-                    if (meterHistory.getEndDate() != null && !meterHistory.getEndDate().isAfter(endDate)) {
-                        line.setEndVal(getPrevVal(meterHistory, param));
-                        line.setEndMeteringDate(meterHistory.getEndDate());
+                    if (!meterEndDate.isAfter(endDate)) {
+                        if (meterEndDate.isBefore(bypassEndDate)) {
+                            line.setEndVal(getMeterEndVal(meterHistory, param));
+                            line.setEndMeteringDate(meterHistory.getEndDate());
+                        }
+                        else {
+                            line.setEndVal(getBypassEndVal(bypassMode, param));
+                            line.setEndMeteringDate(bypassMode.getEndDate());
+                        }
                     }
                 }
 
                 if (meterHistory.getUndercount()!=null && meterHistory.getUndercount().getParameter().equals(param))
                     line.setUndercount(meterHistory.getUndercount());
 
-                resultLines.add(line);
+                if (line.getEndMeteringDate().isAfter(line.getStartMeteringDate()))
+                    resultLines.add(line);
             }
         }
         return resultLines;
+    }
+
+    private Double getBypassStartVal(BypassMode bypassMode, Parameter param) {
+        return bypassMode.getValues()
+            .stream()
+            .filter(v -> v.getParameter().equals(param))
+            .map(v -> v.getStartValue())
+            .findFirst()
+            .orElse(null);
+    }
+
+    private Double getBypassEndVal(BypassMode bypassMode, Parameter param) {
+        return bypassMode.getValues()
+            .stream()
+            .filter(v -> v.getParameter().equals(param))
+            .map(v -> v.getEndValue())
+            .findFirst()
+            .orElse(null);
+    }
+    private Double getMeterStartVal(MeterHistory meter, Parameter param) {
+        if (param.getCode().equals("A+")) return meter.getApPrev();
+        if (param.getCode().equals("A-")) return meter.getAmPrev();
+        if (param.getCode().equals("R+")) return meter.getRpPrev();
+        if (param.getCode().equals("R-")) return meter.getRmPrev();
+        return null;
+    }
+
+    private Double getMeterEndVal(MeterHistory meter, Parameter param) {
+        if (param.getCode().equals("A+")) return meter.getApNew();
+        if (param.getCode().equals("A-")) return meter.getAmNew();
+        if (param.getCode().equals("R+")) return meter.getRpNew();
+        if (param.getCode().equals("R-")) return meter.getRmNew();
+        return null;
+    }
+
+    private Double getStartVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
+        return AtTimeValueExpression.builder()
+            .meteringPointCode(meteringPoint.getCode())
+            .parameterCode(param.getCode())
+            .rate(1d)
+            .per("start")
+            .context(context)
+            .service(atTimeValueService)
+            .build()
+            .doubleValue();
+    }
+
+    private Double getEndVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
+        return AtTimeValueExpression.builder()
+            .meteringPointCode(meteringPoint.getCode())
+            .parameterCode(param.getCode())
+            .rate(1d)
+            .per("end")
+            .context(context)
+            .service(atTimeValueService)
+            .build()
+            .doubleValue();
     }
 
     private String getSection(BalanceSubstMrLine mrLine) {
@@ -266,43 +326,5 @@ public class BalanceSubstMrService {
         if (meters.get(0).getMeter().getIsRm()) parameters.add(mapParams.get("R-"));
         if (meters.get(0).getMeter().getIsRp()) parameters.add(mapParams.get("R+"));
         return parameters;
-    }
-
-    private Double getPrevVal(MeterHistory meter, Parameter param) {
-        if (param.getCode().equals("A+")) return meter.getApPrev();
-        if (param.getCode().equals("A-")) return meter.getAmPrev();
-        if (param.getCode().equals("R+")) return meter.getRpPrev();
-        if (param.getCode().equals("R-")) return meter.getRmPrev();
-        return null;
-    }
-
-    private Double getNewVal(MeterHistory meter, Parameter param) {
-        if (param.getCode().equals("A+")) return meter.getApNew();
-        if (param.getCode().equals("A-")) return meter.getAmNew();
-        if (param.getCode().equals("R+")) return meter.getRpNew();
-        if (param.getCode().equals("R-")) return meter.getRmNew();
-        return null;
-    }
-
-    private DoubleExpression getEndBalance(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
-        return AtTimeValueExpression.builder()
-            .meteringPointCode(meteringPoint.getCode())
-            .parameterCode(param.getCode())
-            .rate(1d)
-            .per("end")
-            .context(context)
-            .service(atTimeValueService)
-            .build();
-    }
-
-    private DoubleExpression getStartBalance(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
-        return AtTimeValueExpression.builder()
-            .meteringPointCode(meteringPoint.getCode())
-            .parameterCode(param.getCode())
-            .rate(1d)
-            .per("start")
-            .context(context)
-            .service(atTimeValueService)
-            .build();
     }
 }

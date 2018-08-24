@@ -36,6 +36,10 @@ public class BalanceSubstResultMrLine {
     private MeterHistory meterHistory;
 
     @ManyToOne
+    @JoinColumn(name = "bypass_mode_id")
+    private BypassMode bypassMode;
+
+    @ManyToOne
     @JoinColumn(name = "param_id")
     private Parameter param;
 
