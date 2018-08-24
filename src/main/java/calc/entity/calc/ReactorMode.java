@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_metering_point_modes")
+@Table(name = "calc_reactor_modes")
 @Immutable
-public class MeteringPointMode implements Period {
+public class ReactorMode implements Period {
     @Id
     private Long id;
 
@@ -21,8 +21,8 @@ public class MeteringPointMode implements Period {
     private Substation substation;
 
     @ManyToOne
-    @JoinColumn(name = "metering_point_id")
-    private MeteringPoint meteringPoint;
+    @JoinColumn(name = "reactor_id")
+    private Reactor reactor;
 
     @Column(name = "start_date")
     private LocalDateTime startDate;

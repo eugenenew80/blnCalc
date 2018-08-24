@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import static java.util.stream.Collectors.toList;
 
+@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstMrService {

@@ -3,6 +3,8 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
+import calc.formula.expression.impl.WorkingHoursExpression;
+import calc.formula.service.WorkingHoursService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultMrLineRepo;
 import calc.repo.calc.MeteringPointModeRepo;
@@ -27,7 +29,7 @@ public class BalanceSubstUbService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstUbService.class);
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
-    private final MeteringPointModeRepo meteringPointModeRepo;
+    private final WorkingHoursService workingHoursService;
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
@@ -48,7 +50,6 @@ public class BalanceSubstUbService {
                 .build();
 
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
-
 
             Double wsum1 = header.getHeader().getUbLines().stream()
                 .filter(t -> t.getIsSection1())
@@ -79,7 +80,14 @@ public class BalanceSubstUbService {
                     .distinct()
                     .collect(toList());
 
-                Double workHours = getWorkHours(ubLine.getMeteringPoint(), context);
+                Double workHours = WorkingHoursExpression.builder()
+                    .objectType("mp")
+                    .objectId(ubLine.getMeteringPoint().getId())
+                    .service(workingHoursService)
+                    .context(context)
+                    .build()
+                    .doubleValue();
+
                 Double ratedVoltage = ubLine.getMeteringPoint().getRatedVoltage();
 
                 for (MeterHistory meterHistory : meterHistories) {
@@ -145,33 +153,5 @@ public class BalanceSubstUbService {
     public void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         balanceSubstResultHeaderRepo.save(header);
-    }
-
-    private Double getWorkHours(MeteringPoint meteringPoint, CalcContext context) {
-        LocalDateTime startDate = context.getStartDate().atStartOfDay();
-        LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
-
-        List<MeteringPointMode> modes = meteringPointModeRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate);
-        Double hours = getHoursBetween(startDate, endDate);
-        for (MeteringPointMode mode : modes) {
-            LocalDateTime modeStartDate = Optional.ofNullable(mode.getStartDate()).orElse(LocalDateTime.MIN);
-            LocalDateTime modeEndDate = Optional.ofNullable(mode.getEndDate()).orElse(LocalDateTime.MAX);
-
-            if (startDate.isAfter(modeStartDate))
-                modeStartDate = startDate;
-
-            if (modeEndDate.isAfter(endDate))
-                modeEndDate = endDate;
-
-            hours = hours - getHoursBetween(modeStartDate, modeEndDate);
-        }
-
-        return hours;
-    }
-
-    private Double getHoursBetween(LocalDateTime startDate, LocalDateTime endDate) {
-        long hours = ChronoUnit.HOURS.between(startDate, endDate);
-        long minutes = ChronoUnit.MINUTES.between(startDate, endDate)-60*hours;
-        return Math.round((hours + minutes / 60d)*100d) / 100d;
     }
 }
