@@ -4041,7 +4041,64 @@
             <column name="meter_history_id" type="number" remarks="Идентификатор акта замены/установки прибора учёта">
                 <constraints nullable="true"/>
             </column>
+            <column name="bypass_mode_id" type="number" remarks="Идентификатор строки из таблицы режимов работы обходных выключателей">
+                <constraints nullable="true"/>
+            </column>
         </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-464" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_mr_lines</comment>
+        <createIndex indexName="idx_calc_bs_result_mr_lines_8"
+                     schemaName="apps"
+                     tableName="calc_bs_result_mr_lines"
+                     unique="false">
+            <column name="meter_history_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-465" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_mr_lines</comment>
+        <createIndex indexName="idx_calc_bs_result_mr_lines_9"
+                     schemaName="apps"
+                     tableName="calc_bs_result_mr_lines"
+                     unique="false">
+            <column name="bypass_mode_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-466" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_mr_lines to mdfem_history</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_mr_lines"
+                baseColumnNames="meter_history_id"
+                constraintName="fk_calc_bs_result_mr_lines_8"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_history"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-467" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_mr_lines to calc_bypass_modes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_mr_lines"
+                baseColumnNames="bypass_mode_id"
+                constraintName="fk_calc_bs_result_mr_lines_9"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bypass_modes"
+                referencedColumnNames="id"
+        />
     </changeSet>
 
 
