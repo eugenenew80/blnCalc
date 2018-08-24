@@ -34,4 +34,8 @@ public class Meter {
 	@Column(name = "is_parameter_rm")
 	@Convert(converter = BooleanToIntConverter.class)
 	private Boolean isRm;
+
+	@ManyToOne
+	@JoinColumn(name = "eem_type_id")
+	private EemType eemType;
 }

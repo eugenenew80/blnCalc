@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +48,7 @@ public class BalanceSubstUbService {
                 .values(new HashMap<>())
                 .build();
 
+
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
             for (BalanceSubstUbLine ubLine : header.getHeader().getUbLines()) {
                 BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
@@ -76,13 +79,36 @@ public class BalanceSubstUbService {
 
                 Double workHours = getWorkHours(ubLine.getMeteringPoint(), context);
                 Double ratedVoltage = ubLine.getMeteringPoint().getRatedVoltage();
-                Double i1avgVal = Math.sqrt(Math.pow(wa,2) + Math.pow(wr,2)) / (Math.sqrt(3)*ratedVoltage) ;
+                Double i1avgVal = Math.sqrt(Math.pow(wa,2) + Math.pow(wr,2)) / (Math.sqrt(3)*ratedVoltage);
 
 
                 for (MeterHistory meterHistory : meterHistories) {
-                    meterHistory.getTtType().getAccuracyClass().getValue();
-                    meterHistory.getTtType().getRatedCurrent1();
+                    Double accuracyClass = meterHistory.getTtType().getAccuracyClass().getValue();
+                    Double ratedCurrent1 = meterHistory.getTtType().getRatedCurrent1();
+                    Double i1avgProc = i1avgVal / ratedCurrent1;
 
+                    Double bttProc;
+                    if (i1avgProc > 100) bttProc = accuracyClass;
+                    else if (i1avgProc >= 20) bttProc = 0.8125 - 0.003125 * i1avgProc;
+                    else if (i1avgProc >= 5) bttProc = 1.75 - 0.05 * i1avgProc;
+                    else bttProc = 1.5;
+
+                    Double biProc = Math.sqrt(2 * bttProc);
+
+                    Double buProc;
+                    if (meterHistory.getTnType() == null)
+                        buProc = 0d;
+                    else
+                        buProc = meterHistory.getTnType().getAccuracyClass().getValue();
+
+                    Double blProc;
+                    if (buProc <= 0.5)
+                        blProc = 0.25;
+                    else
+                        blProc = 0.5;
+
+                    Double bsoProc = meterHistory.getMeter().getEemType().getAccuracyClass().getValue();
+                    Double bProc = Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2);
                 }
             }
 
@@ -105,6 +131,30 @@ public class BalanceSubstUbService {
     }
 
     private Double getWorkHours(MeteringPoint meteringPoint, CalcContext context) {
-        return 24d;
+        LocalDateTime startDate = context.getStartDate().atStartOfDay();
+        LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
+
+        List<MeteringPointMode> modes = meteringPointModeRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate);
+        Double hours = getHoursBetween(startDate, endDate);
+        for (MeteringPointMode mode : modes) {
+            LocalDateTime modeStartDate = Optional.ofNullable(mode.getStartDate()).orElse(LocalDateTime.MIN);
+            LocalDateTime modeEndDate = Optional.ofNullable(mode.getEbdDate()).orElse(LocalDateTime.MAX);
+
+            if (startDate.isAfter(modeStartDate))
+                modeStartDate = startDate;
+
+            if (modeEndDate.isAfter(endDate))
+                modeEndDate = endDate;
+
+            hours = hours - getHoursBetween(modeStartDate, modeEndDate);
+        }
+
+        return hours;
+    }
+
+    private Double getHoursBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        long hours = ChronoUnit.HOURS.between(startDate, endDate);
+        long minutes = ChronoUnit.MINUTES.between(startDate, endDate)-60*hours;
+        return Math.round((hours + minutes / 60d)*100d) / 100d;
     }
 }

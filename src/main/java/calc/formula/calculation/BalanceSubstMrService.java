@@ -66,7 +66,7 @@ public class BalanceSubstMrService {
 
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
-                List<BalanceSubstResultMrLine> lines = calcLines(mrLine.getMeteringPoint(), null, mapParams, context);
+                List<BalanceSubstResultMrLine> lines = calcMeteringPoint(mrLine.getMeteringPoint(), null, mapParams, context);
                 for (BalanceSubstResultMrLine line : lines) {
                     line.setHeader(header);
                     line.setMeteringPoint(mrLine.getMeteringPoint());
@@ -86,7 +86,7 @@ public class BalanceSubstMrService {
 
 
                 for (BypassMode bypassMode : bypassModeRepo.findAllByMeteringPointIdAndDate(mrLine.getMeteringPoint().getId(), startDate, endDate)) {
-                    lines = calcLines(bypassMode.getBypassMeteringPoint(), bypassMode, mapParams, context);
+                    lines = calcMeteringPoint(bypassMode.getBypassMeteringPoint(), bypassMode, mapParams, context);
                     for (BalanceSubstResultMrLine line : lines) {
                         line.setHeader(header);
                         line.setMeteringPoint(mrLine.getMeteringPoint());
@@ -133,7 +133,7 @@ public class BalanceSubstMrService {
         balanceSubstResultHeaderRepo.save(header);
     }
 
-    private List<BalanceSubstResultMrLine> calcLines(MeteringPoint meteringPoint, BypassMode bypassMode, Map<String, Parameter> mapParams, CalcContext context) {
+    private List<BalanceSubstResultMrLine> calcMeteringPoint(MeteringPoint meteringPoint, BypassMode bypassMode, Map<String, Parameter> mapParams, CalcContext context) {
         LocalDateTime startDate = context.getStartDate().atStartOfDay();
         LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
 
@@ -265,6 +265,7 @@ public class BalanceSubstMrService {
             .findFirst()
             .orElse(null);
     }
+
     private Double getMeterStartVal(MeterHistory meter, Parameter param) {
         if (param.getCode().equals("A+")) return meter.getApPrev();
         if (param.getCode().equals("A-")) return meter.getAmPrev();
