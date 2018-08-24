@@ -50,22 +50,6 @@ public class BalanceSubstUbService {
             for (BalanceSubstUbLine ubLine : header.getHeader().getUbLines()) {
                 BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
 
-                Double wp = mrLines.stream()
-                    .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
-                    .filter(t -> t.getParam().getCode().equals("A+"))
-                    .filter(t -> !t.getIsIgnore())
-                    .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                    .reduce((t1, t2) -> t1 + t2)
-                    .get();
-
-                Double wm = mrLines.stream()
-                    .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
-                    .filter(t -> t.getParam().getCode().equals("A-"))
-                    .filter(t -> !t.getIsIgnore())
-                    .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                    .reduce((t1, t2) -> t1 + t2)
-                    .get();
-
                 Double wa = mrLines.stream()
                     .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
                     .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
@@ -82,7 +66,7 @@ public class BalanceSubstUbService {
                     .reduce((t1, t2) -> t1 + t2)
                     .get();
 
-                List<MeterHistory> meterHistory = mrLines.stream()
+                List<MeterHistory> meterHistories = mrLines.stream()
                     .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
                     .filter(t -> !t.getIsIgnore())
                     .filter(t -> t.getMeter() != null && t.getMeterHistory() != null)
@@ -90,7 +74,16 @@ public class BalanceSubstUbService {
                     .distinct()
                     .collect(toList());
 
+                Double workHours = getWorkHours(ubLine.getMeteringPoint(), context);
+                Double ratedVoltage = ubLine.getMeteringPoint().getRatedVoltage();
+                Double i1avgVal = Math.sqrt(Math.pow(wa,2) + Math.pow(wr,2)) / (Math.sqrt(3)*ratedVoltage) ;
 
+
+                for (MeterHistory meterHistory : meterHistories) {
+                    meterHistory.getTtType().getAccuracyClass().getValue();
+                    meterHistory.getTtType().getRatedCurrent1();
+
+                }
             }
 
 
@@ -111,7 +104,7 @@ public class BalanceSubstUbService {
         balanceSubstResultHeaderRepo.save(header);
     }
 
-    private void calcValues(BalanceSubstResultHeader header) {
-        balanceSubstResultHeaderRepo.calcUnbalance(header.getId());
+    private Double getWorkHours(MeteringPoint meteringPoint, CalcContext context) {
+        return 24d;
     }
 }
