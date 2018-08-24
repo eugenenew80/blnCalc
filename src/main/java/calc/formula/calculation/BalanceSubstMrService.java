@@ -141,12 +141,12 @@ public class BalanceSubstMrService {
         LocalDateTime startDate = context.getStartDate().atStartOfDay();
         LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
 
-        List<MeterHistory> meters = meterHistoryRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate);
-        List<Parameter> parameters = getParameters(meters, mapParams);
+        List<MeterHistory> meterHistories = meterHistoryRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate);
+        List<Parameter> parameters = getParameters(meterHistories, mapParams);
 
         List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
         for (Parameter param : parameters) {
-            if (meters.size() == 0) {
+            if (meterHistories.size() == 0) {
                 BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
                 line.setParam(param);
                 line.setStartMeteringDate(startDate);
@@ -159,59 +159,60 @@ public class BalanceSubstMrService {
                 continue;
             }
 
-            for (MeterHistory meter : meters) {
+            for (MeterHistory meterHistory : meterHistories) {
                 BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
                 line.setParam(param);
                 line.setMeteringPoint(meteringPoint);
-                line.setMeter(meter.getMeter());
-                line.setMeterRate(meter.getFactor());
+                line.setMeter(meterHistory.getMeter());
+                line.setMeterHistory(meterHistory);
+                line.setMeterRate(meterHistory.getFactor());
 
                 if (bypassMode == null) {
-                    if (meter.getStartDate() == null || meter.getStartDate().isBefore(startDate)) {
+                    if (meterHistory.getStartDate() == null || meterHistory.getStartDate().isBefore(startDate)) {
                         DoubleExpression start = getStartBalance(meteringPoint, param, context);
                         line.setStartVal(start.doubleValue());
                         line.setStartMeteringDate(startDate);
                     }
-                    if (meter.getStartDate() != null && !meter.getStartDate().isBefore(startDate)) {
-                        line.setStartVal(getNewVal(meter, param));
-                        line.setStartMeteringDate(meter.getStartDate());
+                    if (meterHistory.getStartDate() != null && !meterHistory.getStartDate().isBefore(startDate)) {
+                        line.setStartVal(getNewVal(meterHistory, param));
+                        line.setStartMeteringDate(meterHistory.getStartDate());
                     }
-                    if (meter.getEndDate() == null || meter.getEndDate().isAfter(endDate)) {
+                    if (meterHistory.getEndDate() == null || meterHistory.getEndDate().isAfter(endDate)) {
                         DoubleExpression end = getEndBalance(meteringPoint, param, context);
                         line.setEndVal(end.doubleValue());
                         line.setEndMeteringDate(endDate);
                     }
-                    if (meter.getEndDate() != null && !meter.getEndDate().isAfter(endDate)) {
-                        line.setEndVal(getPrevVal(meter, param));
-                        line.setEndMeteringDate(meter.getEndDate());
+                    if (meterHistory.getEndDate() != null && !meterHistory.getEndDate().isAfter(endDate)) {
+                        line.setEndVal(getPrevVal(meterHistory, param));
+                        line.setEndMeteringDate(meterHistory.getEndDate());
                     }
                 }
 
                 if (bypassMode!=null) {
-                    if (meter.getStartDate() == null || meter.getStartDate().isBefore(startDate)) {
+                    if (meterHistory.getStartDate() == null || meterHistory.getStartDate().isBefore(startDate)) {
                         if (bypassMode.getStartDate()==null || bypassMode.getStartDate().isBefore(startDate)) {
                             DoubleExpression start = getStartBalance(meteringPoint, param, context);
                             line.setStartVal(start.doubleValue());
                             line.setStartMeteringDate(startDate);
                         }
                     }
-                    if (meter.getStartDate() != null && !meter.getStartDate().isBefore(startDate)) {
-                        line.setStartVal(getNewVal(meter, param));
-                        line.setStartMeteringDate(meter.getStartDate());
+                    if (meterHistory.getStartDate() != null && !meterHistory.getStartDate().isBefore(startDate)) {
+                        line.setStartVal(getNewVal(meterHistory, param));
+                        line.setStartMeteringDate(meterHistory.getStartDate());
                     }
-                    if (meter.getEndDate() == null || meter.getEndDate().isAfter(endDate)) {
+                    if (meterHistory.getEndDate() == null || meterHistory.getEndDate().isAfter(endDate)) {
                         DoubleExpression end = getEndBalance(meteringPoint, param, context);
                         line.setEndVal(end.doubleValue());
                         line.setEndMeteringDate(endDate);
                     }
-                    if (meter.getEndDate() != null && !meter.getEndDate().isAfter(endDate)) {
-                        line.setEndVal(getPrevVal(meter, param));
-                        line.setEndMeteringDate(meter.getEndDate());
+                    if (meterHistory.getEndDate() != null && !meterHistory.getEndDate().isAfter(endDate)) {
+                        line.setEndVal(getPrevVal(meterHistory, param));
+                        line.setEndMeteringDate(meterHistory.getEndDate());
                     }
                 }
 
-                if (meter.getUndercount()!=null && meter.getUndercount().getParameter().equals(param))
-                    line.setUndercount(meter.getUndercount());
+                if (meterHistory.getUndercount()!=null && meterHistory.getUndercount().getParameter().equals(param))
+                    line.setUndercount(meterHistory.getUndercount());
 
                 resultLines.add(line);
             }

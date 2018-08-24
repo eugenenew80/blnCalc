@@ -1304,7 +1304,7 @@
 
     <changeSet id="calc-eug-283" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_balance_subst_mr_lines</comment>
-        <createTable tableName="`" schemaName="apps" remarks="Строки для составления акта съема показаний">
+        <createTable tableName="calc_balance_subst_mr_lines" schemaName="apps" remarks="Строки для составления акта съема показаний">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
@@ -4033,8 +4033,8 @@
     </changeSet>
 
     <changeSet id="calc-eug-463" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Adding columns to table: calc_balance_subst_mr_lines</comment>
-        <addColumn tableName="calc_balance_subst_mr_lines" schemaName="apps">
+        <comment>Adding columns to table: calc_bs_result_mr_lines</comment>
+        <addColumn tableName="calc_bs_result_mr_lines" schemaName="apps">
             <column name="under_count_val" type="number" remarks="Недоучёт">
                 <constraints nullable="true"/>
             </column>
