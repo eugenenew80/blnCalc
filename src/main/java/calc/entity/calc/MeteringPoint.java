@@ -35,4 +35,7 @@ public class MeteringPoint {
 
     @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
     private List<MeteringPointParameter> parameters;
+
+    @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
+    private List<MeterHistory> meterHistory;
 }

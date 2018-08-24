@@ -195,16 +195,43 @@ public class BalanceSubstMrService {
                             line.setStartVal(start.doubleValue());
                             line.setStartMeteringDate(startDate);
                         }
+                        else {
+                            Double startVal = bypassMode.getValues()
+                                .stream()
+                                .filter(v -> v.getParameter().equals(param))
+                                .map(v -> v.getStartValue())
+                                .findFirst()
+                                .orElse(null);
+
+                            line.setStartVal(startVal);
+                            line.setStartMeteringDate(bypassMode.getStartDate());
+                        }
                     }
+
+                    if (meterHistory.getEndDate() == null || meterHistory.getEndDate().isAfter(endDate)) {
+                        if (bypassMode.getEndDate()==null || bypassMode.getEndDate().isAfter(endDate)) {
+                            DoubleExpression end = getEndBalance(meteringPoint, param, context);
+                            line.setEndVal(end.doubleValue());
+                            line.setEndMeteringDate(endDate);
+                        }
+                        else {
+                            Double endVal = bypassMode.getValues()
+                                .stream()
+                                .filter(v -> v.getParameter().equals(param))
+                                .map(v -> v.getEndValue())
+                                .findFirst()
+                                .orElse(null);
+
+                            line.setEndVal(endVal);
+                            line.setEndMeteringDate(bypassMode.getEndDate());
+                        }
+                    }
+
                     if (meterHistory.getStartDate() != null && !meterHistory.getStartDate().isBefore(startDate)) {
                         line.setStartVal(getNewVal(meterHistory, param));
                         line.setStartMeteringDate(meterHistory.getStartDate());
                     }
-                    if (meterHistory.getEndDate() == null || meterHistory.getEndDate().isAfter(endDate)) {
-                        DoubleExpression end = getEndBalance(meteringPoint, param, context);
-                        line.setEndVal(end.doubleValue());
-                        line.setEndMeteringDate(endDate);
-                    }
+
                     if (meterHistory.getEndDate() != null && !meterHistory.getEndDate().isAfter(endDate)) {
                         line.setEndVal(getPrevVal(meterHistory, param));
                         line.setEndMeteringDate(meterHistory.getEndDate());

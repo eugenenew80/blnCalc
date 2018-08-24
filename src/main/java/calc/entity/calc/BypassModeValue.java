@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_bypass_modes")
+@Table(name = "calc_bypass_mode_values")
 @Immutable
 public class BypassModeValue {
     @Id
