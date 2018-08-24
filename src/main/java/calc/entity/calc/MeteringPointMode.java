@@ -28,5 +28,5 @@ public class MeteringPointMode {
     private LocalDateTime startDate;
 
     @Column(name = "end_date")
-    private LocalDateTime ebdDate;
+    private LocalDateTime endDate;
 }
