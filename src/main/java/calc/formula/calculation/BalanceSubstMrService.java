@@ -3,7 +3,6 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
-import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.AtTimeValueExpression;
 import calc.formula.service.AtTimeValueService;
 import calc.formula.service.CalcService;
@@ -14,10 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.*;
-
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -31,7 +28,6 @@ public class BalanceSubstMrService {
     private final UnitRepo unitRepo;
     private final AtTimeValueService atTimeValueService;
     private final BypassModeRepo bypassModeRepo;
-    private final UndercountRepo undercountRepo;
     private final MeterHistoryRepo meterHistoryRepo;
 
     public void calc(BalanceSubstResultHeader header) {
@@ -240,8 +236,10 @@ public class BalanceSubstMrService {
                     }
                 }
 
-                if (meterHistory.getUndercount()!=null && meterHistory.getUndercount().getParameter().equals(param))
+                if (meterHistory.getUndercount()!=null && meterHistory.getUndercount().getParameter().equals(param)) {
                     line.setUndercount(meterHistory.getUndercount());
+                    line.setUnderCountVal(meterHistory.getUndercount().getVal());
+                }
 
                 if (line.getEndMeteringDate().isAfter(line.getStartMeteringDate()))
                     resultLines.add(line);
