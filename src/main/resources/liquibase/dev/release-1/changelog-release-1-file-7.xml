@@ -4138,5 +4138,152 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-eug-471" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="metering_data_source_line_id" type="number" remarks="Идентификатор строки источника" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-472" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="is_bypass" type="number" remarks="Флаг - была работа через обходной выключатель" />
+        </addColumn>
+
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="bypass_val" type="number" remarks="Количество электроэнергии учтенной обходным выключателем" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-473" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_lines to calc_daily_sheet_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_lines"
+                baseColumnNames="daily_sheet_header_id"
+                constraintName="fk_calc_daily_sheet_lines_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_daily_sheet_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-474" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_lines to mdfem_history</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_lines"
+                baseColumnNames="meter_history_id"
+                constraintName="fk_calc_daily_sheet_lines_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_history"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-475" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_metering_data_source_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_metering_data_source_lines"
+                schemaName="apps"
+                tableName="calc_metering_data_source_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-476" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_lines to calc_metering_data_source_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_lines"
+                baseColumnNames="metering_data_source_line_id"
+                constraintName="fk_calc_daily_sheet_lines_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_source_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-477" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_daily_sheet_lines</comment>
+        <createIndex indexName="idx_calc_daily_sheet_lines_1"
+                     schemaName="apps"
+                     tableName="calc_daily_sheet_lines"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-478" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_daily_sheet_lines</comment>
+        <createIndex indexName="idx_calc_daily_sheet_lines_2"
+                     schemaName="apps"
+                     tableName="calc_daily_sheet_lines"
+                     unique="false">
+            <column name="meter_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-479" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_daily_sheet_lines</comment>
+        <createIndex indexName="idx_calc_daily_sheet_lines_3"
+                     schemaName="apps"
+                     tableName="calc_daily_sheet_lines"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-480" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_daily_sheet_lines</comment>
+        <createIndex indexName="idx_calc_daily_sheet_lines_4"
+                     schemaName="apps"
+                     tableName="calc_daily_sheet_lines"
+                     unique="false">
+            <column name="source_type_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-481" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_daily_sheet_lines</comment>
+        <createIndex indexName="idx_calc_daily_sheet_lines_5"
+                     schemaName="apps"
+                     tableName="calc_daily_sheet_lines"
+                     unique="false">
+            <column name="daily_sheet_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-482" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_daily_sheet_lines</comment>
+        <createIndex indexName="idx_calc_daily_sheet_lines_6"
+                     schemaName="apps"
+                     tableName="calc_daily_sheet_lines"
+                     unique="false">
+            <column name="meter_history_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-483" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_daily_sheet_lines</comment>
+        <createIndex indexName="idx_calc_daily_sheet_lines_7"
+                     schemaName="apps"
+                     tableName="calc_daily_sheet_lines"
+                     unique="false">
+            <column name="metering_data_source_line_id" type="number"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
 
