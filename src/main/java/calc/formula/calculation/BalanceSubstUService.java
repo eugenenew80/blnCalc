@@ -24,11 +24,11 @@ import java.util.*;
 @RequiredArgsConstructor
 public class BalanceSubstUService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstUService.class);
-    private final CalcService calcService;
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private final ParameterRepo parameterRepo;
     private final PeriodTimeValueService periodTimeValueService;
+    private static final String docCode = "UAVG";
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
@@ -43,7 +43,7 @@ public class BalanceSubstUService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
-                .docCode("ACT")
+                .docCode(docCode)
                 .docId(header.getId())
                 .trace(new HashMap<>())
                 .values(new HashMap<>())

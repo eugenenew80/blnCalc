@@ -30,6 +30,7 @@ public class BalanceSubstUbService {
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final WorkingHoursService workingHoursService;
+    private static final String docCode = "UNBALANCE";
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
@@ -43,7 +44,7 @@ public class BalanceSubstUbService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
-                .docCode("ACT")
+                .docCode("UNBALANCE")
                 .docId(header.getId())
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
