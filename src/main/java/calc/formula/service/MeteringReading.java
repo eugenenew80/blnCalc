@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 public class MeteringReading {
     private MeteringPoint meteringPoint;
-    private Parameter parameter;
+    private MeteringPoint bypassMeteringPoint;
+    private Parameter param;
+    private Unit unit;
     private Meter meter;
     private MeterHistory meterHistory;
     private BypassMode bypassMode;
@@ -23,4 +25,5 @@ public class MeteringReading {
     private Double val;
     private Double meterRate;
     private Double underCountVal;
+    private Boolean isBypassSection;
 }
