@@ -33,7 +33,6 @@ public class BalanceSubstMrService {
     private final BypassModeRepo bypassModeRepo;
     private final MeterHistoryRepo meterHistoryRepo;
     private Map<String, Parameter> mapParams = null;
-    private Map<String, Unit> mapUnits = null;
 
     @PostConstruct
     public void init() {
@@ -42,14 +41,7 @@ public class BalanceSubstMrService {
         mapParams.put("A+", parameterRepo.findByCode("A+"));
         mapParams.put("R-", parameterRepo.findByCode("R-"));
         mapParams.put("R+", parameterRepo.findByCode("R+"));
-
-        mapUnits = new HashMap<>();
-        mapUnits.put("A-", unitRepo.findByCode("kW.h"));
-        mapUnits.put("A+", unitRepo.findByCode("kW.h"));
-        mapUnits.put("R-", unitRepo.findByCode("kVAR.h"));
-        mapUnits.put("R+", unitRepo.findByCode("kVAR.h"));
     }
-
 
     public void calc(BalanceSubstResultHeader header) {
         try {
@@ -76,42 +68,28 @@ public class BalanceSubstMrService {
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
                 List<BalanceSubstResultMrLine> lines = calcMeteringPoint(mrLine.getMeteringPoint(), null, context);
-                for (BalanceSubstResultMrLine line : lines) {
+                resultLines.addAll(lines);
+
+                for (BypassMode bypassMode : bypassModeRepo.findAllByMeteringPointIdAndDate(mrLine.getMeteringPoint().getId(), startDate, endDate)) {
+                    lines = calcMeteringPoint(bypassMode.getBypassMeteringPoint(), bypassMode, context);
+                    for (BalanceSubstResultMrLine line : lines) {
+                        line.setIsIgnore(false);
+                        line.setBypassMeteringPoint(bypassMode.getBypassMeteringPoint());
+                        line.setIsBypassSection(bypassMode.getIsBusSection());
+                    }
+                    resultLines.addAll(lines);
+                }
+
+                for (BalanceSubstResultMrLine line : resultLines) {
                     line.setHeader(header);
                     line.setMeteringPoint(mrLine.getMeteringPoint());
-                    line.setUnit(mapUnits.get(line.getParam().getCode()));
                     line.setSection(getSection(mrLine));
-                    line.setIsIgnore(false);
-                    line.setIsBypassSection(false);
-                    line.setBypassMeteringPoint(null);
 
                     if (line.getStartVal() != null || line.getEndVal() !=null)
                         line.setDelta(Optional.ofNullable(line.getEndVal()).orElse(0d) - Optional.ofNullable(line.getStartVal()).orElse(0d));
 
                     if (line.getMeterRate()!=null && line.getDelta()!=null)
                         line.setVal(line.getDelta() * line.getMeterRate());
-                }
-                resultLines.addAll(lines);
-
-
-                for (BypassMode bypassMode : bypassModeRepo.findAllByMeteringPointIdAndDate(mrLine.getMeteringPoint().getId(), startDate, endDate)) {
-                    lines = calcMeteringPoint(bypassMode.getBypassMeteringPoint(), bypassMode, context);
-                    for (BalanceSubstResultMrLine line : lines) {
-                        line.setHeader(header);
-                        line.setMeteringPoint(mrLine.getMeteringPoint());
-                        line.setBypassMeteringPoint(bypassMode.getBypassMeteringPoint());
-                        line.setUnit(mapUnits.get(line.getParam().getCode()));
-                        line.setSection(getSection(mrLine));
-                        line.setIsIgnore(false);
-                        line.setIsBypassSection(bypassMode.getIsBusSection());
-
-                        if (line.getStartVal() != null || line.getEndVal() !=null)
-                            line.setDelta(Optional.ofNullable(line.getEndVal()).orElse(0d) - Optional.ofNullable(line.getStartVal()).orElse(0d));
-
-                        if (line.getMeterRate()!=null && line.getDelta()!=null)
-                            line.setVal(line.getDelta() * line.getMeterRate());
-                    }
-                    resultLines.addAll(lines);
                 }
             }
 
@@ -154,6 +132,7 @@ public class BalanceSubstMrService {
             if (meterHistories.size() == 0) {
                 BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
                 line.setParam(param);
+                line.setUnit(param.getUnit());
                 line.setStartMeteringDate(startDate);
                 line.setEndMeteringDate(endDate);
                 line.setStartVal(getStartVal(meteringPoint, param, context));
@@ -168,6 +147,7 @@ public class BalanceSubstMrService {
 
                 BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
                 line.setParam(param);
+                line.setUnit(param.getUnit());
                 line.setMeteringPoint(meteringPoint);
                 line.setMeter(meterHistory.getMeter());
                 line.setMeterHistory(meterHistory);
