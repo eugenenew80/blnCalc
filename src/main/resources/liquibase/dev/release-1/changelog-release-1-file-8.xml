@@ -1869,4 +1869,55 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-rus-248" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_bs_result_mr_lines_s</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bs_result_mr_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-249" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column to calc_doc_asp1_headers</comment>
+        <addColumn tableName="calc_doc_asp1_headers" schemaName="apps">
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-250" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column to calc_doc_asp1_headers</comment>
+        <addColumn tableName="calc_doc_asp1_headers" schemaName="apps">
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-251" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column to calc_doc_asp1_lines</comment>
+        <addColumn tableName="calc_doc_asp1_lines" schemaName="apps">
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+</changeSet>
+
+    <changeSet id="calc-rus-252" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column to calc_doc_asp1_lines</comment>
+        <addColumn tableName="calc_doc_asp1_lines" schemaName="apps">
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-253" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_doc_asp1_lines</comment>
+        <dropColumn columnName="note"
+                    schemaName="apps"
+                    tableName="calc_doc_asp1_lines"/>
+    </changeSet>
 </databaseChangeLog>
