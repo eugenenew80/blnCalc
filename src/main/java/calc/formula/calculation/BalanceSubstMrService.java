@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 import static java.util.stream.Collectors.toList;
@@ -30,6 +32,24 @@ public class BalanceSubstMrService {
     private final AtTimeValueService atTimeValueService;
     private final BypassModeRepo bypassModeRepo;
     private final MeterHistoryRepo meterHistoryRepo;
+    private Map<String, Parameter> mapParams = null;
+    private Map<String, Unit> mapUnits = null;
+
+    @PostConstruct
+    public void init() {
+        mapParams = new HashMap<>();
+        mapParams.put("A-", parameterRepo.findByCode("A-"));
+        mapParams.put("A+", parameterRepo.findByCode("A+"));
+        mapParams.put("R-", parameterRepo.findByCode("R-"));
+        mapParams.put("R+", parameterRepo.findByCode("R+"));
+
+        mapUnits = new HashMap<>();
+        mapUnits.put("A-", unitRepo.findByCode("kW.h"));
+        mapUnits.put("A+", unitRepo.findByCode("kW.h"));
+        mapUnits.put("R-", unitRepo.findByCode("kVAR.h"));
+        mapUnits.put("R+", unitRepo.findByCode("kVAR.h"));
+    }
+
 
     public void calc(BalanceSubstResultHeader header) {
         try {
@@ -37,18 +57,6 @@ public class BalanceSubstMrService {
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
-
-            Map<String, Parameter> mapParams = new HashMap<>();
-            mapParams.put("A-", parameterRepo.findByCode("A-"));
-            mapParams.put("A+", parameterRepo.findByCode("A+"));
-            mapParams.put("R-", parameterRepo.findByCode("R-"));
-            mapParams.put("R+", parameterRepo.findByCode("R+"));
-
-            Map<String, Unit> mapUnits = new HashMap<>();
-            mapUnits.put("A-", unitRepo.findByCode("kW.h"));
-            mapUnits.put("A+", unitRepo.findByCode("kW.h"));
-            mapUnits.put("R-", unitRepo.findByCode("kVAR.h"));
-            mapUnits.put("R+", unitRepo.findByCode("kVAR.h"));
 
             CalcContext context = CalcContext.builder()
                 .startDate(header.getStartDate())
@@ -67,7 +75,7 @@ public class BalanceSubstMrService {
 
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
-                List<BalanceSubstResultMrLine> lines = calcMeteringPoint(mrLine.getMeteringPoint(), null, mapParams, context);
+                List<BalanceSubstResultMrLine> lines = calcMeteringPoint(mrLine.getMeteringPoint(), null, context);
                 for (BalanceSubstResultMrLine line : lines) {
                     line.setHeader(header);
                     line.setMeteringPoint(mrLine.getMeteringPoint());
@@ -87,7 +95,7 @@ public class BalanceSubstMrService {
 
 
                 for (BypassMode bypassMode : bypassModeRepo.findAllByMeteringPointIdAndDate(mrLine.getMeteringPoint().getId(), startDate, endDate)) {
-                    lines = calcMeteringPoint(bypassMode.getBypassMeteringPoint(), bypassMode, mapParams, context);
+                    lines = calcMeteringPoint(bypassMode.getBypassMeteringPoint(), bypassMode, context);
                     for (BalanceSubstResultMrLine line : lines) {
                         line.setHeader(header);
                         line.setMeteringPoint(mrLine.getMeteringPoint());
@@ -134,7 +142,7 @@ public class BalanceSubstMrService {
         balanceSubstResultHeaderRepo.save(header);
     }
 
-    private List<BalanceSubstResultMrLine> calcMeteringPoint(MeteringPoint meteringPoint, BypassMode bypassMode, Map<String, Parameter> mapParams, CalcContext context) {
+    private List<BalanceSubstResultMrLine> calcMeteringPoint(MeteringPoint meteringPoint, BypassMode bypassMode, CalcContext context) {
         LocalDateTime startDate = context.getStartDate().atStartOfDay();
         LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
 
