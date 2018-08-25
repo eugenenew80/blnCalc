@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "mdfem_undercount_header")
 @Immutable
-public class Undercount {
+public class UnderCount {
 
     @Id
     private Long id;

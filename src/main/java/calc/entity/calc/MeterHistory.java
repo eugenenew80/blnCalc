@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -36,4 +35,40 @@ public class MeterHistory {
 
     @Column(name = "end_datetime")
     private LocalDateTime endDate;
+
+    @Column(name = "old_metering_reading_ai")
+    private Double apPrev;
+
+    @Column(name = "old_metering_reading_ae")
+    private Double amPrev;
+
+    @Column(name = "old_metering_reading_ri")
+    private Double rpPrev;
+
+    @Column(name = "old_metering_reading_re")
+    private Double rmPrev;
+
+    @Column(name = "new_metering_reading_ai")
+    private Double apNew;
+
+    @Column(name = "new_metering_reading_ae")
+    private Double amNew;
+
+    @Column(name = "new_metering_reading_ri")
+    private Double rpNew;
+
+    @Column(name = "new_metering_reading_re")
+    private Double rmNew;
+
+    @ManyToOne
+    @JoinColumn(name = "undercount_header_id")
+    private UnderCount undercount;
+
+    @ManyToOne
+    @JoinColumn(name = "tt_type_id")
+    private TtType ttType;
+
+    @ManyToOne
+    @JoinColumn(name = "tn_type_id")
+    private TtType tnType;
 }
