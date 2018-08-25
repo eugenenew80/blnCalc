@@ -4101,6 +4101,42 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-468" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping foreign constraint: calc_daily_sheet_lines to dict_meters</comment>
+        <dropForeignKeyConstraint
+            baseTableName="calc_daily_sheet_lines"
+            baseTableSchemaName="apps"
+            constraintName="fk_calc_daily_sheet_lines_2"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-469" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_lines to mdfem_eem_base</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_lines"
+                baseColumnNames="meter_id"
+                constraintName="fk_calc_daily_sheet_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_eem_base"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-470" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="meter_history_id" type="number" remarks="Идентификатор акта замены прибора учёта" />
+        </addColumn>
+
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="is_manual_val" type="number" remarks="Флаг - разрешено ввести расход вручную" />
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
 
