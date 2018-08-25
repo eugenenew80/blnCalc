@@ -4285,5 +4285,27 @@
             <column name="metering_data_source_line_id" type="number"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="calc-eug-484" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="is_zero" type="number" remarks="Флаг - переход через ноль" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_correct" type="number" remarks="Флаг - корректность данных" defaultValue="1">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-485" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_daily_sheet_headers</comment>
+        <addColumn tableName="calc_daily_sheet_headers" schemaName="apps">
+            <column name="is_correct" type="number" remarks="Флаг - корректность данных" defaultValue="1">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
