@@ -4307,5 +4307,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-eug-486" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="delta" type="number" remarks="Разница между текущим и начальным показанием" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 

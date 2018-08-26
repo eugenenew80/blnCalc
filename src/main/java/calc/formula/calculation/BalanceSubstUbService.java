@@ -49,18 +49,20 @@ public class BalanceSubstUbService {
 
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
 
-            Double wTotal1 = header.getHeader().getUbLines().stream()
+            Double wSum1 = header.getHeader().getUbLines()
+                .stream()
                 .filter(t -> t.getIsSection1())
-                .flatMap(t -> mrLines.stream().filter(l -> l.getMeteringPoint().equals(t.getMeteringPoint())))
+                .flatMap(t -> mrLines.stream().filter(l -> !l.getIsIgnore() && l.getMeteringPoint().equals(t.getMeteringPoint())))
                 .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
                 .filter(t -> t.getVal() != null)
                 .map(t -> t.getVal())
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
-            Double wTotal2 = header.getHeader().getUbLines().stream()
+            Double wSum2 = header.getHeader().getUbLines()
+                .stream()
                 .filter(t -> t.getIsSection2())
-                .flatMap(t -> mrLines.stream().filter(l -> l.getMeteringPoint().equals(t.getMeteringPoint())))
+                .flatMap(t -> mrLines.stream().filter(l -> !l.getIsIgnore() && l.getMeteringPoint().equals(t.getMeteringPoint())))
                 .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
                 .filter(t -> t.getVal() != null)
                 .map(t -> t.getVal())
@@ -146,8 +148,8 @@ public class BalanceSubstUbService {
                         Double bProc = Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2);
 
                         Double dol = 0d;
-                        if (direction.equals("1")) dol = wa / wTotal1;
-                        if (direction.equals("2")) dol = wa / wTotal2;
+                        if (direction.equals("1")) dol = wa / wSum1;
+                        if (direction.equals("2")) dol = wa / wSum2;
 
                         Double b2dol2 = Math.pow(bProc, 2) * Math.pow(dol, 2);
 
