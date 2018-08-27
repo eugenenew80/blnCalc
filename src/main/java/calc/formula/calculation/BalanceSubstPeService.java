@@ -5,9 +5,11 @@ import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.PowerTransformerExpression;
 import calc.formula.expression.impl.ReactorExpression;
+import calc.formula.expression.impl.UavgExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
 import calc.formula.service.PowerTransformerService;
 import calc.formula.service.ReactorService;
+import calc.formula.service.UavgService;
 import calc.formula.service.WorkingHoursService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +30,13 @@ public class BalanceSubstPeService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstPeService.class);
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
-    private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private final ReactorValueRepo reactorValueRepo;
     private final PowerTransformerValueRepo powerTransformerValueRepo;
     private final UnitRepo unitRepo;
     private final WorkingHoursService workingHoursService;
     private final ReactorService reactorService;
     private final PowerTransformerService powerTransformerService;
+    private final UavgService uavgService;
     private static final String docCode = "LOSSES";
 
     public void calc(BalanceSubstResultHeader header)  {
@@ -63,7 +65,6 @@ public class BalanceSubstPeService {
 
             Unit unit = unitRepo.findByCode("kW.h");
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
-            List<BalanceSubstResultULine> uLines = balanceSubstResultULineRepo.findAllByHeaderId(header.getId());
 
             List<ReactorValue> reactorLines = new ArrayList<>();
             for (BalanceSubstPeLine peLine : header.getHeader().getPeLines()) {
@@ -75,9 +76,9 @@ public class BalanceSubstPeService {
                 if (inputMp == null)
                     continue;
 
-                Double unom = ReactorExpression.builder()
+                Double uNom = ReactorExpression.builder()
                     .id(reactor.getId())
-                    .attr("unom")
+                    .attr(uNom())
                     .def(0d)
                     .context(context)
                     .service(reactorService)
@@ -86,15 +87,12 @@ public class BalanceSubstPeService {
 
                 Double deltaPr = ReactorExpression.builder()
                     .id(reactor.getId())
-                    .attr("delta_pr")
+                    .attr(deltaPr())
                     .def(0d)
                     .context(context)
                     .service(reactorService)
                     .build()
                     .doubleValue();
-
-                if (unom == 0) continue;
-                if (deltaPr == 0) continue;
 
                 Double hours = WorkingHoursExpression.builder()
                     .objectType("re")
@@ -104,22 +102,27 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
-                Double uavg = uLines.stream()
-                    .filter(t -> t.getMeteringPoint().equals(inputMp))
-                    .filter(t -> t.getVal() != null && t.getVal() != 0)
-                    .map(t -> t.getVal())
-                    .findFirst()
-                    .orElse(inputMp.getVoltageClass().getValue());
+                Double uAvg = UavgExpression.builder()
+                    .headerId(header.getId())
+                    .meteringPointCode(inputMp.getCode())
+                    .def(inputMp.getVoltageClass().getValue())
+                    .context(context)
+                    .service(uavgService)
+                    .build()
+                    .doubleValue();
 
-                Double val = deltaPr * hours * Math.pow(uavg / unom, 2);
+                if (uNom == 0) continue;
+                if (deltaPr == 0) continue;
+
+                Double val = deltaPr * hours * Math.pow(uAvg / uNom, 2);
 
                 ReactorValue reactorLine = new ReactorValue();
                 reactorLine.setHeader(header);
                 reactorLine.setReactor(reactor);
                 reactorLine.setDeltaPr(deltaPr);
                 reactorLine.setOperatingTime(hours);
-                reactorLine.setUavg(uavg);
-                reactorLine.setUnom(unom);
+                reactorLine.setUavg(uAvg);
+                reactorLine.setUnom(uNom);
                 reactorLine.setUnit(unit);
                 reactorLine.setVal(val);
                 reactorLine.setInputMp(inputMp);
@@ -132,18 +135,22 @@ public class BalanceSubstPeService {
                 if (transformer == null)
                     continue;
 
-                Double snom = PowerTransformerExpression.builder()
+                MeteringPoint inputMp = transformer.getInputMp();
+                if (inputMp == null)
+                    continue;
+
+                Double sNom = PowerTransformerExpression.builder()
                     .id(transformer.getId())
-                    .attr("snom")
+                    .attr(sNom())
                     .def(0d)
                     .context(context)
                     .service(powerTransformerService)
                     .build()
                     .doubleValue();
 
-                Double unomH = PowerTransformerExpression.builder()
+                Double uNomH = PowerTransformerExpression.builder()
                     .id(transformer.getId())
-                    .attr("unom_h")
+                    .attr(uNomH())
                     .def(0d)
                     .context(context)
                     .service(powerTransformerService)
@@ -152,7 +159,7 @@ public class BalanceSubstPeService {
 
                 Double deltaPxx = PowerTransformerExpression.builder()
                     .id(transformer.getId())
-                    .attr("delta_pxx")
+                    .attr(deltaPxx())
                     .def(0d)
                     .context(context)
                     .service(powerTransformerService)
@@ -161,7 +168,7 @@ public class BalanceSubstPeService {
 
                 Double pkzHM = PowerTransformerExpression.builder()
                     .id(transformer.getId())
-                    .attr("pkz_hm")
+                    .attr(pkzHM())
                     .def(0d)
                     .context(context)
                     .service(powerTransformerService)
@@ -170,7 +177,7 @@ public class BalanceSubstPeService {
 
                 Double pkzML = PowerTransformerExpression.builder()
                     .id(transformer.getId())
-                    .attr("pkz_ml")
+                    .attr(pkzML())
                     .def(0d)
                     .context(context)
                     .service(powerTransformerService)
@@ -179,7 +186,7 @@ public class BalanceSubstPeService {
 
                 Double pkzHL = PowerTransformerExpression.builder()
                     .id(transformer.getId())
-                    .attr("pkz_hl")
+                    .attr(pkzHL())
                     .def(0d)
                     .context(context)
                     .service(powerTransformerService)
@@ -194,31 +201,29 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
-                MeteringPoint inputMp = transformer.getInputMp();
-                if (inputMp == null)
-                    continue;
+                Double uAvg = UavgExpression.builder()
+                    .headerId(header.getId())
+                    .meteringPointCode(inputMp!=null ? inputMp.getCode() : "")
+                    .def(inputMp!=null && inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() : 0d)
+                    .context(context)
+                    .service(uavgService)
+                    .build()
+                    .doubleValue();
+
+                if (sNom == 0) continue;
+                if (uNomH == 0) continue;
+                if (uAvg == 0) continue;
 
                 MeteringPoint inputMpH = transformer.getInputMpH();
                 MeteringPoint inputMpM = transformer.getInputMpM();
                 MeteringPoint inputMpL = transformer.getInputMpL();
 
-                Double uavg = uLines.stream()
-                    .filter(t -> t.getMeteringPoint().equals(inputMp))
-                    .filter(t -> t.getVal() != null && t.getVal() != 0)
-                    .map(t -> t.getVal())
-                    .findFirst()
-                    .orElse(inputMp.getVoltageClass().getValue());
-
-                if (snom == 0) continue;
-                if (unomH == 0) continue;
-                if (uavg == 0) continue;
-
                 PowerTransformerValue transformerLine = new PowerTransformerValue();
                 transformerLine.setHeader(header);
                 transformerLine.setTransformer(transformer);
                 transformerLine.setDeltaPXX(deltaPxx);
-                transformerLine.setSnom(snom);
-                transformerLine.setUnomH(unomH);
+                transformerLine.setSnom(sNom);
+                transformerLine.setUnomH(uNomH);
                 transformerLine.setInputMp(inputMp);
                 transformerLine.setInputMpH(inputMpH);
                 transformerLine.setInputMpM(inputMpM);
@@ -228,7 +233,7 @@ public class BalanceSubstPeService {
                 transformerLine.setPkzHL(pkzHL);
                 transformerLine.setUnit(unit);
                 transformerLine.setOperatingTime(hours);
-                transformerLine.setUavg(uavg);
+                transformerLine.setUavg(uAvg);
                 transformerLine.setWindingsNumber(transformer.getWindingsNumber());
 
                 if (transformer.getWindingsNumber() == null || transformer.getWindingsNumber() == 2) {
@@ -253,9 +258,9 @@ public class BalanceSubstPeService {
                     }
 
                     Double totalEh = Math.pow(totalAeH, 2) + Math.pow(totalReH, 2);
-                    Double resistH = (pkzHL / 1000d) * (Math.pow(unomH, 2) / Math.pow(snom, 2));
-                    Double valXX = deltaPxx * hours * Math.pow(uavg / unomH, 2);
-                    Double valN = totalEh / (Math.pow(uavg,2) * hours) * resistH;
+                    Double resistH = (pkzHL / 1000d) * (Math.pow(uNomH, 2) / Math.pow(sNom, 2));
+                    Double valXX = deltaPxx * hours * Math.pow(uAvg / uNomH, 2);
+                    Double valN = totalEh / (Math.pow(uAvg,2) * hours) * resistH;
 
                     transformerLine.setTotalAEH(totalAeH);
                     transformerLine.setTotalREH(totalReH);
@@ -331,12 +336,12 @@ public class BalanceSubstPeService {
                     Double totalEM = Math.pow(totalAeM, 2) + Math.pow(totalReM, 2);
                     Double totalEH = inputMpH != null ? Math.pow(totalAeH, 2) + Math.pow(totalReH, 2) : totalEL + totalAeM;
 
-                    Double resistL = (pkzHL + pkzML - pkzHM) / (2d * 1000d) * (Math.pow(unomH,2) / Math.pow(snom,2));
-                    Double resistM = (pkzHM + pkzML - pkzHL) / (2d * 1000d) * (Math.pow(unomH,2) / Math.pow(snom,2));
-                    Double resistH = (pkzHM + pkzHL - pkzML) / (2d * 1000d) * (Math.pow(unomH,2) / Math.pow(snom,2));
+                    Double resistL = (pkzHL + pkzML - pkzHM) / (2d * 1000d) * (Math.pow(uNomH,2) / Math.pow(sNom,2));
+                    Double resistM = (pkzHM + pkzML - pkzHL) / (2d * 1000d) * (Math.pow(uNomH,2) / Math.pow(sNom,2));
+                    Double resistH = (pkzHM + pkzHL - pkzML) / (2d * 1000d) * (Math.pow(uNomH,2) / Math.pow(sNom,2));
 
-                    Double valXX = deltaPxx * hours * Math.pow(uavg / unomH, 2);
-                    Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uavg,2) * hours);
+                    Double valXX = deltaPxx * hours * Math.pow(uAvg / uNomH, 2);
+                    Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * hours);
 
                     transformerLine.setTotalAEH(totalAeH);
                     transformerLine.setTotalREH(totalReH);
@@ -395,7 +400,12 @@ public class BalanceSubstPeService {
         balanceSubstResultHeaderRepo.save(header);
     }
 
-    private void calcValues(BalanceSubstResultHeader header) {
-        balanceSubstResultHeaderRepo.calcPeValues(header.getId());
-    }
+    private static String sNom() { return "snom"; }
+    private static String uNomH() { return "unom_h"; }
+    private static String uNom() { return "unom"; }
+    private static String deltaPr() { return "delta_pr"; }
+    private static String deltaPxx() { return "delta_pxx"; }
+    private static String pkzHM() { return "pkz_hm"; }
+    private static String pkzML() { return "pkz_ml"; }
+    private static String pkzHL() { return "pkz_hl"; }
 }
