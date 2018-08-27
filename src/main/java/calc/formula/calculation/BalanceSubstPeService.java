@@ -65,10 +65,6 @@ public class BalanceSubstPeService {
                     continue;
 
                 Reactor reactor = peLine.getReactor();
-                if (reactor.getInputMp() == null) {
-                    logger.warn("Input metering point not found for reactor id: " + reactor.getId());
-                    continue;
-                }
 
                 Double hours = WorkingHoursExpression.builder()
                     .objectType("re")
@@ -79,26 +75,22 @@ public class BalanceSubstPeService {
                     .doubleValue();
 
                 MeteringPoint inputMp = reactor.getInputMp();
-                Double uavg = uLines.stream()
-                    .filter(t -> t.getMeteringPoint().equals(inputMp))
-                    .filter(t -> t.getVal() != null && t.getVal() != 0)
-                    .map(t -> t.getVal())
-                    .findFirst()
-                    .orElse(inputMp.getRatedVoltage());
 
-                if (reactor.getInputMp() == null) {
-                    logger.warn("Uavg not found for reactor id: " + reactor.getId());
-                    continue;
+                Double uavg = 0d;
+                if (inputMp !=null) {
+                    uavg = uLines.stream()
+                        .filter(t -> t.getMeteringPoint().equals(inputMp))
+                        .filter(t -> t.getVal() != null && t.getVal() != 0)
+                        .map(t -> t.getVal())
+                        .findFirst()
+                        .orElse(inputMp.getRatedVoltage());
                 }
+                if (uavg == 0) continue;
+
+                Double unom = Optional.of(reactor.getUnom()).orElse(0d);
+                if (unom == 0) continue;
 
                 Double deltaPr = Optional.of(reactor.getDeltaPr()).orElse(0d);
-                Double unom = Optional.of(reactor.getUnom()).orElse(0d);
-
-                if (reactor.getInputMp() == null) {
-                    logger.warn("Unom not found for reactor id: " + reactor.getId());
-                    continue;
-                }
-
                 Double val = deltaPr * hours * Math.pow(uavg / unom, 2);
 
                 ReactorValue reactorLine = new ReactorValue();
@@ -141,13 +133,16 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
-                Double uavg = uLines.stream()
-                    .filter(t-> inputMp != null)
-                    .filter(t -> t.getMeteringPoint().equals(inputMp))
-                    .filter(t -> t.getVal() != null && t.getVal() != 0)
-                    .map(t -> t.getVal())
-                    .findFirst()
-                    .orElse(inputMp.getRatedVoltage());
+                Double uavg = 0d;
+                if (inputMp!=null) {
+                    uavg = uLines.stream()
+                        .filter(t -> t.getMeteringPoint().equals(inputMp))
+                        .filter(t -> t.getVal() != null && t.getVal() != 0)
+                        .map(t -> t.getVal())
+                        .findFirst()
+                        .orElse(inputMp.getRatedVoltage());
+                }
+                if (uavg == 0) continue;
 
                 PowerTransformerValue transformerLine = new PowerTransformerValue();
                 transformerLine.setHeader(header);
@@ -168,23 +163,25 @@ public class BalanceSubstPeService {
                 transformerLine.setWindingsNumber(transformer.getWindingsNumber());
 
                 if (transformer.getWindingsNumber()==null || transformer.getWindingsNumber()==2) {
-                    Double totalAeH = mrLines.stream()
-                        .filter(t-> inputMpH != null)
-                        .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeteringPoint().equals(inputMpH))
-                        .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
-                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                        .reduce((t1, t2) -> t1 + t2)
-                        .orElse(0d);
+                    Double totalAeH = 0d;
+                    Double totalReH = 0d;
+                    if (inputMpH!=null) {
+                        totalAeH = mrLines.stream()
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getMeteringPoint().equals(inputMpH))
+                            .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
 
-                    Double totalReH = mrLines.stream()
-                         .filter(t-> inputMpH != null)
-                        .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeteringPoint().equals(inputMpH))
-                        .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
-                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                        .reduce((t1, t2) -> t1 + t2)
-                        .orElse(0d);
+                        totalReH = mrLines.stream()
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getMeteringPoint().equals(inputMpH))
+                            .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
+                    }
 
                     Double totalEh = Math.pow(totalAeH, 2) + Math.pow(totalReH, 2);
                     Double resistH = (pkzHL / 1000d) * (Math.pow(unomH, 2) / Math.pow(snom, 2));
@@ -201,59 +198,67 @@ public class BalanceSubstPeService {
                 }
 
                 if (transformer.getWindingsNumber()!=null && transformer.getWindingsNumber()==3) {
-                    Double totalAeL = mrLines.stream()
-                        .filter(t-> inputMpL != null)
-                        .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeteringPoint().equals(inputMpL))
-                        .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
-                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                        .reduce((t1, t2) -> t1 + t2)
-                        .orElse(0d);
+                    Double totalAeL = 0d;
+                    Double totalReL = 0d;
+                    if (inputMpL!=null) {
+                        totalAeL = mrLines.stream()
+                            .filter(t -> inputMpL != null)
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getMeteringPoint().equals(inputMpL))
+                            .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
 
-                    Double totalReL = mrLines.stream()
-                        .filter(t-> inputMpL != null)
-                        .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeteringPoint().equals(inputMpL))
-                        .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
-                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                        .reduce((t1, t2) -> t1 + t2)
-                        .orElse(0d);
+                        totalReL = mrLines.stream()
+                            .filter(t -> inputMpL != null)
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getMeteringPoint().equals(inputMpL))
+                            .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
+                    }
 
-                    Double totalAeM = mrLines.stream()
-                        .filter(t-> inputMpM != null)
-                        .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeteringPoint().equals(inputMpM))
-                        .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
-                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                        .reduce((t1, t2) -> t1 + t2)
-                        .orElse(0d);
+                    Double totalAeM = 0d;
+                    Double totalReM = 0d;
+                    if (inputMpM!=null) {
+                        totalAeM = mrLines.stream()
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getMeteringPoint().equals(inputMpM))
+                            .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
 
-                    Double totalReM = mrLines.stream()
-                        .filter(t-> inputMpM != null)
-                        .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeteringPoint().equals(inputMpM))
-                        .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
-                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                        .reduce((t1, t2) -> t1 + t2)
-                        .orElse(0d);
+                        totalReM = mrLines.stream()
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getMeteringPoint().equals(inputMpM))
+                            .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
+                    }
 
-                    Double totalAeH = mrLines.stream()
-                        .filter(t-> inputMpH != null)
-                        .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeteringPoint().equals(inputMpH))
-                        .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
-                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                        .reduce((t1, t2) -> t1 + t2)
-                        .orElse(0d);
+                    Double totalAeH = 0d;
+                    Double totalReH = 0d;
+                    if (inputMpH!=null) {
+                        totalAeH = mrLines.stream()
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getMeteringPoint().equals(inputMpH))
+                            .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
 
-                    Double totalReH = mrLines.stream()
-                        .filter(t-> inputMpH != null)
-                        .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeteringPoint().equals(inputMpH))
-                        .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
-                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                        .reduce((t1, t2) -> t1 + t2)
-                        .orElse(0d);
+                        totalReH = mrLines.stream()
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getMeteringPoint().equals(inputMpH))
+                            .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
+                    }
 
                     Double totalEL = Math.pow(totalAeL, 2) + Math.pow(totalReL, 2);
                     Double totalEM = Math.pow(totalAeM, 2) + Math.pow(totalReM, 2);
