@@ -26,9 +26,12 @@ public class BalanceSubstMrService {
     public void calc(BalanceSubstResultHeader header) {
         try {
             logger.info("Metering reading for header " + header.getId() + " started");
+            header = balanceSubstResultHeaderRepo.findOne(header.getId());
+            if (header.getStatus() == BatchStatusEnum.E)
+                return;
+
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
-            header = balanceSubstResultHeaderRepo.findOne(header.getId());
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)

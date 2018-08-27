@@ -32,8 +32,11 @@ public class BalanceSubstUbService {
     public void calc(BalanceSubstResultHeader header)  {
         try {
             logger.info("Unbalance for header " + header.getId() + " started");
-            updateStatus(header, BatchStatusEnum.P);
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
+            if (header.getStatus() == BatchStatusEnum.E)
+                return;
+
+            updateStatus(header, BatchStatusEnum.P);
 
             CalcContext context = CalcContext.builder()
                 .startDate(header.getStartDate())

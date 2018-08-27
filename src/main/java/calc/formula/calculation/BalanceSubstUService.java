@@ -2,13 +2,10 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
-import calc.formula.CalcResult;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
-import calc.formula.service.CalcService;
 import calc.formula.service.PeriodTimeValueService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 
 @Service
@@ -33,9 +29,12 @@ public class BalanceSubstUService {
     public void calc(BalanceSubstResultHeader header)  {
         try {
             logger.info("Uavg for header " + header.getId() + " started");
+            header = balanceSubstResultHeaderRepo.findOne(header.getId());
+            if (header.getStatus() == BatchStatusEnum.E)
+                return;
+
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
-            header = balanceSubstResultHeaderRepo.findOne(header.getId());
 
             CalcContext context = CalcContext.builder()
                 .startDate(header.getStartDate())
