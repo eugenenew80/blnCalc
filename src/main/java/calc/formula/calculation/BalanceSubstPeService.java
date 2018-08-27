@@ -165,23 +165,22 @@ public class BalanceSubstPeService {
                 transformerLine.setUnit(unit);
                 transformerLine.setOperatingTime(hours);
                 transformerLine.setUavg(uavg);
+                transformerLine.setWindingsNumber(transformer.getWindingsNumber());
 
-                Double valN;
-                Double valXX;
                 if (transformer.getWindingsNumber()==null || transformer.getWindingsNumber()==2) {
                     Double totalAeH = mrLines.stream()
-                        .filter(t-> inputMp != null)
+                        .filter(t-> inputMpH != null)
                         .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeteringPoint().equals(inputMp))
+                        .filter(t -> t.getMeteringPoint().equals(inputMpH))
                         .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
                         .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
                         .reduce((t1, t2) -> t1 + t2)
                         .orElse(0d);
 
                     Double totalReH = mrLines.stream()
-                         .filter(t-> inputMp != null)
+                         .filter(t-> inputMpH != null)
                         .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeteringPoint().equals(inputMp))
+                        .filter(t -> t.getMeteringPoint().equals(inputMpH))
                         .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
                         .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
                         .reduce((t1, t2) -> t1 + t2)
@@ -189,25 +188,107 @@ public class BalanceSubstPeService {
 
                     Double totalEh = Math.pow(totalAeH, 2) + Math.pow(totalReH, 2);
                     Double resistH = (pkzHL / 1000d) * (Math.pow(unomH, 2) / Math.pow(snom, 2));
-                    valXX = deltaPzz * hours * Math.pow(uavg / unomH, 2);
-                    valN = totalEh / (Math.pow(uavg,2) * hours) * resistH;
+                    Double valXX = deltaPzz * hours * Math.pow(uavg / unomH, 2);
+                    Double valN = totalEh / (Math.pow(uavg,2) * hours) * resistH;
 
                     transformerLine.setTotalAEH(totalAeH);
                     transformerLine.setTotalREH(totalReH);
                     transformerLine.setTotalEH(totalEh);
+                    transformerLine.setResistH(resistH);
                     transformerLine.setValXX(valXX);
                     transformerLine.setValN(valN);
                     transformerLine.setVal(valXX + valN);
                 }
 
                 if (transformer.getWindingsNumber()!=null && transformer.getWindingsNumber()==3) {
+                    Double totalAeL = mrLines.stream()
+                        .filter(t-> inputMpL != null)
+                        .filter(t -> !t.getIsIgnore())
+                        .filter(t -> t.getMeteringPoint().equals(inputMpL))
+                        .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
+                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                        .reduce((t1, t2) -> t1 + t2)
+                        .orElse(0d);
 
+                    Double totalReL = mrLines.stream()
+                        .filter(t-> inputMpL != null)
+                        .filter(t -> !t.getIsIgnore())
+                        .filter(t -> t.getMeteringPoint().equals(inputMpL))
+                        .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
+                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                        .reduce((t1, t2) -> t1 + t2)
+                        .orElse(0d);
+
+                    Double totalAeM = mrLines.stream()
+                        .filter(t-> inputMpM != null)
+                        .filter(t -> !t.getIsIgnore())
+                        .filter(t -> t.getMeteringPoint().equals(inputMpM))
+                        .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
+                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                        .reduce((t1, t2) -> t1 + t2)
+                        .orElse(0d);
+
+                    Double totalReM = mrLines.stream()
+                        .filter(t-> inputMpM != null)
+                        .filter(t -> !t.getIsIgnore())
+                        .filter(t -> t.getMeteringPoint().equals(inputMpM))
+                        .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
+                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                        .reduce((t1, t2) -> t1 + t2)
+                        .orElse(0d);
+
+                    Double totalAeH = mrLines.stream()
+                        .filter(t-> inputMpH != null)
+                        .filter(t -> !t.getIsIgnore())
+                        .filter(t -> t.getMeteringPoint().equals(inputMpH))
+                        .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
+                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                        .reduce((t1, t2) -> t1 + t2)
+                        .orElse(0d);
+
+                    Double totalReH = mrLines.stream()
+                        .filter(t-> inputMpH != null)
+                        .filter(t -> !t.getIsIgnore())
+                        .filter(t -> t.getMeteringPoint().equals(inputMpH))
+                        .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
+                        .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                        .reduce((t1, t2) -> t1 + t2)
+                        .orElse(0d);
+
+                    Double totalEL = Math.pow(totalAeL, 2) + Math.pow(totalReL, 2);
+                    Double totalEM = Math.pow(totalAeM, 2) + Math.pow(totalReM, 2);
+                    Double totalEH;
+                    if (inputMpH != null)
+                        totalEH = Math.pow(totalAeH, 2) + Math.pow(totalReH, 2);
+                    else
+                        totalEH = totalEL + totalAeM;
+
+                    Double resistL = (pkzHL + pkzML - pkzHM) / (2d * 1000d) * (Math.pow(unomH,2) / Math.pow(snom,2));
+                    Double resistM = (pkzHM + pkzML - pkzHL) / (2d * 1000d) * (Math.pow(unomH,2) / Math.pow(snom,2));
+                    Double resistH = (pkzHM + pkzHL - pkzML) / (2d * 1000d) * (Math.pow(unomH,2) / Math.pow(snom,2));
+
+                    Double valXX = deltaPzz * hours * Math.pow(uavg / unomH, 2);
+                    Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uavg,2) * hours);
+
+                    transformerLine.setTotalAEH(totalAeH);
+                    transformerLine.setTotalREH(totalReH);
+                    transformerLine.setTotalEH(totalEH);
+                    transformerLine.setTotalAEM(totalAeM);
+                    transformerLine.setTotalREM(totalReM);
+                    transformerLine.setTotalEM(totalEM);
+                    transformerLine.setTotalAEL(totalAeL);
+                    transformerLine.setTotalREL(totalReL);
+                    transformerLine.setTotalEL(totalEL);
+                    transformerLine.setResistH(resistH);
+                    transformerLine.setResistM(resistM);
+                    transformerLine.setResistL(resistL);
+                    transformerLine.setValXX(valXX);
+                    transformerLine.setValN(valN);
+                    transformerLine.setVal(valXX + valN);
                 }
 
                 transformerLines.add(transformerLine);
             }
-
-            //calcValues(header);
 
             reactorValueRepo.save(reactorLines);
             powerTransformerValueRepo.save(transformerLines);
