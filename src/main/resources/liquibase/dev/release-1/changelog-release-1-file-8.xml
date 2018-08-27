@@ -785,11 +785,11 @@
                 <constraints nullable="true"/>
             </column>
 
-            <column name="dol" type="number" remarks="Доля электроэнергии, прошедшей через измерительный комплекс">
+            <column name="doi" type="number" remarks="Доля электроэнергии, прошедшей через измерительный комплекс">
                 <constraints nullable="true"/>
             </column>
 
-            <column name="b2dol2" type="number" remarks="Произведение квадратов погрешности КУЭ и доли прошедней эл.энергии">
+            <column name="b2doi2" type="number" remarks="Произведение квадратов погрешности КУЭ и доли прошедней эл.энергии">
                 <constraints nullable="true"/>
             </column>
 
