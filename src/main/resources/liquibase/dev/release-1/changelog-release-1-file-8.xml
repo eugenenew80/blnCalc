@@ -1929,4 +1929,23 @@
         </sql>
     </changeSet>
 
+    <changeSet id="calc-rus-255" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>rename column calc_bs_result_nb_lines.doi to dol</comment>
+        <renameColumn columnDataType="number"
+                      newColumnName="dol"
+                      oldColumnName="doi"
+                      remarks="Доля электроэнергии, прошедшей через измерительный комплекс"
+                      schemaName="apps"
+                      tableName="calc_bs_result_nb_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-256" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>rename column calc_bs_result_nb_lines.doi to dol</comment>
+        <renameColumn columnDataType="number"
+                      newColumnName="b2dol2"
+                      oldColumnName="b2doi2"
+                      remarks="Доля электроэнергии, прошедшей через измерительный комплекс"
+                      schemaName="apps"
+                      tableName="calc_bs_result_nb_lines"/>
+    </changeSet>
 </databaseChangeLog>
