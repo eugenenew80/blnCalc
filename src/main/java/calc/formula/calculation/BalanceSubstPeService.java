@@ -3,8 +3,10 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
+import calc.formula.expression.impl.PowerTransformerExpression;
 import calc.formula.expression.impl.ReactorExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
+import calc.formula.service.PowerTransformerService;
 import calc.formula.service.ReactorService;
 import calc.formula.service.WorkingHoursService;
 import calc.repo.calc.*;
@@ -32,6 +34,7 @@ public class BalanceSubstPeService {
     private final UnitRepo unitRepo;
     private final WorkingHoursService workingHoursService;
     private final ReactorService reactorService;
+    private final PowerTransformerService powerTransformerService;
     private static final String docCode = "LOSSES";
 
     public void calc(BalanceSubstResultHeader header)  {
@@ -129,26 +132,59 @@ public class BalanceSubstPeService {
                 if (transformer == null)
                     continue;
 
-                Double snom = Optional.ofNullable(transformer.getSnom()).orElse(0d);
-                if (snom == 0)
-                    continue;
+                Double snom = PowerTransformerExpression.builder()
+                    .id(transformer.getId())
+                    .attr("snom")
+                    .def(0d)
+                    .context(context)
+                    .service(powerTransformerService)
+                    .build()
+                    .doubleValue();
 
-                Double unomH = Optional.ofNullable(transformer.getUnomH()).orElse(0d);
-                if (unomH == 0)
-                    continue;
+                Double unomH = PowerTransformerExpression.builder()
+                    .id(transformer.getId())
+                    .attr("unom_h")
+                    .def(0d)
+                    .context(context)
+                    .service(powerTransformerService)
+                    .build()
+                    .doubleValue();
 
-                Double deltaPxx = Optional.ofNullable(transformer.getDeltaPxx()).orElse(0d);
-                Double pkzHM = Optional.ofNullable(transformer.getPkzHM()).orElse(0d);
-                Double pkzML = Optional.ofNullable(transformer.getPkzML()).orElse(0d);
-                Double pkzHL = Optional.ofNullable(transformer.getPkzHL()).orElse(0d);
+                Double deltaPxx = PowerTransformerExpression.builder()
+                    .id(transformer.getId())
+                    .attr("delta_pxx")
+                    .def(0d)
+                    .context(context)
+                    .service(powerTransformerService)
+                    .build()
+                    .doubleValue();
 
-                MeteringPoint inputMp = transformer.getInputMp();
-                if (inputMp == null)
-                    continue;
+                Double pkzHM = PowerTransformerExpression.builder()
+                    .id(transformer.getId())
+                    .attr("pkz_hm")
+                    .def(0d)
+                    .context(context)
+                    .service(powerTransformerService)
+                    .build()
+                    .doubleValue();
 
-                MeteringPoint inputMpH = transformer.getInputMpH();
-                MeteringPoint inputMpM = transformer.getInputMpM();
-                MeteringPoint inputMpL = transformer.getInputMpL();
+                Double pkzML = PowerTransformerExpression.builder()
+                    .id(transformer.getId())
+                    .attr("pkz_ml")
+                    .def(0d)
+                    .context(context)
+                    .service(powerTransformerService)
+                    .build()
+                    .doubleValue();
+
+                Double pkzHL = PowerTransformerExpression.builder()
+                    .id(transformer.getId())
+                    .attr("pkz_hl")
+                    .def(0d)
+                    .context(context)
+                    .service(powerTransformerService)
+                    .build()
+                    .doubleValue();
 
                 Double hours = WorkingHoursExpression.builder()
                     .objectType("tr")
@@ -158,6 +194,14 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
+                MeteringPoint inputMp = transformer.getInputMp();
+                if (inputMp == null)
+                    continue;
+
+                MeteringPoint inputMpH = transformer.getInputMpH();
+                MeteringPoint inputMpM = transformer.getInputMpM();
+                MeteringPoint inputMpL = transformer.getInputMpL();
+
                 Double uavg = uLines.stream()
                     .filter(t -> t.getMeteringPoint().equals(inputMp))
                     .filter(t -> t.getVal() != null && t.getVal() != 0)
@@ -165,8 +209,9 @@ public class BalanceSubstPeService {
                     .findFirst()
                     .orElse(inputMp.getVoltageClass().getValue());
 
-                if (uavg == 0)
-                    continue;
+                if (snom == 0) continue;
+                if (unomH == 0) continue;
+                if (uavg == 0) continue;
 
                 PowerTransformerValue transformerLine = new PowerTransformerValue();
                 transformerLine.setHeader(header);
@@ -186,7 +231,7 @@ public class BalanceSubstPeService {
                 transformerLine.setUavg(uavg);
                 transformerLine.setWindingsNumber(transformer.getWindingsNumber());
 
-                if (transformer.getWindingsNumber()==null || transformer.getWindingsNumber()==2) {
+                if (transformer.getWindingsNumber() == null || transformer.getWindingsNumber() == 2) {
                     Double totalAeH = 0d;
                     Double totalReH = 0d;
                     if (inputMpH!=null) {
