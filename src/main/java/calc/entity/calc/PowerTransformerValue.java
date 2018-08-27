@@ -31,7 +31,7 @@ public class PowerTransformerValue {
     @Column(name = "windings_number")
     private Double windingsNumber;
 
-    @Column(name = "delta_pr")
+    @Column(name = "delta_pxx")
     private Double deltaPXX;
 
     @Column(name = "unom_h")
@@ -52,13 +52,13 @@ public class PowerTransformerValue {
     @Column(name = "pkz_ml")
     private Double pkzML;
 
-    @Column(name = "result_h")
+    @Column(name = "resist_h")
     private Double resistH;
 
-    @Column(name = "result_m")
+    @Column(name = "resist_m")
     private Double resistM;
 
-    @Column(name = "result_l")
+    @Column(name = "resist_l")
     private Double resistL;
 
     @Column(name = "total_e_h")
@@ -101,18 +101,18 @@ public class PowerTransformerValue {
 
     @ManyToOne
     @JoinColumn(name = "input_mp_id")
-    private MeteringPoint meteringPoint;
+    private MeteringPoint inputMp;
 
     @ManyToOne
     @JoinColumn(name = "input_mp_id_h")
-    private MeteringPoint meteringPointH;
+    private MeteringPoint inputMpH;
 
     @ManyToOne
     @JoinColumn(name = "input_mp_id_m")
-    private MeteringPoint meteringPointM;
+    private MeteringPoint inputMpM;
 
     @ManyToOne
     @JoinColumn(name = "input_mp_id_l")
-    private MeteringPoint meteringPointL;
+    private MeteringPoint inputMpL;
 }
 

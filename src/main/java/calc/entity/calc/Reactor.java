@@ -21,4 +21,8 @@ public class Reactor {
 
     @Column(name = "unom")
     private Double unom;
+
+    @ManyToOne
+    @JoinColumn(name = "input_mp_id")
+    private MeteringPoint inputMp;
 }

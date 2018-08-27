@@ -33,4 +33,23 @@ public class PowerTransformer {
 
     @Column(name = "pkz_ml")
     private Double pkzML;
+
+    @ManyToOne
+    @JoinColumn(name = "input_mp_id")
+    private MeteringPoint inputMp;
+
+    @ManyToOne
+    @JoinColumn(name = "input_hl_id")
+    private MeteringPoint inputMpH;
+
+    @ManyToOne
+    @JoinColumn(name = "input_ml_id")
+    private MeteringPoint inputMpM;
+
+    @ManyToOne
+    @JoinColumn(name = "input_ll_id")
+    private MeteringPoint inputMpL;
+
+    @Column(name = "windings_number")
+    private Integer windingsNumber;
 }
