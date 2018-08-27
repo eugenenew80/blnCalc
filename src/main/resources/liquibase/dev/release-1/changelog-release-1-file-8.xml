@@ -1920,4 +1920,13 @@
                     schemaName="apps"
                     tableName="calc_doc_asp1_lines"/>
     </changeSet>
+
+    <changeSet id="calc-rus-254" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns CALC_DAILY_SHEET_LINES</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            comment on column apps.CALC_SERVICE_VALUES_RECONCILIATIONS.state
+            is 'Статус согласования';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
