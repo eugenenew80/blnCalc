@@ -109,7 +109,7 @@ public class BalanceSubstUbService {
                             .filter(t -> t.getMeterHistory().equals(meterHistory))
                             .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
                             .reduce((t1, t2) -> t1 + t2)
-                            .get();
+                            .orElse(0d);
 
                         Double wa = mrLines.stream()
                             .filter(t -> !t.getIsIgnore())
@@ -119,7 +119,7 @@ public class BalanceSubstUbService {
                             .filter(t -> t.getMeterHistory().equals(meterHistory))
                             .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
                             .reduce((t1, t2) -> t1 + t2)
-                            .get();
+                            .orElse(0d);
 
                         Double wr = mrLines.stream()
                             .filter(t -> !t.getIsIgnore())
@@ -129,7 +129,7 @@ public class BalanceSubstUbService {
                             .filter(t -> t.getMeterHistory().equals(meterHistory))
                             .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
                             .reduce((t1, t2) -> t1 + t2)
-                            .get();
+                            .orElse(0d);
 
                         Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / (Math.sqrt(3) * ratedVoltage);
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1();

@@ -64,7 +64,7 @@ public class BalanceSubstResultUbLine {
     @Column(name = "i1_nom")
     private Double i1Nom;
 
-    @Column(name = "t_rab")
+    @Column(name = "trab")
     private Double tRab;
 
     @Column(name = "uavg")
