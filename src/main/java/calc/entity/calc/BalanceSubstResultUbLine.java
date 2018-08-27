@@ -49,11 +49,11 @@ public class BalanceSubstResultUbLine {
     @Column(name = "wr")
     private Double wr;
 
-    @Column(name = "doi")
-    private Double doi;
+    @Column(name = "dol")
+    private Double dol;
 
-    @Column(name = "b2doi2")
-    private Double b2doi2;
+    @Column(name = "b2dol2")
+    private Double b2dol2;
 
     @Column(name = "tt_star")
     private Double ttStar;
@@ -64,7 +64,7 @@ public class BalanceSubstResultUbLine {
     @Column(name = "i1_nom")
     private Double i1Nom;
 
-    @Column(name = "t_rab")
+    @Column(name = "trab")
     private Double tRab;
 
     @Column(name = "uavg")

@@ -4285,5 +4285,123 @@
             <column name="metering_data_source_line_id" type="number"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="calc-eug-484" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="is_zero" type="number" remarks="Флаг - переход через ноль" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_correct" type="number" remarks="Флаг - корректность данных" defaultValue="1">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-485" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_daily_sheet_headers</comment>
+        <addColumn tableName="calc_daily_sheet_headers" schemaName="apps">
+            <column name="is_correct" type="number" remarks="Флаг - корректность данных" defaultValue="1">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-486" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="delta" type="number" remarks="Разница между текущим и начальным показанием" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-487" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: media_at_time_values</comment>
+        <addColumn tableName="media_at_time_values" schemaName="apps">
+            <column name="is_active" type="number" defaultValue="0" remarks="Флаг - активная запись">
+                <constraints nullable="false" />
+            </column>
+            <column name="metering_data_source_id" type="number" remarks="Источник, из которого получены данные - заголовок" />
+            <column name="metering_data_source_line_id" type="number" remarks="Источник, из которого получены данные - строка" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-488" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: media_period_time_values</comment>
+        <addColumn tableName="media_period_time_values" schemaName="apps">
+            <column name="is_active" type="number" defaultValue="0" remarks="Флаг - активная запись">
+                <constraints nullable="false" />
+            </column>
+            <column name="metering_data_source_id" type="number" remarks="Источник, из которого получены данные - заголовок" />
+            <column name="metering_data_source_line_id" type="number" remarks="Источник, из которого получены данные - строка" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-489" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: media_at_time_values to calc_metering_data_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="media_at_time_values"
+                baseColumnNames="metering_data_source_id"
+                constraintName="fk_media_at_time_values_10"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-490" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: media_at_time_values to calc_metering_data_source_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="media_at_time_values"
+                baseColumnNames="metering_data_source_line_id"
+                constraintName="fk_media_at_time_values_11"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_source_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-491" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: media_period_time_values to calc_metering_data_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="media_period_time_values"
+                baseColumnNames="metering_data_source_id"
+                constraintName="fk_media_period_time_values_10"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-492" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: media_period_time_values to calc_metering_data_source_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="media_period_time_values"
+                baseColumnNames="metering_data_source_line_id"
+                constraintName="fk_media_period_time_values_11"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_source_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
 

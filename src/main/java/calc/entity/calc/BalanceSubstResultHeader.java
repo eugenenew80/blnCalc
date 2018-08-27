@@ -55,4 +55,10 @@ public class BalanceSubstResultHeader {
     @Column(name="period_type")
     @Enumerated(EnumType.STRING)
     private PeriodTypeEnum periodType;
+
+    @Column(name = "nbd_val")
+    private Double nbdVal;
+
+    @Column(name = "nbd_proc")
+    private Double nbdProc;
 }
