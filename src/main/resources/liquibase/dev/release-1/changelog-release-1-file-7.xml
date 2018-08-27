@@ -4403,5 +4403,14 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-493" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop not null constraint for table: calc_daily_sheet_lines</comment>
+        <dropNotNullConstraint tableName="calc_daily_sheet_lines" schemaName="apps" columnName="meter_rate" />
+        <dropNotNullConstraint tableName="calc_daily_sheet_lines" schemaName="apps" columnName="start_metering_date" />
+        <dropNotNullConstraint tableName="calc_daily_sheet_lines" schemaName="apps" columnName="end_metering_date" />
+    </changeSet>
+
+
 </databaseChangeLog>
 
