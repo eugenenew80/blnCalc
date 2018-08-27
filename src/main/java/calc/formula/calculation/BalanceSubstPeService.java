@@ -19,8 +19,11 @@ public class BalanceSubstPeService {
     public void calc(BalanceSubstResultHeader header)  {
         try {
             logger.info("Power equipment values for header " + header.getId() + " started");
-            updateStatus(header, BatchStatusEnum.P);
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
+            if (header.getStatus() == BatchStatusEnum.E)
+                return;
+
+            updateStatus(header, BatchStatusEnum.P);
             calcValues(header);
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Power equipment values for header " + header.getId() + " completed");
