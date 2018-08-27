@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class PowerTransformerExpression implements DoubleExpression, StringExpression {
     private final Long id;
     private final String attr;
+    private final Double def;
     private final PowerTransformerService service;
     private final CalcContext context;
 
@@ -22,13 +23,14 @@ public class PowerTransformerExpression implements DoubleExpression, StringExpre
     }
 
     @Override
-    public Double doubleValue() {
-        return service.getDoubleAttribute(id, attr, context);
+    public StringExpression stringExpression() {
+        return this;
     }
 
     @Override
-    public StringExpression stringExpression() {
-        return this;
+    public Double doubleValue() {
+        Double value = service.getDoubleAttribute(id, attr, context);
+        return value != null ? value: def;
     }
 
     @Override

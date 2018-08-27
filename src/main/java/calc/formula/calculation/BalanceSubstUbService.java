@@ -94,7 +94,9 @@ public class BalanceSubstUbService {
                         .build()
                         .doubleValue();
 
-                    Double ratedVoltage = ubLine.getMeteringPoint().getRatedVoltage();
+                    Double ratedVoltage = ubLine.getMeteringPoint()
+                        .getVoltageClass()
+                        .getValue();
 
                     for (MeterHistory meterHistory : meterHistories) {
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();

@@ -27,8 +27,9 @@ public class MeteringPoint {
     @Column(name = "metering_point_type_id")
     private Long meteringPointTypeId;
 
-    @Column(name = "rated_voltage")
-    private Double ratedVoltage;
+    @ManyToOne
+    @JoinColumn(name = "rated_voltage")
+    private VoltageClass voltageClass;
 
     @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
     private List<Formula> formulas;

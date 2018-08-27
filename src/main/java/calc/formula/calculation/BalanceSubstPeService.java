@@ -3,7 +3,9 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
+import calc.formula.expression.impl.ReactorExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
+import calc.formula.service.ReactorService;
 import calc.formula.service.WorkingHoursService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +30,9 @@ public class BalanceSubstPeService {
     private final ReactorValueRepo reactorValueRepo;
     private final PowerTransformerValueRepo powerTransformerValueRepo;
     private final UnitRepo unitRepo;
-    private static final String docCode = "LOSSES";
     private final WorkingHoursService workingHoursService;
+    private final ReactorService reactorService;
+    private static final String docCode = "LOSSES";
 
     public void calc(BalanceSubstResultHeader header)  {
         try {
@@ -61,10 +64,34 @@ public class BalanceSubstPeService {
 
             List<ReactorValue> reactorLines = new ArrayList<>();
             for (BalanceSubstPeLine peLine : header.getHeader().getPeLines()) {
-                if (peLine.getReactor() == null)
+                Reactor reactor = peLine.getReactor();
+                if (reactor == null)
                     continue;
 
-                Reactor reactor = peLine.getReactor();
+                MeteringPoint inputMp = reactor.getInputMp();
+                if (inputMp == null)
+                    continue;
+
+                Double unom = ReactorExpression.builder()
+                    .id(reactor.getId())
+                    .attr("unom")
+                    .def(0d)
+                    .context(context)
+                    .service(reactorService)
+                    .build()
+                    .doubleValue();
+
+                Double deltaPr = ReactorExpression.builder()
+                    .id(reactor.getId())
+                    .attr("delta_pr")
+                    .def(0d)
+                    .context(context)
+                    .service(reactorService)
+                    .build()
+                    .doubleValue();
+
+                if (unom == 0) continue;
+                if (deltaPr == 0) continue;
 
                 Double hours = WorkingHoursExpression.builder()
                     .objectType("re")
@@ -74,23 +101,13 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
-                MeteringPoint inputMp = reactor.getInputMp();
+                Double uavg = uLines.stream()
+                    .filter(t -> t.getMeteringPoint().equals(inputMp))
+                    .filter(t -> t.getVal() != null && t.getVal() != 0)
+                    .map(t -> t.getVal())
+                    .findFirst()
+                    .orElse(inputMp.getVoltageClass().getValue());
 
-                Double uavg = 0d;
-                if (inputMp !=null) {
-                    uavg = uLines.stream()
-                        .filter(t -> t.getMeteringPoint().equals(inputMp))
-                        .filter(t -> t.getVal() != null && t.getVal() != 0)
-                        .map(t -> t.getVal())
-                        .findFirst()
-                        .orElse(inputMp.getRatedVoltage());
-                }
-                if (uavg == 0) continue;
-
-                Double unom = Optional.of(reactor.getUnom()).orElse(0d);
-                if (unom == 0) continue;
-
-                Double deltaPr = Optional.of(reactor.getDeltaPr()).orElse(0d);
                 Double val = deltaPr * hours * Math.pow(uavg / unom, 2);
 
                 ReactorValue reactorLine = new ReactorValue();
@@ -108,22 +125,30 @@ public class BalanceSubstPeService {
 
             List<PowerTransformerValue> transformerLines = new ArrayList<>();
             for (BalanceSubstPeLine peLine : header.getHeader().getPeLines()) {
-                if (peLine.getPowerTransformer() == null)
+                PowerTransformer transformer = peLine.getPowerTransformer();
+                if (transformer == null)
                     continue;
 
-                PowerTransformer transformer = peLine.getPowerTransformer();
-                MeteringPoint inputMp = transformer.getInputMp();
-                MeteringPoint inputMpH = transformer.getInputMpH();
-                MeteringPoint inputMpM = transformer.getInputMpM();
-                MeteringPoint inputMpL = transformer.getInputMpL();
+                Double snom = Optional.ofNullable(transformer.getSnom()).orElse(0d);
+                if (snom == 0)
+                    continue;
 
+                Double unomH = Optional.ofNullable(transformer.getUnomH()).orElse(0d);
+                if (unomH == 0)
+                    continue;
+
+                Double deltaPxx = Optional.ofNullable(transformer.getDeltaPxx()).orElse(0d);
                 Double pkzHM = Optional.ofNullable(transformer.getPkzHM()).orElse(0d);
                 Double pkzML = Optional.ofNullable(transformer.getPkzML()).orElse(0d);
                 Double pkzHL = Optional.ofNullable(transformer.getPkzHL()).orElse(0d);
 
-                Double deltaPzz = Optional.ofNullable(transformer.getDeltaPxx()).orElse(0d);
-                Double snom = Optional.ofNullable(transformer.getSnom()).orElse(0d);
-                Double unomH = Optional.ofNullable(transformer.getUnomH()).orElse(0d);
+                MeteringPoint inputMp = transformer.getInputMp();
+                if (inputMp == null)
+                    continue;
+
+                MeteringPoint inputMpH = transformer.getInputMpH();
+                MeteringPoint inputMpM = transformer.getInputMpM();
+                MeteringPoint inputMpL = transformer.getInputMpL();
 
                 Double hours = WorkingHoursExpression.builder()
                     .objectType("tr")
@@ -133,21 +158,20 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
-                Double uavg = 0d;
-                if (inputMp!=null) {
-                    uavg = uLines.stream()
-                        .filter(t -> t.getMeteringPoint().equals(inputMp))
-                        .filter(t -> t.getVal() != null && t.getVal() != 0)
-                        .map(t -> t.getVal())
-                        .findFirst()
-                        .orElse(inputMp.getRatedVoltage());
-                }
-                if (uavg == 0) continue;
+                Double uavg = uLines.stream()
+                    .filter(t -> t.getMeteringPoint().equals(inputMp))
+                    .filter(t -> t.getVal() != null && t.getVal() != 0)
+                    .map(t -> t.getVal())
+                    .findFirst()
+                    .orElse(inputMp.getVoltageClass().getValue());
+
+                if (uavg == 0)
+                    continue;
 
                 PowerTransformerValue transformerLine = new PowerTransformerValue();
                 transformerLine.setHeader(header);
                 transformerLine.setTransformer(transformer);
-                transformerLine.setDeltaPXX(deltaPzz);
+                transformerLine.setDeltaPXX(deltaPxx);
                 transformerLine.setSnom(snom);
                 transformerLine.setUnomH(unomH);
                 transformerLine.setInputMp(inputMp);
@@ -185,7 +209,7 @@ public class BalanceSubstPeService {
 
                     Double totalEh = Math.pow(totalAeH, 2) + Math.pow(totalReH, 2);
                     Double resistH = (pkzHL / 1000d) * (Math.pow(unomH, 2) / Math.pow(snom, 2));
-                    Double valXX = deltaPzz * hours * Math.pow(uavg / unomH, 2);
+                    Double valXX = deltaPxx * hours * Math.pow(uavg / unomH, 2);
                     Double valN = totalEh / (Math.pow(uavg,2) * hours) * resistH;
 
                     transformerLine.setTotalAEH(totalAeH);
@@ -202,7 +226,6 @@ public class BalanceSubstPeService {
                     Double totalReL = 0d;
                     if (inputMpL!=null) {
                         totalAeL = mrLines.stream()
-                            .filter(t -> inputMpL != null)
                             .filter(t -> !t.getIsIgnore())
                             .filter(t -> t.getMeteringPoint().equals(inputMpL))
                             .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
@@ -211,7 +234,6 @@ public class BalanceSubstPeService {
                             .orElse(0d);
 
                         totalReL = mrLines.stream()
-                            .filter(t -> inputMpL != null)
                             .filter(t -> !t.getIsIgnore())
                             .filter(t -> t.getMeteringPoint().equals(inputMpL))
                             .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
@@ -262,17 +284,13 @@ public class BalanceSubstPeService {
 
                     Double totalEL = Math.pow(totalAeL, 2) + Math.pow(totalReL, 2);
                     Double totalEM = Math.pow(totalAeM, 2) + Math.pow(totalReM, 2);
-                    Double totalEH;
-                    if (inputMpH != null)
-                        totalEH = Math.pow(totalAeH, 2) + Math.pow(totalReH, 2);
-                    else
-                        totalEH = totalEL + totalAeM;
+                    Double totalEH = inputMpH != null ? Math.pow(totalAeH, 2) + Math.pow(totalReH, 2) : totalEL + totalAeM;
 
                     Double resistL = (pkzHL + pkzML - pkzHM) / (2d * 1000d) * (Math.pow(unomH,2) / Math.pow(snom,2));
                     Double resistM = (pkzHM + pkzML - pkzHL) / (2d * 1000d) * (Math.pow(unomH,2) / Math.pow(snom,2));
                     Double resistH = (pkzHM + pkzHL - pkzML) / (2d * 1000d) * (Math.pow(unomH,2) / Math.pow(snom,2));
 
-                    Double valXX = deltaPzz * hours * Math.pow(uavg / unomH, 2);
+                    Double valXX = deltaPxx * hours * Math.pow(uavg / unomH, 2);
                     Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uavg,2) * hours);
 
                     transformerLine.setTotalAEH(totalAeH);

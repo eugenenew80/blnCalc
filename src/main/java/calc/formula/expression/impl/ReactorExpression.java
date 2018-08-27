@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class ReactorExpression implements DoubleExpression, StringExpression {
     private final Long id;
     private final String attr;
+    private final Double def;
     private final ReactorService service;
     private final CalcContext context;
 
@@ -26,10 +27,10 @@ public class ReactorExpression implements DoubleExpression, StringExpression {
         return this;
     }
 
-
     @Override
     public Double doubleValue() {
-        return service.getDoubleAttribute(id, attr, context);
+        Double value = service.getDoubleAttribute(id, attr, context);
+        return value != null ? value: def;
     }
 
     @Override
