@@ -20,6 +20,6 @@ public class UavgServiceImpl implements UavgService {
     @Override
     public List<BalanceSubstResultULine> getValues(Long headerId, String meteringPointCode) {
         MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
-        return balanceSubstResultULineRepo.findAllByHeaderIdAAndMeteringPointId(headerId, meteringPoint.getId());
+        return balanceSubstResultULineRepo.findAllByHeaderIdAndMeteringPointId(headerId, meteringPoint.getId());
     }
 }

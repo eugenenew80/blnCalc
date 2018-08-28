@@ -70,5 +70,5 @@ public class MeterHistory {
 
     @ManyToOne
     @JoinColumn(name = "tn_type_id")
-    private TtType tnType;
+    private TnType tnType;
 }

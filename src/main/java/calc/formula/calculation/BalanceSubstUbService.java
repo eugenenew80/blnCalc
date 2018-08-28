@@ -7,6 +7,7 @@ import calc.formula.expression.impl.WorkingHoursExpression;
 import calc.formula.service.WorkingHoursService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultMrLineRepo;
+import calc.repo.calc.BalanceSubstResultULineRepo;
 import calc.repo.calc.BalanceSubstResultUbLineRepo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ public class BalanceSubstUbService {
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final BalanceSubstResultUbLineRepo balanceSubstResultUbLineRepo;
     private final WorkingHoursService workingHoursService;
+    private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private static final String docCode = "UNBALANCE";
 
     public void calc(BalanceSubstResultHeader header)  {
@@ -37,6 +39,7 @@ public class BalanceSubstUbService {
                 return;
 
             updateStatus(header, BatchStatusEnum.P);
+            deleteLines(header);
 
             CalcContext context = CalcContext.builder()
                 .startDate(header.getStartDate())
@@ -56,7 +59,7 @@ public class BalanceSubstUbService {
                 .stream()
                 .filter(t -> t.getIsSection1())
                 .flatMap(t -> mrLines.stream().filter(l -> !l.getIsIgnore() && l.getMeteringPoint().equals(t.getMeteringPoint())))
-                .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
+                .filter(t -> t.getParam().getCode().equals("A+"))
                 .filter(t -> t.getVal() != null)
                 .map(t -> t.getVal())
                 .reduce((t1, t2) -> t1 + t2)
@@ -66,7 +69,7 @@ public class BalanceSubstUbService {
                 .stream()
                 .filter(t -> t.getIsSection2())
                 .flatMap(t -> mrLines.stream().filter(l -> !l.getIsIgnore() && l.getMeteringPoint().equals(t.getMeteringPoint())))
-                .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
+                .filter(t -> t.getParam().getCode().equals("A-"))
                 .filter(t -> t.getVal() != null)
                 .map(t -> t.getVal())
                 .reduce((t1, t2) -> t1 + t2)
@@ -94,15 +97,21 @@ public class BalanceSubstUbService {
                         .build()
                         .doubleValue();
 
-                    Double ratedVoltage = ubLine.getMeteringPoint()
-                        .getVoltageClass()
-                        .getValue();
+
+                    Double ratedVoltage = balanceSubstResultULineRepo.findAllByHeaderId(header.getId())
+                        .stream()
+                        .filter(t -> t.getMeteringPoint().getVoltageClass().equals(ubLine.getMeteringPoint().getVoltageClass()))
+                        .map(t -> t.getVal())
+                        .findFirst()
+                        .orElse(ubLine.getMeteringPoint().getVoltageClass().getValue());
+
+                    ratedVoltage = ratedVoltage / 1000d;
 
                     for (MeterHistory meterHistory : meterHistories) {
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
 
                         TtType ttType = meterHistory.getTtType();
-                        TtType tnType = meterHistory.getTnType();
+                        TnType tnType = meterHistory.getTnType();
                         EemType eemType = meterHistory.getMeter().getEemType();
 
                         String paramCode = direction.equals("1") ? "A+" : "A-";
@@ -136,8 +145,8 @@ public class BalanceSubstUbService {
                             .reduce((t1, t2) -> t1 + t2)
                             .orElse(0d);
 
-                        Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / (Math.sqrt(3) * ratedVoltage);
-                        Double i1avgProc = i1avgVal / ttType.getRatedCurrent1();
+                        Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / ( 1.73d * ratedVoltage * workHours);
+                        Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
                         Double ttAcProc = ttType.getAccuracyClass().getValue();
 
                         Double bttProc;
@@ -146,17 +155,17 @@ public class BalanceSubstUbService {
                         else if (i1avgProc >= 5) bttProc = 1.75 - 0.05 * i1avgProc;
                         else bttProc = 1.5;
 
-                        Double biProc = Math.sqrt(2 * bttProc);
+                        Double biProc = Math.sqrt(2d) * bttProc;
                         Double buProc = tnType == null || tnType.getAccuracyClass() == null ? 0d : tnType.getAccuracyClass().getValue();
                         Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
                         Double bsoProc = eemType == null || eemType.getAccuracyClass() == null ? 0d : eemType.getAccuracyClass().getValue();
-                        Double bProc = Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2);
+                        Double bProc =  Math.sqrt(Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2)) * 1.1d;
 
                         Double dol = 0d;
-                        if (direction.equals("1")) dol = wa / wSum1;
-                        if (direction.equals("2")) dol = wa / wSum2;
+                        if (direction.equals("1")) dol = w / wSum1;
+                        if (direction.equals("2")) dol = w / wSum2;
 
-                        Double b2dol2 = Math.pow(bProc, 2) * Math.pow(dol, 2);
+                        Double b2dol2 = Math.pow(bProc/100d, 2) * Math.pow(dol, 2);
 
                         line.setHeader(header);
                         line.setMeteringPoint(ubLine.getMeteringPoint());
@@ -185,10 +194,10 @@ public class BalanceSubstUbService {
                 }
             }
 
-            Double r1SumWa = lines.stream()
+            Double r1SumW = lines.stream()
                 .filter(t -> t.getDirection().equals("1"))
-                .filter(t -> t.getWa() != null)
-                .map(t -> t.getWa())
+                .filter(t -> t.getW() != null)
+                .map(t -> t.getW())
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
@@ -199,10 +208,10 @@ public class BalanceSubstUbService {
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
-            Double r2SumWa = lines.stream()
+            Double r2SumW = lines.stream()
                 .filter(t -> t.getDirection().equals("2"))
-                .filter(t -> t.getWa() != null)
-                .map(t -> t.getWa())
+                .filter(t -> t.getW() != null)
+                .map(t -> t.getW())
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
@@ -213,8 +222,8 @@ public class BalanceSubstUbService {
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
-            Double nbdProc = Math.pow(r1SumB2D2 + r2SumB2D2, 2) * 100d;
-            Double nbdVal = nbdProc * r1SumWa / 100d;
+            Double nbdProc = Math.sqrt(r1SumB2D2 + r2SumB2D2) * 100d;
+            Double nbdVal = nbdProc * r1SumW / 100d;
 
             header.setNbdProc(nbdProc);
             header.setNbdVal(nbdVal);
@@ -231,6 +240,14 @@ public class BalanceSubstUbService {
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteLines(BalanceSubstResultHeader header) {
+        List<BalanceSubstResultUbLine> lines = balanceSubstResultUbLineRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<lines.size(); i++)
+            balanceSubstResultUbLineRepo.delete(lines.get(i));
+        balanceSubstResultUbLineRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
