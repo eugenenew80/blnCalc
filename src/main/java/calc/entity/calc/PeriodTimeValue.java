@@ -49,7 +49,7 @@ public class PeriodTimeValue  {
 
 	@Transient
 	private PeriodTypeEnum getPeriodType() {
-		return interval.equals(3600) ? PeriodTypeEnum.H : PeriodTypeEnum.D;
+		return interval.equals(3600l) ? PeriodTypeEnum.H : PeriodTypeEnum.D;
 	}
 
 	public CalcResult toResult() {

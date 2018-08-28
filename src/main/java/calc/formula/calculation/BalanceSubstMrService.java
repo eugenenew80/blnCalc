@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Service
@@ -21,7 +23,18 @@ public class BalanceSubstMrService {
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final MeteringReadingService meteringReadingService;
+    private final ParameterRepo parameterRepo;
     private static final String docCode = "ACT";
+    private Map<String, Parameter> mapParams = null;
+
+    @PostConstruct
+    public void init() {
+        mapParams = new HashMap<>();
+        mapParams.put("A-", parameterRepo.findByCode("A-"));
+        mapParams.put("A+", parameterRepo.findByCode("A+"));
+        mapParams.put("R-", parameterRepo.findByCode("R-"));
+        mapParams.put("R+", parameterRepo.findByCode("R+"));
+    }
 
     public void calc(BalanceSubstResultHeader header) {
         try {
@@ -48,7 +61,6 @@ public class BalanceSubstMrService {
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
                 List<MeteringReading> meteringReadings = meteringReadingService.calc(mrLine.getMeteringPoint(), context);
-
                 for (MeteringReading t : meteringReadings) {
                     BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
                     line.setHeader(header);
@@ -58,7 +70,7 @@ public class BalanceSubstMrService {
                     line.setBypassMode(t.getBypassMode());
                     line.setIsBypassSection(t.getIsBypassSection());
                     line.setIsIgnore(false);
-                    line.setParam(t.getParam());
+                    line.setParam(inverseParam(t.getParam(), mrLine.getIsInverse()));
                     line.setUnit(t.getUnit());
                     line.setMeter(t.getMeter());
                     line.setMeterHistory(t.getMeterHistory());
@@ -109,5 +121,15 @@ public class BalanceSubstMrService {
         if (mrLine.getIsSection4()) return "4";
         if (mrLine.getIsSection5()) return "5";
         return "";
+    }
+
+    private Parameter inverseParam(Parameter param, Boolean isInverse) {
+        if (isInverse) {
+            if (param.getCode().equals("A+")) return mapParams.get("A-");
+            if (param.getCode().equals("A-")) return mapParams.get("A+");
+            if (param.getCode().equals("R+")) return mapParams.get("R-");
+            if (param.getCode().equals("R-")) return mapParams.get("R+");
+        }
+        return param;
     }
 }

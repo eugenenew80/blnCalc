@@ -10,5 +10,5 @@ import java.util.List;
 public interface BalanceSubstResultULineRepo extends JpaRepository<BalanceSubstResultULine, Long> {
     List<BalanceSubstResultULine> findAllByHeaderId(Long headerId);
 
-    List<BalanceSubstResultULine> findAllByHeaderIdAAndMeteringPointId(Long headerId, Long meteringPointId);
+    List<BalanceSubstResultULine> findAllByHeaderIdAndMeteringPointId(Long headerId, Long meteringPointId);
 }

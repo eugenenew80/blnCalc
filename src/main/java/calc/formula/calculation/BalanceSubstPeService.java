@@ -111,6 +111,9 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
+                uAvg = uAvg / 1000d;
+
+
                 if (uNom == 0) continue;
                 if (deltaPr == 0) continue;
 
@@ -210,6 +213,9 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
+                uAvg = uAvg / 1000d;
+
+
                 if (sNom == 0) continue;
                 if (uNomH == 0) continue;
                 if (uAvg == 0) continue;
@@ -258,9 +264,9 @@ public class BalanceSubstPeService {
                     }
 
                     Double totalEh = Math.pow(totalAeH, 2) + Math.pow(totalReH, 2);
-                    Double resistH = (pkzHL / 1000d) * (Math.pow(uNomH, 2) / Math.pow(sNom, 2));
+                    Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2));
                     Double valXX = deltaPxx * hours * Math.pow(uAvg / uNomH, 2);
-                    Double valN = totalEh / (Math.pow(uAvg,2) * hours) * resistH;
+                    Double valN = totalEh * resistH / (Math.pow(uAvg,2) * hours);
 
                     transformerLine.setTotalAEH(totalAeH);
                     transformerLine.setTotalREH(totalReH);
