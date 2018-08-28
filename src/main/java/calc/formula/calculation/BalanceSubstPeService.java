@@ -47,6 +47,8 @@ public class BalanceSubstPeService {
             deleteReactorLines(header);
             deleteTransformerLines(header);
 
+            PeriodTypeEnum periodType = header.getPeriodType();
+
             CalcContext context = CalcContext.builder()
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
@@ -130,12 +132,13 @@ public class BalanceSubstPeService {
             List<PowerTransformerValue> transformerLines = new ArrayList<>();
             for (BalanceSubstPeLine peLine : header.getHeader().getPeLines()) {
                 PowerTransformer transformer = peLine.getPowerTransformer();
-                if (transformer == null)
+                if (transformer == null || transformer.getWindingsNumber() == null)
                     continue;
 
                 MeteringPoint inputMp = transformer.getInputMp();
-                if (inputMp == null)
-                    continue;
+                MeteringPoint inputMpH = transformer.getInputMpH();
+                MeteringPoint inputMpM = transformer.getInputMpM();
+                MeteringPoint inputMpL = transformer.getInputMpL();
 
                 Double sNom     = getTransformerAttr(transformer, "snom",       context);
                 Double uNomH    = getTransformerAttr(transformer, "unom_h",     context);
@@ -166,10 +169,6 @@ public class BalanceSubstPeService {
                 if (uNomH == 0) continue;
                 if (uAvg == 0)  continue;
 
-                MeteringPoint inputMpH = transformer.getInputMpH();
-                MeteringPoint inputMpM = transformer.getInputMpM();
-                MeteringPoint inputMpL = transformer.getInputMpL();
-
                 PowerTransformerValue transformerLine = new PowerTransformerValue();
                 transformerLine.setHeader(header);
                 transformerLine.setTransformer(transformer);
@@ -188,8 +187,7 @@ public class BalanceSubstPeService {
                 transformerLine.setUavg(uAvg);
                 transformerLine.setWindingsNumber(transformer.getWindingsNumber());
 
-                PeriodTypeEnum periodType = header.getPeriodType();
-                if (transformer.getWindingsNumber() == null || transformer.getWindingsNumber() == 2) {
+                if (transformer.getWindingsNumber() == 2) {
                     Double totalApEH = getPtValue(inputMpH, "A+", periodType, context);
                     Double totalAmEH = getPtValue(inputMpH, "A-", periodType, context);;
                     Double totalAEH = Optional.ofNullable(totalApEH).orElse(0d) + Optional.ofNullable(totalAmEH).orElse(0d);
@@ -212,7 +210,7 @@ public class BalanceSubstPeService {
                     transformerLine.setVal(valXX + valN);
                 }
 
-                if (transformer.getWindingsNumber()!=null && transformer.getWindingsNumber()==3) {
+                if (transformer.getWindingsNumber() == 3) {
                     Double totalApEL = getPtValue(inputMpL, "A+", periodType, context);
                     Double totalAmEL = getPtValue(inputMpL, "A-", periodType, context);;
                     Double totalAEL = Optional.ofNullable(totalApEL).orElse(0d) + Optional.ofNullable(totalAmEL).orElse(0d);
