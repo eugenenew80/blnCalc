@@ -1,5 +1,6 @@
 package calc.entity.calc;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.enums.ParamTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,4 +42,8 @@ public class FormulaVarDet {
 
     @Column(name = "sign")
     private String sign;
+
+    @Column(name = "is_metering_reading")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isMeteringReading;
 }

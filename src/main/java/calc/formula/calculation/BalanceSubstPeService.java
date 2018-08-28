@@ -2,15 +2,13 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.ParamTypeEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
-import calc.formula.expression.impl.PowerTransformerExpression;
-import calc.formula.expression.impl.ReactorExpression;
-import calc.formula.expression.impl.UavgExpression;
-import calc.formula.expression.impl.WorkingHoursExpression;
-import calc.formula.service.PowerTransformerService;
-import calc.formula.service.ReactorService;
-import calc.formula.service.UavgService;
-import calc.formula.service.WorkingHoursService;
+import calc.formula.CalcResult;
+import calc.formula.exception.CycleDetectionException;
+import calc.formula.expression.impl.*;
+import calc.formula.service.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -19,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +31,9 @@ public class BalanceSubstPeService {
     private final WorkingHoursService workingHoursService;
     private final ReactorService reactorService;
     private final PowerTransformerService powerTransformerService;
-    private final UavgService uavgService;
+    private final BsResultUavgService uavgService;
+    private final BsResultMrService mrService;
+    private final CalcService calcService;
     private static final String docCode = "LOSSES";
 
     public void calc(BalanceSubstResultHeader header)  {
@@ -53,6 +50,7 @@ public class BalanceSubstPeService {
             CalcContext context = CalcContext.builder()
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
+                .headerId(header.getId())
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
@@ -61,7 +59,6 @@ public class BalanceSubstPeService {
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
-
 
             Unit unit = unitRepo.findByCode("kW.h");
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
@@ -78,7 +75,7 @@ public class BalanceSubstPeService {
 
                 Double uNom = ReactorExpression.builder()
                     .id(reactor.getId())
-                    .attr(uNom())
+                    .attr("unom")
                     .def(0d)
                     .context(context)
                     .service(reactorService)
@@ -87,7 +84,7 @@ public class BalanceSubstPeService {
 
                 Double deltaPr = ReactorExpression.builder()
                     .id(reactor.getId())
-                    .attr(deltaPr())
+                    .attr("delta_pr")
                     .def(0d)
                     .context(context)
                     .service(reactorService)
@@ -103,7 +100,6 @@ public class BalanceSubstPeService {
                     .doubleValue();
 
                 Double uAvg = UavgExpression.builder()
-                    .headerId(header.getId())
                     .meteringPointCode(inputMp.getCode())
                     .def(inputMp.getVoltageClass().getValue())
                     .context(context)
@@ -112,7 +108,6 @@ public class BalanceSubstPeService {
                     .doubleValue();
 
                 uAvg = uAvg / 1000d;
-
 
                 if (uNom == 0) continue;
                 if (deltaPr == 0) continue;
@@ -142,59 +137,12 @@ public class BalanceSubstPeService {
                 if (inputMp == null)
                     continue;
 
-                Double sNom = PowerTransformerExpression.builder()
-                    .id(transformer.getId())
-                    .attr(sNom())
-                    .def(0d)
-                    .context(context)
-                    .service(powerTransformerService)
-                    .build()
-                    .doubleValue();
-
-                Double uNomH = PowerTransformerExpression.builder()
-                    .id(transformer.getId())
-                    .attr(uNomH())
-                    .def(0d)
-                    .context(context)
-                    .service(powerTransformerService)
-                    .build()
-                    .doubleValue();
-
-                Double deltaPxx = PowerTransformerExpression.builder()
-                    .id(transformer.getId())
-                    .attr(deltaPxx())
-                    .def(0d)
-                    .context(context)
-                    .service(powerTransformerService)
-                    .build()
-                    .doubleValue();
-
-                Double pkzHM = PowerTransformerExpression.builder()
-                    .id(transformer.getId())
-                    .attr(pkzHM())
-                    .def(0d)
-                    .context(context)
-                    .service(powerTransformerService)
-                    .build()
-                    .doubleValue();
-
-                Double pkzML = PowerTransformerExpression.builder()
-                    .id(transformer.getId())
-                    .attr(pkzML())
-                    .def(0d)
-                    .context(context)
-                    .service(powerTransformerService)
-                    .build()
-                    .doubleValue();
-
-                Double pkzHL = PowerTransformerExpression.builder()
-                    .id(transformer.getId())
-                    .attr(pkzHL())
-                    .def(0d)
-                    .context(context)
-                    .service(powerTransformerService)
-                    .build()
-                    .doubleValue();
+                Double sNom     = getTransformerAttr(transformer, "snom",       context);
+                Double uNomH    = getTransformerAttr(transformer, "unom_h",     context);
+                Double deltaPxx = getTransformerAttr(transformer, "delta_pxx",  context);
+                Double pkzHM    = getTransformerAttr(transformer, "pkz_hm",     context);
+                Double pkzML    = getTransformerAttr(transformer, "pkz_ml",     context);
+                Double pkzHL    = getTransformerAttr(transformer, "pkz_hl",     context);
 
                 Double hours = WorkingHoursExpression.builder()
                     .objectType("tr")
@@ -205,7 +153,6 @@ public class BalanceSubstPeService {
                     .doubleValue();
 
                 Double uAvg = UavgExpression.builder()
-                    .headerId(header.getId())
                     .meteringPointCode(inputMp!=null ? inputMp.getCode() : "")
                     .def(inputMp!=null && inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() : 0d)
                     .context(context)
@@ -215,10 +162,9 @@ public class BalanceSubstPeService {
 
                 uAvg = uAvg / 1000d;
 
-
-                if (sNom == 0) continue;
+                if (sNom == 0)  continue;
                 if (uNomH == 0) continue;
-                if (uAvg == 0) continue;
+                if (uAvg == 0)  continue;
 
                 MeteringPoint inputMpH = transformer.getInputMpH();
                 MeteringPoint inputMpM = transformer.getInputMpM();
@@ -242,35 +188,24 @@ public class BalanceSubstPeService {
                 transformerLine.setUavg(uAvg);
                 transformerLine.setWindingsNumber(transformer.getWindingsNumber());
 
+                PeriodTypeEnum periodType = header.getPeriodType();
                 if (transformer.getWindingsNumber() == null || transformer.getWindingsNumber() == 2) {
-                    Double totalAeH = 0d;
-                    Double totalReH = 0d;
-                    if (inputMpH!=null) {
-                        totalAeH = mrLines.stream()
-                            .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(inputMpH))
-                            .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
-                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                            .reduce((t1, t2) -> t1 + t2)
-                            .orElse(0d);
+                    Double totalApEH = getPtValue(inputMpH, "A+", periodType, context);
+                    Double totalAmEH = getPtValue(inputMpH, "A-", periodType, context);;
+                    Double totalAEH = Optional.ofNullable(totalApEH).orElse(0d) + Optional.ofNullable(totalAmEH).orElse(0d);
 
-                        totalReH = mrLines.stream()
-                            .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(inputMpH))
-                            .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
-                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                            .reduce((t1, t2) -> t1 + t2)
-                            .orElse(0d);
-                    }
+                    Double totalRpEH = getPtValue(inputMpH, "R+", periodType, context);
+                    Double totalRmEH = getPtValue(inputMpH, "R-", periodType, context);;
+                    Double totalREH = Optional.ofNullable(totalRpEH).orElse(0d) + Optional.ofNullable(totalRmEH).orElse(0d);;
 
-                    Double totalEh = Math.pow(totalAeH, 2) + Math.pow(totalReH, 2);
+                    Double totalEH = Math.pow(totalAEH, 2) + Math.pow(totalREH, 2);
                     Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2));
                     Double valXX = deltaPxx * hours * Math.pow(uAvg / uNomH, 2);
-                    Double valN = totalEh * resistH / (Math.pow(uAvg,2) * hours);
+                    Double valN = totalEH * resistH / (Math.pow(uAvg,2) * hours);
 
-                    transformerLine.setTotalAEH(totalAeH);
-                    transformerLine.setTotalREH(totalReH);
-                    transformerLine.setTotalEH(totalEh);
+                    transformerLine.setTotalAEH(totalAEH);
+                    transformerLine.setTotalREH(totalREH);
+                    transformerLine.setTotalEH(totalEH);
                     transformerLine.setResistH(resistH);
                     transformerLine.setValXX(valXX);
                     transformerLine.setValN(valN);
@@ -278,69 +213,34 @@ public class BalanceSubstPeService {
                 }
 
                 if (transformer.getWindingsNumber()!=null && transformer.getWindingsNumber()==3) {
-                    Double totalAeL = 0d;
-                    Double totalReL = 0d;
-                    if (inputMpL!=null) {
-                        totalAeL = mrLines.stream()
-                            .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(inputMpL))
-                            .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
-                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                            .reduce((t1, t2) -> t1 + t2)
-                            .orElse(0d);
+                    Double totalApEL = getPtValue(inputMpL, "A+", periodType, context);
+                    Double totalAmEL = getPtValue(inputMpL, "A-", periodType, context);;
+                    Double totalAEL = Optional.ofNullable(totalApEL).orElse(0d) + Optional.ofNullable(totalAmEL).orElse(0d);
 
-                        totalReL = mrLines.stream()
-                            .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(inputMpL))
-                            .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
-                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                            .reduce((t1, t2) -> t1 + t2)
-                            .orElse(0d);
-                    }
+                    Double totalRpEL = getPtValue(inputMpL, "R+", periodType, context);
+                    Double totalRmEL = getPtValue(inputMpL, "R-", periodType, context);;
+                    Double totalREL = Optional.ofNullable(totalRpEL).orElse(0d) + Optional.ofNullable(totalRmEL).orElse(0d);;
 
-                    Double totalAeM = 0d;
-                    Double totalReM = 0d;
-                    if (inputMpM!=null) {
-                        totalAeM = mrLines.stream()
-                            .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(inputMpM))
-                            .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
-                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                            .reduce((t1, t2) -> t1 + t2)
-                            .orElse(0d);
+                    Double totalApEM = getPtValue(inputMpM, "A+", periodType, context);
+                    Double totalAmEM = getPtValue(inputMpM, "A-", periodType, context);;
+                    Double totalAEM = Optional.ofNullable(totalApEM).orElse(0d) + Optional.ofNullable(totalAmEM).orElse(0d);
 
-                        totalReM = mrLines.stream()
-                            .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(inputMpM))
-                            .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
-                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                            .reduce((t1, t2) -> t1 + t2)
-                            .orElse(0d);
-                    }
+                    Double totalRpEM = getPtValue(inputMpM, "R+", periodType, context);
+                    Double totalRmEM = getPtValue(inputMpM, "R-", periodType, context);;
+                    Double totalREM = Optional.ofNullable(totalRpEM).orElse(0d) + Optional.ofNullable(totalRmEM).orElse(0d);;
 
-                    Double totalAeH = 0d;
-                    Double totalReH = 0d;
-                    if (inputMpH!=null) {
-                        totalAeH = mrLines.stream()
-                            .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(inputMpH))
-                            .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
-                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                            .reduce((t1, t2) -> t1 + t2)
-                            .orElse(0d);
+                    Double totalApEH = getPtValue(inputMpH, "A+", periodType, context);
+                    Double totalAmEH = getPtValue(inputMpH, "A-", periodType, context);;
+                    Double totalAEH = Optional.ofNullable(totalApEH).orElse(0d) + Optional.ofNullable(totalAmEH).orElse(0d);
 
-                        totalReH = mrLines.stream()
-                            .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(inputMpH))
-                            .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
-                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                            .reduce((t1, t2) -> t1 + t2)
-                            .orElse(0d);
-                    }
+                    Double totalRpEH = getPtValue(inputMpH, "R+", periodType, context);
+                    Double totalRmEH = getPtValue(inputMpH, "R-", periodType, context);;
+                    Double totalREH = Optional.ofNullable(totalRpEH).orElse(0d) + Optional.ofNullable(totalRmEH).orElse(0d);;
 
-                    Double totalEL = Math.pow(totalAeL, 2) + Math.pow(totalReL, 2);
-                    Double totalEM = Math.pow(totalAeM, 2) + Math.pow(totalReM, 2);
-                    Double totalEH = inputMpH != null ? Math.pow(totalAeH, 2) + Math.pow(totalReH, 2) : totalEL + totalAeM;
+
+                    Double totalEL = Math.pow(totalAEL, 2) + Math.pow(totalREL, 2);
+                    Double totalEM = Math.pow(totalAEM, 2) + Math.pow(totalREM, 2);
+                    Double totalEH = inputMpH != null ? Math.pow(totalAEH, 2) + Math.pow(totalREH, 2) : totalEL + totalAEM;
 
                     Double resistL = (pkzHL + pkzML - pkzHM) / (2d * 1000d) * (Math.pow(uNomH,2) / Math.pow(sNom,2));
                     Double resistM = (pkzHM + pkzML - pkzHL) / (2d * 1000d) * (Math.pow(uNomH,2) / Math.pow(sNom,2));
@@ -349,14 +249,14 @@ public class BalanceSubstPeService {
                     Double valXX = deltaPxx * hours * Math.pow(uAvg / uNomH, 2);
                     Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * hours);
 
-                    transformerLine.setTotalAEH(totalAeH);
-                    transformerLine.setTotalREH(totalReH);
+                    transformerLine.setTotalAEH(totalAEH);
+                    transformerLine.setTotalREH(totalREH);
                     transformerLine.setTotalEH(totalEH);
-                    transformerLine.setTotalAEM(totalAeM);
-                    transformerLine.setTotalREM(totalReM);
+                    transformerLine.setTotalAEM(totalAEM);
+                    transformerLine.setTotalREM(totalREM);
                     transformerLine.setTotalEM(totalEM);
-                    transformerLine.setTotalAEL(totalAeL);
-                    transformerLine.setTotalREL(totalReL);
+                    transformerLine.setTotalAEL(totalAEL);
+                    transformerLine.setTotalREL(totalREL);
                     transformerLine.setTotalEL(totalEL);
                     transformerLine.setResistH(resistH);
                     transformerLine.setResistM(resistM);
@@ -384,6 +284,48 @@ public class BalanceSubstPeService {
         }
     }
 
+    private Double getTransformerAttr(PowerTransformer transformer, String attr, CalcContext context) {
+        return PowerTransformerExpression.builder()
+            .id(transformer.getId())
+            .attr(attr)
+            .def(0d)
+            .context(context)
+            .service(powerTransformerService)
+            .build()
+            .doubleValue();
+    }
+
+    private Double getPtValue(MeteringPoint meteringPoint, String param, PeriodTypeEnum periodType, CalcContext context) throws CycleDetectionException {
+        if (meteringPoint == null)
+            return null;
+
+        Double totalApH = null;
+        if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
+            Formula formula = meteringPoint.getFormulas().stream()
+                .filter(t -> t.getParam().getCode().equals(param))
+                .filter(t -> t.getParamType() == ParamTypeEnum.PT)
+                .filter(t -> t.getPeriodType() == periodType)
+                .findFirst()
+                .orElse(null);
+
+            if (formula != null) {
+                List<CalcResult> results = calcService.calcFormulas(Arrays.asList(formula), context);
+                totalApH = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+            }
+        }
+        else {
+            totalApH = MeteringReadingExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(param)
+                .context(context)
+                .service(mrService)
+                .build()
+                .doubleValue();
+        }
+
+        return totalApH;
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteReactorLines(BalanceSubstResultHeader header) {
         List<ReactorValue> lines = reactorValueRepo.findAllByHeaderId(header.getId());
@@ -405,13 +347,4 @@ public class BalanceSubstPeService {
         header.setStatus(status);
         balanceSubstResultHeaderRepo.save(header);
     }
-
-    private static String sNom() { return "snom"; }
-    private static String uNomH() { return "unom_h"; }
-    private static String uNom() { return "unom"; }
-    private static String deltaPr() { return "delta_pr"; }
-    private static String deltaPxx() { return "delta_pxx"; }
-    private static String pkzHM() { return "pkz_hm"; }
-    private static String pkzML() { return "pkz_ml"; }
-    private static String pkzHL() { return "pkz_hl"; }
 }

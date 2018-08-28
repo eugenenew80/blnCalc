@@ -27,6 +27,7 @@ public class CalcServiceImpl implements CalcService {
     private final ExpressionService expressionService;
     private final PeriodTimeValueService periodTimeValueService;
     private final AtTimeValueService atTimeValueService;
+    private final BsResultMrService mrService;
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
 
@@ -199,35 +200,48 @@ public class CalcServiceImpl implements CalcService {
     }
 
     private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context) {
-        if (det.getParamType() == ParamTypeEnum.PT ) {
-            return PeriodTimeValueExpression.builder()
-                .meteringPointCode(det.getMeteringPoint().getCode())
-                .parameterCode(det.getParam().getCode())
-                .periodType(det.getFormula().getPeriodType())
-                .rate(det.getRate())
-                .startHour((byte) 0)
-                .endHour((byte) 23)
-                .service(periodTimeValueService)
-                .context(context)
-                .build();
+        if (det.getIsMeteringReading()) {
+            if (det.getParamType() == ParamTypeEnum.PT) {
+                return MeteringReadingExpression.builder()
+                    .meteringPointCode(det.getMeteringPoint().getCode())
+                    .parameterCode(det.getParam().getCode())
+                    .context(context)
+                    .service(mrService)
+                    .build();
+            }
         }
 
-        if (det.getParamType() == ParamTypeEnum.AT || det.getParamType() == ParamTypeEnum.ATS || det.getParamType() == ParamTypeEnum.ATE) {
-            String per = "end";
-            if (det.getParamType() == ParamTypeEnum.ATS)
-                per = "start";
+        if (!det.getIsMeteringReading()) {
+            if (det.getParamType() == ParamTypeEnum.PT) {
+                return PeriodTimeValueExpression.builder()
+                    .meteringPointCode(det.getMeteringPoint().getCode())
+                    .parameterCode(det.getParam().getCode())
+                    .periodType(det.getFormula().getPeriodType())
+                    .rate(det.getRate())
+                    .startHour((byte) 0)
+                    .endHour((byte) 23)
+                    .service(periodTimeValueService)
+                    .context(context)
+                    .build();
+            }
 
-            if (det.getParamType() == ParamTypeEnum.ATE)
-                per = "end";
+            if (det.getParamType() == ParamTypeEnum.AT || det.getParamType() == ParamTypeEnum.ATS || det.getParamType() == ParamTypeEnum.ATE) {
+                String per = "end";
+                if (det.getParamType() == ParamTypeEnum.ATS)
+                    per = "start";
 
-            return AtTimeValueExpression.builder()
-                .meteringPointCode(det.getMeteringPoint().getCode())
-                .parameterCode(det.getParam().getCode())
-                .per(per)
-                .rate(det.getRate())
-                .service(atTimeValueService)
-                .context(context)
-                .build();
+                if (det.getParamType() == ParamTypeEnum.ATE)
+                    per = "end";
+
+                return AtTimeValueExpression.builder()
+                    .meteringPointCode(det.getMeteringPoint().getCode())
+                    .parameterCode(det.getParam().getCode())
+                    .per(per)
+                    .rate(det.getRate())
+                    .service(atTimeValueService)
+                    .context(context)
+                    .build();
+            }
         }
 
         return DoubleValueExpression.builder().build();

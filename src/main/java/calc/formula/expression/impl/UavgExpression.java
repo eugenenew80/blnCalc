@@ -2,7 +2,7 @@ package calc.formula.expression.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
-import calc.formula.service.UavgService;
+import calc.formula.service.BsResultUavgService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +10,9 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class UavgExpression implements DoubleExpression {
-    private final Long headerId;
     private final String meteringPointCode;
     private final Double def;
-    private final UavgService service;
+    private final BsResultUavgService service;
     private final CalcContext context;
 
     @Override
@@ -26,7 +25,7 @@ public class UavgExpression implements DoubleExpression {
         if (meteringPointCode==null || meteringPointCode.equals(""))
             return def;
 
-        return service.getValues(headerId, meteringPointCode).stream()
+        return service.getValues(context.getHeaderId(), meteringPointCode).stream()
             .filter(t -> t.getVal() != null && t.getVal() != 0)
             .map(t -> t.getVal())
             .findFirst()
