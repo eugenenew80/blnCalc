@@ -617,7 +617,6 @@
         />
     </changeSet>
 
-
     <changeSet id="calc-rus-147" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>drop foreign constraint: calc_metering_data_sources_tl to calc_metering_data_sources_tl</comment>
         <dropForeignKeyConstraint baseTableName="calc_metering_data_sources_tl" constraintName="fk_calc_metering_data_sources_tl_1" baseTableSchemaName="apps"/>
@@ -1947,5 +1946,367 @@
                       remarks="Доля электроэнергии, прошедшей через измерительный комплекс"
                       schemaName="apps"
                       tableName="calc_bs_result_nb_lines"/>
+    </changeSet>
+    
+    <changeSet id="calc-rus-258" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_svr_volume_changes</comment>
+        <createTable tableName="calc_svr_volume_changes" schemaName="apps" remarks="Справочник изменения обьемов">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-259" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_svr_volume_changes</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_svr_volume_changes"
+                schemaName="apps"
+                tableName="calc_svr_volume_changes"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-260" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table:calc_svr_volume_changes_tl</comment>
+        <createTable tableName="calc_svr_volume_changes_tl" schemaName="apps" remarks="Перевод Справочник изменения обьемов">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(100)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-261" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_svr_volume_changes_tl</comment>
+        <addPrimaryKey
+                columnNames="code,lang"
+                constraintName="pk_calc_svr_volume_changes_tl"
+                schemaName="apps"
+                tableName="calc_svr_volume_changes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-262" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_svr_volume_changes_tl to calc_svr_volume_changes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_svr_volume_changes_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_svr_volume_changes_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_svr_volume_changes"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-263" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_svr_volume_changes</comment>
+        <insert schemaName="apps" tableName="calc_svr_volume_changes">
+            <column name="code" type="varchar2" value="Y"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_volume_changes">
+            <column name="code" type="varchar2" value="N"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_volume_changes">
+            <column name="code" type="varchar2" value="U"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-264" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_svr_volume_changes_tl</comment>
+        <insert schemaName="apps" tableName="calc_svr_volume_changes_tl">
+            <column name="code" type="varchar2" value="Y"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Есть"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_volume_changes_tl">
+            <column name="code" type="varchar2" value="Y"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Есть"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_volume_changes_tl">
+            <column name="code" type="varchar2" value="N"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Нет"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_volume_changes_tl">
+            <column name="code" type="varchar2" value="N"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Нет"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_volume_changes_tl">
+            <column name="code" type="varchar2" value="U"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Не указано"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_volume_changes_tl">
+            <column name="code" type="varchar2" value="U"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Не указано"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-rus-265" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_svr_formation_status</comment>
+        <createTable tableName="calc_svr_formation_status" schemaName="apps" remarks="Справочник способ формирования для Акта сверки обьемов оказанных услуг">
+            <column name="code" type="varchar2(20)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-266" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_svr_formation_status</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_svr_formation_status"
+                schemaName="apps"
+                tableName="calc_svr_formation_status"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-267" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table:calc_svr_formation_status_tl</comment>
+        <createTable tableName="calc_svr_formation_status_tl" schemaName="apps" remarks="Перевод Справочник способ формирования для Акта сверки обьемов оказанных услуг">
+            <column name="code" type="varchar2(20)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(100)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-268" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_svr_formation_status_tl</comment>
+        <addPrimaryKey
+                columnNames="code,lang"
+                constraintName="pk_calc_svr_formation_status_tl"
+                schemaName="apps"
+                tableName="calc_svr_formation_status_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-269" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_svr_formation_status_tl to calc_svr_formation_status</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_svr_formation_status_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_svr_formation_status_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_svr_formation_status"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-270" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_svr_formation_status</comment>
+        <insert schemaName="apps" tableName="calc_svr_formation_status">
+            <column name="code" type="varchar2" value="M"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_formation_status">
+            <column name="code" type="varchar2" value="C"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_formation_status">
+            <column name="code" type="varchar2" value="U"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_formation_status">
+            <column name="code" type="varchar2" value="P"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-271" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_svr_formation_status_tl</comment>
+        <insert schemaName="apps" tableName="calc_svr_formation_status_tl">
+            <column name="code" type="varchar2" value="M"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="С ошибкой"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_formation_status_tl">
+            <column name="code" type="varchar2" value="M"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="С ошибкой"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_formation_status_tl">
+            <column name="code" type="varchar2" value="C"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Без ошибок"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_formation_status_tl">
+            <column name="code" type="varchar2" value="C"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Без ошибок"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_formation_status_tl">
+            <column name="code" type="varchar2" value="U"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Не указано"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_formation_status_tl">
+            <column name="code" type="varchar2" value="U"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Не указано"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_formation_status_tl">
+            <column name="code" type="varchar2" value="P"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Ранее не создовался"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_svr_formation_status_tl">
+            <column name="code" type="varchar2" value="P"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="ранее не создавался"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-rus-272" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop foreign constraint: calc_service_values_reconciliations to wf_states</comment>
+        <dropForeignKeyConstraint baseTableName="calc_service_values_reconciliations" constraintName="fk_calc_service_values_reconciliations_5" baseTableSchemaName="apps"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-273" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column to calc_service_values_reconciliations</comment>
+        <addColumn tableName="calc_service_values_reconciliations" schemaName="apps">
+            <column name="volume_changes" type="varchar2(10)" remarks="Измение обьемов">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-274" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations to calc_svr_formation_status</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations"
+                baseColumnNames="status"
+                constraintName="fk_calc_service_values_reconciliations_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_svr_formation_status"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-275" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations to calc_svr_volume_changes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations"
+                baseColumnNames="volume_changes"
+                constraintName="fk_calc_service_values_reconciliations_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_svr_volume_changes"
+                referencedColumnNames="code"
+        />
     </changeSet>
 </databaseChangeLog>
