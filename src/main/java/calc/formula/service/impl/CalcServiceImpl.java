@@ -69,6 +69,8 @@ public class CalcServiceImpl implements CalcService {
         try {
             List<String> pointCodes = expressionService.sort(codesMap);
             for (String pointCode : pointCodes) {
+                System.out.println(pointCode);
+
                 DoubleExpression expression = expressionMap.get(pointCode);
                 Formula formula = formulaMap.get(pointCode);
 
@@ -205,6 +207,7 @@ public class CalcServiceImpl implements CalcService {
                 return MeteringReadingExpression.builder()
                     .meteringPointCode(det.getMeteringPoint().getCode())
                     .parameterCode(det.getParam().getCode())
+                    .rate(1d)
                     .context(context)
                     .service(mrService)
                     .build();

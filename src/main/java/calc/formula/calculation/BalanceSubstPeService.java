@@ -163,7 +163,7 @@ public class BalanceSubstPeService {
                 transformerLine.setUavg(uAvg);
                 transformerLine.setWindingsNumber(transformer.getWindingsNumber());
 
-                if (transformer.getWindingsNumber() == 2) {
+                if (transformer.getWindingsNumber().equals(2l)) {
                     Double totalApEH = getMrVal(inputMpH, "A+", context);
                     Double totalAmEH = getMrVal(inputMpH, "A-", context);;
                     Double totalAEH = Optional.ofNullable(totalApEH).orElse(0d) + Optional.ofNullable(totalAmEH).orElse(0d);
@@ -186,7 +186,7 @@ public class BalanceSubstPeService {
                     transformerLine.setVal(valXX + valN);
                 }
 
-                if (transformer.getWindingsNumber() == 3) {
+                if (transformer.getWindingsNumber().equals(3l)) {
                     Double totalApEL = getMrVal(inputMpL, "A+", context);
                     Double totalAmEL = getMrVal(inputMpL, "A-", context);;
                     Double totalAEL = Optional.ofNullable(totalApEL).orElse(0d) + Optional.ofNullable(totalAmEL).orElse(0d);
@@ -210,7 +210,6 @@ public class BalanceSubstPeService {
                     Double totalRpEH = getMrVal(inputMpH, "R+", context);
                     Double totalRmEH = getMrVal(inputMpH, "R-", context);;
                     Double totalREH = Optional.ofNullable(totalRpEH).orElse(0d) + Optional.ofNullable(totalRmEH).orElse(0d);;
-
 
                     Double totalEL = Math.pow(totalAEL, 2) + Math.pow(totalREL, 2);
                     Double totalEM = Math.pow(totalAEM, 2) + Math.pow(totalREM, 2);
@@ -295,6 +294,8 @@ public class BalanceSubstPeService {
             if (formula != null) {
                 List<CalcResult> results = calcService.calcFormulas(Arrays.asList(formula), context);
                 value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+
+                System.out.println(value);
             }
         }
         else {

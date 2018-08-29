@@ -51,5 +51,5 @@ public class PowerTransformer {
     private MeteringPoint inputMpL;
 
     @Column(name = "windings_number")
-    private Integer windingsNumber;
+    private Long windingsNumber;
 }
