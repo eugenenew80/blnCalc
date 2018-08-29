@@ -32,7 +32,7 @@ public class BalanceSubstUbService {
     private final BsResultUavgService resultUavgService;
     private static final String docCode = "UNBALANCE";
 
-    public void calc(BalanceSubstResultHeader header)  {
+    public void calc(BalanceSubstResultHeader header) {
         try {
             logger.info("Unbalance for header " + header.getId() + " started");
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
