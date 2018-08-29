@@ -3,7 +3,6 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
-import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.exception.CycleDetectionException;
@@ -24,15 +23,14 @@ import java.util.*;
 public class BalanceSubstPeService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstPeService.class);
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
-    private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final ReactorValueRepo reactorValueRepo;
     private final PowerTransformerValueRepo powerTransformerValueRepo;
     private final UnitRepo unitRepo;
     private final WorkingHoursService workingHoursService;
     private final ReactorService reactorService;
     private final PowerTransformerService powerTransformerService;
-    private final BsResultUavgService uavgService;
-    private final BsResultMrService mrService;
+    private final BsResultUavgService resultUavgService;
+    private final BsResultMrService resultMrService;
     private final CalcService calcService;
     private static final String docCode = "LOSSES";
 
@@ -47,12 +45,11 @@ public class BalanceSubstPeService {
             deleteReactorLines(header);
             deleteTransformerLines(header);
 
-            PeriodTypeEnum periodType = header.getPeriodType();
-
             CalcContext context = CalcContext.builder()
+                .headerId(header.getId())
+                .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
-                .headerId(header.getId())
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
@@ -63,7 +60,6 @@ public class BalanceSubstPeService {
                 .build();
 
             Unit unit = unitRepo.findByCode("kW.h");
-            List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
 
             List<ReactorValue> reactorLines = new ArrayList<>();
             for (BalanceSubstPeLine peLine : header.getHeader().getPeLines()) {
@@ -75,23 +71,8 @@ public class BalanceSubstPeService {
                 if (inputMp == null)
                     continue;
 
-                Double uNom = ReactorExpression.builder()
-                    .id(reactor.getId())
-                    .attr("unom")
-                    .def(0d)
-                    .context(context)
-                    .service(reactorService)
-                    .build()
-                    .doubleValue();
-
-                Double deltaPr = ReactorExpression.builder()
-                    .id(reactor.getId())
-                    .attr("delta_pr")
-                    .def(0d)
-                    .context(context)
-                    .service(reactorService)
-                    .build()
-                    .doubleValue();
+                Double uNom    = getReactorAttr(reactor, "unom",     context);
+                Double deltaPr = getReactorAttr(reactor, "delta_pr", context);
 
                 Double hours = WorkingHoursExpression.builder()
                     .objectType("re")
@@ -103,16 +84,13 @@ public class BalanceSubstPeService {
 
                 Double uAvg = UavgExpression.builder()
                     .meteringPointCode(inputMp.getCode())
-                    .def(inputMp.getVoltageClass().getValue())
+                    .def(inputMp.getVoltageClass().getValue() / 1000d)
                     .context(context)
-                    .service(uavgService)
+                    .service(resultUavgService)
                     .build()
                     .doubleValue();
 
-                uAvg = uAvg / 1000d;
-
                 if (uNom == 0) continue;
-                if (deltaPr == 0) continue;
 
                 Double val = deltaPr * hours * Math.pow(uAvg / uNom, 2);
 
@@ -135,17 +113,17 @@ public class BalanceSubstPeService {
                 if (transformer == null || transformer.getWindingsNumber() == null)
                     continue;
 
-                MeteringPoint inputMp = transformer.getInputMp();
+                MeteringPoint inputMp =  transformer.getInputMp();
                 MeteringPoint inputMpH = transformer.getInputMpH();
                 MeteringPoint inputMpM = transformer.getInputMpM();
                 MeteringPoint inputMpL = transformer.getInputMpL();
 
-                Double sNom     = getTransformerAttr(transformer, "snom",       context);
-                Double uNomH    = getTransformerAttr(transformer, "unom_h",     context);
-                Double deltaPxx = getTransformerAttr(transformer, "delta_pxx",  context);
-                Double pkzHM    = getTransformerAttr(transformer, "pkz_hm",     context);
-                Double pkzML    = getTransformerAttr(transformer, "pkz_ml",     context);
-                Double pkzHL    = getTransformerAttr(transformer, "pkz_hl",     context);
+                Double sNom     = getTransformerAttr(transformer, "snom",      context);
+                Double uNomH    = getTransformerAttr(transformer, "unom_h",    context);
+                Double deltaPxx = getTransformerAttr(transformer, "delta_pxx", context);
+                Double pkzHM    = getTransformerAttr(transformer, "pkz_hm",    context);
+                Double pkzML    = getTransformerAttr(transformer, "pkz_ml",    context);
+                Double pkzHL    = getTransformerAttr(transformer, "pkz_hl",    context);
 
                 Double hours = WorkingHoursExpression.builder()
                     .objectType("tr")
@@ -157,13 +135,11 @@ public class BalanceSubstPeService {
 
                 Double uAvg = UavgExpression.builder()
                     .meteringPointCode(inputMp!=null ? inputMp.getCode() : "")
-                    .def(inputMp!=null && inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() : 0d)
+                    .def(inputMp!=null && inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() / 1000d : 0d)
                     .context(context)
-                    .service(uavgService)
+                    .service(resultUavgService)
                     .build()
                     .doubleValue();
-
-                uAvg = uAvg / 1000d;
 
                 if (sNom == 0)  continue;
                 if (uNomH == 0) continue;
@@ -188,12 +164,12 @@ public class BalanceSubstPeService {
                 transformerLine.setWindingsNumber(transformer.getWindingsNumber());
 
                 if (transformer.getWindingsNumber() == 2) {
-                    Double totalApEH = getPtValue(inputMpH, "A+", periodType, context);
-                    Double totalAmEH = getPtValue(inputMpH, "A-", periodType, context);;
+                    Double totalApEH = getMrVal(inputMpH, "A+", context);
+                    Double totalAmEH = getMrVal(inputMpH, "A-", context);;
                     Double totalAEH = Optional.ofNullable(totalApEH).orElse(0d) + Optional.ofNullable(totalAmEH).orElse(0d);
 
-                    Double totalRpEH = getPtValue(inputMpH, "R+", periodType, context);
-                    Double totalRmEH = getPtValue(inputMpH, "R-", periodType, context);;
+                    Double totalRpEH = getMrVal(inputMpH, "R+", context);
+                    Double totalRmEH = getMrVal(inputMpH, "R-", context);;
                     Double totalREH = Optional.ofNullable(totalRpEH).orElse(0d) + Optional.ofNullable(totalRmEH).orElse(0d);;
 
                     Double totalEH = Math.pow(totalAEH, 2) + Math.pow(totalREH, 2);
@@ -211,28 +187,28 @@ public class BalanceSubstPeService {
                 }
 
                 if (transformer.getWindingsNumber() == 3) {
-                    Double totalApEL = getPtValue(inputMpL, "A+", periodType, context);
-                    Double totalAmEL = getPtValue(inputMpL, "A-", periodType, context);;
+                    Double totalApEL = getMrVal(inputMpL, "A+", context);
+                    Double totalAmEL = getMrVal(inputMpL, "A-", context);;
                     Double totalAEL = Optional.ofNullable(totalApEL).orElse(0d) + Optional.ofNullable(totalAmEL).orElse(0d);
 
-                    Double totalRpEL = getPtValue(inputMpL, "R+", periodType, context);
-                    Double totalRmEL = getPtValue(inputMpL, "R-", periodType, context);;
+                    Double totalRpEL = getMrVal(inputMpL, "R+", context);
+                    Double totalRmEL = getMrVal(inputMpL, "R-", context);;
                     Double totalREL = Optional.ofNullable(totalRpEL).orElse(0d) + Optional.ofNullable(totalRmEL).orElse(0d);;
 
-                    Double totalApEM = getPtValue(inputMpM, "A+", periodType, context);
-                    Double totalAmEM = getPtValue(inputMpM, "A-", periodType, context);;
+                    Double totalApEM = getMrVal(inputMpM, "A+", context);
+                    Double totalAmEM = getMrVal(inputMpM, "A-", context);;
                     Double totalAEM = Optional.ofNullable(totalApEM).orElse(0d) + Optional.ofNullable(totalAmEM).orElse(0d);
 
-                    Double totalRpEM = getPtValue(inputMpM, "R+", periodType, context);
-                    Double totalRmEM = getPtValue(inputMpM, "R-", periodType, context);;
+                    Double totalRpEM = getMrVal(inputMpM, "R+", context);
+                    Double totalRmEM = getMrVal(inputMpM, "R-", context);;
                     Double totalREM = Optional.ofNullable(totalRpEM).orElse(0d) + Optional.ofNullable(totalRmEM).orElse(0d);;
 
-                    Double totalApEH = getPtValue(inputMpH, "A+", periodType, context);
-                    Double totalAmEH = getPtValue(inputMpH, "A-", periodType, context);;
+                    Double totalApEH = getMrVal(inputMpH, "A+", context);
+                    Double totalAmEH = getMrVal(inputMpH, "A-", context);;
                     Double totalAEH = Optional.ofNullable(totalApEH).orElse(0d) + Optional.ofNullable(totalAmEH).orElse(0d);
 
-                    Double totalRpEH = getPtValue(inputMpH, "R+", periodType, context);
-                    Double totalRmEH = getPtValue(inputMpH, "R-", periodType, context);;
+                    Double totalRpEH = getMrVal(inputMpH, "R+", context);
+                    Double totalRmEH = getMrVal(inputMpH, "R-", context);;
                     Double totalREH = Optional.ofNullable(totalRpEH).orElse(0d) + Optional.ofNullable(totalRmEH).orElse(0d);;
 
 
@@ -293,35 +269,47 @@ public class BalanceSubstPeService {
             .doubleValue();
     }
 
-    private Double getPtValue(MeteringPoint meteringPoint, String param, PeriodTypeEnum periodType, CalcContext context) throws CycleDetectionException {
+    private Double getReactorAttr(Reactor reactor, String attr, CalcContext context) {
+        return ReactorExpression.builder()
+            .id(reactor.getId())
+            .attr(attr)
+            .def(0d)
+            .context(context)
+            .service(reactorService)
+            .build()
+            .doubleValue();
+    }
+
+    private Double getMrVal(MeteringPoint meteringPoint, String param, CalcContext context) throws CycleDetectionException {
         if (meteringPoint == null)
             return null;
 
-        Double totalApH = null;
+        Double value = null;
         if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
             Formula formula = meteringPoint.getFormulas().stream()
                 .filter(t -> t.getParam().getCode().equals(param))
                 .filter(t -> t.getParamType() == ParamTypeEnum.PT)
-                .filter(t -> t.getPeriodType() == periodType)
+                .filter(t -> t.getPeriodType() == context.getPeriodType())
                 .findFirst()
                 .orElse(null);
 
             if (formula != null) {
                 List<CalcResult> results = calcService.calcFormulas(Arrays.asList(formula), context);
-                totalApH = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+                value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
             }
         }
         else {
-            totalApH = MeteringReadingExpression.builder()
+            value = MeteringReadingExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param)
+                .rate(1d)
                 .context(context)
-                .service(mrService)
+                .service(resultMrService)
                 .build()
                 .doubleValue();
         }
 
-        return totalApH;
+        return value;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

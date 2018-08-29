@@ -1,5 +1,6 @@
 package calc.formula;
 
+import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -11,6 +12,7 @@ public class CalcContext {
     private LocalDate startDate;
     private LocalDate endDate;
     private Long headerId;
+    private PeriodTypeEnum periodType;
     private Long orgId;
     private String orgName;
     private String reportType;

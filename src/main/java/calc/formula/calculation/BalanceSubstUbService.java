@@ -3,7 +3,9 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
+import calc.formula.expression.impl.UavgExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
+import calc.formula.service.BsResultUavgService;
 import calc.formula.service.WorkingHoursService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultMrLineRepo;
@@ -15,9 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
-
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -27,8 +27,9 @@ public class BalanceSubstUbService {
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final BalanceSubstResultUbLineRepo balanceSubstResultUbLineRepo;
-    private final WorkingHoursService workingHoursService;
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
+    private final WorkingHoursService workingHoursService;
+    private final BsResultUavgService resultUavgService;
     private static final String docCode = "UNBALANCE";
 
     public void calc(BalanceSubstResultHeader header)  {
@@ -42,6 +43,8 @@ public class BalanceSubstUbService {
             deleteLines(header);
 
             CalcContext context = CalcContext.builder()
+                .headerId(header.getId())
+                .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
@@ -77,12 +80,14 @@ public class BalanceSubstUbService {
 
             List<BalanceSubstResultUbLine> lines = new ArrayList<>();
             for (BalanceSubstUbLine ubLine : header.getHeader().getUbLines()) {
+                MeteringPoint meteringPoint = ubLine.getMeteringPoint();
+
                 for (String direction : Arrays.asList("1", "2")) {
                     if (direction.equals("1") && !ubLine.getIsSection1()) continue;
                     if (direction.equals("2") && !ubLine.getIsSection2()) continue;
 
                     List<MeterHistory> meterHistories = mrLines.stream()
-                        .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
+                        .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                         .filter(t -> !t.getIsIgnore())
                         .filter(t -> t.getMeter() != null && t.getMeterHistory() != null)
                         .map(t -> t.getMeterHistory())
@@ -91,21 +96,26 @@ public class BalanceSubstUbService {
 
                     Double workHours = WorkingHoursExpression.builder()
                         .objectType("mp")
-                        .objectId(ubLine.getMeteringPoint().getId())
+                        .objectId(meteringPoint.getId())
                         .service(workingHoursService)
                         .context(context)
                         .build()
                         .doubleValue();
 
-
-                    Double ratedVoltage = balanceSubstResultULineRepo.findAllByHeaderId(header.getId())
+                    MeteringPoint inputMp = balanceSubstResultULineRepo.findAllByHeaderId(header.getId())
                         .stream()
-                        .filter(t -> t.getMeteringPoint().getVoltageClass().equals(ubLine.getMeteringPoint().getVoltageClass()))
-                        .map(t -> t.getVal())
+                        .filter(t -> t.getMeteringPoint().getVoltageClass().equals(meteringPoint.getVoltageClass()))
+                        .map(t -> t.getMeteringPoint())
                         .findFirst()
-                        .orElse(ubLine.getMeteringPoint().getVoltageClass().getValue());
+                        .orElse(meteringPoint);
 
-                    ratedVoltage = ratedVoltage / 1000d;
+                    Double uAvg = UavgExpression.builder()
+                        .meteringPointCode(inputMp.getCode())
+                        .def(inputMp.getVoltageClass().getValue() / 1000d)
+                        .context(context)
+                        .service(resultUavgService)
+                        .build()
+                        .doubleValue();
 
                     for (MeterHistory meterHistory : meterHistories) {
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
@@ -117,7 +127,7 @@ public class BalanceSubstUbService {
                         String paramCode = direction.equals("1") ? "A+" : "A-";
                         Double w = mrLines.stream()
                             .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
+                            .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                             .filter(t -> t.getParam().getCode().equals(paramCode))
                             .filter(t -> t.getMeterHistory() != null)
                             .filter(t -> t.getMeterHistory().equals(meterHistory))
@@ -127,7 +137,7 @@ public class BalanceSubstUbService {
 
                         Double wa = mrLines.stream()
                             .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
+                            .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                             .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
                             .filter(t -> t.getMeterHistory() != null)
                             .filter(t -> t.getMeterHistory().equals(meterHistory))
@@ -137,7 +147,7 @@ public class BalanceSubstUbService {
 
                         Double wr = mrLines.stream()
                             .filter(t -> !t.getIsIgnore())
-                            .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
+                            .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                             .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
                             .filter(t -> t.getMeterHistory() != null)
                             .filter(t -> t.getMeterHistory().equals(meterHistory))
@@ -145,15 +155,15 @@ public class BalanceSubstUbService {
                             .reduce((t1, t2) -> t1 + t2)
                             .orElse(0d);
 
-                        Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / ( 1.73d * ratedVoltage * workHours);
+                        Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / ( 1.73d * uAvg * workHours);
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
                         Double ttAcProc = ttType.getAccuracyClass().getValue();
 
                         Double bttProc;
-                        if (i1avgProc > 100) bttProc = ttAcProc;
+                        if      (i1avgProc > 100) bttProc = ttAcProc;
                         else if (i1avgProc >= 20) bttProc = 0.8125 - 0.003125 * i1avgProc;
-                        else if (i1avgProc >= 5) bttProc = 1.75 - 0.05 * i1avgProc;
-                        else bttProc = 1.5;
+                        else if (i1avgProc >= 5)  bttProc = 1.75 - 0.05 * i1avgProc;
+                        else                      bttProc = 1.5;
 
                         Double biProc = Math.sqrt(2d) * bttProc;
                         Double buProc = tnType == null || tnType.getAccuracyClass() == null ? 0d : tnType.getAccuracyClass().getValue();
@@ -168,7 +178,7 @@ public class BalanceSubstUbService {
                         Double b2dol2 = Math.pow(bProc/100d, 2) * Math.pow(dol, 2);
 
                         line.setHeader(header);
-                        line.setMeteringPoint(ubLine.getMeteringPoint());
+                        line.setMeteringPoint(meteringPoint);
                         line.setDirection(direction);
                         line.setW(w);
                         line.setWa(wa);
@@ -177,7 +187,7 @@ public class BalanceSubstUbService {
                         line.setTtacProc(ttAcProc);
                         line.setI1Nom(ttType.getRatedCurrent1());
                         line.setTRab(workHours);
-                        line.setUavg(ratedVoltage);
+                        line.setUavg(uAvg);
                         line.setI1avgVal(i1avgVal);
                         line.setI1avgProc(i1avgProc);
                         line.setBttFactor(null);
