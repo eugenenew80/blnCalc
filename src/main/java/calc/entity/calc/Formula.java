@@ -58,8 +58,4 @@ public class Formula {
     @Column(name="param_type")
     @Enumerated(EnumType.STRING)
     private ParamTypeEnum paramType;
-
-    @Column(name="period_type")
-    @Enumerated(EnumType.STRING)
-    private PeriodTypeEnum periodType;
 }

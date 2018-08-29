@@ -289,7 +289,6 @@ public class BalanceSubstPeService {
             Formula formula = meteringPoint.getFormulas().stream()
                 .filter(t -> t.getParam().getCode().equals(param))
                 .filter(t -> t.getParamType() == ParamTypeEnum.PT)
-                .filter(t -> t.getPeriodType() == context.getPeriodType())
                 .findFirst()
                 .orElse(null);
 

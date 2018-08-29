@@ -4411,6 +4411,139 @@
         <dropNotNullConstraint tableName="calc_daily_sheet_lines" schemaName="apps" columnName="end_metering_date" />
     </changeSet>
 
+    <changeSet id="calc-eug-494" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_data_statuses</comment>
+        <createTable tableName="calc_data_statuses" schemaName="apps" remarks="Статусы данных показаний счётчиков">
+            <column name="code" type="varchar2(10)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
 
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-495" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_data_statuses</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_data_statuses"
+                schemaName="apps"
+                tableName="calc_data_statuses"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-496" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_data_statuses_tl</comment>
+        <createTable tableName="calc_data_statuses_tl" schemaName="apps" remarks="Статусы данных показаний счетчиков  - переводы">
+            <column name="code" type="varchar(10)" remarks="Операция">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Описание типа формулы">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-497" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_data_statuses_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_data_statuses_tl"
+                schemaName="apps"
+                tableName="calc_data_statuses_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-498" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_data_statuses to calc_data_statuses_tl</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_data_statuses_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_data_statuses_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-499" logicalFilePath="path-independent" author="eugene" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_daily_sheet_lines</comment>
+        <dropColumn tableName="calc_daily_sheet_lines" schemaName="apps" >
+            <column name="is_correct" />
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-500" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding columns to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="data_status" type="varchar2(10)" remarks="Статус данных">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-501" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_lines to calc_data_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_lines"
+                baseColumnNames="data_status"
+                constraintName="fk_calc_daily_sheet_lines_8"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-502" logicalFilePath="path-independent" author="eugene" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_formulas</comment>
+        <dropColumn tableName="calc_formulas" schemaName="apps" >
+            <column name="period_type" />
+        </dropColumn>
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
 

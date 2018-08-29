@@ -81,12 +81,12 @@ public class CalcServiceImpl implements CalcService {
 
                 if (formula.getParamType() == ParamTypeEnum.AT) {
                     result.setDoubleValue(expression.doubleValue());
-                    result.setPeriodType(formula.getPeriodType());
+                    result.setPeriodType(context.getPeriodType());
                 }
 
                 if (formula.getParamType() == ParamTypeEnum.PT) {
                     result.setDoubleValues(expression.doubleValues());
-                    result.setPeriodType(formula.getPeriodType());
+                    result.setPeriodType(context.getPeriodType());
                 }
 
                 results.add(result);
@@ -216,7 +216,7 @@ public class CalcServiceImpl implements CalcService {
                 return PeriodTimeValueExpression.builder()
                     .meteringPointCode(det.getMeteringPoint().getCode())
                     .parameterCode(det.getParam().getCode())
-                    .periodType(det.getFormula().getPeriodType())
+                    .periodType(context.getPeriodType())
                     .rate(det.getRate())
                     .startHour((byte) 0)
                     .endHour((byte) 23)
