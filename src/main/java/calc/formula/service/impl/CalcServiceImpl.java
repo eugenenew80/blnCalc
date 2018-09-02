@@ -202,7 +202,7 @@ public class CalcServiceImpl implements CalcService {
     }
 
     private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context) {
-        if (det.getIsMeteringReading()) {
+        if (context.getIsMeteringReading()) {
             if (det.getParamType() == ParamTypeEnum.PT) {
                 return MeteringReadingExpression.builder()
                     .meteringPointCode(det.getMeteringPoint().getCode())
@@ -214,7 +214,7 @@ public class CalcServiceImpl implements CalcService {
             }
         }
 
-        if (!det.getIsMeteringReading()) {
+        if (!context.getIsMeteringReading()) {
             if (det.getParamType() == ParamTypeEnum.PT) {
                 return PeriodTimeValueExpression.builder()
                     .meteringPointCode(det.getMeteringPoint().getCode())

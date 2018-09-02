@@ -42,8 +42,4 @@ public class FormulaVarDet {
 
     @Column(name = "sign")
     private String sign;
-
-    @Column(name = "is_metering_reading")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isMeteringReading;
 }
