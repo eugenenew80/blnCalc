@@ -283,20 +283,10 @@ public class BalanceSubstPeService {
         if (meteringPoint == null)
             return null;
 
-        Double value = null;
+        Double value;
         if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
-            Formula formula = meteringPoint.getFormulas().stream()
-                .filter(t -> t.getParam().getCode().equals(param))
-                .filter(t -> t.getParamType() == ParamTypeEnum.PT)
-                .findFirst()
-                .orElse(null);
-
-            if (formula != null) {
-                List<CalcResult> results = calcService.calcFormulas(Arrays.asList(formula), context);
-                value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
-
-                System.out.println(value);
-            }
+            List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), context);
+            value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
         }
         else {
             value = MeteringReadingExpression.builder()

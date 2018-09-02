@@ -31,7 +31,7 @@ public class MeteringReadingExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        return new Double[0];
+        return new Double[] { doubleValue() };
     }
 
     @Override
@@ -41,6 +41,8 @@ public class MeteringReadingExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
+        System.out.println("code: " + meteringPointCode);
+
         List<BalanceSubstResultMrLine> values = service.getValues(
             context.getHeaderId(),
             meteringPointCode

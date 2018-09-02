@@ -2,6 +2,8 @@ package calc.schedule;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.ParamTypeEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.calculation.BalanceSubstMrService;
@@ -36,8 +38,10 @@ public class TaskExecutor {
 
     @Scheduled(cron = "*/30 * * * * *")
     public void run() {
-        //test();
+        test();
 
+
+        /*
         List<BalanceSubstResultHeader> headers = balanceSubstResultHeaderRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
@@ -50,25 +54,30 @@ public class TaskExecutor {
             balanceSubstPeService.calc(header);
             logger.info("Header " + header.getId() + " completed");
         }
+        */
     }
 
     private void test() {
         CalcContext context = CalcContext.builder()
+            .headerId(1l)
+            .periodType(PeriodTypeEnum.D)
             .startDate(LocalDate.of(2018, Month.AUGUST, 13))
             .endDate(LocalDate.of(2018, Month.AUGUST, 13))
             .orgId(1l)
             .energyObjectType("SUBSTATION")
             .energyObjectId(1l)
+            .isMeteringReading(true)
             .trace(new HashMap<>())
             .values(new HashMap<>())
             .build();
 
-
-        List<CalcResult> results;
+        MeteringPoint meteringPoint = meteringPointRepo.findOne(5l);
         try {
-            results = calcService.calcMeteringPoints(Arrays.asList(meteringPointRepo.findOne(9020l)), context);
-            //results.stream().forEach(r -> System.out.println( r.getDoubleValue() ));
-            results.stream().forEach(r -> System.out.println( Arrays.deepToString(r.getDoubleValues())));
+            List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), context);
+            //Double value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+            //System.out.println(value);
+
+            System.out.println(results.size());
         }
         catch (CycleDetectionException e) {
             logger.error("Циклическая формула для точки учёта: " + e.getCode());

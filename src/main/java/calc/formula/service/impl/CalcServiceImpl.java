@@ -3,6 +3,7 @@ package calc.formula.service.impl;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.FormulaTypeEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.formula.exception.CycleDetectionException;
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class CalcServiceImpl implements CalcService {
@@ -52,59 +52,6 @@ public class CalcServiceImpl implements CalcService {
 
         return result;
     }
-
-    @Override
-    public List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws CycleDetectionException {
-        Map<String, Formula> formulaMap = new HashMap<>();
-        Map<String, DoubleExpression> expressionMap = new HashMap<>();
-        Map<String, Set<String>> codesMap = new HashMap<>();
-        for (Formula formula : formulas) {
-            formulaMap.putIfAbsent(formula.getMeteringPoint().getCode(), formula);
-            DoubleExpression expression = buildExpression(formula, context);
-            expressionMap.putIfAbsent(formula.getMeteringPoint().getCode(), expression);
-            codesMap.putIfAbsent(formula.getMeteringPoint().getCode(), expression.pointCodes());
-        }
-
-        List<CalcResult> results = new ArrayList<>();
-        try {
-            List<String> pointCodes = expressionService.sort(codesMap);
-            for (String pointCode : pointCodes) {
-                System.out.println(pointCode);
-
-                DoubleExpression expression = expressionMap.get(pointCode);
-                Formula formula = formulaMap.get(pointCode);
-
-                CalcResult result = new CalcResult();
-                result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
-                result.setMeteringPoint(formula.getMeteringPoint());
-                result.setParam(formula.getParam());
-                result.setUnit(formula.getParam().getUnit());
-                result.setParamType(formula.getParamType().name());
-
-                if (formula.getParamType() == ParamTypeEnum.AT) {
-                    result.setDoubleValue(expression.doubleValue());
-                    result.setPeriodType(context.getPeriodType());
-                }
-
-                if (formula.getParamType() == ParamTypeEnum.PT) {
-                    result.setDoubleValues(expression.doubleValues());
-                    result.setPeriodType(context.getPeriodType());
-                }
-
-                results.add(result);
-                cacheResult(context, result);
-            }
-        }
-        catch (CycleDetectionException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return results;
-    }
-
 
     @Override
     public List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, CalcContext context) throws CycleDetectionException {
@@ -144,15 +91,65 @@ public class CalcServiceImpl implements CalcService {
         return points;
     }
 
+
+    private List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws CycleDetectionException {
+        Map<String, Formula> formulaMap = new HashMap<>();
+        Map<String, DoubleExpression> expressionMap = new HashMap<>();
+        Map<String, Set<String>> codesMap = new HashMap<>();
+        for (Formula formula : formulas) {
+            formulaMap.putIfAbsent(formula.getMeteringPoint().getCode(), formula);
+            DoubleExpression expression = buildExpression(formula, context);
+            expressionMap.putIfAbsent(formula.getMeteringPoint().getCode(), expression);
+            codesMap.putIfAbsent(formula.getMeteringPoint().getCode(), expression.pointCodes());
+        }
+
+        List<CalcResult> results = new ArrayList<>();
+        try {
+            List<String> pointCodes = expressionService.sort(codesMap);
+            for (String pointCode : pointCodes) {
+                DoubleExpression expression = expressionMap.get(pointCode);
+                Formula formula = formulaMap.get(pointCode);
+
+                CalcResult result = new CalcResult();
+                result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
+                result.setMeteringPoint(formula.getMeteringPoint());
+                result.setParam(formula.getParam());
+                result.setUnit(formula.getParam().getUnit());
+                result.setParamType(formula.getParamType().name());
+
+                if (context.getPeriodType() != PeriodTypeEnum.H) {
+                    result.setDoubleValue(expression.doubleValue());
+                    result.setPeriodType(context.getPeriodType());
+                }
+
+                if (context.getPeriodType() == PeriodTypeEnum.H) {
+                    result.setDoubleValues(expression.doubleValues());
+                    result.setPeriodType(context.getPeriodType());
+                }
+
+                results.add(result);
+                cacheResult(context, result);
+            }
+        }
+        catch (CycleDetectionException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
+    }
+
     private void cacheResult(CalcContext context, CalcResult cacheResult) {
         String code = cacheResult.getMeteringPoint().getCode();
-        if (cacheResult.getParamType().equals("AT")) {
+        if (context.getPeriodType() != PeriodTypeEnum.H) {
             List<CalcResult> values = context.getValues().getOrDefault(code, new ArrayList<>());
             values.add(cacheResult);
             context.getValues().put(code, values);
         }
 
-        if (cacheResult.getParamType().equals("PT")) {
+        if (context.getPeriodType() == PeriodTypeEnum.H) {
             List<CalcResult> values = context.getValues().getOrDefault(code, new ArrayList<>());
             LocalDateTime meteringDate = context.getStartDate().atStartOfDay();
             for (int i = 0; i < cacheResult.getDoubleValues().length; i++) {
@@ -169,8 +166,9 @@ public class CalcServiceImpl implements CalcService {
             }
         }
     }
-    @Override
-    public DoubleExpression buildExpression(Formula formula, CalcContext context) {
+
+
+    private DoubleExpression buildExpression(Formula formula, CalcContext context) {
         if (formula.getFormulaType() != FormulaTypeEnum.DIALOG)
             return DoubleValueExpression.builder().build();
 
@@ -202,22 +200,28 @@ public class CalcServiceImpl implements CalcService {
     }
 
     private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context) {
+        MeteringPoint meteringPoint = det.getMeteringPoint();
+        if (meteringPoint.getMeteringPointTypeId().equals(2L)) {
+            if (meteringPoint.getFormulas().isEmpty())
+                return DoubleValueExpression.builder().value(null).build();
+            else
+                return buildExpression(meteringPoint.getFormulas().get(0), context);
+        }
+
         if (context.getIsMeteringReading()) {
-            if (det.getParamType() == ParamTypeEnum.PT) {
-                return MeteringReadingExpression.builder()
-                    .meteringPointCode(det.getMeteringPoint().getCode())
-                    .parameterCode(det.getParam().getCode())
-                    .rate(1d)
-                    .context(context)
-                    .service(mrService)
-                    .build();
-            }
+            return MeteringReadingExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(det.getParam().getCode())
+                .rate(1d)
+                .context(context)
+                .service(mrService)
+                .build();
         }
 
         if (!context.getIsMeteringReading()) {
             if (det.getParamType() == ParamTypeEnum.PT) {
                 return PeriodTimeValueExpression.builder()
-                    .meteringPointCode(det.getMeteringPoint().getCode())
+                    .meteringPointCode(meteringPoint.getCode())
                     .parameterCode(det.getParam().getCode())
                     .periodType(context.getPeriodType())
                     .rate(det.getRate())
@@ -237,7 +241,7 @@ public class CalcServiceImpl implements CalcService {
                     per = "end";
 
                 return AtTimeValueExpression.builder()
-                    .meteringPointCode(det.getMeteringPoint().getCode())
+                    .meteringPointCode(meteringPoint.getCode())
                     .parameterCode(det.getParam().getCode())
                     .per(per)
                     .rate(det.getRate())

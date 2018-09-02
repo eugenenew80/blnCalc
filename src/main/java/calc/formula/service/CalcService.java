@@ -17,9 +17,5 @@ public interface CalcService {
 
     CalcResult calcExpression(DoubleExpression expression);
 
-    List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws CycleDetectionException;
-
     List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, CalcContext context) throws CycleDetectionException;
-
-    DoubleExpression buildExpression(Formula formula, CalcContext context);
 }
