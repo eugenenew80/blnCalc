@@ -210,10 +210,11 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (context.isMeteringReading()) {
+            Double sign = det.getSign().equals("-") ? -1d : 1d;
             return MeteringReadingExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(det.getParam().getCode())
-                .rate(1d)
+                .rate(det.getRate()* sign)
                 .context(context)
                 .service(mrService)
                 .build();
