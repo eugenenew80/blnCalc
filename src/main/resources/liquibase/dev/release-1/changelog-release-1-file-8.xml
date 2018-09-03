@@ -2373,4 +2373,12 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-rus-279" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <modifyDataType columnName="amount"
+                        newDataType="number"
+                        schemaName="apps"
+                        tableName="calc_service_values_reconciliations"/>
+    </changeSet>
+
 </databaseChangeLog>
