@@ -67,6 +67,8 @@ public class CalcServiceImpl implements CalcService {
             .filter(f -> f.getParam().getCode().equals(param))
             .collect(Collectors.toList());
 
+        System.out.println(formulas.size());
+
         List<CalcResult> results = calcFormulas(formulas, context);
 
         return results.stream()
