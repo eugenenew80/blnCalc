@@ -216,7 +216,7 @@ public class CalcServiceImpl implements CalcService {
             return MeteringReadingExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(det.getParam().getCode())
-                .rate(det.getRate()* sign)
+                .rate(det.getRate() * sign)
                 .context(context)
                 .service(mrService)
                 .build();

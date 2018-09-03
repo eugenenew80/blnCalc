@@ -41,18 +41,16 @@ public class MeteringReadingExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
-        //System.out.println("code: " + meteringPointCode);
+        List<BalanceSubstResultMrLine> values = service.getValues(context.getHeaderId(), meteringPointCode);
 
-        List<BalanceSubstResultMrLine> values = service.getValues(
-            context.getHeaderId(),
-            meteringPointCode
-        );
-
-        return values.stream()
+        Double value = values.stream()
             .filter(t -> !t.getIsIgnore())
             .filter(t -> t.getParam().getCode().equals(parameterCode))
             .map(t -> (Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d)) * rate)
             .reduce((t1, t2) -> t1 + t2)
             .orElse(null);
+
+        System.out.println(meteringPointCode + ", " + parameterCode + ", " + values.size() + ", " + value);
+        return value;
     }
 }
