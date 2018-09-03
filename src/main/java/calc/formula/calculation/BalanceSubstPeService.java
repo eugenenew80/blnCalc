@@ -54,6 +54,7 @@ public class BalanceSubstPeService {
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
                 .docCode(docCode)
+                .isMeteringReading(true)
                 .docId(header.getId())
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
@@ -215,9 +216,9 @@ public class BalanceSubstPeService {
                     Double totalEM = Math.pow(totalAEM, 2) + Math.pow(totalREM, 2);
                     Double totalEH = inputMpH != null ? Math.pow(totalAEH, 2) + Math.pow(totalREH, 2) : totalEL + totalAEM;
 
-                    Double resistL = (pkzHL + pkzML - pkzHM) / (2d * 1000d) * (Math.pow(uNomH,2) / Math.pow(sNom,2));
-                    Double resistM = (pkzHM + pkzML - pkzHL) / (2d * 1000d) * (Math.pow(uNomH,2) / Math.pow(sNom,2));
-                    Double resistH = (pkzHM + pkzHL - pkzML) / (2d * 1000d) * (Math.pow(uNomH,2) / Math.pow(sNom,2));
+                    Double resistL = (pkzHL + pkzML - pkzHM) / 2d * (Math.pow(uNomH,2) / Math.pow(sNom,2));
+                    Double resistM = (pkzHM + pkzML - pkzHL) / 2d * (Math.pow(uNomH,2) / Math.pow(sNom,2));
+                    Double resistH = (pkzHM + pkzHL - pkzML) / 2d * (Math.pow(uNomH,2) / Math.pow(sNom,2));
 
                     Double valXX = deltaPxx * hours * Math.pow(uAvg / uNomH, 2);
                     Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * hours);
@@ -285,8 +286,9 @@ public class BalanceSubstPeService {
 
         Double value;
         if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
-            List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), context);
+            List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), param, context);
             value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+            logger.info(meteringPoint.getCode() + ", " + param + ", " + value);
         }
         else {
             value = MeteringReadingExpression.builder()

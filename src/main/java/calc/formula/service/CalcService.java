@@ -17,5 +17,5 @@ public interface CalcService {
 
     CalcResult calcExpression(DoubleExpression expression);
 
-    List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, CalcContext context) throws CycleDetectionException;
+    List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, String param, CalcContext context) throws CycleDetectionException;
 }

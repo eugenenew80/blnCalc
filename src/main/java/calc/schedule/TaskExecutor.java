@@ -38,10 +38,8 @@ public class TaskExecutor {
 
     @Scheduled(cron = "*/30 * * * * *")
     public void run() {
-        test();
+        //test();
 
-
-        /*
         List<BalanceSubstResultHeader> headers = balanceSubstResultHeaderRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
@@ -54,7 +52,6 @@ public class TaskExecutor {
             balanceSubstPeService.calc(header);
             logger.info("Header " + header.getId() + " completed");
         }
-        */
     }
 
     private void test() {
@@ -73,7 +70,7 @@ public class TaskExecutor {
 
         MeteringPoint meteringPoint = meteringPointRepo.findOne(5l);
         try {
-            List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), context);
+            List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), "A+", context);
             //Double value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
             //System.out.println(value);
 

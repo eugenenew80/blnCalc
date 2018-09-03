@@ -22,7 +22,7 @@ public class CalcContext {
     private String energyObjectName;
     private String docCode;
     private Long docId;
-    private Boolean isMeteringReading;
+    private boolean isMeteringReading;
 
     private Map<String, List<CalcResult>> values;
     private Map<String, List<CalcTrace>> trace;
