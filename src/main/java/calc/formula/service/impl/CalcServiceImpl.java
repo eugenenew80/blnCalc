@@ -54,7 +54,7 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-    public List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, CalcContext context) throws CycleDetectionException {
+    public List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, String param, CalcContext context) throws CycleDetectionException {
         Set<String> set = new HashSet<>();
         List<MeteringPoint> allPoints = points.stream()
             .flatMap(t -> getChildPoints(t, set).stream())
@@ -64,6 +64,7 @@ public class CalcServiceImpl implements CalcService {
 
         List<Formula> formulas = allPoints.stream()
             .flatMap(p -> p.getFormulas().stream())
+            .filter(f -> f.getParam().getCode().equals(param))
             .collect(Collectors.toList());
 
         List<CalcResult> results = calcFormulas(formulas, context);
@@ -208,7 +209,7 @@ public class CalcServiceImpl implements CalcService {
                 return buildExpression(meteringPoint.getFormulas().get(0), context);
         }
 
-        if (context.getIsMeteringReading()) {
+        if (context.isMeteringReading()) {
             return MeteringReadingExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(det.getParam().getCode())
@@ -218,7 +219,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (!context.getIsMeteringReading()) {
+        if (!context.isMeteringReading()) {
             if (det.getParamType() == ParamTypeEnum.PT) {
                 return PeriodTimeValueExpression.builder()
                     .meteringPointCode(meteringPoint.getCode())
