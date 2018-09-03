@@ -126,7 +126,11 @@ public class BalanceSubstPeService {
                 Double pkzML    = getTransformerAttr(transformer, "pkz_ml",    context);
                 Double pkzHL    = getTransformerAttr(transformer, "pkz_hl",    context);
 
-                Double hours = WorkingHoursExpression.builder()
+                pkzHL = pkzHL / Math.pow(150d/501d,2);
+                pkzML = pkzML / Math.pow(150d/501d,2);
+
+
+                Double operatingTime = WorkingHoursExpression.builder()
                     .objectType("tr")
                     .objectId(transformer.getId())
                     .context(context)
@@ -142,9 +146,9 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
-                if (sNom == 0)  continue;
+                if (sNom  == 0) continue;
                 if (uNomH == 0) continue;
-                if (uAvg == 0)  continue;
+                if (uAvg  == 0) continue;
 
                 PowerTransformerValue transformerLine = new PowerTransformerValue();
                 transformerLine.setHeader(header);
@@ -160,23 +164,23 @@ public class BalanceSubstPeService {
                 transformerLine.setPkzML(pkzML);
                 transformerLine.setPkzHL(pkzHL);
                 transformerLine.setUnit(unit);
-                transformerLine.setOperatingTime(hours);
+                transformerLine.setOperatingTime(operatingTime);
                 transformerLine.setUavg(uAvg);
                 transformerLine.setWindingsNumber(transformer.getWindingsNumber());
 
                 if (transformer.getWindingsNumber().equals(2l)) {
                     Double totalApEH = getMrVal(inputMpH, "A+", context);
-                    Double totalAmEH = getMrVal(inputMpH, "A-", context);;
+                    Double totalAmEH = getMrVal(inputMpH, "A-", context);
                     Double totalAEH = Optional.ofNullable(totalApEH).orElse(0d) + Optional.ofNullable(totalAmEH).orElse(0d);
 
                     Double totalRpEH = getMrVal(inputMpH, "R+", context);
                     Double totalRmEH = getMrVal(inputMpH, "R-", context);;
-                    Double totalREH = Optional.ofNullable(totalRpEH).orElse(0d) + Optional.ofNullable(totalRmEH).orElse(0d);;
+                    Double totalREH = Optional.ofNullable(totalRpEH).orElse(0d) + Optional.ofNullable(totalRmEH).orElse(0d);
 
                     Double totalEH = Math.pow(totalAEH, 2) + Math.pow(totalREH, 2);
                     Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2));
-                    Double valXX = deltaPxx * hours * Math.pow(uAvg / uNomH, 2);
-                    Double valN = totalEH * resistH / (Math.pow(uAvg,2) * hours);
+                    Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
+                    Double valN = totalEH * resistH / (Math.pow(uAvg,2) * operatingTime);
 
                     transformerLine.setTotalAEH(totalAEH);
                     transformerLine.setTotalREH(totalREH);
@@ -214,14 +218,14 @@ public class BalanceSubstPeService {
 
                     Double totalEL = Math.pow(totalAEL, 2) + Math.pow(totalREL, 2);
                     Double totalEM = Math.pow(totalAEM, 2) + Math.pow(totalREM, 2);
-                    Double totalEH = inputMpH != null ? Math.pow(totalAEH, 2) + Math.pow(totalREH, 2) : totalEL + totalAEM;
+                    Double totalEH = Math.pow(totalAEH, 2) + Math.pow(totalREH, 2);
 
-                    Double resistL = (pkzHL + pkzML - pkzHM) / 2d * (Math.pow(uNomH,2) / Math.pow(sNom,2));
-                    Double resistM = (pkzHM + pkzML - pkzHL) / 2d * (Math.pow(uNomH,2) / Math.pow(sNom,2));
-                    Double resistH = (pkzHM + pkzHL - pkzML) / 2d * (Math.pow(uNomH,2) / Math.pow(sNom,2));
+                    Double resistL = (pkzHL + pkzML - pkzHM) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
+                    Double resistM = (pkzHM + pkzML - pkzHL) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
+                    Double resistH = (pkzHM + pkzHL - pkzML) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
 
-                    Double valXX = deltaPxx * hours * Math.pow(uAvg / uNomH, 2);
-                    Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * hours);
+                    Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
+                    Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * operatingTime * 1000d);
 
                     transformerLine.setTotalAEH(totalAEH);
                     transformerLine.setTotalREH(totalREH);

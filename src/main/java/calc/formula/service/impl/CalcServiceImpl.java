@@ -67,6 +67,8 @@ public class CalcServiceImpl implements CalcService {
             .filter(f -> f.getParam().getCode().equals(param))
             .collect(Collectors.toList());
 
+        System.out.println(formulas.size());
+
         List<CalcResult> results = calcFormulas(formulas, context);
 
         return results.stream()
@@ -210,10 +212,11 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (context.isMeteringReading()) {
+            Double sign = det.getSign().equals("-") ? -1d : 1d;
             return MeteringReadingExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(det.getParam().getCode())
-                .rate(1d)
+                .rate(det.getRate()* sign)
                 .context(context)
                 .service(mrService)
                 .build();
