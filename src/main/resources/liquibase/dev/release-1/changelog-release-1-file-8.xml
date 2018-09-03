@@ -2309,4 +2309,68 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-276" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_data_statuses</comment>
+        <insert schemaName="apps" tableName="calc_data_statuses">
+            <column name="code" type="varchar2" value="OK"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_data_statuses">
+            <column name="code" type="varchar2" value="ERROR"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_data_statuses">
+            <column name="code" type="varchar2" value="NO_DATA"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-277" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_data_statuses_tl</comment>
+        <insert schemaName="apps" tableName="calc_data_statuses_tl">
+            <column name="code" type="varchar2" value="OK"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="коректно"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_data_statuses_tl">
+            <column name="code" type="varchar2" value="OK"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="коректно"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_data_statuses_tl">
+            <column name="code" type="varchar2" value="ERROR"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="ошибка"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_data_statuses_tl">
+            <column name="code" type="varchar2" value="ERROR"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="ошибка"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_data_statuses_tl">
+            <column name="code" type="varchar2" value="NO_DATA"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="нет данных"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_data_statuses_tl">
+            <column name="code" type="varchar2" value="NO_DATA"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Нет данных"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-rus-278" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations">
+            <column name="is_total" type="number" remarks="Итого за период"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
