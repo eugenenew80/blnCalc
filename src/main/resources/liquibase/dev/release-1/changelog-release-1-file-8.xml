@@ -2381,4 +2381,27 @@
                         tableName="calc_service_values_reconciliations"/>
     </changeSet>
 
+    <changeSet id="calc-rus-280" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_service_values_reconciliations_l</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations_l">
+            <column name="is_total" type="number" remarks="Итого за период"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-281" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_service_values_reconciliations</comment>
+        <dropColumn columnName="is_total"
+                    schemaName="apps"
+                    tableName="calc_service_values_reconciliations"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-282" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating unique key for table: calc_service_values_reconciliations</comment>
+        <addUniqueConstraint
+                columnNames="version,contract_id,period_id,amount"
+                constraintName="uk_calc_service_values_reconciliations_tl"
+                schemaName="apps"
+                tableName="calc_service_values_reconciliations"/>
+    </changeSet>
 </databaseChangeLog>
