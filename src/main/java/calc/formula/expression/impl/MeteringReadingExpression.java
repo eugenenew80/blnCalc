@@ -50,7 +50,6 @@ public class MeteringReadingExpression implements DoubleExpression {
             .reduce((t1, t2) -> t1 + t2)
             .orElse(null);
 
-        System.out.println(meteringPointCode + ", " + parameterCode + ", " + values.size() + ", " + value);
         return value;
     }
 }

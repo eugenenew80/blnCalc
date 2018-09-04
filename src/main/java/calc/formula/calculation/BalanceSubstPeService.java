@@ -114,10 +114,13 @@ public class BalanceSubstPeService {
                 if (transformer == null || transformer.getWindingsNumber() == null)
                     continue;
 
-                MeteringPoint inputMp =  transformer.getInputMp();
                 MeteringPoint inputMpH = transformer.getInputMpH();
                 MeteringPoint inputMpM = transformer.getInputMpM();
                 MeteringPoint inputMpL = transformer.getInputMpL();
+                MeteringPoint inputMp =  transformer.getInputMp();
+
+                if (inputMp == null || inputMpH == null || inputMpM == null || inputMpL == null)
+                    continue;
 
                 Double sNom     = getTransformerAttr(transformer, "snom",      context);
                 Double uNomH    = getTransformerAttr(transformer, "unom_h",    context);
@@ -126,9 +129,10 @@ public class BalanceSubstPeService {
                 Double pkzML    = getTransformerAttr(transformer, "pkz_ml",    context);
                 Double pkzHL    = getTransformerAttr(transformer, "pkz_hl",    context);
 
-                pkzHL = pkzHL / Math.pow(150d/501d,2);
-                pkzML = pkzML / Math.pow(150d/501d,2);
-
+                if (transformer.getWindingsNumber().equals(3l)) {
+                    pkzHL = pkzHL / Math.pow(150d / 501d, 2);
+                    pkzML = pkzML / Math.pow(150d / 501d, 2);
+                }
 
                 Double operatingTime = WorkingHoursExpression.builder()
                     .objectType("tr")
@@ -139,8 +143,8 @@ public class BalanceSubstPeService {
                     .doubleValue();
 
                 Double uAvg = UavgExpression.builder()
-                    .meteringPointCode(inputMp!=null ? inputMp.getCode() : "")
-                    .def(inputMp!=null && inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() / 1000d : 0d)
+                    .meteringPointCode(inputMp.getCode())
+                    .def(inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() / 1000d : 0d)
                     .context(context)
                     .service(resultUavgService)
                     .build()
