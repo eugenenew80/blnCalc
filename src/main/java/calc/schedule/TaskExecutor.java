@@ -46,16 +46,16 @@ public class TaskExecutor {
         for (BalanceSubstResultHeader header : headers) {
             logger.info("Header " + header.getId() + " started");
             if (!balanceSubstMrService.calc(header))
-                return;
+                continue;
 
             if (!balanceSubstUbService.calc(header))
-                return;
+                continue;
 
             if (!balanceSubstUService.calc(header))
-                return;
+                continue;
 
             if (!balanceSubstPeService.calc(header))
-                return;
+                continue;
 
             logger.info("Header " + header.getId() + " completed");
         }
