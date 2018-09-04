@@ -2,10 +2,8 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
-import calc.formula.exception.CycleDetectionException;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import calc.repo.calc.*;
@@ -15,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 
 @Service
@@ -34,12 +31,12 @@ public class BalanceSubstPeService {
     private final CalcService calcService;
     private static final String docCode = "LOSSES";
 
-    public void calc(BalanceSubstResultHeader header)  {
+    public boolean calc(BalanceSubstResultHeader header)  {
         try {
             logger.info("Power equipment values for header " + header.getId() + " started");
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
             if (header.getStatus() == BatchStatusEnum.E)
-                return;
+                return false;
 
             updateStatus(header, BatchStatusEnum.P);
             deleteReactorLines(header);
@@ -114,10 +111,13 @@ public class BalanceSubstPeService {
                 if (transformer == null || transformer.getWindingsNumber() == null)
                     continue;
 
-                MeteringPoint inputMp =  transformer.getInputMp();
                 MeteringPoint inputMpH = transformer.getInputMpH();
                 MeteringPoint inputMpM = transformer.getInputMpM();
                 MeteringPoint inputMpL = transformer.getInputMpL();
+                MeteringPoint inputMp =  transformer.getInputMp();
+
+                if (inputMp == null || inputMpH == null || inputMpM == null || inputMpL == null)
+                    continue;
 
                 Double sNom     = getTransformerAttr(transformer, "snom",      context);
                 Double uNomH    = getTransformerAttr(transformer, "unom_h",    context);
@@ -126,9 +126,10 @@ public class BalanceSubstPeService {
                 Double pkzML    = getTransformerAttr(transformer, "pkz_ml",    context);
                 Double pkzHL    = getTransformerAttr(transformer, "pkz_hl",    context);
 
-                pkzHL = pkzHL / Math.pow(150d/501d,2);
-                pkzML = pkzML / Math.pow(150d/501d,2);
-
+                if (transformer.getWindingsNumber().equals(3l)) {
+                    pkzHL = pkzHL / Math.pow(150d / 501d, 2);
+                    pkzML = pkzML / Math.pow(150d / 501d, 2);
+                }
 
                 Double operatingTime = WorkingHoursExpression.builder()
                     .objectType("tr")
@@ -139,8 +140,8 @@ public class BalanceSubstPeService {
                     .doubleValue();
 
                 Double uAvg = UavgExpression.builder()
-                    .meteringPointCode(inputMp!=null ? inputMp.getCode() : "")
-                    .def(inputMp!=null && inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() / 1000d : 0d)
+                    .meteringPointCode(inputMp.getCode())
+                    .def(inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() / 1000d : 0d)
                     .context(context)
                     .service(resultUavgService)
                     .build()
@@ -250,8 +251,8 @@ public class BalanceSubstPeService {
             reactorValueRepo.save(reactorLines);
             powerTransformerValueRepo.save(transformerLines);
             updateStatus(header, BatchStatusEnum.C);
-
             logger.info("Power equipment values for header " + header.getId() + " completed");
+            return true;
         }
 
         catch (Exception e) {
@@ -259,6 +260,7 @@ public class BalanceSubstPeService {
             logger.error("Power equipment values for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -284,7 +286,7 @@ public class BalanceSubstPeService {
             .doubleValue();
     }
 
-    private Double getMrVal(MeteringPoint meteringPoint, String param, CalcContext context) throws CycleDetectionException {
+    private Double getMrVal(MeteringPoint meteringPoint, String param, CalcContext context) throws Exception {
         if (meteringPoint == null)
             return null;
 
