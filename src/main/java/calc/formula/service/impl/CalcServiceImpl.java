@@ -54,7 +54,7 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-    public List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, String param, CalcContext context) throws CycleDetectionException {
+    public List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, String param, CalcContext context) throws Exception {
         Set<String> set = new HashSet<>();
         List<MeteringPoint> allPoints = points.stream()
             .flatMap(t -> getChildPoints(t, set).stream())
@@ -70,7 +70,8 @@ public class CalcServiceImpl implements CalcService {
         List<CalcResult> results = calcFormulas(formulas, context);
 
         return results.stream()
-            .filter(r -> points.stream().filter(t -> t.getCode().equals(r.getMeteringPoint().getCode())).findFirst().isPresent())
+            .filter(r -> points.stream()
+            .filter(t -> t.getCode().equals(r.getMeteringPoint().getCode())).findFirst().isPresent())
             .collect(toList());
     }
 
@@ -93,7 +94,7 @@ public class CalcServiceImpl implements CalcService {
     }
 
 
-    private List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws CycleDetectionException {
+    private List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws Exception {
         Map<String, Formula> formulaMap = new HashMap<>();
         Map<String, DoubleExpression> expressionMap = new HashMap<>();
         Map<String, Set<String>> codesMap = new HashMap<>();

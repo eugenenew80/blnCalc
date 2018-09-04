@@ -2,10 +2,8 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
-import calc.formula.exception.CycleDetectionException;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import calc.repo.calc.*;
@@ -15,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 
 @Service
@@ -288,7 +285,7 @@ public class BalanceSubstPeService {
             .doubleValue();
     }
 
-    private Double getMrVal(MeteringPoint meteringPoint, String param, CalcContext context) throws CycleDetectionException {
+    private Double getMrVal(MeteringPoint meteringPoint, String param, CalcContext context) throws Exception {
         if (meteringPoint == null)
             return null;
 

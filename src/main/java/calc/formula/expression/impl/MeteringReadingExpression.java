@@ -7,7 +7,6 @@ import calc.formula.service.BsResultMrService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -41,9 +40,12 @@ public class MeteringReadingExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
-        List<BalanceSubstResultMrLine> values = service.getValues(context.getHeaderId(), meteringPointCode);
+        List<BalanceSubstResultMrLine> list = service.getValues(
+            context.getHeaderId(),
+            meteringPointCode
+        );
 
-        Double value = values.stream()
+        Double value = list.stream()
             .filter(t -> !t.getIsIgnore())
             .filter(t -> t.getParam().getCode().equals(parameterCode))
             .map(t -> (Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d)) * rate)
