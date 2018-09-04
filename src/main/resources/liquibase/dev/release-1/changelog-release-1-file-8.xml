@@ -2404,4 +2404,28 @@
                 schemaName="apps"
                 tableName="calc_service_values_reconciliations"/>
     </changeSet>
+
+    <changeSet id="calc-rus-283" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_data_statuses</comment>
+        <insert schemaName="apps" tableName="calc_formula_types">
+            <column name="code" type="varchar2" value="JS"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-284" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_formula_types_tl</comment>
+        <insert schemaName="apps" tableName="calc_formula_types_tl">
+            <column name="code" type="varchar2" value="JS"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="javaScript"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_formula_types_tl">
+            <column name="code" type="varchar2" value="JS"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="javaScript"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
