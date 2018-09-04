@@ -1,0 +1,855 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-503" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_asp1_headers</comment>
+        <createTable tableName="calc_asp1_headers" schemaName="apps" remarks="Шаблон акт съема показаний ПКУ - заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_type_code" type="varchar2(50)" remarks="Код типа документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="template_id" type="number" remarks="На основе шаблона">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="state_code" type="varchar2(20)" remarks="Статус шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-504" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_asp1_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_asp1_headers"
+                schemaName="apps"
+                tableName="calc_asp1_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-505" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_asp1_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_asp1_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-506" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_headers</comment>
+        <createIndex indexName="idx_calc_asp1_headers_1"
+                     schemaName="apps"
+                     tableName="calc_asp1_headers"
+                     unique="false">
+            <column name="template_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-507" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_headers</comment>
+        <createIndex indexName="idx_calc_asp1_headers_2"
+                     schemaName="apps"
+                     tableName="calc_asp1_headers"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-508" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_headers</comment>
+        <createIndex indexName="idx_calc_asp1_headers_3"
+                     schemaName="apps"
+                     tableName="calc_asp1_headers"
+                     unique="false">
+            <column name="doc_type_code" type="varchar2(50)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-509" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_headers</comment>
+        <createIndex indexName="idx_calc_asp1_headers_4"
+                     schemaName="apps"
+                     tableName="calc_asp1_headers"
+                     unique="false">
+            <column name="state_code" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-510" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_asp1_headers_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-511" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_headers to calc_asp1_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_headers"
+                baseColumnNames="template_id"
+                constraintName="fk_calc_asp1_headers_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_asp1_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-512" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_headers to dm_doc_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_headers"
+                baseColumnNames="doc_type_code"
+                constraintName="fk_calc_asp1_headers_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-513" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_headers to wf_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_headers"
+                baseColumnNames="state_code"
+                constraintName="fk_calc_asp1_headers_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-514" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_asp1_headers_tl</comment>
+        <createTable tableName="calc_asp1_headers_tl" schemaName="apps" remarks="Заголовок шаблона акта съема показаний КПУ - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="asp1_header_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(500)" remarks="Наименование шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-515" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_asp1_headers_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_asp1_headers_tl"
+                schemaName="apps"
+                tableName="calc_asp1_headers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-516" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_asp1_headers_tl</comment>
+        <addUniqueConstraint
+                columnNames="asp1_header_id, lang"
+                constraintName="uk_calc_asp1_headers_tl_1"
+                schemaName="apps"
+                tableName="calc_asp1_headers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-517" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_asp1_headers_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_asp1_headers_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-518" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_asp1_headers_tl</comment>
+        <createIndex indexName="idx_calc_asp1_headers_tl_1" schemaName="apps" tableName="calc_asp1_headers_tl">
+            <column name="asp1_header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-519" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_headers_tl to calc_asp1_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_headers_tl"
+                baseColumnNames="asp1_header_id"
+                constraintName="fk_calc_asp1_headers_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_asp1_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-520" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_asp1_lines</comment>
+        <createTable tableName="calc_asp1_lines" schemaName="apps" remarks="Шаблон акт съема показаний ПКУ - строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="formula_id" type="number" remarks="Идентификатор формулы">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="treatment_type_code" type="varchar2(10)" remarks="Тип строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-521" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_asp1_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_asp1_lines"
+                schemaName="apps"
+                tableName="calc_asp1_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-522" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_asp1_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_asp1_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-523" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_lines</comment>
+        <createIndex indexName="idx_calc_asp1_lines_1"
+                     schemaName="apps"
+                     tableName="calc_asp1_lines"
+                     unique="false">
+            <column name="header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-524" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_lines</comment>
+        <createIndex indexName="idx_calc_asp1_lines_2"
+                     schemaName="apps"
+                     tableName="calc_asp1_lines"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-525" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_lines</comment>
+        <createIndex indexName="idx_calc_asp1_lines_3"
+                     schemaName="apps"
+                     tableName="calc_asp1_lines"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-526" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_lines</comment>
+        <createIndex indexName="idx_calc_asp1_lines_4"
+                     schemaName="apps"
+                     tableName="calc_asp1_lines"
+                     unique="false">
+            <column name="formula_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-527" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_lines</comment>
+        <createIndex indexName="idx_calc_asp1_lines_5"
+                     schemaName="apps"
+                     tableName="calc_asp1_lines"
+                     unique="false">
+            <column name="treatment_type_code" type="varchar2(10)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-528" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_lines to calc_asp1_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_lines"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_asp1_lines_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_asp1_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-529" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_asp1_lines_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-530" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_asp1_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-531" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_lines to calc_formulas</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_lines"
+                baseColumnNames="formula_id"
+                constraintName="fk_calc_asp1_lines_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formulas"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-532" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_lines to calc_treatment_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_lines"
+                baseColumnNames="treatment_type_code"
+                constraintName="fk_calc_asp1_lines_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_treatment_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-533" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_asp1_lines_tl</comment>
+        <createTable tableName="calc_asp1_lines_tl" schemaName="apps" remarks="Строки шаблона акта съема показаний КПУ - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="asp1_line_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(500)" remarks="Наименование строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-534" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_asp1_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_asp1_lines_tl"
+                schemaName="apps"
+                tableName="calc_asp1_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-535" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_asp1_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="asp1_line_id, lang"
+                constraintName="uk_calc_asp1_lines_tl_1"
+                schemaName="apps"
+                tableName="calc_asp1_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-536" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_asp1_lines_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_asp1_lines_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-537" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_asp1_lines_tl</comment>
+        <createIndex indexName="idx_calc_asp1_lines_tl_1" schemaName="apps" tableName="calc_asp1_lines_tl">
+            <column name="asp1_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-538" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_lines_tl to calc_asp1_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_lines_tl"
+                baseColumnNames="asp1_line_id"
+                constraintName="fk_calc_asp1_lines_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_asp1_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-539" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_asp1_result_headers</comment>
+        <createTable tableName="calc_asp1_result_headers" schemaName="apps" remarks="Результат расчёта акта съкма показаний КПУ - заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="asp1_header_id" type="number" remarks="Идентификатор шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="period_type" type="varchar2(20)" remarks="Тип периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Дата начала расчётного периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Дата окончания расчётного периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="varchar2(30)" remarks="Статус формирования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="state_code" type="varchar2(30)" remarks="Статус согласования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-540" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_asp1_result_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_asp1_result_headers"
+                schemaName="apps"
+                tableName="calc_asp1_result_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-541" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_asp1_result_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_asp1_result_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-542" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_result_headers</comment>
+        <createIndex indexName="idx_calc_asp1_result_headers_1"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_headers"
+                     unique="false">
+            <column name="asp1_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-543" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_asp1_result_headers_2"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_headers"
+                     unique="false">
+            <column name="period_type" type="varchar2(20)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-544" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_asp1_result_headers_3"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_headers"
+                     unique="false">
+            <column name="status" type="varchar2(30)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-545" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_asp1_result_headers_4"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_headers"
+                     unique="false">
+            <column name="state_code" type="varchar2(30)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-546" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_headers to calc_asp1_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_headers"
+                baseColumnNames="asp1_header_id"
+                constraintName="fk_calc_asp1_result_headers_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_asp1_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-547" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_headers to calc_period_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_headers"
+                baseColumnNames="period_type"
+                constraintName="fk_calc_asp1_result_headers_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-548" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_headers to media_batch_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_headers"
+                baseColumnNames="status"
+                constraintName="fk_calc_asp1_result_headers_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batch_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-549" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_headers to wf_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_headers"
+                baseColumnNames="state_code"
+                constraintName="fk_calc_asp1_result_headers_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-550" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_asp1_result_lines</comment>
+        <createTable tableName="calc_asp1_result_lines" schemaName="apps" remarks="Строки результат расчёта акта съема показаний ПКУ">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="asp1_result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="meter_id" type="number" remarks="Идентификатор счётчика">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="meter_history_id" type="number" remarks="Идентификатор акта замены прибора учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор счётчика">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="formula_id" type="number" remarks="Идентификатор формулы">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="start_metering_date" type="TIMESTAMP" remarks="Дата и время начальных показаний">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_metering_date" type="TIMESTAMP" remarks="Дата и время конечных показаний">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_val" type="number" remarks="Показания на начало периода">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="end_val" type="number" remarks="Показания на конец периода">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="delta" type="number" remarks="Разность показаний">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="meter_rate" type="number" remarks="Коэффициент счетчика" defaultValue="0">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="val" type="number" remarks="Расход за период">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="unit_id" type="number" remarks="Единица измерения">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="bypass_metering_point_id" type="number" remarks="Идентификатор точки учёта ОВ">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="bypass_mode_id" type="number" remarks="Идентификатор строки из таблицы режимов работы обходных выключателей">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_bypass_bus_section" type="number" remarks="ОВ включен на другие СШ">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="under_count_id" type="number" remarks="Идентификатор акта недоучёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="under_count_val" type="number" remarks="Недоучёт">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-551" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_asp1_result_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_asp1_result_lines"
+                schemaName="apps"
+                tableName="calc_asp1_result_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-552" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_asp1_result_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_asp1_result_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+</databaseChangeLog>
+

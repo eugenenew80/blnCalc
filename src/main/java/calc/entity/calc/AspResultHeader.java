@@ -11,12 +11,12 @@ import java.time.LocalDate;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_asp_result_headers")
+@Table(name = "calc_asp1_result_headers")
 public class AspResultHeader {
 
     @Id
-    @SequenceGenerator(name="calc_asp_result_headers_s", sequenceName = "calc_asp_result_headers_s", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_asp_result_headers_s")
+    @SequenceGenerator(name="calc_asp1_result_headers_s", sequenceName = "calc_asp1_result_headers_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_asp1_result_headers_s")
     private Long id;
 
     @ManyToOne
@@ -24,15 +24,8 @@ public class AspResultHeader {
     private AspHeader header;
 
     @ManyToOne
-    @JoinColumn(name = "bp_id")
-    private BusinessPartner businessPartner;
-
-    @ManyToOne
     @JoinColumn(name = "org_id")
     private Organization organization;
-
-    @Column(name = "name")
-    private String name;
 
     @Column(name="period_type")
     @Enumerated(EnumType.STRING)
@@ -48,6 +41,6 @@ public class AspResultHeader {
     @Enumerated(EnumType.STRING)
     private BatchStatusEnum status;
 
-    @Column(name = "state")
+    @Column(name = "state_code")
     private String state;
 }

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_asp_result_lines")
+@Table(name = "calc_asp1_result_lines")
 public class AspResultLine {
     @Id
     @SequenceGenerator(name="calc_asp_result_lines_s", sequenceName = "calc_asp_result_lines_s", allocationSize=1)
