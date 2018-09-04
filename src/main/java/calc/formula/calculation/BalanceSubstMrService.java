@@ -36,12 +36,12 @@ public class BalanceSubstMrService {
         mapParams.put("R+", parameterRepo.findByCode("R+"));
     }
 
-    public void calc(BalanceSubstResultHeader header) {
+    public boolean calc(BalanceSubstResultHeader header) {
         try {
             logger.info("Metering reading for header " + header.getId() + " started");
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
             if (header.getStatus() == BatchStatusEnum.E)
-                return;
+                return false;
 
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
@@ -61,6 +61,7 @@ public class BalanceSubstMrService {
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
                 List<MeteringReading> meteringReadings = meteringReadingService.calc(mrLine.getMeteringPoint(), context);
+
                 for (MeteringReading t : meteringReadings) {
                     BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
                     line.setHeader(header);
@@ -90,6 +91,8 @@ public class BalanceSubstMrService {
             balanceSubstResultMrLineRepo.save(resultLines);
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Metering reading for header " + header.getId() + " completed");
+
+            return true;
         }
 
         catch (Exception e) {
@@ -97,6 +100,7 @@ public class BalanceSubstMrService {
             logger.error("Metering reading for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+            return false;
         }
     }
 

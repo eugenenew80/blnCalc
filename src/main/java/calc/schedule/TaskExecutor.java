@@ -2,7 +2,6 @@ package calc.schedule;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
@@ -46,10 +45,18 @@ public class TaskExecutor {
         logger.info("Count of headers for calculation: " + headers.size());
         for (BalanceSubstResultHeader header : headers) {
             logger.info("Header " + header.getId() + " started");
-            balanceSubstMrService.calc(header);
-            balanceSubstUbService.calc(header);
-            balanceSubstUService.calc(header);
-            balanceSubstPeService.calc(header);
+            if (!balanceSubstMrService.calc(header))
+                return;
+
+            if (!balanceSubstUbService.calc(header))
+                return;
+
+            if (!balanceSubstUService.calc(header))
+                return;
+
+            if (!balanceSubstPeService.calc(header))
+                return;
+
             logger.info("Header " + header.getId() + " completed");
         }
     }

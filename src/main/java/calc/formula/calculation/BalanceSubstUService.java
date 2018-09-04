@@ -26,12 +26,12 @@ public class BalanceSubstUService {
     private final PeriodTimeValueService periodTimeValueService;
     private static final String docCode = "UAVG";
 
-    public void calc(BalanceSubstResultHeader header)  {
+    public boolean calc(BalanceSubstResultHeader header)  {
         try {
             logger.info("Uavg for header " + header.getId() + " started");
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
             if (header.getStatus() == BatchStatusEnum.E)
-                return;
+                return false;
 
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
@@ -64,6 +64,7 @@ public class BalanceSubstUService {
             balanceSubstResultULineRepo.save(resultLines);
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Uavg for header " + header.getId() + " completed");
+            return true;
         }
 
         catch (Exception e) {
@@ -71,6 +72,7 @@ public class BalanceSubstUService {
             logger.error("Uavg for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+            return false;
         }
     }
 

@@ -31,12 +31,12 @@ public class BalanceSubstPeService {
     private final CalcService calcService;
     private static final String docCode = "LOSSES";
 
-    public void calc(BalanceSubstResultHeader header)  {
+    public boolean calc(BalanceSubstResultHeader header)  {
         try {
             logger.info("Power equipment values for header " + header.getId() + " started");
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
             if (header.getStatus() == BatchStatusEnum.E)
-                return;
+                return false;
 
             updateStatus(header, BatchStatusEnum.P);
             deleteReactorLines(header);
@@ -251,8 +251,8 @@ public class BalanceSubstPeService {
             reactorValueRepo.save(reactorLines);
             powerTransformerValueRepo.save(transformerLines);
             updateStatus(header, BatchStatusEnum.C);
-
             logger.info("Power equipment values for header " + header.getId() + " completed");
+            return true;
         }
 
         catch (Exception e) {
@@ -260,6 +260,7 @@ public class BalanceSubstPeService {
             logger.error("Power equipment values for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+            return false;
         }
     }
 

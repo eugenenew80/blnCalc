@@ -32,12 +32,12 @@ public class BalanceSubstUbService {
     private final BsResultUavgService resultUavgService;
     private static final String docCode = "UNBALANCE";
 
-    public void calc(BalanceSubstResultHeader header) {
+    public boolean calc(BalanceSubstResultHeader header) {
         try {
             logger.info("Unbalance for header " + header.getId() + " started");
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
             if (header.getStatus() == BatchStatusEnum.E)
-                return;
+                return false;
 
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
@@ -242,6 +242,7 @@ public class BalanceSubstUbService {
             balanceSubstResultHeaderRepo.save(header);
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Unbalance for header " + header.getId() + " completed");
+            return true;
         }
 
         catch (Exception e) {
@@ -249,6 +250,7 @@ public class BalanceSubstUbService {
             logger.error("Unbalance for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+            return false;
         }
     }
 
