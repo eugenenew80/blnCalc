@@ -851,5 +851,248 @@
                 startValue="1"/>
     </changeSet>
 
+    <changeSet id="calc-eug-553" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: alc_asp1_result_lines</comment>
+        <createIndex indexName="idx_calc_asp1_result_lines_1"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_lines"
+                     unique="false">
+            <column name="asp1_result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-554" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: alc_asp1_result_lines</comment>
+        <createIndex indexName="idx_calc_asp1_result_lines_2"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_lines"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-555" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: alc_asp1_result_lines</comment>
+        <createIndex indexName="idx_calc_asp1_result_lines_3"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_lines"
+                     unique="false">
+            <column name="meter_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-556" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: alc_asp1_result_lines</comment>
+        <createIndex indexName="idx_calc_asp1_result_lines_4"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_lines"
+                     unique="false">
+            <column name="meter_history_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-557" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: alc_asp1_result_lines</comment>
+        <createIndex indexName="idx_calc_asp1_result_lines_5"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_lines"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-558" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: alc_asp1_result_lines</comment>
+        <createIndex indexName="idx_calc_asp1_result_lines_6"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_lines"
+                     unique="false">
+            <column name="formula_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-559" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: alc_asp1_result_lines</comment>
+        <createIndex indexName="idx_calc_asp1_result_lines_7"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_lines"
+                     unique="false">
+            <column name="unit_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-560" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: alc_asp1_result_lines</comment>
+        <createIndex indexName="idx_calc_asp1_result_lines_8"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_lines"
+                     unique="false">
+            <column name="bypass_mode_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-561" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: alc_asp1_result_lines</comment>
+        <createIndex indexName="idx_calc_asp1_result_lines_9"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_lines"
+                     unique="false">
+            <column name="under_count_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-562" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_lines to calc_asp1_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_lines"
+                baseColumnNames="asp1_result_header_id"
+                constraintName="fk_calc_asp1_result_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_asp1_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-563" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_asp1_result_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-564" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_lines to mdfem_eem_base</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_lines"
+                baseColumnNames="meter_id"
+                constraintName="fk_calc_asp1_result_lines_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_eem_base"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-565" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_lines to mdfem_history</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_lines"
+                baseColumnNames="meter_history_id"
+                constraintName="fk_calc_asp1_result_lines_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_history"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-566" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_asp1_result_lines_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-567" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_lines to dict_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_lines"
+                baseColumnNames="unit_id"
+                constraintName="fk_calc_asp1_result_lines_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-568" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_lines to calc_bypass_modes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_lines"
+                baseColumnNames="bypass_mode_id"
+                constraintName="fk_calc_asp1_result_lines_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bypass_modes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-569" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_lines to calc_formulas</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_lines"
+                baseColumnNames="formula_id"
+                constraintName="fk_calc_asp1_result_lines_8"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formulas"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-570" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_lines to mdfem_undercount_header</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_lines"
+                baseColumnNames="under_count_id"
+                constraintName="fk_calc_asp1_result_lines_9"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_undercount_header"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
