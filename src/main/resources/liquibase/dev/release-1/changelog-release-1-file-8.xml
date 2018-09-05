@@ -2428,4 +2428,191 @@
         </insert>
     </changeSet>
 
+    <changeSet id="calc-rus-285" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_balance_subst_u_lines</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_subst_u_lines">
+            <column name="message" type="varchar2(300)" remarks="Комментарий"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-286" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_balance_subst_u_lines</comment>
+        <dropNotNullConstraint columnDataType="number"
+                               columnName="ti_num"
+                               schemaName="apps"
+                               tableName="calc_balance_subst_u_lines"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-287" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_balance_subst_u_lines</comment>
+        <dropNotNullConstraint columnDataType="number"
+                               columnName="ti_name"
+                               schemaName="apps"
+                               tableName="calc_balance_subst_u_lines"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-288" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_service_values_reconciliations</comment>
+        <dropUniqueConstraint constraintName="uk_calc_service_values_reconciliations_tl"
+                              schemaName="apps"
+                              tableName="calc_service_values_reconciliations"
+                              uniqueColumns="version, contract_id, period_id, amount"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-289" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_service_values_reconciliations</comment>
+        <dropColumn columnName="period_id"
+                    schemaName="apps"
+                    tableName="calc_service_values_reconciliations"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-290" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations">
+            <column name="period_type" type="varchar2(20)" remarks="Тип периода"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-291" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations">
+            <column name="period_start_date" type="date" remarks="Дата с периода"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-292" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations">
+            <column name="period_end_date" type="date" remarks="Дата по периода"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-293" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations to calc_period_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations"
+                baseColumnNames="period_type"
+                constraintName="fk_calc_service_values_reconciliations_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-294" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>calc_service_values_reconciliations</comment>
+        <renameColumn columnDataType="number"
+                      newColumnName="val"
+                      oldColumnName="amount"
+                      remarks="Сумма обьема"
+                      schemaName="apps"
+                      tableName="calc_service_values_reconciliations"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-295" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>calc_service_values_reconciliations</comment>
+        <renameColumn columnDataType="number"
+                      newColumnName="transfer_to_erp_date"
+                      oldColumnName="send_date"
+                      remarks="Дата отправки в подсистему Финансы"
+                      schemaName="apps"
+                      tableName="calc_service_values_reconciliations"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-296" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_service_values_reconciliations</comment>
+        <dropColumn columnName="volume_changes"
+                    schemaName="apps"
+                    tableName="calc_service_values_reconciliations"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-297" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations">
+            <column name="is_current_record" type="number" remarks="Актуальная запись"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-298" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations">
+            <column name="total_metering_point_id" type="number" remarks="Ид точки учета"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-299" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations"
+                baseColumnNames="total_metering_point_id"
+                constraintName="fk_calc_service_values_reconciliations_8"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-300" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_service_values_reconciliations</comment>
+        <createIndex indexName="idx_calc_service_values_reconciliations_1"
+                     schemaName="apps"
+                     tableName="calc_service_values_reconciliations"
+                     unique="false">
+            <column name="total_metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-301" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>calc_service_values_reconciliations_l</comment>
+        <renameColumn columnDataType="number"
+                      newColumnName="header_id"
+                      oldColumnName="service_values_reconciliation_id"
+                      remarks="Идентификатор акта заголовка"
+                      schemaName="apps"
+                      tableName="calc_service_values_reconciliations_l"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-302" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>calc_service_values_reconciliations_l</comment>
+        <renameColumn columnDataType="number"
+                      newColumnName="val"
+                      oldColumnName="volume"
+                      remarks="Обьем"
+                      schemaName="apps"
+                      tableName="calc_service_values_reconciliations_l"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-303" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_service_values_reconciliations_l</comment>
+        <dropColumn columnName="is_total"
+                    schemaName="apps"
+                    tableName="calc_service_values_reconciliations_l"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-304" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating unique key for table: calc_service_values_reconciliations</comment>
+        <addUniqueConstraint
+                columnNames="version,contract_id,val,period_start_date,period_end_date"
+                constraintName="uk_calc_service_values_reconciliations_tl"
+                schemaName="apps"
+                tableName="calc_service_values_reconciliations"/>
+    </changeSet>
 </databaseChangeLog>
