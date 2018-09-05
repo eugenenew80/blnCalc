@@ -17,16 +17,16 @@ public class AspHeader {
     @Column(name = "doc_type_code")
     private String docTypeCode;
 
-    @Column(name = "state_code")
-    private String stateCode;
+    @ManyToOne
+    @JoinColumn(name = "template_id")
+    private AspHeader template;
 
     @ManyToOne
     @JoinColumn(name = "org_id")
     private Organization organization;
 
-    @ManyToOne
-    @JoinColumn(name = "template_id")
-    private AspHeader template;
+    @Column(name = "state_code")
+    private String stateCode;
 
     @Column(name = "start_date")
     private LocalDate startDate;

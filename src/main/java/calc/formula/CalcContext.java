@@ -23,6 +23,7 @@ public class CalcContext {
     private String docCode;
     private Long docId;
     private boolean isMeteringReading;
+    private boolean isAsp;
 
     private Map<String, List<CalcResult>> values;
     private Map<String, List<CalcTrace>> trace;

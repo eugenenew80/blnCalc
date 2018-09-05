@@ -20,7 +20,7 @@ public class AspLine {
     private Long lineNum;
 
     @ManyToOne
-    @JoinColumn(name = "asp_header_id")
+    @JoinColumn(name = "header_id")
     private AspHeader header;
 
     @ManyToOne
@@ -33,15 +33,15 @@ public class AspLine {
 
     @ManyToOne
     @JoinColumn(name = "formula_id")
-    private Parameter formula;
+    private Formula formula;
+
+    @Column(name="treatment_type_code")
+    @Enumerated(EnumType.STRING)
+    private TreatmentTypeEnum treatmentType;
 
     @Column(name = "start_date")
     private LocalDate startDate;
 
     @Column(name = "end_date")
     private LocalDate endDate;
-
-    @Column(name="treatment_type_code")
-    @Enumerated(EnumType.STRING)
-    private TreatmentTypeEnum treatmentType;
 }

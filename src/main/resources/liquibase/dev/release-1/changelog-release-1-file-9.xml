@@ -1779,4 +1779,71 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-616" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_asp1_result_headers</comment>
+        <addColumn tableName="calc_asp1_result_headers" schemaName="apps">
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-617" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_result_headers</comment>
+        <createIndex indexName="idx_calc_asp1_result_headers_5"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_headers"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-618" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_asp1_result_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-619" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: calc_asp1_result_lines</comment>
+        <dropColumn tableName="calc_asp1_result_lines" schemaName="apps">
+            <column name="is_bypass_bus_section" />
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-eug-620" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping not null constraint from table: calc_asp1_result_lines</comment>
+        <dropNotNullConstraint schemaName="apps" tableName="calc_asp1_result_lines" columnName="meter_id" />
+        <dropNotNullConstraint schemaName="apps" tableName="calc_asp1_result_lines" columnName="meter_history_id" />
+        <dropNotNullConstraint schemaName="apps" tableName="calc_asp1_result_lines" columnName="start_metering_date" />
+        <dropNotNullConstraint schemaName="apps" tableName="calc_asp1_result_lines" columnName="end_metering_date" />
+    </changeSet>
+
+    <changeSet id="calc-eug-621" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_asp1_result_lines</comment>
+        <addColumn tableName="calc_asp1_result_lines" schemaName="apps">
+            <column name="treatment_type_code" type="varchar2(10)" remarks="Тип строки">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-622" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping not null constraint from table: calc_asp1_result_lines</comment>
+        <dropNotNullConstraint schemaName="apps" tableName="calc_asp1_result_lines" columnName="metering_point_id" />
+        <dropNotNullConstraint schemaName="apps" tableName="calc_asp1_result_lines" columnName="param_id" />
+        <dropNotNullConstraint schemaName="apps" tableName="calc_asp1_result_lines" columnName="unit_id" />
+    </changeSet>
 </databaseChangeLog>

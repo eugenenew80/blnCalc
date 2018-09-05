@@ -20,7 +20,7 @@ public class AspResultHeader {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "asp_header_id")
+    @JoinColumn(name = "asp1_header_id")
     private AspHeader header;
 
     @ManyToOne

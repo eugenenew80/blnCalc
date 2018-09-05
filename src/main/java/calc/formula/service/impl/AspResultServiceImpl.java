@@ -1,26 +1,25 @@
 package calc.formula.service.impl;
 
-import calc.entity.calc.BalanceSubstResultMrLine;
+import calc.entity.calc.AspResultLine;
 import calc.entity.calc.MeteringPoint;
-import calc.formula.service.BsResultMrService;
-import calc.repo.calc.BalanceSubstResultMrLineRepo;
+import calc.formula.service.AspResultService;
+import calc.repo.calc.AspResultLineRepo;
 import calc.repo.calc.MeteringPointRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class BsResultMtServiceImpl implements BsResultMrService {
+public class AspResultServiceImpl implements AspResultService {
     private final MeteringPointRepo meteringPointRepo;
-    private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
+    private final AspResultLineRepo aspResultLineRepo;
 
     @Override
-    public List<BalanceSubstResultMrLine> getValues(Long headerId, String meteringPointCode) {
+    public List<AspResultLine> getValues(Long headerId, String meteringPointCode) {
         MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
-        return balanceSubstResultMrLineRepo.findAllByHeaderIdAndMeteringPointId(headerId, meteringPoint.getId());
+        return aspResultLineRepo.findAllByHeaderIdAndMeteringPointId(headerId, meteringPoint.getId());
     }
 }

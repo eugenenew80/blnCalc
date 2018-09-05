@@ -1,9 +1,8 @@
 package calc.entity.calc;
 
-import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.calc.enums.TreatmentTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,19 +12,16 @@ import java.time.LocalDateTime;
 @Table(name = "calc_asp1_result_lines")
 public class AspResultLine {
     @Id
-    @SequenceGenerator(name="calc_asp_result_lines_s", sequenceName = "calc_asp_result_lines_s", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_asp_result_lines_s")
+    @SequenceGenerator(name="calc_asp1_result_lines_s", sequenceName = "calc_asp1_result_lines_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_asp1_result_lines_s")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "bs_result_header_id")
+    @JoinColumn(name = "asp1_result_header_id")
     private AspResultHeader header;
 
-    @Column(name = "item_num")
-    private Long itemNum;
-
-    @Column(name = "name")
-    private String name;
+    @Column(name = "line_num")
+    private Long lineNum;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id")
@@ -40,12 +36,12 @@ public class AspResultLine {
     private MeterHistory meterHistory;
 
     @ManyToOne
-    @JoinColumn(name = "bypass_mode_id")
-    private BypassMode bypassMode;
-
-    @ManyToOne
     @JoinColumn(name = "param_id")
     private Parameter param;
+
+    @ManyToOne
+    @JoinColumn(name = "formula_id")
+    private Formula formula;
 
     @Column(name = "start_metering_date")
     private LocalDateTime startMeteringDate;
@@ -68,13 +64,6 @@ public class AspResultLine {
     @Column(name = "val")
     private Double val;
 
-    @Column(name = "under_count_val")
-    private Double underCountVal;
-
-    @ManyToOne
-    @JoinColumn(name = "under_count_id")
-    private UnderCount undercount;
-
     @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
@@ -83,7 +72,18 @@ public class AspResultLine {
     @JoinColumn(name = "bypass_metering_point_id")
     private MeteringPoint bypassMeteringPoint;
 
-    @Column(name = "is_bypass_bus_section")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isBypassSection;
+    @ManyToOne
+    @JoinColumn(name = "bypass_mode_id")
+    private BypassMode bypassMode;
+
+    @Column(name = "under_count_val")
+    private Double underCountVal;
+
+    @ManyToOne
+    @JoinColumn(name = "under_count_id")
+    private UnderCount undercount;
+
+    @Column(name="treatment_type_code")
+    @Enumerated(EnumType.STRING)
+    private TreatmentTypeEnum treatmentType;
 }
