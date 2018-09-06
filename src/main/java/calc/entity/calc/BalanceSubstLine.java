@@ -22,6 +22,10 @@ public class BalanceSubstLine {
     @JoinColumn(name = "metering_point_id")
     private MeteringPoint meteringPoint;
 
+    @ManyToOne
+    @JoinColumn(name = "param_id")
+    private Parameter param;
+
     @Column(name = "is_inverse")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isInverse;
