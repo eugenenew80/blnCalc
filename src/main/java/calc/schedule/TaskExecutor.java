@@ -29,12 +29,16 @@ public class TaskExecutor {
     private final BalanceSubstUService balanceSubstUService;
     private final BalanceSubstPeService balanceSubstPeService;
     private final AspResultHeaderRepo aspResultHeaderRepo;
+    private final SvrHeaderRepo svrHeaderRepo;
     private final AspService aspService;
+    private final SvrService svrService;
+
 
     @Scheduled(cron = "*/30 * * * * *")
     public void run() {
         calc_bs();
         calc_asp();
+        calc_svr();
     }
 
     private void calc_bs() {
@@ -68,6 +72,18 @@ public class TaskExecutor {
         for (AspResultHeader header : headers) {
             logger.info("Header " + header.getId() + " started");
             aspService.calc(header);
+            logger.info("Header " + header.getId() + " completed");
+        }
+    }
+
+    private void calc_svr() {
+        List<SvrHeader> headers = svrHeaderRepo.findAllByStatus(BatchStatusEnum.W);
+        if (headers.size()==0) return;
+
+        logger.info("Count of headers for calculation: " + headers.size());
+        for (SvrHeader header : headers) {
+            logger.info("Header " + header.getId() + " started");
+            svrService.calc(header);
             logger.info("Header " + header.getId() + " completed");
         }
     }
