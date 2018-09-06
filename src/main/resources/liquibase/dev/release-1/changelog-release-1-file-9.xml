@@ -1871,4 +1871,198 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-625" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_bs_result_lines</comment>
+        <createTable tableName="calc_bs_result_lines" schemaName="apps" remarks="Результат расчёта баланса по ПС - строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="section" type="varchar2(2)" remarks="Раздел">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bs_result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="rate" type="number" remarks="Коэффициент">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="val" type="number" remarks="Расход за период">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-627" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_bs_result_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bs_result_lines"
+                schemaName="apps"
+                tableName="calc_bs_result_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-628" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_bs_result_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bs_result_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-630" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_lines</comment>
+        <createIndex indexName="idx_calc_bs_result_lines_1"
+                     schemaName="apps"
+                     tableName="calc_bs_result_lines"
+                     unique="false">
+            <column name="bs_result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-631" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_lines</comment>
+        <createIndex indexName="idx_calc_bs_result_lines_2"
+                     schemaName="apps"
+                     tableName="calc_bs_result_lines"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-632" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_lines</comment>
+        <createIndex indexName="idx_calc_bs_result_lines_3"
+                     schemaName="apps"
+                     tableName="calc_bs_result_lines"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-633" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_lines to bs_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_lines"
+                baseColumnNames="bs_result_header_id"
+                constraintName="fk_calc_bs_result_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-634" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_bs_result_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-635" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_bs_result_lines_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-636" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_lines</comment>
+        <addColumn tableName="calc_balance_subst_lines" schemaName="apps">
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-637" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_subst_lines</comment>
+        <createIndex indexName="idx_calc_balance_subst_lines_3"
+                     schemaName="apps"
+                     tableName="calc_balance_subst_lines"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-638" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_balance_subst_lines_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-639" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_lines</comment>
+        <addColumn tableName="calc_balance_subst_lines" schemaName="apps">
+            <column name="rate" type="number" remarks="Коэффициент">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
