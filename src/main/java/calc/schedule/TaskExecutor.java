@@ -2,21 +2,13 @@ package calc.schedule;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.PeriodTypeEnum;
-import calc.formula.CalcContext;
-import calc.formula.CalcResult;
 import calc.formula.calculation.*;
-import calc.formula.exception.CycleDetectionException;
-import calc.formula.service.CalcService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.*;
 
 @Component
