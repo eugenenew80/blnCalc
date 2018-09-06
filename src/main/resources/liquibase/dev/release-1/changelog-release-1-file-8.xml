@@ -2615,4 +2615,30 @@
                 schemaName="apps"
                 tableName="calc_service_values_reconciliations"/>
     </changeSet>
+
+    <changeSet id="calc-rus-305" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_service_values_reconciliations</comment>
+        <dropUniqueConstraint constraintName="uk_calc_service_values_reconciliations_tl"
+                              schemaName="apps"
+                              tableName="calc_service_values_reconciliations"
+                              uniqueColumns="version, contract_id, val, period_start_date, period_end_date"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-306" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>calc_service_values_reconciliations</comment>
+        <renameColumn columnDataType="date"
+                      newColumnName="transfer_to_fin_date"
+                      oldColumnName="transfer_to_erp_date"
+                      remarks="Дата отправки в подсистему Финансы"
+                      schemaName="apps"
+                      tableName="calc_service_values_reconciliations"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-307" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations">
+            <column name="org_id" type="number" remarks="ИД филиала"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
