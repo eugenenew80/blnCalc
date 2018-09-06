@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings("Duplicates")
 @Service
@@ -78,7 +75,7 @@ public class BalanceSubstService {
                         line.setHeader(header);
                         line.setMeteringPoint(bsLine.getMeteringPoint());
                         line.setParam(mapParams.get(param));
-                        line.setRate(bsLine.getRate());
+                        line.setRate(Optional.ofNullable(bsLine.getRate()).orElse(1d));
                         line.setSection(section);
                         line.setVal(val);
                         resultLines.add(line);
