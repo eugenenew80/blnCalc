@@ -55,9 +55,14 @@ public class AspService {
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
                 .docId(header.getId())
+                .headerId(header.getId())
+                .periodType(header.getPeriodType())
+                .startDate(header.getStartDate())
+                .endDate(header.getEndDate())
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
+                .isAsp(true)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
@@ -123,10 +128,16 @@ public class AspService {
                 if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
                     List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), param.getCode(), context);
                     Double value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+
                     AspResultLine line = new AspResultLine();
                     line.setHeader(header);
                     line.setLineNum(aspLine.getLineNum());
+                    line.setMeteringPoint(aspLine.getMeteringPoint());
+                    line.setParam(aspLine.getParam());
+                    line.setUnit(aspLine.getParam().getUnit());
+                    line.setFormula(aspLine.getFormula());
                     line.setTreatmentType(aspLine.getTreatmentType());
+                    line.setVal(value);
                     resultLines.add(line);
                 }
 
@@ -143,10 +154,16 @@ public class AspService {
                 if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
                     List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), param.getCode(), context);
                     Double value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+
                     AspResultLine line = new AspResultLine();
                     line.setHeader(header);
                     line.setLineNum(aspLine.getLineNum());
+                    line.setMeteringPoint(aspLine.getMeteringPoint());
+                    line.setParam(aspLine.getParam());
+                    line.setUnit(aspLine.getParam().getUnit());
+                    line.setFormula(aspLine.getFormula());
                     line.setTreatmentType(aspLine.getTreatmentType());
+                    line.setVal(value);
                     resultLines.add(line);
                 }
                 saveLines(resultLines);

@@ -44,19 +44,19 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        List<CalcResult> list = getValues().stream()
-            .filter(t -> t.getPeriodType() == periodType)
-            .collect(toList());
-
+        List<CalcResult> list = service.getValues(
+            meteringPointCode,
+            parameterCode,
+            startHour,
+            endHour,
+            context
+        );
         list.forEach(t -> { if (t.getDoubleValue()!=null) t.setDoubleValue(t.getDoubleValue() * rate); });
 
         if (periodType != PeriodTypeEnum.H) {
             Double doubleValue = list.stream()
                 .map(t -> t.getDoubleValue())
-                .reduce((t1, t2) -> {
-                    if (t1 == null && t2 == null) return null;
-                    return Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d);
-                })
+                .reduce((t1, t2) -> (t1 == null && t2 == null) ? null : Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
                 .orElse(null);
 
             return new Double[] {doubleValue};
@@ -110,15 +110,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         return Stream.of(meteringPointCode).collect(toSet());
     }
 
-    private List<CalcResult> getValues() {
-        return service.getValues(
-            meteringPointCode,
-            parameterCode,
-            startHour,
-            endHour,
-            context
-        );
-    }
 
     @SuppressWarnings("Duplicates")
     private CalcTrace trace(List<CalcResult> list) {

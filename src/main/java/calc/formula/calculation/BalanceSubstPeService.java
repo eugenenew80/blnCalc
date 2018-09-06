@@ -43,6 +43,8 @@ public class BalanceSubstPeService {
             deleteTransformerLines(header);
 
             CalcContext context = CalcContext.builder()
+                .docCode(docCode)
+                .docId(header.getId())
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
@@ -50,9 +52,7 @@ public class BalanceSubstPeService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
-                .docCode(docCode)
                 .isMeteringReading(true)
-                .docId(header.getId())
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();

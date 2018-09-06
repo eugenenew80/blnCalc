@@ -1846,4 +1846,29 @@
         <dropNotNullConstraint schemaName="apps" tableName="calc_asp1_result_lines" columnName="param_id" />
         <dropNotNullConstraint schemaName="apps" tableName="calc_asp1_result_lines" columnName="unit_id" />
     </changeSet>
+
+    <changeSet id="calc-eug-623" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_formulas</comment>
+        <addColumn tableName="calc_formulas" schemaName="apps">
+            <column name="param_type" type="varchar2(10)" defaultValue="PT" remarks="Тип параметра">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-624" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formulas to media_param_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formulas"
+                baseColumnNames="param_type"
+                constraintName="fk_calc_formulas_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_param_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>

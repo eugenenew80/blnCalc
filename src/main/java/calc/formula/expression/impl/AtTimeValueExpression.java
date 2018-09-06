@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
@@ -44,7 +45,7 @@ public class AtTimeValueExpression implements DoubleExpression {
         CalcTrace calcTrace = trace(list);
         Double result = list.stream()
             .map(t -> t.getDoubleValue())
-            .reduce((t1, t2) -> t1 + t2)
+            .reduce((t1, t2) -> (t1 == null && t2 == null) ? null : Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
             .orElse(null);
 
         calcTrace.setValue(result);
