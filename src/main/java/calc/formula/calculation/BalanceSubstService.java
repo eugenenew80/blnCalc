@@ -3,6 +3,8 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
+import calc.formula.expression.impl.MeteringReadingExpression;
+import calc.formula.service.BsResultMrService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultLineRepo;
 import calc.repo.calc.ParameterRepo;
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstService {
@@ -25,6 +28,7 @@ public class BalanceSubstService {
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
     private final ParameterRepo parameterRepo;
+    private final BsResultMrService mrService;
     private static final String docCode = "BALANCE";    private Map<String, Parameter> mapParams = null;
 
     @PostConstruct
@@ -49,17 +53,37 @@ public class BalanceSubstService {
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
                 .docId(header.getId())
+                .headerId(header.getId())
+                .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
+                .isMeteringReading(true)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
 
             List<BalanceSubstResultLine> resultLines = new ArrayList<>();
-            for (BalanceSubstLine bLine : header.getHeader().getLines()) {
+            for (BalanceSubstLine bsLine : header.getHeader().getLines()) {
+                if (bsLine.getParam() == null) {
+                    Map<String, String> sections = getSections(bsLine);
+                    for (String section : sections.keySet()) {
+                        String param = bsLine.getParam() == null ? sections.get(section) : bsLine.getParam().getCode();
+                        param = inverseParam(param, bsLine.getIsInverse());
+
+                        Double val = getMrVal(bsLine, param, context);
+                        BalanceSubstResultLine line = new BalanceSubstResultLine();
+                        line.setHeader(header);
+                        line.setMeteringPoint(bsLine.getMeteringPoint());
+                        line.setParam(mapParams.get(param));
+                        line.setRate(bsLine.getRate());
+                        line.setSection(section);
+                        line.setVal(val);
+                        resultLines.add(line);
+                    }
+                }
             }
 
             balanceSubstResultLineRepo.save(resultLines);
@@ -78,6 +102,17 @@ public class BalanceSubstService {
         }
     }
 
+    private Double getMrVal(BalanceSubstLine bsLine, String param, CalcContext context) {
+        return MeteringReadingExpression.builder()
+            .meteringPointCode(bsLine.getMeteringPoint().getCode())
+            .parameterCode(param)
+            .rate(bsLine.getRate())
+            .context(context)
+            .service(mrService)
+            .build()
+            .doubleValue();
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultLine> lines = balanceSubstResultLineRepo.findAllByHeaderId(header.getId());
@@ -92,20 +127,21 @@ public class BalanceSubstService {
         balanceSubstResultHeaderRepo.save(header);
     }
 
-    private String getSection(BalanceSubstLine bLine) {
-        if (bLine.getIsSection1()) return "1";
-        if (bLine.getIsSection2()) return "2";
-        if (bLine.getIsSection3()) return "3";
-        if (bLine.getIsSection4()) return "4";
-        return "";
+    private Map<String, String> getSections(BalanceSubstLine bLine) {
+        Map<String, String> map = new HashMap<>();
+        if (bLine.getIsSection1()) map.put("1", "A+");
+        if (bLine.getIsSection2()) map.put("1", "A-");
+        if (bLine.getIsSection3()) map.put("1", "A-");
+        if (bLine.getIsSection4()) map.put("1", "A-");
+        return map;
     }
 
-    private Parameter inverseParam(Parameter param, Boolean isInverse) {
+    private String inverseParam(String param, Boolean isInverse) {
         if (isInverse) {
-            if (param.getCode().equals("A+")) return mapParams.get("A-");
-            if (param.getCode().equals("A-")) return mapParams.get("A+");
-            if (param.getCode().equals("R+")) return mapParams.get("R-");
-            if (param.getCode().equals("R-")) return mapParams.get("R+");
+            if (param.equals("A+")) return "A-";
+            if (param.equals("A-")) return "A+";
+            if (param.equals("R+")) return "R-";
+            if (param.equals("R-")) return "R+";
         }
         return param;
     }

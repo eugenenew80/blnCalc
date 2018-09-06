@@ -26,6 +26,9 @@ public class BalanceSubstLine {
     @JoinColumn(name = "param_id")
     private Parameter param;
 
+    @Column(name = "rate")
+    private Double rate;
+
     @Column(name = "is_inverse")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isInverse;

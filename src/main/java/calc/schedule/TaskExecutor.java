@@ -20,6 +20,7 @@ public class TaskExecutor {
     private final BalanceSubstUbService balanceSubstUbService;
     private final BalanceSubstUService balanceSubstUService;
     private final BalanceSubstPeService balanceSubstPeService;
+    private final BalanceSubstPeService balanceSubstService;
     private final AspResultHeaderRepo aspResultHeaderRepo;
     private final SvrHeaderRepo svrHeaderRepo;
     private final AspService aspService;
@@ -37,7 +38,7 @@ public class TaskExecutor {
         List<BalanceSubstResultHeader> headers = balanceSubstResultHeaderRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
-        logger.info("Count of headers for calculation: " + headers.size());
+        logger.info("Balance calculation, count of tasks: " + headers.size());
         for (BalanceSubstResultHeader header : headers) {
             logger.info("Header " + header.getId() + " started");
             if (!balanceSubstMrService.calc(header))
@@ -52,6 +53,9 @@ public class TaskExecutor {
             if (!balanceSubstPeService.calc(header))
                 continue;
 
+            if (!balanceSubstService.calc(header))
+                continue;
+
             logger.info("Header " + header.getId() + " completed");
         }
     }
@@ -60,7 +64,7 @@ public class TaskExecutor {
         List<AspResultHeader> headers = aspResultHeaderRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
-        logger.info("Count of headers for calculation: " + headers.size());
+        logger.info("ASP calculation, count of tasks: " + headers.size());
         for (AspResultHeader header : headers) {
             logger.info("Header " + header.getId() + " started");
             aspService.calc(header);
@@ -72,7 +76,7 @@ public class TaskExecutor {
         List<SvrHeader> headers = svrHeaderRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
-        logger.info("Count of headers for calculation: " + headers.size());
+        logger.info("SVR calculation, count of tasks: " + headers.size());
         for (SvrHeader header : headers) {
             logger.info("Header " + header.getId() + " started");
             svrService.calc(header);
