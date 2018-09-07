@@ -20,7 +20,7 @@ public class TaskExecutor {
     private final BalanceSubstUbService balanceSubstUbService;
     private final BalanceSubstUService balanceSubstUService;
     private final BalanceSubstPeService balanceSubstPeService;
-    private final BalanceSubstPeService balanceSubstService;
+    private final BalanceSubstService balanceSubstService;
     private final AspResultHeaderRepo aspResultHeaderRepo;
     private final SvrHeaderRepo svrHeaderRepo;
     private final AspService aspService;

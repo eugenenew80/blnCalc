@@ -124,9 +124,9 @@ public class BalanceSubstService {
     private Map<String, String> getSections(BalanceSubstLine bLine) {
         Map<String, String> map = new HashMap<>();
         if (bLine.getIsSection1()) map.put("1", "A+");
-        if (bLine.getIsSection2()) map.put("1", "A-");
-        if (bLine.getIsSection3()) map.put("1", "A-");
-        if (bLine.getIsSection4()) map.put("1", "A-");
+        if (bLine.getIsSection2()) map.put("2", "A-");
+        if (bLine.getIsSection3()) map.put("3", "A-");
+        if (bLine.getIsSection4()) map.put("4", "A-");
         return map;
     }
 

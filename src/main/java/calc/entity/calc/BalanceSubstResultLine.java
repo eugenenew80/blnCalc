@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "calc_bs_result_lines")
 public class BalanceSubstResultLine {
     @Id
-    @SequenceGenerator(name="calc_bs_result_lines_s", sequenceName = "calc_calc_bs_result_lines_s", allocationSize=1)
+    @SequenceGenerator(name="calc_bs_result_lines_s", sequenceName = "calc_bs_result_lines_s", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_bs_result_lines_s")
     private Long id;
 

@@ -116,7 +116,10 @@ public class BalanceSubstPeService {
                 MeteringPoint inputMpL = transformer.getInputMpL();
                 MeteringPoint inputMp =  transformer.getInputMp();
 
-                if (inputMp == null || inputMpH == null || inputMpM == null || inputMpL == null)
+                if  (transformer.getWindingsNumber().equals(3l) && (inputMp == null || inputMpH == null || inputMpM == null || inputMpL == null))
+                    continue;
+
+                if  (transformer.getWindingsNumber().equals(2l) && (inputMp == null || inputMpH == null))
                     continue;
 
                 Double sNom     = getTransformerAttr(transformer, "snom",      context);
@@ -294,7 +297,7 @@ public class BalanceSubstPeService {
         if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
             List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), param, context);
             value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
-            logger.info(meteringPoint.getCode() + ", " + param + ", " + value);
+            //logger.info(meteringPoint.getCode() + ", " + param + ", " + value);
         }
         else {
             value = MeteringReadingExpression.builder()
