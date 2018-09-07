@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+
+    <changeSet id="calc-rus-308" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>rename column calc_daily_sheet_headers</comment>
+        <renameColumn columnDataType="varchar2(20)"
+                      newColumnName="data_status"
+                      oldColumnName="status"
+                      remarks="Статус данных"
+                      schemaName="apps"
+                      tableName="calc_daily_sheet_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-309" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>modify datatype column calc_daily_sheet_headers</comment>
+        <modifyDataType columnName="data_status"
+                        newDataType="varchar2(20)"
+                        schemaName="apps"
+                        tableName="calc_daily_sheet_headers"/>
+    </changeSet>
+</databaseChangeLog>
