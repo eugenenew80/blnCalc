@@ -2541,7 +2541,6 @@
         </addColumn>
     </changeSet>
 
-
     <changeSet id="calc-eug-672" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Adding column to table: calc_balance_subst_headers</comment>
         <addColumn tableName="calc_balance_subst_headers" schemaName="apps">
@@ -2563,6 +2562,154 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-eug-673" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_headers"
+                baseColumnNames="section1_metering_point_id"
+                constraintName="fk_calc_balance_subst_headers_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 
+    <changeSet id="calc-eug-674" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_headers"
+                baseColumnNames="section2_metering_point_id"
+                constraintName="fk_calc_balance_subst_headers_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-675" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_headers"
+                baseColumnNames="section3_metering_point_id"
+                constraintName="fk_calc_balance_subst_headers_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-676" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_headers"
+                baseColumnNames="section4_metering_point_id"
+                constraintName="fk_calc_balance_subst_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-677" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_bs_result_headers</comment>
+        <addColumn tableName="calc_bs_result_headers" schemaName="apps">
+            <column name="section1_metering_point_id" type="number" remarks="Точка учёта для расчёта итога по разделу: Поступление на шины подстанции">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="section2_metering_point_id" type="number" remarks="Точка учёта для расчёта итога по разделу: Расход на собственные нужды">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="section3_metering_point_id" type="number" remarks="Точка учёта для расчёта итога по разделу: Расход на хозяйственные нужды">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="section4_metering_point_id" type="number" remarks="Точка учёта для расчёта итога по разделу: Отпуск с шин подстанции">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-678" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_headers"
+                baseColumnNames="section1_metering_point_id"
+                constraintName="fk_calc_bs_result_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-679" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_headers"
+                baseColumnNames="section2_metering_point_id"
+                constraintName="fk_calc_bs_result_headers_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-680" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_headers"
+                baseColumnNames="section3_metering_point_id"
+                constraintName="fk_calc_bs_result_headers_8"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-681" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_headers"
+                baseColumnNames="section4_metering_point_id"
+                constraintName="fk_calc_bs_result_headers_9"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 
 </databaseChangeLog>
