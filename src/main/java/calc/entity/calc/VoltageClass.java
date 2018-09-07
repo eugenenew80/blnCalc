@@ -19,5 +19,5 @@ public class VoltageClass {
     private Long id;
 
     @Column(name = "value")
-    private Double value;
+    private Long value;
 }

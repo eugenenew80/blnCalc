@@ -69,15 +69,19 @@ public class BalanceSubstService {
                     for (String section : sections.keySet()) {
                         String param = bsLine.getParam() == null ? sections.get(section) : bsLine.getParam().getCode();
                         param = inverseParam(param, bsLine.getIsInverse());
-
+                        MeteringPoint meteringPoint = bsLine.getMeteringPoint();
                         Double val = getMrVal(bsLine, param, context);
+
                         BalanceSubstResultLine line = new BalanceSubstResultLine();
                         line.setHeader(header);
-                        line.setMeteringPoint(bsLine.getMeteringPoint());
+                        line.setMeteringPoint(meteringPoint);
                         line.setParam(mapParams.get(param));
                         line.setRate(Optional.ofNullable(bsLine.getRate()).orElse(1d));
                         line.setSection(section);
                         line.setVal(val);
+                        if (meteringPoint!=null && meteringPoint.getVoltageClass()!=null)
+                            line.setSubSection(meteringPoint.getVoltageClass().getValue().toString());
+
                         resultLines.add(line);
                     }
                 }

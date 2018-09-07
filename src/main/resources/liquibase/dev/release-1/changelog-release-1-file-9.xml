@@ -2267,7 +2267,6 @@
     </changeSet>
 
 
-
     <changeSet id="calc-eug-652" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_sheet_lines</comment>
         <addPrimaryKey
@@ -2365,6 +2364,203 @@
                 referencedTableName="media_parameters"
                 referencedColumnNames="id"
         />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-660" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_lines_tl</comment>
+        <createTable tableName="calc_balance_subst_lines_tl" schemaName="apps" remarks="Точки учёта для составления баланса - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="balance_subst_line_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-661" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_subst_lines_tl"
+                schemaName="apps"
+                tableName="calc_balance_subst_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-662" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_balance_subst_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="balance_subst_line_id, lang"
+                constraintName="uk_calc_balance_subst_lines_tl_1"
+                schemaName="apps"
+                tableName="calc_balance_subst_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-663" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_subst_lines_tl</comment>
+        <createIndex indexName="idx_calc_balance_subst_lines_tl_1" schemaName="apps" tableName="calc_balance_subst_lines_tl">
+            <column name="balance_subst_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-664" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_lines_tl to calc_balance_subst_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_lines_tl"
+                baseColumnNames="balance_subst_line_id"
+                constraintName="fk_calc_balance_subst_lines_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_subst_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-665" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_bs_result_lines_tl</comment>
+        <createTable tableName="calc_bs_result_lines_tl" schemaName="apps" remarks="Результат расчёта точек учета для баланса по ПС - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bs_result_line_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-666" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_bs_result_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bs_result_lines_tl"
+                schemaName="apps"
+                tableName="calc_bs_result_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-667" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_bs_result_lines_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bs_result_lines_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-668" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_bs_result_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="bs_result_line_id, lang"
+                constraintName="uk_calc_bs_result_lines_tl_1"
+                schemaName="apps"
+                tableName="calc_bs_result_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-669" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_bs_result_lines_tl</comment>
+        <createIndex indexName="idx_calc_bs_result_lines_tl_1" schemaName="apps" tableName="calc_bs_result_lines_tl">
+            <column name="bs_result_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-670" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_lines_tl to calc_bs_result_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_lines_tl"
+                baseColumnNames="bs_result_line_id"
+                constraintName="fk_calc_bs_result_lines_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-671" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_bs_result_lines</comment>
+        <addColumn tableName="calc_bs_result_lines" schemaName="apps">
+            <column name="sub_section" type="varchar2(10)" remarks="Подраздел">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-672" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_headers</comment>
+        <addColumn tableName="calc_balance_subst_headers" schemaName="apps">
+            <column name="section1_metering_point_id" type="number" remarks="Точка учёта для расчёта итога по разделу: Поступление на шины подстанции">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="section2_metering_point_id" type="number" remarks="Точка учёта для расчёта итога по разделу: Расход на собственные нужды">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="section3_metering_point_id" type="number" remarks="Точка учёта для расчёта итога по разделу: Расход на хозяйственные нужды">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="section4_metering_point_id" type="number" remarks="Точка учёта для расчёта итога по разделу: Отпуск с шин подстанции">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
     </changeSet>
 
 
