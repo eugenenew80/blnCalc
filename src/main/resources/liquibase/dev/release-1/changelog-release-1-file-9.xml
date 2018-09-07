@@ -2140,4 +2140,92 @@
         />
     </changeSet>
 
+
+    <changeSet id="calc-eug-645" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_sheets_tl</comment>
+        <createTable tableName="calc_sheets_tl" schemaName="apps" remarks="Ведомости для ввода расходов, заголовок - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-646" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_sheets</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_sheets_tl"
+                schemaName="apps"
+                tableName="calc_sheets_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-647" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_sheets_tl</comment>
+        <addUniqueConstraint
+                columnNames="sheet_id, lang"
+                constraintName="uk_calc_sheets_tl_1"
+                schemaName="apps"
+                tableName="calc_sheets_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-648" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_sheets_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_sheets_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-649" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_sheets_tl</comment>
+        <createIndex indexName="idx_calc_sheets_tl_1" schemaName="apps" tableName="calc_sheets_tl">
+            <column name="sheet_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-650" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_sheets_tl to calc_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_sheets_tl"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_sheets_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
