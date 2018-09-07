@@ -2228,4 +2228,145 @@
         />
     </changeSet>
 
+
+    <changeSet id="calc-eug-651" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_sheets</comment>
+        <createTable tableName="calc_sheet_lines" schemaName="apps" remarks="Ведомости для ввода расходов - строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор ведомости">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+
+    <changeSet id="calc-eug-652" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_sheet_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_sheet_lines"
+                schemaName="apps"
+                tableName="calc_sheet_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-653" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_sheet_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_sheet_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-654" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_sheet_lines</comment>
+        <createIndex indexName="idx_calc_sheet_lines_1"
+                     schemaName="apps"
+                     tableName="calc_sheet_lines"
+                     unique="false">
+            <column name="sheet_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-655" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_sheet_lines</comment>
+        <createIndex indexName="idx_calc_sheet_lines_2"
+                     schemaName="apps"
+                     tableName="calc_sheet_lines"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-656" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_sheet_lines</comment>
+        <createIndex indexName="idx_calc_sheet_lines_3"
+                     schemaName="apps"
+                     tableName="calc_sheet_lines"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-657" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_sheet_lines to calc_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_sheet_lines"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_sheet_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-658" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_sheet_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_sheet_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_sheet_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-659" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_sheet_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_sheet_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_sheet_lines_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+
 </databaseChangeLog>
