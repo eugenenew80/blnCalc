@@ -85,14 +85,11 @@ public class BalanceSubstService {
 
             balanceSubstResultLineRepo.save(resultLines);
             updateStatus(header, BatchStatusEnum.C);
-            logger.info("Metering reading for header " + header.getId() + " completed");
-
             return true;
         }
 
         catch (Exception e) {
             updateStatus(header, BatchStatusEnum.E);
-            logger.error("Metering reading for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
