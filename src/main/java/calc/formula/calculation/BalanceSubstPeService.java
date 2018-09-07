@@ -173,21 +173,25 @@ public class BalanceSubstPeService {
                 transformerLine.setWindingsNumber(transformer.getWindingsNumber());
 
                 if (transformer.getWindingsNumber().equals(2l)) {
-                    Double totalApEH = getMrVal(inputMpH, "A+", context);
-                    Double totalAmEH = getMrVal(inputMpH, "A-", context);
-                    Double totalAEH = Optional.ofNullable(totalApEH).orElse(0d) + Optional.ofNullable(totalAmEH).orElse(0d);
+                    Double apH = getMrVal(inputMpH, "A+", context);
+                    Double amH = getMrVal(inputMpH, "A-", context);
+                    Double totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
 
-                    Double totalRpEH = getMrVal(inputMpH, "R+", context);
-                    Double totalRmEH = getMrVal(inputMpH, "R-", context);;
-                    Double totalREH = Optional.ofNullable(totalRpEH).orElse(0d) + Optional.ofNullable(totalRmEH).orElse(0d);
+                    Double rpH = getMrVal(inputMpH, "R+", context);
+                    Double rmH = getMrVal(inputMpH, "R-", context);;
+                    Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);
 
-                    Double totalEH = Math.pow(totalAEH, 2) + Math.pow(totalREH, 2);
+                    Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
                     Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2));
                     Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
                     Double valN = totalEH * resistH / (Math.pow(uAvg,2) * operatingTime);
 
-                    transformerLine.setTotalAEH(totalAEH);
-                    transformerLine.setTotalREH(totalREH);
+                    transformerLine.setApH(apH);
+                    transformerLine.setAmH(amH);
+                    transformerLine.setRpH(rpH);
+                    transformerLine.setRmH(rmH);
+                    transformerLine.setTotalAEH(totalAH);
+                    transformerLine.setTotalREH(totalRH);
                     transformerLine.setTotalEH(totalEH);
                     transformerLine.setResistH(resistH);
                     transformerLine.setValXX(valXX);
@@ -196,33 +200,33 @@ public class BalanceSubstPeService {
                 }
 
                 if (transformer.getWindingsNumber().equals(3l)) {
-                    Double totalApEL = getMrVal(inputMpL, "A+", context);
-                    Double totalAmEL = getMrVal(inputMpL, "A-", context);;
-                    Double totalAEL = Optional.ofNullable(totalApEL).orElse(0d) + Optional.ofNullable(totalAmEL).orElse(0d);
+                    Double apL = getMrVal(inputMpL, "A+", context);
+                    Double amL = getMrVal(inputMpL, "A-", context);;
+                    Double totalAL = Optional.ofNullable(apL).orElse(0d) + Optional.ofNullable(amL).orElse(0d);
 
-                    Double totalRpEL = getMrVal(inputMpL, "R+", context);
-                    Double totalRmEL = getMrVal(inputMpL, "R-", context);;
-                    Double totalREL = Optional.ofNullable(totalRpEL).orElse(0d) + Optional.ofNullable(totalRmEL).orElse(0d);;
+                    Double rpL = getMrVal(inputMpL, "R+", context);
+                    Double rmL = getMrVal(inputMpL, "R-", context);;
+                    Double totalRL = Optional.ofNullable(rpL).orElse(0d) + Optional.ofNullable(rmL).orElse(0d);;
 
-                    Double totalApEM = getMrVal(inputMpM, "A+", context);
-                    Double totalAmEM = getMrVal(inputMpM, "A-", context);;
-                    Double totalAEM = Optional.ofNullable(totalApEM).orElse(0d) + Optional.ofNullable(totalAmEM).orElse(0d);
+                    Double apM = getMrVal(inputMpM, "A+", context);
+                    Double amM = getMrVal(inputMpM, "A-", context);;
+                    Double totalAM = Optional.ofNullable(apM).orElse(0d) + Optional.ofNullable(amM).orElse(0d);
 
-                    Double totalRpEM = getMrVal(inputMpM, "R+", context);
-                    Double totalRmEM = getMrVal(inputMpM, "R-", context);;
-                    Double totalREM = Optional.ofNullable(totalRpEM).orElse(0d) + Optional.ofNullable(totalRmEM).orElse(0d);;
+                    Double rpM = getMrVal(inputMpM, "R+", context);
+                    Double rmM = getMrVal(inputMpM, "R-", context);;
+                    Double totalRM = Optional.ofNullable(rpM).orElse(0d) + Optional.ofNullable(rmM).orElse(0d);;
 
-                    Double totalApEH = getMrVal(inputMpH, "A+", context);
-                    Double totalAmEH = getMrVal(inputMpH, "A-", context);;
-                    Double totalAEH = Optional.ofNullable(totalApEH).orElse(0d) + Optional.ofNullable(totalAmEH).orElse(0d);
+                    Double apH = getMrVal(inputMpH, "A+", context);
+                    Double amH = getMrVal(inputMpH, "A-", context);;
+                    Double totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
 
-                    Double totalRpEH = getMrVal(inputMpH, "R+", context);
-                    Double totalRmEH = getMrVal(inputMpH, "R-", context);;
-                    Double totalREH = Optional.ofNullable(totalRpEH).orElse(0d) + Optional.ofNullable(totalRmEH).orElse(0d);;
+                    Double rpH = getMrVal(inputMpH, "R+", context);
+                    Double rmH = getMrVal(inputMpH, "R-", context);;
+                    Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);;
 
-                    Double totalEL = Math.pow(totalAEL, 2) + Math.pow(totalREL, 2);
-                    Double totalEM = Math.pow(totalAEM, 2) + Math.pow(totalREM, 2);
-                    Double totalEH = Math.pow(totalAEH, 2) + Math.pow(totalREH, 2);
+                    Double totalEL = Math.pow(totalAL, 2) + Math.pow(totalRL, 2);
+                    Double totalEM = Math.pow(totalAM, 2) + Math.pow(totalRM, 2);
+                    Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
 
                     Double resistL = (pkzHL + pkzML - pkzHM) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
                     Double resistM = (pkzHM + pkzML - pkzHL) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
@@ -231,14 +235,26 @@ public class BalanceSubstPeService {
                     Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
                     Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * operatingTime * 1000d);
 
-                    transformerLine.setTotalAEH(totalAEH);
-                    transformerLine.setTotalREH(totalREH);
+                    transformerLine.setApL(apL);
+                    transformerLine.setAmL(amL);
+                    transformerLine.setRpL(rpL);
+                    transformerLine.setRmL(rmL);
+                    transformerLine.setApM(apM);
+                    transformerLine.setAmM(amM);
+                    transformerLine.setRpM(rpM);
+                    transformerLine.setRmM(rmM);
+                    transformerLine.setApH(apH);
+                    transformerLine.setAmH(amH);
+                    transformerLine.setRpH(rpH);
+                    transformerLine.setRmH(rmH);
+                    transformerLine.setTotalAEH(totalAH);
+                    transformerLine.setTotalREH(totalRH);
                     transformerLine.setTotalEH(totalEH);
-                    transformerLine.setTotalAEM(totalAEM);
-                    transformerLine.setTotalREM(totalREM);
+                    transformerLine.setTotalAEM(totalAM);
+                    transformerLine.setTotalREM(totalRM);
                     transformerLine.setTotalEM(totalEM);
-                    transformerLine.setTotalAEL(totalAEL);
-                    transformerLine.setTotalREL(totalREL);
+                    transformerLine.setTotalAEL(totalAL);
+                    transformerLine.setTotalREL(totalRL);
                     transformerLine.setTotalEL(totalEL);
                     transformerLine.setResistH(resistH);
                     transformerLine.setResistM(resistM);

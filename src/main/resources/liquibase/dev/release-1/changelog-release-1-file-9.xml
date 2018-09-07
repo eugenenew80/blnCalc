@@ -2712,6 +2712,57 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-682" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_power_transformer_values</comment>
+        <addColumn tableName="calc_power_transformer_values" schemaName="apps">
+            <column name="ap_l" type="number" remarks="A+ по низкой стороне">
+                <constraints nullable="true"/>
+            </column>
 
-    
+            <column name="am_l" type="number" remarks="A- по низкой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="rp_l" type="number" remarks="R+ по низкой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="rm_l" type="number" remarks="R- по низкой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="ap_m" type="number" remarks="A+ по средней стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="am_m" type="number" remarks="A- по средней стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="rp_m" type="number" remarks="R+ по средней стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="rm_m" type="number" remarks="R- по средней стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="ap_h" type="number" remarks="A+ по высокой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="am_h" type="number" remarks="A- по высокой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="rp_h" type="number" remarks="R+ по высокой стороне">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="rm_h" type="number" remarks="R- по высокой стороне">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

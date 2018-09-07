@@ -114,5 +114,41 @@ public class PowerTransformerValue {
     @ManyToOne
     @JoinColumn(name = "input_mp_id_l")
     private MeteringPoint inputMpL;
+
+    @Column(name = "ap_l")
+    private Double apL;
+
+    @Column(name = "am_l")
+    private Double amL;
+
+    @Column(name = "rp_l")
+    private Double rpL;
+
+    @Column(name = "rm_l")
+    private Double rmL;
+
+    @Column(name = "ap_m")
+    private Double apM;
+
+    @Column(name = "am_m")
+    private Double amM;
+
+    @Column(name = "rp_m")
+    private Double rpM;
+
+    @Column(name = "rm_m")
+    private Double rmM;
+
+    @Column(name = "ap_h")
+    private Double apH;
+
+    @Column(name = "am_h")
+    private Double amH;
+
+    @Column(name = "rp_h")
+    private Double rpH;
+
+    @Column(name = "rm_h")
+    private Double rmH;
 }
 
