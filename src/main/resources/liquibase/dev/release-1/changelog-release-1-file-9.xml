@@ -2114,13 +2114,30 @@
     </changeSet>
 
     <changeSet id="calc-eug-643" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_asp1_headers</comment>
-        <createIndex indexName="idx_calc_asp1_headers_2"
+        <comment>Creating index: calc_sheets</comment>
+        <createIndex indexName="idx_calc_sheets_1"
                      schemaName="apps"
-                     tableName="calc_asp1_headers"
+                     tableName="calc_sheets"
                      unique="false">
             <column name="org_id" type="number"/>
         </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-644" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_sheets to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_sheets"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_sheets_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
     </changeSet>
 
 </databaseChangeLog>
