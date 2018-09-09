@@ -3400,6 +3400,378 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-727" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_unit_lines</comment>
+        <createTable tableName="calc_balance_unit_lines" schemaName="apps" remarks="Единица баланса - строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
 
+            <column name="balance_unit_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="parent_id" type="number" remarks="Идентификатор родительской строки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="row_type_code" type="varchar2(20)" remarks="Код тип строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="treatment_type_code" type="varchar2(20)" remarks="Код типа обработки строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="formula_id" type="number" remarks="Идентификатор формулы">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="rate" type="number" remarks="Коэффициент">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_inverse" type="number" remarks="Флаг - изменить направление">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="total_location_code" type="varchar2(20)" remarks="Код расположения итогов">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_bold" type="number" remarks="Флаг - выделять жирным">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-728" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_unit_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_unit_lines"
+                schemaName="apps"
+                tableName="calc_balance_unit_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-729" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_unit_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_unit_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-730" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_unit_lines</comment>
+        <createIndex indexName="idx_calc_balance_unit_lines_1" schemaName="apps" tableName="calc_balance_unit_lines">
+            <column name="balance_unit_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-731" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_unit_lines</comment>
+        <createIndex indexName="idx_calc_balance_unit_lines_2" schemaName="apps" tableName="calc_balance_unit_lines">
+            <column name="parent_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-732" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_unit_lines</comment>
+        <createIndex indexName="idx_calc_balance_unit_lines_3" schemaName="apps" tableName="calc_balance_unit_lines">
+            <column name="row_type_code"  type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-733" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_unit_lines</comment>
+        <createIndex indexName="idx_calc_balance_unit_lines_4" schemaName="apps" tableName="calc_balance_unit_lines">
+            <column name="treatment_type_code"  type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-734" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_unit_lines</comment>
+        <createIndex indexName="idx_calc_balance_unit_lines_5" schemaName="apps" tableName="calc_balance_unit_lines">
+            <column name="metering_point_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-735" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_unit_lines</comment>
+        <createIndex indexName="idx_calc_balance_unit_lines_6" schemaName="apps" tableName="calc_balance_unit_lines">
+            <column name="param_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-736" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_unit_lines</comment>
+        <createIndex indexName="idx_calc_balance_unit_lines_7" schemaName="apps" tableName="calc_balance_unit_lines">
+            <column name="formula_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-737" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_unit_lines</comment>
+        <createIndex indexName="idx_calc_balance_unit_lines_8" schemaName="apps" tableName="calc_balance_unit_lines">
+            <column name="total_location_code"  type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-738" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines to calc_balance_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines"
+                baseColumnNames="balance_unit_id"
+                constraintName="fk_calc_balance_unit_lines_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-739" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines to calc_balance_unit_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines"
+                baseColumnNames="parent_id"
+                constraintName="fk_calc_balance_unit_lines_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_unit_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-740" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines to calc_balance_row_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines"
+                baseColumnNames="row_type_code"
+                constraintName="fk_calc_balance_unit_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_row_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-741" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines to calc_treatment_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines"
+                baseColumnNames="treatment_type_code"
+                constraintName="fk_calc_balance_unit_lines_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_treatment_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-742" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_balance_unit_lines_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-743" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_balance_unit_lines_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-744" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines to calc_formulas</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines"
+                baseColumnNames="formula_id"
+                constraintName="fk_calc_balance_unit_lines_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formulas"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-745" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines to calc_balance_total_locations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines"
+                baseColumnNames="total_location_code"
+                constraintName="fk_calc_balance_unit_lines_8"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_total_locations"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-746" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_unit_lines_tl</comment>
+        <createTable tableName="calc_balance_unit_lines_tl" schemaName="apps" remarks="Единица баланса, строки - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="balance_unit_line_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="short_name" type="varchar(100)" remarks="Краткое обозначение строки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование строки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-747" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_unit_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_unit_lines_tl"
+                schemaName="apps"
+                tableName="calc_balance_unit_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-748" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_balance_unit_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="balance_unit_line_id, lang"
+                constraintName="uk_calc_balance_unit_lines_tl_1"
+                schemaName="apps"
+                tableName="calc_balance_unit_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-749" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_unit_lines_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_unit_lines_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-750" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_unit_lines_tl</comment>
+        <createIndex indexName="idx_calc_balance_unit_lines_tl_1" schemaName="apps" tableName="calc_balance_unit_lines_tl">
+            <column name="balance_unit_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-751" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines_tl to calc_balance_unit_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines_tl"
+                baseColumnNames="balance_unit_line_id"
+                constraintName="fk_calc_balance_unit_lines_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_unit_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 
 </databaseChangeLog>
