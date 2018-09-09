@@ -36,4 +36,7 @@ public class AspHeader {
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<AspLine> lines;
+
+    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
+    private List<AspNote> notes;
 }

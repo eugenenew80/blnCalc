@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -86,4 +87,7 @@ public class AspResultLine {
     @Column(name="treatment_type_code")
     @Enumerated(EnumType.STRING)
     private TreatmentTypeEnum treatmentType;
+
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<AspResultLineTranslate> translates;
 }

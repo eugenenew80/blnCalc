@@ -1,12 +1,11 @@
 package calc.entity.calc;
 
-import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.TreatmentTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -44,4 +43,7 @@ public class AspLine {
 
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<AspLineTranslate> translates;
 }
