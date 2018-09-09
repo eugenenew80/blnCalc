@@ -2,6 +2,7 @@ package calc.entity.calc;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_asp1_notes")
+@Immutable
 public class AspNote {
     @Id
     @SequenceGenerator(name="calc_asp1_notes_s", sequenceName = "calc_asp1_notes_s", allocationSize=1)
@@ -26,6 +28,6 @@ public class AspNote {
     @Column(name = "line_num")
     private Long lineNum;
 
-    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "note", fetch = FetchType.LAZY)
     private List<AspNoteTranslate> translates;
 }

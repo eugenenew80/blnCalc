@@ -10,17 +10,17 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_asp1_lines_tl")
+@Table(name = "calc_balance_subst_lines_tl")
 @Immutable
-public class AspLineTranslate {
+public class BalanceSubstLineTranslate {
     @Id
-    @SequenceGenerator(name="calc_asp1_lines_tl_s", sequenceName = "calc_asp1_lines_tl_s", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_asp1_lines_tl_s")
+    @SequenceGenerator(name="calc_balance_subst_lines_tl_s", sequenceName = "calc_balance_subst_lines_tl_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_balance_subst_lines_tl_s")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "asp1_line_id")
-    private AspLine line;
+    @JoinColumn(name = "balance_subst_line_id")
+    private BalanceSubstLine line;
 
     @Column(name="lang")
     @Enumerated(EnumType.STRING)

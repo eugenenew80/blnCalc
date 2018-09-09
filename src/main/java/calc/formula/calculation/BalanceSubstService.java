@@ -2,6 +2,7 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.MeteringReadingExpression;
 import calc.formula.service.BsResultMrService;
@@ -63,26 +64,33 @@ public class BalanceSubstService {
                 .build();
 
             List<BalanceSubstResultLine> resultLines = new ArrayList<>();
-            for (BalanceSubstLine bsLine : header.getHeader().getLines()) {
-                if (bsLine.getParam() == null) {
-                    Map<String, String> sections = getSections(bsLine);
+            for (BalanceSubstLine line : header.getHeader().getLines()) {
+                if (line.getParam() == null) {
+                    Map<String, String> sections = getSections(line);
                     for (String section : sections.keySet()) {
-                        String param = bsLine.getParam() == null ? sections.get(section) : bsLine.getParam().getCode();
-                        param = inverseParam(param, bsLine.getIsInverse());
-                        MeteringPoint meteringPoint = bsLine.getMeteringPoint();
-                        Double val = getMrVal(bsLine, param, context);
+                        String param = line.getParam() == null ? sections.get(section) : line.getParam().getCode();
+                        param = inverseParam(param, line.getIsInverse());
+                        MeteringPoint meteringPoint = line.getMeteringPoint();
+                        Double val = getMrVal(line, param, context);
 
-                        BalanceSubstResultLine line = new BalanceSubstResultLine();
-                        line.setHeader(header);
-                        line.setMeteringPoint(meteringPoint);
-                        line.setParam(mapParams.get(param));
-                        line.setRate(Optional.ofNullable(bsLine.getRate()).orElse(1d));
-                        line.setSection(section);
-                        line.setVal(val);
+                        BalanceSubstResultLine resultLine = new BalanceSubstResultLine();
+                        resultLine.setHeader(header);
+                        resultLine.setMeteringPoint(meteringPoint);
+                        resultLine.setParam(mapParams.get(param));
+                        resultLine.setRate(Optional.ofNullable(line.getRate()).orElse(1d));
+                        resultLine.setSection(section);
+                        resultLine.setVal(val);
                         if (meteringPoint!=null && meteringPoint.getVoltageClass()!=null)
-                            line.setSubSection(meteringPoint.getVoltageClass().getValue().toString());
+                            resultLine.setSubSection(meteringPoint.getVoltageClass().getValue().toString());
 
-                        resultLines.add(line);
+                        for (BalanceSubstLineTranslate lineTranslate : line.getTranslates()) {
+                            BalanceSubstResultLineTranslate resultLineTranslate = new BalanceSubstResultLineTranslate();
+                            resultLineTranslate.setLang(LangEnum.RU);
+                            resultLineTranslate.setLine(resultLine);
+                            resultLineTranslate.setName(lineTranslate.getName());
+                            resultLine.getTranslates().add(resultLineTranslate);
+                        }
+                        resultLines.add(resultLine);
                     }
                 }
             }

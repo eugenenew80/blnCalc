@@ -3,13 +3,16 @@ package calc.entity.calc;
 import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_balance_subst_lines")
+@Immutable
 public class BalanceSubstLine {
     @Id
     private Long id;
@@ -48,4 +51,7 @@ public class BalanceSubstLine {
     @Column(name = "is_section_4")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection4;
+
+    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
+    private List<BalanceSubstLineTranslate> translates;
 }

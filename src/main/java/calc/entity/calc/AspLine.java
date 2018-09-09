@@ -3,6 +3,8 @@ package calc.entity.calc;
 import calc.entity.calc.enums.TreatmentTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Immutable;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_asp1_lines")
+@Immutable
 public class AspLine {
     @Id
     private Long id;
@@ -44,6 +47,6 @@ public class AspLine {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
     private List<AspLineTranslate> translates;
 }
