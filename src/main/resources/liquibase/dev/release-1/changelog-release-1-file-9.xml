@@ -4483,4 +4483,62 @@
     </changeSet>
 
 
+    <changeSet id="calc-eug-796" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_consumption_lines_det</comment>
+        <createTable tableName="calc_consumption_lines_det" schemaName="apps" remarks="Ввод расходов / средних напряжений - детально">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_date" type="TIMESTAMP" remarks="Дата и время показаний">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="val" type="number" remarks="Измеренной значение">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-797" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_consumption_lines_det</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_consumption_lines_det"
+                schemaName="apps"
+                tableName="calc_consumption_lines_det"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-798" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_consumption_lines_det</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_consumption_lines_det_s"
+                startValue="1"/>
+    </changeSet>
 </databaseChangeLog>
