@@ -47,10 +47,9 @@ public class PeriodTimeValue  {
 	@JoinColumn(name = "source_type_id")
 	private SourceType sourceType;
 
-	@Transient
-	private PeriodTypeEnum getPeriodType() {
-		return interval.equals(3600l) ? PeriodTypeEnum.H : PeriodTypeEnum.D;
-	}
+	@Column(name="period_type")
+	@Enumerated(EnumType.STRING)
+	private PeriodTypeEnum periodType;
 
 	public CalcResult toResult() {
 		CalcResult result = new CalcResult();

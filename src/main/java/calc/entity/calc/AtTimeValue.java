@@ -1,5 +1,6 @@
 package calc.entity.calc;
 
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
 import lombok.*;
 import javax.persistence.*;
@@ -43,10 +44,14 @@ public class AtTimeValue {
 	@JoinColumn(name = "source_type_id")
 	private SourceType sourceType;
 
+	@Column(name="period_type")
+	@Enumerated(EnumType.STRING)
+	private PeriodTypeEnum periodType;
+
 	public CalcResult toResult() {
 		CalcResult result = new CalcResult();
 		result.setParamType("AT");
-		result.setPeriodType(null);
+		result.setPeriodType(getPeriodType());
 		result.setMeteringDate(getMeteringDate());
 		result.setMeteringPoint(getMeteringPoint());
 		result.setParam(getParam());
