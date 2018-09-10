@@ -4494,7 +4494,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="line_id" type="number" remarks="Идентификатор заголовка">
+            <column name="line_id" type="number" remarks="Идентификатор строки">
                 <constraints nullable="false"/>
             </column>
 
