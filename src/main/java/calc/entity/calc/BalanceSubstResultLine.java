@@ -39,6 +39,6 @@ public class BalanceSubstResultLine {
     @Column(name = "val")
     private Double val;
 
-    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<BalanceSubstResultLineTranslate> translates;
 }

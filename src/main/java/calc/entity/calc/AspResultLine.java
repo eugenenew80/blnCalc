@@ -88,6 +88,6 @@ public class AspResultLine {
     @Enumerated(EnumType.STRING)
     private TreatmentTypeEnum treatmentType;
 
-    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<AspResultLineTranslate> translates;
 }

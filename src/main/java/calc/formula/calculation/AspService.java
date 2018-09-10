@@ -115,6 +115,9 @@ public class AspService {
                 resultLine.setTreatmentType(line.getTreatmentType());
                 resultLine.setVal(value);
 
+                if (resultLine.getTranslates() == null)
+                    resultLine.setTranslates(new ArrayList<>());
+
                 for (AspLineTranslate lineTranslate : line.getTranslates()) {
                     AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
                     resultLineTranslate.setLang(LangEnum.RU);
@@ -149,6 +152,9 @@ public class AspService {
                 resultLine.setFormula(line.getFormula());
                 resultLine.setTreatmentType(line.getTreatmentType());
                 resultLine.setVal(value);
+
+                if (resultLine.getTranslates() == null)
+                    resultLine.setTranslates(new ArrayList<>());
 
                 for (AspLineTranslate lineTranslate : line.getTranslates()) {
                     AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
@@ -197,6 +203,9 @@ public class AspService {
                 resultLine.setUndercount(t.getUnderCount());
                 resultLine.setTreatmentType(line.getTreatmentType());
 
+                if (resultLine.getTranslates() == null)
+                    resultLine.setTranslates(new ArrayList<>());
+
                 for (AspLineTranslate lineTranslate : line.getTranslates()) {
                     AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
                     resultLineTranslate.setLang(LangEnum.RU);
@@ -221,6 +230,9 @@ public class AspService {
             resultLine.setLineNum(line.getLineNum());
             resultLine.setTreatmentType(line.getTreatmentType());
 
+            if (resultLine.getTranslates() == null)
+                resultLine.setTranslates(new ArrayList<>());
+
             for (AspLineTranslate lineTranslate : line.getTranslates()) {
                 AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
                 resultLineTranslate.setLang(LangEnum.RU);
@@ -241,6 +253,9 @@ public class AspService {
             resultNote.setHeader(header);
             resultNote.setLineNum(note.getLineNum());
             resultNote.setNoteNum(note.getNoteNum());
+
+            if (resultNote.getTranslates() == null)
+                resultNote.setTranslates(new ArrayList<>());
 
             for (AspNoteTranslate noteTranslate : note.getTranslates()) {
                 AspResultNoteTranslate resultNoteTranslate = new AspResultNoteTranslate();

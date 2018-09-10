@@ -52,6 +52,6 @@ public class BalanceSubstLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection4;
 
-    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "line", fetch = FetchType.EAGER)
     private List<BalanceSubstLineTranslate> translates;
 }

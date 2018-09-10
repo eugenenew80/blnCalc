@@ -83,6 +83,9 @@ public class BalanceSubstService {
                         if (meteringPoint!=null && meteringPoint.getVoltageClass()!=null)
                             resultLine.setSubSection(meteringPoint.getVoltageClass().getValue().toString());
 
+                        if (resultLine.getTranslates() == null)
+                            resultLine.setTranslates(new ArrayList<>());
+
                         for (BalanceSubstLineTranslate lineTranslate : line.getTranslates()) {
                             BalanceSubstResultLineTranslate resultLineTranslate = new BalanceSubstResultLineTranslate();
                             resultLineTranslate.setLang(LangEnum.RU);
