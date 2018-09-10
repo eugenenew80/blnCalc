@@ -3774,4 +3774,713 @@
         />
     </changeSet>
 
+
+    <changeSet id="calc-eug-752" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_data_types</comment>
+        <createTable tableName="calc_data_types" schemaName="apps" remarks="Статусы данных">
+            <column name="code" type="varchar2(20)" remarks="Код статуса данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-753" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_data_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_data_types"
+                schemaName="apps"
+                tableName="calc_data_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-754" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_data_types_tl</comment>
+        <createTable tableName="calc_data_types_tl" schemaName="apps" remarks="Статусы данных - перевод">
+            <column name="code" type="varchar2(20)" remarks="Код статуса данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование статуса данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-755" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_data_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_data_types_tl"
+                schemaName="apps"
+                tableName="calc_data_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-756" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_data_types_tl to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_data_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_data_types_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-757" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_data_units</comment>
+        <createTable tableName="calc_data_units" schemaName="apps" remarks="Единиц данных">
+            <column name="code" type="varchar2(20)" remarks="Код единицы данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-758" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_data_units</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_data_units"
+                schemaName="apps"
+                tableName="calc_data_units"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-759" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_data_units_tl</comment>
+        <createTable tableName="calc_data_units_tl" schemaName="apps" remarks="Единицы данных - перевод">
+            <column name="code" type="varchar2(20)" remarks="Код типа единицы данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование единицы данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-760" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_data_units_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_data_units_tl"
+                schemaName="apps"
+                tableName="calc_data_units_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-761" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_data_units_tl to calc_data_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_data_units_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_data_units_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_units"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-762" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_consumption_headers</comment>
+        <createTable tableName="calc_consumption_headers" schemaName="apps" remarks="Ввод расходов / средних напряжений - заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_data_source_id" type="number" remarks="Идентификатор источника данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="data_unit_code" type="varchar2(20)" remarks="Ограничить по">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор ведомости">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="balance_unit_id" type="number" remarks="Идентификатор единицы баланса">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="data_type_code" type="varchar2(20)" remarks="Статус данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="period_type" type="varchar2(20)" remarks="Тип периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="interval_type" type="varchar2(20)" remarks="Шаг измерений">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_date" type="TIMESTAMP" remarks="Дата показаний">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_type_id" type="number" remarks="Идентификатор типа документа, по данным которого вводтся данные">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="doc_name" type="varchar2(300)" remarks="Наименование документа">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-763" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_consumption_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_consumption_headers"
+                schemaName="apps"
+                tableName="calc_consumption_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-764" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_consumption_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_consumption_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-765" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_headers</comment>
+        <createIndex indexName="idx_calc_consumption_headers_1"
+                     schemaName="apps"
+                     tableName="calc_consumption_headers"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-766" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_headers</comment>
+        <createIndex indexName="idx_calc_consumption_headers_2"
+                     schemaName="apps"
+                     tableName="calc_consumption_headers"
+                     unique="false">
+            <column name="metering_data_source_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-767" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_headers</comment>
+        <createIndex indexName="idx_calc_consumption_headers_3"
+                     schemaName="apps"
+                     tableName="calc_consumption_headers"
+                     unique="false">
+            <column name="data_unit_code" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-768" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_headers</comment>
+        <createIndex indexName="idx_calc_consumption_headers_4"
+                     schemaName="apps"
+                     tableName="calc_consumption_headers"
+                     unique="false">
+            <column name="sheet_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-769" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_headers</comment>
+        <createIndex indexName="idx_calc_consumption_headers_5"
+                     schemaName="apps"
+                     tableName="calc_consumption_headers"
+                     unique="false">
+            <column name="balance_unit_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-770" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_headers</comment>
+        <createIndex indexName="idx_calc_consumption_headers_6"
+                     schemaName="apps"
+                     tableName="calc_consumption_headers"
+                     unique="false">
+            <column name="data_type_code" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-771" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_headers</comment>
+        <createIndex indexName="idx_calc_consumption_headers_7"
+                     schemaName="apps"
+                     tableName="calc_consumption_headers"
+                     unique="false">
+            <column name="doc_type_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-772" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_headers</comment>
+        <createIndex indexName="idx_calc_consumption_headers_8"
+                     schemaName="apps"
+                     tableName="calc_consumption_headers"
+                     unique="false">
+            <column name="period_type" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-773" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_headers</comment>
+        <createIndex indexName="idx_calc_consumption_headers_9"
+                     schemaName="apps"
+                     tableName="calc_consumption_headers"
+                     unique="false">
+            <column name="interval_type" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-774" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_consumption_headers_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-775" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_headers to calc_metering_data_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_headers"
+                baseColumnNames="metering_data_source_id"
+                constraintName="fk_calc_consumption_headers_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-776" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_headers to calc_data_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_headers"
+                baseColumnNames="data_unit_code"
+                constraintName="fk_calc_consumption_headers_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_units"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-777" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_headers to calc_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_headers"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_consumption_headers_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-778" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_headers to calc_balance_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_headers"
+                baseColumnNames="balance_unit_id"
+                constraintName="fk_calc_consumption_headers_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-779" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_headers"
+                baseColumnNames="data_type_code"
+                constraintName="fk_calc_consumption_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-780" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_headers"
+                baseColumnNames="doc_type_id"
+                constraintName="fk_calc_consumption_headers_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_types"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-781" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_headers"
+                baseColumnNames="period_type"
+                constraintName="fk_calc_consumption_headers_8"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-782" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_headers"
+                baseColumnNames="interval_type"
+                constraintName="fk_calc_consumption_headers_9"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-783" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_consumption_lines</comment>
+        <createTable tableName="calc_consumption_lines" schemaName="apps" remarks="Ввод расходов / средних напряжений - строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="unit_id" type="number" remarks="Идентификатор единицы измерения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_date" type="TIMESTAMP" remarks="Дата и время показаний">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="interval_type" type="varchar2(20)" remarks="Шаг измерений">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="val" type="number" remarks="Измеренной значение">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-784" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_consumption_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_consumption_lines"
+                schemaName="apps"
+                tableName="calc_consumption_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-785" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_consumption_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_consumption_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-786" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_lines</comment>
+        <createIndex indexName="idx_calc_consumption_lines_1"
+                     schemaName="apps"
+                     tableName="calc_consumption_lines"
+                     unique="false">
+            <column name="header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-787" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_lines</comment>
+        <createIndex indexName="idx_calc_consumption_lines_2"
+                     schemaName="apps"
+                     tableName="calc_consumption_lines"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-788" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_lines</comment>
+        <createIndex indexName="idx_calc_consumption_lines_3"
+                     schemaName="apps"
+                     tableName="calc_consumption_lines"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-789" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_lines</comment>
+        <createIndex indexName="idx_calc_consumption_lines_4"
+                     schemaName="apps"
+                     tableName="calc_consumption_lines"
+                     unique="false">
+            <column name="unit_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-790" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_lines</comment>
+        <createIndex indexName="idx_calc_consumption_lines_5"
+                     schemaName="apps"
+                     tableName="calc_consumption_lines"
+                     unique="false">
+            <column name="interval_type" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-791" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_lines to calc_consumption_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_lines"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_consumption_lines_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_consumption_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-792" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_consumption_lines_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-793" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_consumption_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-794" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_lines to dict_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_lines"
+                baseColumnNames="unit_id"
+                constraintName="fk_calc_consumption_lines_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-795" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_lines to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_lines"
+                baseColumnNames="interval_type"
+                constraintName="fk_calc_consumption_lines_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+
 </databaseChangeLog>

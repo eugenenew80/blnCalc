@@ -26,6 +26,7 @@ public class PeriodTimeValueExpression implements DoubleExpression {
     private final PeriodTypeEnum periodType;
     private final Byte startHour;
     private final Byte endHour;
+    private final Double factor;
     private final PeriodTimeValueService service;
     private final CalcContext context;
 
@@ -45,12 +46,14 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
+        final Double meterFactor = factor != null && factor != 0d ? factor : 1d;
+
         List<CalcResult> list = service.getValues(meteringPointCode, parameterCode, startHour, endHour, context)
             .stream()
             .filter(t -> t.getPeriodType().equals(periodType))
             .collect(toList());
 
-        list.forEach(t -> { if (t.getDoubleValue()!=null) t.setDoubleValue(t.getDoubleValue() * rate); });
+        list.forEach(t -> { if (t.getDoubleValue()!=null) t.setDoubleValue(t.getDoubleValue() * rate / meterFactor); });
 
         if (periodType != PeriodTypeEnum.H)
             return getByHours(list);
