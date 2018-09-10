@@ -24,4 +24,39 @@
                         schemaName="apps"
                         tableName="calc_daily_sheet_headers"/>
     </changeSet>
+
+    <changeSet id="calc-rus-310" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_headers to calc_data_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_headers"
+                baseColumnNames="data_status"
+                constraintName="fk_calc_daily_sheet_headers_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-311" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_daily_sheet_headers.data_status</comment>
+        <dropNotNullConstraint columnDataType="varchar2(10)"
+                               columnName="data_status"
+                               schemaName="apps"
+                               tableName="calc_daily_sheet_headers"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-312" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_asp1_lines_tl.name</comment>
+        <dropNotNullConstraint columnDataType="varchar2(500)"
+                               columnName="name"
+                               schemaName="apps"
+                               tableName="calc_asp1_lines_tl"/>
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
