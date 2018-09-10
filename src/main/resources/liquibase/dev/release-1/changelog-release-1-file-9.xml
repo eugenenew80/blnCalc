@@ -4541,4 +4541,58 @@
                 sequenceName="calc_consumption_lines_det_s"
                 startValue="1"/>
     </changeSet>
+
+    <changeSet id="calc-eug-799" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_lines_det</comment>
+        <createIndex indexName="idx_calc_consumption_lines_det_1"
+                     schemaName="apps"
+                     tableName="calc_consumption_lines_det"
+                     unique="false">
+            <column name="header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-800" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_consumption_lines_det</comment>
+        <createIndex indexName="idx_calc_consumption_lines_det_2"
+                     schemaName="apps"
+                     tableName="calc_consumption_lines_det"
+                     unique="false">
+            <column name="line_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-801" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_lines_det to calc_consumption_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_lines_det"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_consumption_lines_det_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_consumption_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-802" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_lines_det to calc_consumption_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_lines_det"
+                baseColumnNames="line_id"
+                constraintName="fk_calc_consumption_lines_det_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_consumption_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
 </databaseChangeLog>
