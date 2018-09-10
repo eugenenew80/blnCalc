@@ -24,45 +24,33 @@ public class AtTimeValueExpression implements DoubleExpression {
     private final String parameterCode;
     private final String per;
     private final Double rate;
+    private final Double factor;
     private final AtTimeValueService service;
     private final CalcContext context;
 
     @Override
-    public DoubleExpression doubleExpression() {
-        return this;
-    }
+    public DoubleExpression doubleExpression() { return this; }
+
+    @Override
+    public Set<String> pointCodes() { return Stream.of(meteringPointCode).collect(toSet()); }
+
+    @Override
+    public Double[] doubleValues() { return new Double[0]; }
 
     @Override
     public Double doubleValue() {
-        List<CalcResult> list = service.getValue(
-            meteringPointCode,
-            parameterCode,
-            per,
-            context
-        );
-        list.forEach(t -> t.setDoubleValue(t.getDoubleValue() * rate));
+        final Double meterFactor = factor != null && factor != 0d ? factor : 1d;
 
-        CalcTrace calcTrace = trace(list);
+        List<CalcResult> list = service.getValue(meteringPointCode, parameterCode, per, context);
+        list.forEach(t -> t.setDoubleValue(t.getDoubleValue() * rate / meterFactor));
+
         Double result = list.stream()
             .map(t -> t.getDoubleValue())
             .reduce((t1, t2) -> (t1 == null && t2 == null) ? null : Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
             .orElse(null);
 
-        calcTrace.setValue(result);
         return result;
     }
-
-    @Override
-    public Double[] doubleValues() {
-        return new Double[0];
-    }
-
-    @Override
-    public Set<String> pointCodes() {
-        return Stream.of(meteringPointCode)
-            .collect(toSet());
-    }
-
 
     @SuppressWarnings("Duplicates")
     private CalcTrace trace(List<CalcResult> list) {

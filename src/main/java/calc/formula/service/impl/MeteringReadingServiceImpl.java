@@ -220,37 +220,29 @@ public class MeteringReadingServiceImpl implements MeteringReadingService {
     }
 
     private Double getStartVal(MeteringPoint meteringPoint, Parameter param, MeterHistory meterHistory, CalcContext context) {
-        Double start = AtTimeValueExpression.builder()
+        return AtTimeValueExpression.builder()
             .meteringPointCode(meteringPoint.getCode())
             .parameterCode(param.getCode())
             .rate(1d)
             .per("start")
+            .factor(meterHistory!=null ? meterHistory.getFactor() : null)
             .context(context)
             .service(atTimeValueService)
             .build()
             .doubleValue();
-
-        if (start!=null && meterHistory!=null && meterHistory.getFactor()!=null && meterHistory.getFactor()!=0d)
-            start = start / meterHistory.getFactor();
-
-        return start;
     }
 
     private Double getEndVal(MeteringPoint meteringPoint, Parameter param, MeterHistory meterHistory, CalcContext context) {
-        Double end = AtTimeValueExpression.builder()
+        return AtTimeValueExpression.builder()
             .meteringPointCode(meteringPoint.getCode())
             .parameterCode(param.getCode())
             .rate(1d)
             .per("end")
+            .factor(meterHistory!=null ? meterHistory.getFactor() : null)
             .context(context)
             .service(atTimeValueService)
             .build()
             .doubleValue();
-
-        if (end!=null && meterHistory!=null && meterHistory.getFactor()!=null && meterHistory.getFactor()!=0d)
-            end = end / meterHistory.getFactor();
-
-        return end;
     }
 
     private List<Parameter> getParameters(List<MeterHistory> meters, Map<String, Parameter> mapParams ) {

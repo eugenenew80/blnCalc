@@ -30,9 +30,10 @@ public class PeriodTimeValueExpression implements DoubleExpression {
     private final CalcContext context;
 
     @Override
-    public DoubleExpression doubleExpression() {
-        return this;
-    }
+    public DoubleExpression doubleExpression() { return this; }
+
+    @Override
+    public Set<String> pointCodes() { return Stream.of(meteringPointCode).collect(toSet()); }
 
     @Override
     public Double doubleValue() {
@@ -44,24 +45,25 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        List<CalcResult> list = service.getValues(
-            meteringPointCode,
-            parameterCode,
-            startHour,
-            endHour,
-            context
-        );
+        List<CalcResult> list = service.getValues(meteringPointCode, parameterCode, startHour, endHour, context)
+            .stream()
+            .filter(t -> t.getPeriodType().equals(periodType))
+            .collect(toList());
+
         list.forEach(t -> { if (t.getDoubleValue()!=null) t.setDoubleValue(t.getDoubleValue() * rate); });
 
-        if (periodType != PeriodTypeEnum.H) {
-            Double doubleValue = list.stream()
-                .map(t -> t.getDoubleValue())
-                .reduce((t1, t2) -> (t1 == null && t2 == null) ? null : Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
-                .orElse(null);
+        if (periodType != PeriodTypeEnum.H)
+            return getByHours(list);
 
-            return new Double[] {doubleValue};
-        }
+        Double doubleValue = list.stream()
+            .map(t -> t.getDoubleValue())
+            .reduce((t1, t2) -> (t1 == null && t2 == null) ? null : Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
+            .orElse(null);
 
+        return new Double[] {doubleValue};
+    }
+
+    private Double[] getByHours(List<CalcResult> list) {
         Double[] result;
         Double[] sum = new Double[24];
         Double[] count = new Double[24];
@@ -104,12 +106,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         calcTrace.setValues(result);
         return result;
     }
-
-    @Override
-    public Set<String> pointCodes() {
-        return Stream.of(meteringPointCode).collect(toSet());
-    }
-
 
     @SuppressWarnings("Duplicates")
     private CalcTrace trace(List<CalcResult> list) {
