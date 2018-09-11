@@ -8,6 +8,7 @@ import calc.entity.calc.enums.TreatmentTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.service.CalcService;
+import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MeteringReadingService;
 import calc.repo.calc.*;
@@ -30,7 +31,7 @@ public class AspService {
     private final AspResultHeaderRepo aspResultHeaderRepo;
     private final AspResultLineRepo aspResultLineRepo;
     private final AspResultNoteRepo aspResultNoteRepo;
-    private final AspResultMessageRepo aspResultMessageRepo;
+    private final MessageService messageService;
     private final MeteringReadingService meteringReadingService;
     private final ParameterRepo parameterRepo;
     private static final String docCode = "ASP1";
@@ -70,6 +71,7 @@ public class AspService {
 
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
+            messageService.deleteMessages(header, docCode);
 
             calcInfoRows(header);
             calcInRows(header, context);
@@ -84,7 +86,7 @@ public class AspService {
         }
 
         catch (Exception e) {
-            addMessage(header, null, MessageTypeEnum.E, "-1", e.getMessage());
+            messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION");
             updateStatus(header, BatchStatusEnum.E);
             logger.error("Metering reading for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
@@ -287,11 +289,6 @@ public class AspService {
         for (int i=0; i<notes.size(); i++)
             aspResultNoteRepo.delete(notes.get(i));
         aspResultNoteRepo.flush();
-
-        List<AspResultMessage> messages = aspResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<messages.size(); i++)
-            aspResultMessageRepo.delete(messages.get(i));
-        aspResultMessageRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -299,27 +296,5 @@ public class AspService {
         header.setStatus(status);
         aspResultHeaderRepo.save(header);
         aspResultHeaderRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void addMessage(AspResultHeader header, Long lineNum, MessageTypeEnum messageType, String  errCode, String msg) {
-        try {
-            AspResultMessage message = new AspResultMessage();
-            message.setHeader(header);
-            message.setLineNum(lineNum);
-            message.setMessageType(messageType);
-            message.setErrorCode(errCode);
-
-            AspResultMessageTranslate messageTranslate = new AspResultMessageTranslate();
-            messageTranslate.setMessage(message);
-            messageTranslate.setLang(LangEnum.RU);
-            messageTranslate.setMsg(msg);
-            message.getTranslates().add(messageTranslate);
-
-            aspResultMessageRepo.save(message);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
