@@ -6,6 +6,7 @@ import calc.formula.CalcContext;
 import calc.formula.expression.impl.UavgExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
 import calc.formula.service.BsResultUavgService;
+import calc.formula.service.MessageService;
 import calc.formula.service.WorkingHoursService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultMrLineRepo;
@@ -30,6 +31,7 @@ public class BalanceSubstUbService {
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private final WorkingHoursService workingHoursService;
     private final BsResultUavgService resultUavgService;
+    private final MessageService messageService;
     private static final String docCode = "UNBALANCE";
 
     public boolean calc(BalanceSubstResultHeader header) {
@@ -246,6 +248,7 @@ public class BalanceSubstUbService {
         }
 
         catch (Exception e) {
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
             updateStatus(header, BatchStatusEnum.E);
             logger.error("Unbalance for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());

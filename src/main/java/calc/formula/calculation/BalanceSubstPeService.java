@@ -305,6 +305,7 @@ public class BalanceSubstPeService {
         }
 
         catch (Exception e) {
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
             updateStatus(header, BatchStatusEnum.E);
             logger.error("Power equipment values for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());

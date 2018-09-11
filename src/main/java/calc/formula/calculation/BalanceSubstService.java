@@ -6,6 +6,7 @@ import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.MeteringReadingExpression;
 import calc.formula.service.BsResultMrService;
+import calc.formula.service.MessageService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultLineRepo;
 import calc.repo.calc.ParameterRepo;
@@ -27,6 +28,7 @@ public class BalanceSubstService {
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
     private final ParameterRepo parameterRepo;
     private final BsResultMrService mrService;
+    private final MessageService messageService;
     private static final String docCode = "BALANCE";    private Map<String, Parameter> mapParams = null;
 
     @PostConstruct
@@ -138,6 +140,7 @@ public class BalanceSubstService {
         }
 
         catch (Exception e) {
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
             updateStatus(header, BatchStatusEnum.E);
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();

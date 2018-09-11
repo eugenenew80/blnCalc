@@ -2,6 +2,7 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.MessageTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
@@ -109,6 +110,7 @@ public class BalanceSubstMrService {
         }
 
         catch (Exception e) {
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
             updateStatus(header, BatchStatusEnum.E);
             logger.error("Metering reading for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());

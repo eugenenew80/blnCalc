@@ -6,6 +6,7 @@ import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
+import calc.formula.service.MessageService;
 import calc.formula.service.PeriodTimeValueService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class BalanceSubstUService {
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private final ParameterRepo parameterRepo;
     private final PeriodTimeValueService periodTimeValueService;
+    private final MessageService messageService;
     private static final String docCode = "UAVG";
 
     public boolean calc(BalanceSubstResultHeader header)  {
@@ -68,6 +70,7 @@ public class BalanceSubstUService {
         }
 
         catch (Exception e) {
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
             updateStatus(header, BatchStatusEnum.E);
             logger.error("Uavg for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
