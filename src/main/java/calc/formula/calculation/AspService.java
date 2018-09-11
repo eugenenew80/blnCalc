@@ -3,14 +3,13 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.MessageTypeEnum;
 import calc.entity.calc.enums.TreatmentTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
-import calc.formula.service.MeteringReadingService;
+import calc.formula.service.MrService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -32,7 +31,7 @@ public class AspService {
     private final AspResultLineRepo aspResultLineRepo;
     private final AspResultNoteRepo aspResultNoteRepo;
     private final MessageService messageService;
-    private final MeteringReadingService meteringReadingService;
+    private final MrService mrService;
     private final ParameterRepo parameterRepo;
     private static final String docCode = "ASP1";
     private Map<String, Parameter> mapParams = null;
@@ -177,7 +176,7 @@ public class AspService {
             if (line.getTreatmentType() != TreatmentTypeEnum.IN)
                 continue;
 
-            List<MeteringReading> meteringReadings = meteringReadingService.calc(line.getMeteringPoint(), context)
+            List<MeteringReading> meteringReadings = mrService.calc(line.getMeteringPoint(), context)
                 .stream()
                 .filter(t -> t.getParam().equals(line.getParam()))
                 .collect(Collectors.toList());

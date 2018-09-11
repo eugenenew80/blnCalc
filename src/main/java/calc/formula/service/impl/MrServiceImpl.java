@@ -5,7 +5,7 @@ import calc.formula.CalcContext;
 import calc.formula.expression.impl.AtTimeValueExpression;
 import calc.formula.service.AtTimeValueService;
 import calc.formula.service.MeteringReading;
-import calc.formula.service.MeteringReadingService;
+import calc.formula.service.MrService;
 import calc.repo.calc.BypassModeRepo;
 import calc.repo.calc.MeterHistoryRepo;
 import calc.repo.calc.ParameterRepo;
@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MeteringReadingServiceImpl implements MeteringReadingService {
+public class MrServiceImpl implements MrService {
     private final ParameterRepo parameterRepo;
     private final AtTimeValueService atTimeValueService;
     private final MeterHistoryRepo meterHistoryRepo;

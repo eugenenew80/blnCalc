@@ -46,7 +46,7 @@ public class AspExpression implements DoubleExpression {
 
         Double value = list.stream()
             .filter(t -> t.getParam().getCode().equals(parameterCode))
-            .map(t -> (Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d)) * rate)
+            .map(t -> (Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d)) * Optional.of(rate).orElse(1d))
             .reduce((t1, t2) -> t1 + t2)
             .orElse(null);
 

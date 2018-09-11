@@ -212,7 +212,7 @@ public class CalcServiceImpl implements CalcService {
 
         if (context.isMeteringReading()) {
             Double sign = det.getSign().equals("-") ? -1d : 1d;
-            return MeteringReadingExpression.builder()
+            return MrExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(det.getParam().getCode())
                 .rate(det.getRate() * sign)

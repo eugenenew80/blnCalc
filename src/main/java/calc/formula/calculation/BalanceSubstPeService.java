@@ -2,7 +2,6 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.MessageTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.expression.impl.*;
@@ -346,7 +345,7 @@ public class BalanceSubstPeService {
             value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
         }
         else {
-            value = MeteringReadingExpression.builder()
+            value = MrExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param)
                 .rate(1d)

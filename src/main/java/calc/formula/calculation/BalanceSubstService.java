@@ -4,7 +4,7 @@ import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
-import calc.formula.expression.impl.MeteringReadingExpression;
+import calc.formula.expression.impl.MrExpression;
 import calc.formula.service.BsResultMrService;
 import calc.formula.service.MessageService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
@@ -154,7 +154,7 @@ public class BalanceSubstService {
     }
 
     private Double getMrVal(BalanceSubstLine bsLine, String param, CalcContext context) {
-        return MeteringReadingExpression.builder()
+        return MrExpression.builder()
             .meteringPointCode(bsLine.getMeteringPoint().getCode())
             .parameterCode(param)
             .rate(bsLine.getRate())

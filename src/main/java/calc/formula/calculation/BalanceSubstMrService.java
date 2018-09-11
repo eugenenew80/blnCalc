@@ -2,11 +2,10 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.MessageTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
-import calc.formula.service.MeteringReadingService;
+import calc.formula.service.MrService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -24,7 +23,7 @@ public class BalanceSubstMrService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstMrService.class);
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
-    private final MeteringReadingService meteringReadingService;
+    private final MrService mrService;
     private final ParameterRepo parameterRepo;
     private final MessageService messageService;
     private static final String docCode = "ACT";
@@ -63,7 +62,7 @@ public class BalanceSubstMrService {
 
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
-                List<MeteringReading> meteringReadings = meteringReadingService.calc(mrLine.getMeteringPoint(), context);
+                List<MeteringReading> meteringReadings = mrService.calc(mrLine.getMeteringPoint(), context);
 
                 for (MeteringReading t : meteringReadings) {
                     BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();

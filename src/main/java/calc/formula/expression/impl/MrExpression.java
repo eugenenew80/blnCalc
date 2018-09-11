@@ -11,12 +11,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
-
 import static java.util.stream.Collectors.toSet;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class MeteringReadingExpression implements DoubleExpression {
+public class MrExpression implements DoubleExpression {
     private final String meteringPointCode;
     private final String parameterCode;
     private final Double rate;
