@@ -48,15 +48,13 @@ public class PeriodTimeValueExpression implements DoubleExpression {
             .filter(t -> t.getPeriodType() == periodType)
             .collect(toList());
 
-        list.forEach(t -> { if (t.getDoubleValue()!=null) t.setDoubleValue(t.getDoubleValue() * rate); });
-
         if (periodType == PeriodTypeEnum.H)
             return getByHours(list);
 
         Double doubleValue = list.stream()
             .map(t -> t.getDoubleValue())
             .filter(t -> t != null)
-            .reduce((t1, t2) -> Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
+            .reduce((t1, t2) -> (Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d)) * Optional.ofNullable(rate).orElse(1d))
             .orElse(null);
 
         return new Double[] {doubleValue};

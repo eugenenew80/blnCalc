@@ -39,12 +39,11 @@ public class AtTimeValueExpression implements DoubleExpression {
     @Override
     public Double doubleValue() {
         List<CalcResult> list = service.getValue(meteringPointCode, parameterCode, per, context);
-        list.forEach(t -> t.setDoubleValue(t.getDoubleValue() * rate));
 
         Double result = list.stream()
             .map(t -> t.getDoubleValue())
             .filter(t -> t != null)
-            .reduce((t1, t2) -> Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
+            .reduce((t1, t2) -> (Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d)) * Optional.ofNullable(rate).orElse(1d))
             .orElse(null);
 
         return result;
