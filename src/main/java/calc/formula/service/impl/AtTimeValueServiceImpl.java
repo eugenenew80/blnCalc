@@ -1,6 +1,5 @@
 package calc.formula.service.impl;
 
-import calc.entity.calc.MeterHistory;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.entity.calc.AtTimeValue;
@@ -29,12 +28,7 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
     private final MeterHistoryRepo meterHistoryRepo;
 
     @Override
-    public List<CalcResult> getValue(
-        String meteringPointCode,
-        String parameterCode,
-        String per,
-        CalcContext context
-    ) {
+    public List<CalcResult> getValue(String meteringPointCode, String parameterCode, String per, CalcContext context) {
         MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
         Parameter parameter = parameterRepo.findByCode(parameterCode);
 
@@ -45,11 +39,10 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
             List<CalcResult> list = context.getValues().get(meteringPointCode)
                 .stream()
                 .filter(t -> t.getParamType().equals("AT"))
-                .filter(t -> t.getParam().getCode().equals(parameter.getCode()))
+                .filter(t -> t.getParam().equals(parameter))
                 .collect(toList());
 
-            if (!list.isEmpty())
-                return list;
+            if (!list.isEmpty()) return list;
         }
 
         return findValues(meteringPoint, parameter, per, context)
@@ -68,10 +61,9 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
         );
 
         Double factor = getFactor(meteringPoint, per, context);
-        for (AtTimeValue value : values) {
+        for (AtTimeValue value : values)
             if (value.getSourceType().getId().equals(1l) && value.getVal()!=null)
                 value.setVal(value.getVal() / factor);
-        }
 
         return values;
     }

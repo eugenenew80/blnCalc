@@ -2,7 +2,6 @@ package calc.formula.expression.impl;
 
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
-import calc.entity.calc.Formula;
 import calc.entity.calc.SourceType;
 import calc.formula.CalcContext;
 import calc.formula.CalcTrace;
@@ -11,7 +10,6 @@ import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
-
 import java.util.*;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
@@ -26,7 +24,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
     private final PeriodTypeEnum periodType;
     private final Byte startHour;
     private final Byte endHour;
-    private final Double factor;
     private final PeriodTimeValueService service;
     private final CalcContext context;
 
@@ -46,21 +43,20 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        final Double meterFactor = factor != null && factor != 0d ? factor : 1d;
-
         List<CalcResult> list = service.getValues(meteringPointCode, parameterCode, startHour, endHour, context)
             .stream()
-            .filter(t -> t.getPeriodType().equals(periodType))
+            .filter(t -> t.getPeriodType() == periodType)
             .collect(toList());
 
-        list.forEach(t -> { if (t.getDoubleValue()!=null) t.setDoubleValue(t.getDoubleValue() * rate / meterFactor); });
+        list.forEach(t -> { if (t.getDoubleValue()!=null) t.setDoubleValue(t.getDoubleValue() * rate); });
 
-        if (periodType != PeriodTypeEnum.H)
+        if (periodType == PeriodTypeEnum.H)
             return getByHours(list);
 
         Double doubleValue = list.stream()
             .map(t -> t.getDoubleValue())
-            .reduce((t1, t2) -> (t1 == null && t2 == null) ? null : Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
+            .filter(t -> t != null)
+            .reduce((t1, t2) -> Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
             .orElse(null);
 
         return new Double[] {doubleValue};

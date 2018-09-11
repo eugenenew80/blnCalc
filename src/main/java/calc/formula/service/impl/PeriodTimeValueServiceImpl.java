@@ -26,18 +26,9 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     private final ParameterRepo parameterRepo;
 
     @Override
-    public List<CalcResult> getValues(
-        String meteringPointCode,
-        String parameterCode,
-        Byte startHour,
-        Byte endHour,
-        CalcContext context
-    ) {
-        MeteringPoint meteringPoint = meteringPointRepo
-            .findByCode(meteringPointCode);
-
-        Parameter parameter = parameterRepo
-            .findByCode(parameterCode);
+    public List<CalcResult> getValues(String meteringPointCode, String parameterCode, Byte startHour, Byte endHour, CalcContext context) {
+        MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
+        Parameter parameter = parameterRepo.findByCode(parameterCode);
 
         if (meteringPoint == null || parameter == null)
             return Collections.emptyList();
@@ -46,11 +37,10 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
             List<CalcResult> list = context.getValues().get(meteringPointCode)
                 .stream()
                 .filter(t -> t.getParamType().equals("PT"))
-                .filter(t -> t.getParam().getCode().equals(parameterCode))
+                .filter(t -> t.getParam().equals(parameter))
                 .collect(toList());
 
-            if (!list.isEmpty())
-                return list;
+            if (!list.isEmpty()) return list;
         }
 
         return findValues(meteringPoint, parameter, context)
@@ -61,8 +51,7 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     }
 
     private List<PeriodTimeValue> findValues(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
-        LocalDateTime startDate = context.getStartDate()
-            .atStartOfDay();
+        LocalDateTime startDate = context.getStartDate().atStartOfDay();
 
         LocalDateTime endDate = context.getEndDate()
             .atStartOfDay()

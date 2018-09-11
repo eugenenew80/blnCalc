@@ -43,7 +43,8 @@ public class AtTimeValueExpression implements DoubleExpression {
 
         Double result = list.stream()
             .map(t -> t.getDoubleValue())
-            .reduce((t1, t2) -> (t1 == null && t2 == null) ? null : Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
+            .filter(t -> t != null)
+            .reduce((t1, t2) -> Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
             .orElse(null);
 
         return result;
