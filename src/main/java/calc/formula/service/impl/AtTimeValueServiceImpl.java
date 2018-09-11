@@ -78,7 +78,11 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
 
     private Double getFactor(MeteringPoint meteringPoint, String per, CalcContext context) {
         LocalDateTime date = per.equals("end") ? context.getEndDate().atStartOfDay().plusDays(1) : context.getStartDate().atStartOfDay();
-        List<MeterHistory> meterHistoryList = meterHistoryRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), date);
-        return meterHistoryList.isEmpty() ? 1d : meterHistoryList.get(0).getFactor();
+        return meterHistoryRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), date)
+            .stream()
+            .map(t -> t.getFactor())
+            .filter(t -> t != null)
+            .findFirst()
+            .orElse(1d);
     }
 }

@@ -67,13 +67,12 @@ public class MrServiceImpl implements MrService {
         return resultLines;
     }
 
-
     private List<MeteringReading> calcMeteringPoint(MeteringPoint meteringPoint, BypassMode bypassMode, CalcContext context) {
         LocalDateTime startDate = context.getStartDate().atStartOfDay();
         LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
 
         List<MeterHistory> meterHistories = meterHistoryRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate);
-        List<Parameter> parameters = getParameters(meterHistories, mapParams);
+        List<Parameter> parameters = getParameters(meterHistories);
 
         List<MeteringReading> resultLines = new ArrayList<>();
         for (Parameter param : parameters) {
@@ -83,8 +82,8 @@ public class MrServiceImpl implements MrService {
                 line.setUnit(param.getUnit());
                 line.setStartMeteringDate(startDate);
                 line.setEndMeteringDate(endDate);
-                line.setStartVal(getStartVal(meteringPoint, param, null, context));
-                line.setEndVal(getEndVal(meteringPoint, param, null, context));
+                line.setStartVal(getAtTimeValue(meteringPoint, param, "start", context));
+                line.setEndVal(getAtTimeValue(meteringPoint, param, "end", context));
                 resultLines.add(line);
                 continue;
             }
@@ -104,7 +103,7 @@ public class MrServiceImpl implements MrService {
 
                 if (bypassMode == null) {
                     if (meterStartDate.isBefore(startDate)) {
-                        line.setStartVal(getStartVal(meteringPoint, param, meterHistory, context));
+                        line.setStartVal(getAtTimeValue(meteringPoint, param, "start", context));
                         line.setStartMeteringDate(startDate);
                     }
 
@@ -114,7 +113,7 @@ public class MrServiceImpl implements MrService {
                     }
 
                     if (meterEndDate.isAfter(endDate)) {
-                        line.setEndVal(getEndVal(meteringPoint, param, meterHistory, context));
+                        line.setEndVal(getAtTimeValue(meteringPoint, param, "end", context));
                         line.setEndMeteringDate(endDate);
                     }
 
@@ -130,7 +129,7 @@ public class MrServiceImpl implements MrService {
 
                     if (meterStartDate.isBefore(startDate)) {
                         if (bypassStartDate.isBefore(startDate)) {
-                            line.setStartVal(getStartVal(meteringPoint, param, meterHistory, context));
+                            line.setStartVal(getAtTimeValue(meteringPoint, param, "start", context));
                             line.setStartMeteringDate(startDate);
                         }
                         else {
@@ -141,7 +140,7 @@ public class MrServiceImpl implements MrService {
 
                     if (meterEndDate.isAfter(endDate)) {
                         if (bypassEndDate.isAfter(endDate)) {
-                            line.setEndVal(getEndVal(meteringPoint, param, meterHistory, context));
+                            line.setEndVal(getAtTimeValue(meteringPoint, param, "end", context));
                             line.setEndMeteringDate(endDate);
                         }
                         else {
@@ -219,33 +218,19 @@ public class MrServiceImpl implements MrService {
         return null;
     }
 
-    private Double getStartVal(MeteringPoint meteringPoint, Parameter param, MeterHistory meterHistory, CalcContext context) {
+    private Double getAtTimeValue(MeteringPoint meteringPoint, Parameter param, String per, CalcContext context) {
         return AtTimeValueExpression.builder()
             .meteringPointCode(meteringPoint.getCode())
             .parameterCode(param.getCode())
             .rate(1d)
-            .per("start")
-            //.factor(meterHistory!=null ? meterHistory.getFactor() : null)
+            .per(per)
             .context(context)
             .service(atTimeValueService)
             .build()
             .doubleValue();
     }
 
-    private Double getEndVal(MeteringPoint meteringPoint, Parameter param, MeterHistory meterHistory, CalcContext context) {
-        return AtTimeValueExpression.builder()
-            .meteringPointCode(meteringPoint.getCode())
-            .parameterCode(param.getCode())
-            .rate(1d)
-            .per("end")
-            //.factor(meterHistory!=null ? meterHistory.getFactor() : null)
-            .context(context)
-            .service(atTimeValueService)
-            .build()
-            .doubleValue();
-    }
-
-    private List<Parameter> getParameters(List<MeterHistory> meters, Map<String, Parameter> mapParams ) {
+    private List<Parameter> getParameters(List<MeterHistory> meters) {
         if (meters==null || meters.size()==0)
             return mapParams.values().stream().collect(toList());
 
