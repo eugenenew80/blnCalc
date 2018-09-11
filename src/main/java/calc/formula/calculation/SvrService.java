@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
-
 @SuppressWarnings("ALL")
 @Service
 @RequiredArgsConstructor
@@ -97,18 +96,16 @@ public class SvrService {
 
                 resultLines.add(line);
                 saveLines(resultLines);
-
             }
             updateStatus(header, BatchStatusEnum.C);
-            logger.info("Metering reading for header " + header.getId() + " completed");
 
+            logger.info("Metering reading for header " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             updateStatus(header, BatchStatusEnum.E);
-            logger.error("Metering reading for header " + header.getId() + " terminated with exception");
-            logger.error(e.toString() + ": " + e.getMessage());
+            logger.error("Metering reading for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -116,12 +113,12 @@ public class SvrService {
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveLines(List<SvrLine> lines) {
+    void saveLines(List<SvrLine> lines) {
         svrLineRepo.save(lines);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteLines(SvrHeader header) {
+    void deleteLines(SvrHeader header) {
         List<SvrLine> lines = svrLineRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             svrLineRepo.delete(lines.get(i));
@@ -129,7 +126,7 @@ public class SvrService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateStatus(SvrHeader header, BatchStatusEnum status) {
+    void updateStatus(SvrHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         svrHeaderRepo.save(header);
     }
