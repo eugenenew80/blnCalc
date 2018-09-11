@@ -4594,5 +4594,45 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-803" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_pe_lines</comment>
+        <addColumn schemaName="apps" tableName="calc_balance_subst_pe_lines">
+            <column name="metering_point_id_out" type="number" remarks="Идентификатор точки учёта для сохранения потерь">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-804" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_reactor_values</comment>
+        <addColumn schemaName="apps" tableName="calc_reactor_values">
+            <column name="metering_point_id_out" type="number" remarks="Идентификатор точки учёта для сохранения потерь">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-805" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_power_transformer_values</comment>
+        <addColumn schemaName="apps" tableName="calc_power_transformer_values">
+            <column name="metering_point_id_out" type="number" remarks="Идентификатор точки учёта для сохранения потерь">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-806" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop not null constraint from table: calc_bs_result_messages</comment>
+        <dropNotNullConstraint schemaName="apps" tableName="calc_bs_result_messages" columnName="create_by" />
+        <dropNotNullConstraint schemaName="apps" tableName="calc_bs_result_messages" columnName="create_date" />
+        <dropNotNullConstraint schemaName="apps" tableName="calc_bs_result_messages" columnName="last_update_by" />
+        <dropNotNullConstraint schemaName="apps" tableName="calc_bs_result_messages" columnName="last_update_date" />
+    </changeSet>
+
+    <changeSet id="calc-eug-807" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Modify datatype for table: calc_bs_result_messages</comment>
+        <modifyDataType schemaName="apps" tableName="calc_bs_result_messages" columnName="error_code" newDataType="varchar2(30)" />
+        <rollback/>
+    </changeSet>
 
 </databaseChangeLog>

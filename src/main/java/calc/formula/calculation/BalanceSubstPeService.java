@@ -2,6 +2,7 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.MessageTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.expression.impl.*;
@@ -29,6 +30,7 @@ public class BalanceSubstPeService {
     private final BsResultUavgService resultUavgService;
     private final BsResultMrService resultMrService;
     private final CalcService calcService;
+    private final MessageService messageService;
     private static final String docCode = "LOSSES";
 
     public boolean calc(BalanceSubstResultHeader header)  {
@@ -41,6 +43,7 @@ public class BalanceSubstPeService {
             updateStatus(header, BatchStatusEnum.P);
             deleteReactorLines(header);
             deleteTransformerLines(header);
+            deleteMessages(header);
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
@@ -66,8 +69,10 @@ public class BalanceSubstPeService {
                     continue;
 
                 MeteringPoint inputMp = reactor.getInputMp();
-                if (inputMp == null)
+                if (inputMp == null) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND");
                     continue;
+                }
 
                 Double uNom    = getReactorAttr(reactor, "unom",     context);
                 Double deltaPr = getReactorAttr(reactor, "delta_pr", context);
@@ -88,7 +93,10 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
-                if (uNom == 0) continue;
+                if (uNom == 0) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "UNOM_NOT_FOUND");
+                    continue;
+                }
 
                 Double val = deltaPr * hours * Math.pow(uAvg / uNom, 2);
 
@@ -102,25 +110,35 @@ public class BalanceSubstPeService {
                 reactorLine.setUnit(unit);
                 reactorLine.setVal(val);
                 reactorLine.setInputMp(inputMp);
+                reactorLine.setMeteringPointOut(peLine.getMeteringPointOut());
                 reactorLines.add(reactorLine);
             }
 
             List<PowerTransformerValue> transformerLines = new ArrayList<>();
             for (BalanceSubstPeLine peLine : header.getHeader().getPeLines()) {
                 PowerTransformer transformer = peLine.getPowerTransformer();
-                if (transformer == null || transformer.getWindingsNumber() == null)
+                if (transformer == null)
                     continue;
+
+                if (transformer.getWindingsNumber() == null) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "WN_NOT_FOUND");
+                    continue;
+                }
 
                 MeteringPoint inputMpH = transformer.getInputMpH();
                 MeteringPoint inputMpM = transformer.getInputMpM();
                 MeteringPoint inputMpL = transformer.getInputMpL();
                 MeteringPoint inputMp =  transformer.getInputMp();
 
-                if  (transformer.getWindingsNumber().equals(3l) && (inputMp == null || inputMpH == null || inputMpM == null || inputMpL == null))
+                if  (transformer.getWindingsNumber().equals(3l) && (inputMp == null || inputMpH == null || inputMpM == null || inputMpL == null)) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND");
                     continue;
+                }
 
-                if  (transformer.getWindingsNumber().equals(2l) && (inputMp == null || inputMpH == null))
+                if  (transformer.getWindingsNumber().equals(2l) && (inputMp == null || inputMpH == null)) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND");
                     continue;
+                }
 
                 Double sNom     = getTransformerAttr(transformer, "snom",      context);
                 Double uNomH    = getTransformerAttr(transformer, "unom_h",    context);
@@ -150,9 +168,20 @@ public class BalanceSubstPeService {
                     .build()
                     .doubleValue();
 
-                if (sNom  == 0) continue;
-                if (uNomH == 0) continue;
-                if (uAvg  == 0) continue;
+                if (sNom  == 0) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "SNOM_NOT_FOUND");
+                    continue;
+                }
+
+                if (uNomH == 0) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "UNOMH_NOT_FOUND");
+                    continue;
+                }
+
+                if (uAvg  == 0) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "UAVG_NOT_FOUND");
+                    continue;
+                }
 
                 PowerTransformerValue transformerLine = new PowerTransformerValue();
                 transformerLine.setHeader(header);
@@ -171,6 +200,7 @@ public class BalanceSubstPeService {
                 transformerLine.setOperatingTime(operatingTime);
                 transformerLine.setUavg(uAvg);
                 transformerLine.setWindingsNumber(transformer.getWindingsNumber());
+                transformerLine.setMeteringPointOut(peLine.getMeteringPointOut());
 
                 if (transformer.getWindingsNumber().equals(2l)) {
                     Double apH = getMrVal(inputMpH, "A+", context);
@@ -313,7 +343,6 @@ public class BalanceSubstPeService {
         if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
             List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), param, context);
             value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
-            //logger.info(meteringPoint.getCode() + ", " + param + ", " + value);
         }
         else {
             value = MeteringReadingExpression.builder()
@@ -343,6 +372,11 @@ public class BalanceSubstPeService {
         for (int i=0; i<lines.size(); i++)
             powerTransformerValueRepo.delete(lines.get(i));
         powerTransformerValueRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteMessages(BalanceSubstResultHeader header) {
+        messageService.deleteMessages(header);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

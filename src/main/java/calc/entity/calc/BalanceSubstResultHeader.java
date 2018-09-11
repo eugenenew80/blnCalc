@@ -46,4 +46,32 @@ public class BalanceSubstResultHeader {
 
     @Column(name = "nbd_proc")
     private Double nbdProc;
+
+    @ManyToOne
+    @JoinColumn(name = "section1_metering_point_id")
+    private MeteringPoint meteringPoint1;
+
+    @ManyToOne
+    @JoinColumn(name = "section2_metering_point_id")
+    private MeteringPoint meteringPoint2;
+
+    @ManyToOne
+    @JoinColumn(name = "section3_metering_point_id")
+    private MeteringPoint meteringPoint3;
+
+    @ManyToOne
+    @JoinColumn(name = "section4_metering_point_id")
+    private MeteringPoint meteringPoint4;
+
+    @Column(name = "section1_total")
+    private Double total1;
+
+    @Column(name = "section2_total")
+    private Double total2;
+
+    @Column(name = "section3_total")
+    private Double total3;
+
+    @Column(name = "section4_total")
+    private Double total4;
 }

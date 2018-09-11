@@ -3,6 +3,7 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
+import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MeteringReadingService;
 import calc.repo.calc.*;
@@ -24,6 +25,7 @@ public class BalanceSubstMrService {
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final MeteringReadingService meteringReadingService;
     private final ParameterRepo parameterRepo;
+    private final MessageService messageService;
     private static final String docCode = "ACT";
     private Map<String, Parameter> mapParams = null;
 
@@ -64,6 +66,17 @@ public class BalanceSubstMrService {
 
                 for (MeteringReading t : meteringReadings) {
                     BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
+
+                    if (t.getMeter() == null) {
+                        messageService.addMessage(header, mrLine.getId(), docCode, "METER_NOT_FOUND");
+                        continue;
+                    }
+
+                    if (t.getMeterHistory() == null) {
+                        messageService.addMessage(header, mrLine.getId(), docCode, "METER_HISTORY_NOT_FOUND");
+                        continue;
+                    }
+
                     line.setHeader(header);
                     line.setMeteringPoint(mrLine.getMeteringPoint());
                     line.setSection(getSection(mrLine));

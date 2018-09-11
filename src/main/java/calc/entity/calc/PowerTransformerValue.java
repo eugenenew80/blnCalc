@@ -150,5 +150,9 @@ public class PowerTransformerValue {
 
     @Column(name = "rm_h")
     private Double rmH;
+
+    @ManyToOne
+    @JoinColumn(name = "metering_point_id_out")
+    private MeteringPoint meteringPointOut;
 }
 

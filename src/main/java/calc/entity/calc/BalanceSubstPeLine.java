@@ -29,4 +29,8 @@ public class BalanceSubstPeLine {
     @Column(name = "is_balance")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isBalance;
+
+    @ManyToOne
+    @JoinColumn(name = "metering_point_id_out")
+    private MeteringPoint meteringPointOut;
 }

@@ -45,5 +45,9 @@ public class ReactorValue {
     @ManyToOne
     @JoinColumn(name = "input_mp_id")
     private MeteringPoint inputMp;
+
+    @ManyToOne
+    @JoinColumn(name = "metering_point_id_out")
+    private MeteringPoint meteringPointOut;
 }
 

@@ -25,6 +25,22 @@ public class BalanceSubstHeader {
     @Column(name = "description")
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "section1_metering_point_id")
+    private MeteringPoint meteringPoint1;
+
+    @ManyToOne
+    @JoinColumn(name = "section2_metering_point_id")
+    private MeteringPoint meteringPoint2;
+
+    @ManyToOne
+    @JoinColumn(name = "section3_metering_point_id")
+    private MeteringPoint meteringPoint3;
+
+    @ManyToOne
+    @JoinColumn(name = "section4_metering_point_id")
+    private MeteringPoint meteringPoint4;
+
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<BalanceSubstLine> lines;
 
