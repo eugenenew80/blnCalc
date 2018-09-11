@@ -1,5 +1,6 @@
 package calc.entity.calc.asp;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
@@ -44,4 +45,8 @@ public class AspResultHeader {
 
     @Column(name = "state_code")
     private String state;
+
+    @Column(name = "is_active")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isActive;
 }

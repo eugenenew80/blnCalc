@@ -58,4 +58,8 @@ public class SvrHeader {
     @ManyToOne
     @JoinColumn(name = "total_metering_point_id")
     private MeteringPoint totalMeteringPoint;
+
+    @Column(name = "is_active")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isActive;
 }

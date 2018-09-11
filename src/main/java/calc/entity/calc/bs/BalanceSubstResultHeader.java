@@ -1,5 +1,6 @@
 package calc.entity.calc.bs;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
 import calc.entity.calc.Substation;
@@ -77,4 +78,9 @@ public class BalanceSubstResultHeader {
 
     @Column(name = "section4_total")
     private Double total4;
+
+    @Column(name = "is_active")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isActive;
+
 }
