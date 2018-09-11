@@ -37,6 +37,7 @@ public class BalanceSubstUService {
 
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
+            deleteMessages(header, docCode);
 
             CalcContext context = CalcContext.builder()
                 .startDate(header.getStartDate())
@@ -85,7 +86,11 @@ public class BalanceSubstUService {
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultULineRepo.delete(lines.get(i));
         balanceSubstResultULineRepo.flush();
+    }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteMessages(BalanceSubstResultHeader header, String docCode) {
+        messageService.deleteMessages(header, docCode);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

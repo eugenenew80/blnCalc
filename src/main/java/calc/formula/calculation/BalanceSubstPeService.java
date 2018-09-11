@@ -296,9 +296,10 @@ public class BalanceSubstPeService {
                 transformerLines.add(transformerLine);
             }
 
-            reactorValueRepo.save(reactorLines);
-            powerTransformerValueRepo.save(transformerLines);
+            saveReactorLines(reactorLines);
+            saveTransformerLines(transformerLines);
             updateStatus(header, BatchStatusEnum.C);
+
             logger.info("Power equipment values for header " + header.getId() + " completed");
             return true;
         }
@@ -306,8 +307,7 @@ public class BalanceSubstPeService {
         catch (Exception e) {
             messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
             updateStatus(header, BatchStatusEnum.E);
-            logger.error("Power equipment values for header " + header.getId() + " terminated with exception");
-            logger.error(e.toString() + ": " + e.getMessage());
+            logger.error("Power equipment values for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -356,6 +356,19 @@ public class BalanceSubstPeService {
         }
 
         return value;
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void saveTransformerLines(List<PowerTransformerValue> transformerLines) {
+        powerTransformerValueRepo.save(transformerLines);
+        powerTransformerValueRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void saveReactorLines(List<ReactorValue> reactorLines) {
+        reactorValueRepo.save(reactorLines);
+        reactorValueRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -43,6 +43,7 @@ public class BalanceSubstUbService {
 
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
+            deleteMessages(header, docCode);
 
             CalcContext context = CalcContext.builder()
                 .headerId(header.getId())
@@ -263,6 +264,11 @@ public class BalanceSubstUbService {
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultUbLineRepo.delete(lines.get(i));
         balanceSubstResultUbLineRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteMessages(BalanceSubstResultHeader header, String docCode) {
+        messageService.deleteMessages(header, docCode);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

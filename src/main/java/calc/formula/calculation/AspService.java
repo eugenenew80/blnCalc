@@ -70,7 +70,7 @@ public class AspService {
 
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
-            messageService.deleteMessages(header, docCode);
+            deleteMessages(header, docCode);
 
             calcInfoRows(header);
             calcInRows(header, context);
@@ -288,6 +288,11 @@ public class AspService {
         for (int i=0; i<notes.size(); i++)
             aspResultNoteRepo.delete(notes.get(i));
         aspResultNoteRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteMessages(AspResultHeader header, String docCode) {
+        messageService.deleteMessages(header, docCode);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

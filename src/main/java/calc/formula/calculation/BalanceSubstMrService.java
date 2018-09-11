@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.PostConstruct;
 import java.util.*;
 
@@ -47,6 +46,7 @@ public class BalanceSubstMrService {
 
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
+            deleteMessages(header, docCode);
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
@@ -67,15 +67,11 @@ public class BalanceSubstMrService {
                 for (MeteringReading t : meteringReadings) {
                     BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
 
-                    if (t.getMeter() == null) {
-                        messageService.addMessage(header, mrLine.getId(), docCode, "METER_NOT_FOUND");
-                        continue;
-                    }
+                    if (t.getMeter() == null)
+                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_NOT_FOUND");
 
-                    if (t.getMeterHistory() == null) {
-                        messageService.addMessage(header, mrLine.getId(), docCode, "METER_HISTORY_NOT_FOUND");
-                        continue;
-                    }
+                    if (t.getMeterHistory() == null)
+                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_HISTORY_NOT_FOUND");
 
                     line.setHeader(header);
                     line.setMeteringPoint(mrLine.getMeteringPoint());
@@ -101,21 +97,26 @@ public class BalanceSubstMrService {
                 }
             }
 
-            balanceSubstResultMrLineRepo.save(resultLines);
+            saveLines(resultLines);
             updateStatus(header, BatchStatusEnum.C);
-            logger.info("Metering reading for header " + header.getId() + " completed");
 
+            logger.info("Metering reading for header " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
             updateStatus(header, BatchStatusEnum.E);
-            logger.error("Metering reading for header " + header.getId() + " terminated with exception");
-            logger.error(e.toString() + ": " + e.getMessage());
+            logger.error("Metering reading for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveLines(List<BalanceSubstResultMrLine> resultLines) {
+        balanceSubstResultMrLineRepo.save(resultLines);
+        balanceSubstResultMrLineRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -124,6 +125,11 @@ public class BalanceSubstMrService {
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultMrLineRepo.delete(lines.get(i));
         balanceSubstResultMrLineRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteMessages(BalanceSubstResultHeader header, String docCode) {
+        messageService.deleteMessages(header, docCode);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
