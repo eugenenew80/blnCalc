@@ -1,7 +1,7 @@
 package calc.formula.service;
 
-import calc.entity.calc.AspResultHeader;
-import calc.entity.calc.BalanceSubstResultHeader;
+import calc.entity.calc.asp.AspResultHeader;
+import calc.entity.calc.bs.BalanceSubstResultHeader;
 
 public interface MessageService {
     void deleteMessages(BalanceSubstResultHeader header, String docCode);

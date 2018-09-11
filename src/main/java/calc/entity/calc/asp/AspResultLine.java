@@ -1,27 +1,30 @@
-package calc.entity.calc;
+package calc.entity.calc.asp;
 
-import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.calc.*;
+import calc.entity.calc.Parameter;
+import calc.entity.calc.enums.TreatmentTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_bs_result_mr_lines")
-public class BalanceSubstResultMrLine {
+@Table(name = "calc_asp1_result_lines")
+public class AspResultLine {
     @Id
-    @SequenceGenerator(name="calc_bs_result_mr_lines_s", sequenceName = "calc_calc_bs_result_mr_lines_s", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_bs_result_mr_lines_s")
+    @SequenceGenerator(name="calc_asp1_result_lines_s", sequenceName = "calc_asp1_result_lines_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_asp1_result_lines_s")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "bs_result_header_id")
-    private BalanceSubstResultHeader header;
+    @JoinColumn(name = "asp1_result_header_id")
+    private AspResultHeader header;
 
-    @Column(name = "section")
-    private String section;
+    @Column(name = "line_num")
+    private Long lineNum;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id")
@@ -36,12 +39,12 @@ public class BalanceSubstResultMrLine {
     private MeterHistory meterHistory;
 
     @ManyToOne
-    @JoinColumn(name = "bypass_mode_id")
-    private BypassMode bypassMode;
-
-    @ManyToOne
     @JoinColumn(name = "param_id")
     private Parameter param;
+
+    @ManyToOne
+    @JoinColumn(name = "formula_id")
+    private Formula formula;
 
     @Column(name = "start_metering_date")
     private LocalDateTime startMeteringDate;
@@ -64,26 +67,29 @@ public class BalanceSubstResultMrLine {
     @Column(name = "val")
     private Double val;
 
-    @Column(name = "under_count_val")
-    private Double underCountVal;
-
     @ManyToOne
     @JoinColumn(name = "unit_id")
     private Unit unit;
-
-    @Column(name = "is_ignore")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isIgnore;
 
     @ManyToOne
     @JoinColumn(name = "bypass_metering_point_id")
     private MeteringPoint bypassMeteringPoint;
 
-    @Column(name = "is_bypass_bus_section")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isBypassSection;
+    @ManyToOne
+    @JoinColumn(name = "bypass_mode_id")
+    private BypassMode bypassMode;
+
+    @Column(name = "under_count_val")
+    private Double underCountVal;
 
     @ManyToOne
     @JoinColumn(name = "under_count_id")
     private UnderCount undercount;
+
+    @Column(name="treatment_type_code")
+    @Enumerated(EnumType.STRING)
+    private TreatmentTypeEnum treatmentType;
+
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<AspResultLineTranslate> translates;
 }

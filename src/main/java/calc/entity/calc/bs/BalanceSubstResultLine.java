@@ -1,5 +1,7 @@
-package calc.entity.calc;
+package calc.entity.calc.bs;
 
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Parameter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;

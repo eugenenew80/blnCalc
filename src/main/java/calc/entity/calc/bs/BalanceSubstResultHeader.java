@@ -1,5 +1,8 @@
-package calc.entity.calc;
+package calc.entity.calc.bs;
 
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Organization;
+import calc.entity.calc.Substation;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;

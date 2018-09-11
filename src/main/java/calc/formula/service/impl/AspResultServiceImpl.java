@@ -1,6 +1,6 @@
 package calc.formula.service.impl;
 
-import calc.entity.calc.AspResultLine;
+import calc.entity.calc.asp.AspResultLine;
 import calc.entity.calc.MeteringPoint;
 import calc.formula.service.AspResultService;
 import calc.repo.calc.AspResultLineRepo;

@@ -1,6 +1,6 @@
 package calc.formula.expression.impl;
 
-import calc.entity.calc.AspResultLine;
+import calc.entity.calc.asp.AspResultLine;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.AspResultService;

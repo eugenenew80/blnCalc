@@ -1,6 +1,6 @@
 package calc.formula.service;
 
-import calc.entity.calc.AspResultLine;
+import calc.entity.calc.asp.AspResultLine;
 import java.util.List;
 
 public interface AspResultService {

@@ -1,5 +1,8 @@
-package calc.entity.calc;
+package calc.entity.calc.asp;
 
+import calc.entity.calc.Formula;
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.TreatmentTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

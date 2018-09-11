@@ -1,6 +1,9 @@
-package calc.entity.calc;
+package calc.entity.calc.bs;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.PowerTransformer;
+import calc.entity.calc.Reactor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

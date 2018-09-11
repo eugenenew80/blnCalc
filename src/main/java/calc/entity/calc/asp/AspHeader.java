@@ -1,5 +1,6 @@
-package calc.entity.calc;
+package calc.entity.calc.asp;
 
+import calc.entity.calc.Organization;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;

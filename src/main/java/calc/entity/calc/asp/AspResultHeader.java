@@ -1,5 +1,6 @@
-package calc.entity.calc;
+package calc.entity.calc.asp;
 
+import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;

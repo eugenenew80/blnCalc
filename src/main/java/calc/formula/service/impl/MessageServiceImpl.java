@@ -1,6 +1,10 @@
 package calc.formula.service.impl;
 
-import calc.entity.calc.*;
+import calc.entity.calc.asp.AspResultHeader;
+import calc.entity.calc.asp.AspResultMessage;
+import calc.entity.calc.asp.AspResultMessageTranslate;
+import calc.entity.calc.bs.BalanceSubstResultHeader;
+import calc.entity.calc.bs.BalanceSubstResultMessage;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.MessageTypeEnum;
 import calc.formula.service.MessageError;
@@ -43,7 +47,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void deleteMessages(BalanceSubstResultHeader header, String docCode) {
-        List<BsResultMessage> lines = bsResultMessageRepo.findAllByHeaderId(header.getId());
+        List<BalanceSubstResultMessage> lines = bsResultMessageRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             bsResultMessageRepo.delete(lines.get(i));
         bsResultMessageRepo.flush();
@@ -53,7 +57,7 @@ public class MessageServiceImpl implements MessageService {
     public void addMessage(BalanceSubstResultHeader header, Long lineNum, String docCode, String errCode) {
         try {
             MessageError err = mapErrors.getOrDefault(errCode, null);
-            BsResultMessage message = new BsResultMessage();
+            BalanceSubstResultMessage message = new BalanceSubstResultMessage();
             message.setHeader(header);
             message.setLineNum(lineNum);
             message.setMessageType(err != null ? err.getMessageType() : MessageTypeEnum.E);

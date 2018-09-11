@@ -1,16 +1,21 @@
-package calc.entity.calc;
+package calc.entity.calc.bs;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Parameter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_balance_subst_mr_lines")
-public class BalanceSubstMrLine {
+@Table(name = "calc_balance_subst_lines")
+@Immutable
+public class BalanceSubstLine {
     @Id
     private Long id;
 
@@ -21,6 +26,13 @@ public class BalanceSubstMrLine {
     @ManyToOne
     @JoinColumn(name = "metering_point_id")
     private MeteringPoint meteringPoint;
+
+    @ManyToOne
+    @JoinColumn(name = "param_id")
+    private Parameter param;
+
+    @Column(name = "rate")
+    private Double rate;
 
     @Column(name = "is_inverse")
     @Convert(converter = BooleanToIntConverter.class)
@@ -42,7 +54,6 @@ public class BalanceSubstMrLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection4;
 
-    @Column(name = "is_section_5")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isSection5;
+    @OneToMany(mappedBy = "line", fetch = FetchType.EAGER)
+    private List<BalanceSubstLineTranslate> translates;
 }

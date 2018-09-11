@@ -1,4 +1,4 @@
-package calc.entity.calc;
+package calc.entity.calc.asp;
 
 import calc.entity.calc.enums.LangEnum;
 import lombok.Data;

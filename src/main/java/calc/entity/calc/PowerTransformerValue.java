@@ -1,5 +1,6 @@
 package calc.entity.calc;
 
+import calc.entity.calc.bs.BalanceSubstResultHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

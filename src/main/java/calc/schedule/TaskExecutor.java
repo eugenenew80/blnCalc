@@ -1,7 +1,9 @@
 package calc.schedule;
 
-import calc.entity.calc.*;
+import calc.entity.calc.asp.AspResultHeader;
+import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.svr.SvrHeader;
 import calc.formula.calculation.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;

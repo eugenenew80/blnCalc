@@ -1,6 +1,6 @@
 package calc.formula.expression.impl;
 
-import calc.entity.calc.BalanceSubstResultMrLine;
+import calc.entity.calc.bs.BalanceSubstResultMrLine;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.BsResultMrService;

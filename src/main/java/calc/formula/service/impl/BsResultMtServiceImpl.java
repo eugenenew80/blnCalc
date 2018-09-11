@@ -1,6 +1,6 @@
 package calc.formula.service.impl;
 
-import calc.entity.calc.BalanceSubstResultMrLine;
+import calc.entity.calc.bs.BalanceSubstResultMrLine;
 import calc.entity.calc.MeteringPoint;
 import calc.formula.service.BsResultMrService;
 import calc.repo.calc.BalanceSubstResultMrLineRepo;

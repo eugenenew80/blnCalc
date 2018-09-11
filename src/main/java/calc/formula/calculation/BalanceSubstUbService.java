@@ -1,6 +1,10 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
+import calc.entity.calc.bs.BalanceSubstResultHeader;
+import calc.entity.calc.bs.BalanceSubstResultMrLine;
+import calc.entity.calc.bs.BalanceSubstResultUbLine;
+import calc.entity.calc.bs.BalanceSubstUbLine;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.UavgExpression;

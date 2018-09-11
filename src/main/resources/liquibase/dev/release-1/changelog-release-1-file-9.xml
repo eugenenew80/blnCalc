@@ -4635,4 +4635,32 @@
         <rollback/>
     </changeSet>
 
+    <changeSet id="calc-eug-808" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_bs_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_bs_result_headers">
+            <column name="is_active" type="number" remarks="Флаг - активный документ" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-809" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_asp1_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_asp1_result_headers">
+            <column name="is_active" type="number" remarks="Флаг - активный документ" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-810" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps" tableName="calc_service_values_reconciliations">
+            <column name="is_active" type="number" remarks="Флаг - активный документ" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
 </databaseChangeLog>

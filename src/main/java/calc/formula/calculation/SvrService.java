@@ -2,6 +2,8 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.svr.SvrHeader;
+import calc.entity.calc.svr.SvrLine;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.PeriodTimeValueService;

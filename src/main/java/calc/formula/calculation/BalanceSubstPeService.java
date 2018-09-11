@@ -1,6 +1,8 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
+import calc.entity.calc.bs.BalanceSubstPeLine;
+import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;

@@ -1,5 +1,8 @@
-package calc.entity.calc;
+package calc.entity.calc.bs;
 
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Organization;
+import calc.entity.calc.Substation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

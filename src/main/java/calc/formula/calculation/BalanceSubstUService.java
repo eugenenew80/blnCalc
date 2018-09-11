@@ -1,6 +1,9 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
+import calc.entity.calc.bs.BalanceSubstResultHeader;
+import calc.entity.calc.bs.BalanceSubstResultULine;
+import calc.entity.calc.bs.BalanceSubstULine;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;

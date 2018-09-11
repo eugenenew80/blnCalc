@@ -1,6 +1,9 @@
-package calc.entity.calc;
+package calc.entity.calc.svr;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.calc.ContractKeg;
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;

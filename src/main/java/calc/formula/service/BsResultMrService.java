@@ -1,6 +1,6 @@
 package calc.formula.service;
 
-import calc.entity.calc.BalanceSubstResultMrLine;
+import calc.entity.calc.bs.BalanceSubstResultMrLine;
 import java.util.List;
 
 public interface BsResultMrService {
