@@ -362,19 +362,19 @@ public class BalanceSubstPeService {
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void saveTransformerLines(List<PowerTransformerValue> transformerLines) {
+    void saveTransformerLines(List<PowerTransformerValue> transformerLines) {
         powerTransformerValueRepo.save(transformerLines);
         powerTransformerValueRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void saveReactorLines(List<ReactorValue> reactorLines) {
+    void saveReactorLines(List<ReactorValue> reactorLines) {
         reactorValueRepo.save(reactorLines);
         reactorValueRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteReactorLines(BalanceSubstResultHeader header) {
+    void deleteReactorLines(BalanceSubstResultHeader header) {
         List<ReactorValue> lines = reactorValueRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             reactorValueRepo.delete(lines.get(i));
@@ -382,7 +382,7 @@ public class BalanceSubstPeService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteTransformerLines(BalanceSubstResultHeader header) {
+    void deleteTransformerLines(BalanceSubstResultHeader header) {
         List<PowerTransformerValue> lines = powerTransformerValueRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             powerTransformerValueRepo.delete(lines.get(i));
@@ -390,12 +390,12 @@ public class BalanceSubstPeService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteMessages(BalanceSubstResultHeader header, String docCode) {
+    void deleteMessages(BalanceSubstResultHeader header, String docCode) {
         messageService.deleteMessages(header, docCode);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
+    void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         balanceSubstResultHeaderRepo.save(header);
     }

@@ -167,7 +167,7 @@ public class BalanceSubstService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteLines(BalanceSubstResultHeader header) {
+    void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultLine> lines = balanceSubstResultLineRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultLineRepo.delete(lines.get(i));
@@ -175,12 +175,12 @@ public class BalanceSubstService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteMessages(BalanceSubstResultHeader header, String docCode) {
+    void deleteMessages(BalanceSubstResultHeader header, String docCode) {
         messageService.deleteMessages(header, docCode);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
+    void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         balanceSubstResultHeaderRepo.save(header);
     }

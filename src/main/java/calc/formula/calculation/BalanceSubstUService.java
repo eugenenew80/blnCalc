@@ -84,7 +84,7 @@ public class BalanceSubstUService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteLines(BalanceSubstResultHeader header) {
+    void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultULine> lines = balanceSubstResultULineRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultULineRepo.delete(lines.get(i));
@@ -92,12 +92,12 @@ public class BalanceSubstUService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteMessages(BalanceSubstResultHeader header, String docCode) {
+    void deleteMessages(BalanceSubstResultHeader header, String docCode) {
         messageService.deleteMessages(header, docCode);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
+    void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         balanceSubstResultHeaderRepo.save(header);
     }
@@ -130,9 +130,11 @@ public class BalanceSubstUService {
             else
                 line.setVal(0d);
         }
+
         catch (Exception e) {
             logger.error("ERROR: " + e.toString() + ", " + e.getMessage());
         }
+
         return line;
     }
 }

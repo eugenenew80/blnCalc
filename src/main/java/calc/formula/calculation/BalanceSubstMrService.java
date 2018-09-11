@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstMrService {
@@ -117,13 +118,13 @@ public class BalanceSubstMrService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveLines(List<BalanceSubstResultMrLine> resultLines) {
+    void saveLines(List<BalanceSubstResultMrLine> resultLines) {
         balanceSubstResultMrLineRepo.save(resultLines);
         balanceSubstResultMrLineRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteLines(BalanceSubstResultHeader header) {
+    void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultMrLine> lines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultMrLineRepo.delete(lines.get(i));
@@ -131,12 +132,12 @@ public class BalanceSubstMrService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteMessages(BalanceSubstResultHeader header, String docCode) {
+    void deleteMessages(BalanceSubstResultHeader header, String docCode) {
         messageService.deleteMessages(header, docCode);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
+    void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         balanceSubstResultHeaderRepo.save(header);
     }
