@@ -126,6 +126,11 @@ public class BalanceSubstService {
                 .reduce((t1, t2) -> Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
                 .orElse(null);
 
+            if (header.getHeader().getMeteringPoint1() ==null) messageService.addMessage(header, null, docCode, "MP_SECTION1_NOT_FOUND");
+            if (header.getHeader().getMeteringPoint2() ==null) messageService.addMessage(header, null, docCode, "MP_SECTION2_NOT_FOUND");
+            if (header.getHeader().getMeteringPoint3() ==null) messageService.addMessage(header, null, docCode, "MP_SECTION3_NOT_FOUND");
+            if (header.getHeader().getMeteringPoint4() ==null) messageService.addMessage(header, null, docCode, "MP_SECTION4_NOT_FOUND");
+
             header.setMeteringPoint1(header.getHeader().getMeteringPoint1());
             header.setMeteringPoint2(header.getHeader().getMeteringPoint2());
             header.setMeteringPoint3(header.getHeader().getMeteringPoint3());
