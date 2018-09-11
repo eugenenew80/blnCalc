@@ -24,7 +24,6 @@ public class AtTimeValueExpression implements DoubleExpression {
     private final String parameterCode;
     private final String per;
     private final Double rate;
-    private final Double factor;
     private final AtTimeValueService service;
     private final CalcContext context;
 
@@ -39,10 +38,8 @@ public class AtTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
-        final Double meterFactor = factor != null && factor != 0d ? factor : 1d;
-
         List<CalcResult> list = service.getValue(meteringPointCode, parameterCode, per, context);
-        list.forEach(t -> t.setDoubleValue(t.getDoubleValue() * rate / meterFactor));
+        list.forEach(t -> t.setDoubleValue(t.getDoubleValue() * rate));
 
         Double result = list.stream()
             .map(t -> t.getDoubleValue())
