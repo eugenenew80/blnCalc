@@ -4662,5 +4662,10 @@
         </addColumn>
     </changeSet>
 
-
+    <changeSet id="calc-eug-811" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: calc_consumption_lines</comment>
+        <dropColumn schemaName="apps" tableName="calc_consumption_lines" columnName="interval_type" />
+        <dropColumn schemaName="apps" tableName="calc_consumption_lines" columnName="metering_date" />
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
