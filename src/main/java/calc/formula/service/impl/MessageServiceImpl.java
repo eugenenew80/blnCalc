@@ -48,8 +48,10 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteMessages(BalanceSubstResultHeader header, String docCode) {
         List<BalanceSubstResultMessage> lines = bsResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            bsResultMessageRepo.delete(lines.get(i));
+        for (int i=0; i<lines.size(); i++) {
+            if (lines.get(i).getSection().equals(docCode))
+                bsResultMessageRepo.delete(lines.get(i));
+        }
         bsResultMessageRepo.flush();
     }
 
