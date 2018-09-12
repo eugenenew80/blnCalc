@@ -51,6 +51,9 @@ public class PeriodTimeValue  {
 	@Enumerated(EnumType.STRING)
 	private PeriodTypeEnum periodType;
 
+	@Column(name = "source_code")
+	private String sourceCode;
+
 	public CalcResult toResult() {
 		CalcResult result = new CalcResult();
 		result.setParamType("PT");
