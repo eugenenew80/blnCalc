@@ -4668,4 +4668,37 @@
         <dropColumn schemaName="apps" tableName="calc_consumption_lines" columnName="metering_date" />
         <rollback/>
     </changeSet>
+
+    <changeSet id="calc-eug-812" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table table: calc_data_types</comment>
+        <insert schemaName="apps" tableName="calc_data_types">
+            <column name="code" value="OPER" />
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_data_types">
+            <column name="code" value="FACT" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-813" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_data_types_tl</comment>
+        <insert tableName="calc_data_types_tl" schemaName="apps">
+            <column name="code" value="OPER" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Оперативный" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-814" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_data_types_tl</comment>
+        <insert tableName="calc_data_types_tl" schemaName="apps">
+            <column name="code" value="FACT" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Фактический" />
+        </insert>
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
