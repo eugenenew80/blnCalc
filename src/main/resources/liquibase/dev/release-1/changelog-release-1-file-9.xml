@@ -4701,4 +4701,75 @@
         </insert>
         <rollback/>
     </changeSet>
+
+    <changeSet id="calc-eug-815" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_bs_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_bs_result_headers">
+            <column name="data_type_code" type="varchar2(20)" remarks="Статус данных">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-816" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_bs_result_headers_6"
+                     schemaName="apps"
+                     tableName="calc_bs_result_headers"
+                     unique="false">
+            <column name="data_type_code" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-817" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_headers"
+                baseColumnNames="data_type_code"
+                constraintName="fk_calc_bs_result_headers_10"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-818" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_asp1_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_asp1_result_headers">
+            <column name="data_type_code" type="varchar2(20)" remarks="Статус данных">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-819" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_result_headers</comment>
+        <createIndex indexName="idx_calc_asp1_result_headers_6"
+                     schemaName="apps"
+                     tableName="calc_asp1_result_headers"
+                     unique="false">
+            <column name="data_type_code" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-820" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_headers"
+                baseColumnNames="data_type_code"
+                constraintName="fk_calc_asp1_result_headers_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
