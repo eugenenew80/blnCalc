@@ -3,6 +3,7 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.MrExpression;
@@ -134,6 +135,7 @@ public class BalanceSubstService {
             if (header.getHeader().getMeteringPoint4() ==null) messageService.addMessage(header, null, docCode, "MP_SECTION4_NOT_FOUND");
 
             header.setIsActive(false);
+            header.setDataType(DataTypeEnum.OPER);
             header.setMeteringPoint1(header.getHeader().getMeteringPoint1());
             header.setMeteringPoint2(header.getHeader().getMeteringPoint2());
             header.setMeteringPoint3(header.getHeader().getMeteringPoint3());

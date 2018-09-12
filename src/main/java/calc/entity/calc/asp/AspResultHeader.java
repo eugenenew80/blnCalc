@@ -3,6 +3,7 @@ package calc.entity.calc.asp;
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +33,10 @@ public class AspResultHeader {
     @Column(name="period_type")
     @Enumerated(EnumType.STRING)
     private PeriodTypeEnum periodType;
+
+    @Column(name="data_type")
+    @Enumerated(EnumType.STRING)
+    private DataTypeEnum dataType;
 
     @Column(name = "start_date")
     private LocalDate startDate;

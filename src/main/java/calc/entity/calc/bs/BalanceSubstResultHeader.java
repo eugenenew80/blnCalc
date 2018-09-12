@@ -5,6 +5,7 @@ import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
 import calc.entity.calc.Substation;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,6 +45,10 @@ public class BalanceSubstResultHeader {
     @Column(name="period_type")
     @Enumerated(EnumType.STRING)
     private PeriodTypeEnum periodType;
+
+    @Column(name="data_type")
+    @Enumerated(EnumType.STRING)
+    private DataTypeEnum dataType;
 
     @Column(name = "nbd_val")
     private Double nbdVal;

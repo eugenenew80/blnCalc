@@ -3,6 +3,7 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.asp.*;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.TreatmentTypeEnum;
 import calc.formula.CalcContext;
@@ -80,6 +81,7 @@ public class AspService {
             copyNotes(header);
 
             header.setIsActive(false);
+            header.setDataType(DataTypeEnum.OPER);
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Metering reading for header " + header.getId() + " completed");
 
