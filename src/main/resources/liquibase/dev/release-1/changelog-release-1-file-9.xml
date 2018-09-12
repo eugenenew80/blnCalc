@@ -4772,4 +4772,13 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-821" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_consumption_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_consumption_headers">
+            <column name="is_active" type="number" remarks="Флаг - активный документ" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
