@@ -46,7 +46,7 @@ public class BalanceSubstResultHeader {
     @Enumerated(EnumType.STRING)
     private PeriodTypeEnum periodType;
 
-    @Column(name="data_type")
+    @Column(name="data_type_code")
     @Enumerated(EnumType.STRING)
     private DataTypeEnum dataType;
 
