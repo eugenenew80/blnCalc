@@ -100,6 +100,7 @@ public class BalanceSubstPeService {
                 }
 
                 Double val = deltaPr * hours * Math.pow(uAvg / uNom, 2);
+                if (val !=null) val = Math.round(val * 100d) / 100d;
 
                 ReactorValue reactorLine = new ReactorValue();
                 reactorLine.setHeader(header);
@@ -217,6 +218,9 @@ public class BalanceSubstPeService {
                     Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
                     Double valN = totalEH * resistH / (Math.pow(uAvg,2) * operatingTime);
 
+                    if (valXX !=null) valXX = Math.round(valXX * 100d) / 100d;
+                    if (valN !=null) valN = Math.round(valN * 100d) / 100d;
+
                     transformerLine.setApH(apH);
                     transformerLine.setAmH(amH);
                     transformerLine.setRpH(rpH);
@@ -265,6 +269,9 @@ public class BalanceSubstPeService {
 
                     Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
                     Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * operatingTime * 1000d);
+
+                    if (valXX !=null) valXX = Math.round(valXX * 100d) / 100d;
+                    if (valN !=null) valN = Math.round(valN * 100d) / 100d;
 
                     transformerLine.setApL(apL);
                     transformerLine.setAmL(amL);
