@@ -79,6 +79,7 @@ public class AspService {
             calcOutRows(header, context);
             copyNotes(header);
 
+            header.setIsActive(false);
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Metering reading for header " + header.getId() + " completed");
 

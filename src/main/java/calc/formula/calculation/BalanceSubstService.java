@@ -133,6 +133,7 @@ public class BalanceSubstService {
             if (header.getHeader().getMeteringPoint3() ==null) messageService.addMessage(header, null, docCode, "MP_SECTION3_NOT_FOUND");
             if (header.getHeader().getMeteringPoint4() ==null) messageService.addMessage(header, null, docCode, "MP_SECTION4_NOT_FOUND");
 
+            header.setIsActive(false);
             header.setMeteringPoint1(header.getHeader().getMeteringPoint1());
             header.setMeteringPoint2(header.getHeader().getMeteringPoint2());
             header.setMeteringPoint3(header.getHeader().getMeteringPoint3());
