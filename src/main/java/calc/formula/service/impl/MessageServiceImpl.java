@@ -29,7 +29,7 @@ public class MessageServiceImpl implements MessageService {
     public void init() {
         mapErrors.put("PE_INPUT_NOT_FOUND",         new MessageError("PE_INPUT_NOT_FOUND",         MessageTypeEnum.W,"Не задана точка учёта на вводах"));
         mapErrors.put("PE_UNOM_NOT_FOUND",          new MessageError("PE_UNOM_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение unom"));
-        mapErrors.put("PE_WN_NOT_FOUND",            new MessageError("PE_WN_NOT_FOUND",            MessageTypeEnum.W,"Не количество обмоток в трансформаторе"));
+        mapErrors.put("PE_WN_NOT_FOUND",            new MessageError("PE_WN_NOT_FOUND",            MessageTypeEnum.W,"Не задано количество обмоток в трансформаторе"));
         mapErrors.put("PE_SNOM_NOT_FOUND",          new MessageError("PE_SNOM_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение snom"));
         mapErrors.put("PE_UNOMH_NOT_FOUND",         new MessageError("PE_UNOMH_NOT_FOUND",         MessageTypeEnum.W,"Не задано значение unomh"));
         mapErrors.put("PE_UAVG_NOT_FOUND",          new MessageError("PE_UAVG_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение uavg"));
@@ -37,6 +37,8 @@ public class MessageServiceImpl implements MessageService {
         mapErrors.put("MR_METER_NOT_FOUND",         new MessageError("MR_METER_NOT_FOUND",         MessageTypeEnum.W,"Не найден счётчик для точки учёта"));
         mapErrors.put("MR_METER_HISTORY_NOT_FOUND", new MessageError("MR_METER_HISTORY_NOT_FOUND", MessageTypeEnum.W,"Не задано аакт замены прибора учёта для счетчика"));
         mapErrors.put("MR_SECTION_NOT_FOUND",       new MessageError("MR_SECTION_NOT_FOUND",       MessageTypeEnum.E,"Не задан раздел для точки учёта"));
+
+        mapErrors.put("UB_UAVG_NOT_FOUND",          new MessageError("UB_UAVG_NOT_FOUND",          MessageTypeEnum.E,"Не задан класс напряжения для точки учёта"));
     }
 
     @Override

@@ -31,7 +31,8 @@ public class BalanceSubstService {
     private final ParameterRepo parameterRepo;
     private final BsResultMrService mrService;
     private final MessageService messageService;
-    private static final String docCode = "BALANCE";    private Map<String, Parameter> mapParams = null;
+    private static final String docCode = "BALANCE";
+    private Map<String, Parameter> mapParams = null;
 
     @PostConstruct
     public void init() {

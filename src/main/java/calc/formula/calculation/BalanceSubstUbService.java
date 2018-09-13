@@ -89,40 +89,46 @@ public class BalanceSubstUbService {
             for (BalanceSubstUbLine ubLine : header.getHeader().getUbLines()) {
                 MeteringPoint meteringPoint = ubLine.getMeteringPoint();
 
+                Double workHours = WorkingHoursExpression.builder()
+                    .objectType("mp")
+                    .objectId(meteringPoint.getId())
+                    .service(workingHoursService)
+                    .context(context)
+                    .build()
+                    .doubleValue();
+
+                MeteringPoint inputMp = balanceSubstResultULineRepo.findAllByHeaderId(header.getId())
+                    .stream()
+                    .filter(t -> t.getMeteringPoint().getVoltageClass()!=null && t.getMeteringPoint().getVoltageClass().equals(meteringPoint.getVoltageClass()))
+                    .map(t -> t.getMeteringPoint())
+                    .findFirst()
+                    .orElse(meteringPoint);
+
+                if (inputMp.getVoltageClass() == null) {
+                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_UAVG_NOT_FOUND");
+                    continue;
+                }
+
+                Double uAvg = UavgExpression.builder()
+                    .meteringPointCode(inputMp.getCode())
+                    .def(inputMp.getVoltageClass().getValue() / 1000d)
+                    .context(context)
+                    .service(resultUavgService)
+                    .build()
+                    .doubleValue();
+
+
+                List<MeterHistory> meterHistories = mrLines.stream()
+                    .filter(t -> t.getMeteringPoint().equals(meteringPoint))
+                    .filter(t -> !t.getIsIgnore())
+                    .filter(t -> t.getMeter() != null && t.getMeterHistory() != null)
+                    .map(t -> t.getMeterHistory())
+                    .distinct()
+                    .collect(toList());
+
                 for (String direction : Arrays.asList("1", "2")) {
                     if (direction.equals("1") && !ubLine.getIsSection1()) continue;
                     if (direction.equals("2") && !ubLine.getIsSection2()) continue;
-
-                    List<MeterHistory> meterHistories = mrLines.stream()
-                        .filter(t -> t.getMeteringPoint().equals(meteringPoint))
-                        .filter(t -> !t.getIsIgnore())
-                        .filter(t -> t.getMeter() != null && t.getMeterHistory() != null)
-                        .map(t -> t.getMeterHistory())
-                        .distinct()
-                        .collect(toList());
-
-                    Double workHours = WorkingHoursExpression.builder()
-                        .objectType("mp")
-                        .objectId(meteringPoint.getId())
-                        .service(workingHoursService)
-                        .context(context)
-                        .build()
-                        .doubleValue();
-
-                    MeteringPoint inputMp = balanceSubstResultULineRepo.findAllByHeaderId(header.getId())
-                        .stream()
-                        .filter(t -> t.getMeteringPoint().getVoltageClass().equals(meteringPoint.getVoltageClass()))
-                        .map(t -> t.getMeteringPoint())
-                        .findFirst()
-                        .orElse(meteringPoint);
-
-                    Double uAvg = UavgExpression.builder()
-                        .meteringPointCode(inputMp.getCode())
-                        .def(inputMp.getVoltageClass().getValue() / 1000d)
-                        .context(context)
-                        .service(resultUavgService)
-                        .build()
-                        .doubleValue();
 
                     for (MeterHistory meterHistory : meterHistories) {
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
