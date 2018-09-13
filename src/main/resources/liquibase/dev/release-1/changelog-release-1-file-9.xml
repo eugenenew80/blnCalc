@@ -5292,4 +5292,13 @@
         <dropNotNullConstraint schemaName="apps" tableName="calc_balance_result_u_lines" columnName="ti_num" />
     </changeSet>
 
+    <changeSet id="calc-eug-856" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps" tableName="calc_service_values_reconciliations">
+            <column name="data_type_code" type="varchar2(20)" remarks="Статус данных" defaultValue="OPER">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

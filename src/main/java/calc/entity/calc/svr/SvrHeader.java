@@ -5,6 +5,7 @@ import calc.entity.calc.ContractKeg;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -62,6 +63,10 @@ public class SvrHeader {
     @Column(name = "is_active")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isActive;
+
+    @Column(name="data_type_code")
+    @Enumerated(EnumType.STRING)
+    private DataTypeEnum dataType;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;

@@ -2,6 +2,7 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.svr.SvrHeader;
 import calc.entity.calc.svr.SvrLine;
 import calc.formula.CalcContext;
@@ -101,6 +102,8 @@ public class SvrService {
             }
 
             header.setLastUpdateDate(LocalDateTime.now());
+            header.setIsActive(false);
+            header.setDataType(DataTypeEnum.OPER);
             updateStatus(header, BatchStatusEnum.C);
 
             logger.info("Metering reading for header " + header.getId() + " completed");
