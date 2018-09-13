@@ -93,7 +93,7 @@ public class BalanceSubstService {
 
                         for (BalanceSubstLineTranslate lineTranslate : line.getTranslates()) {
                             BalanceSubstResultLineTranslate resultLineTranslate = new BalanceSubstResultLineTranslate();
-                            resultLineTranslate.setLang(LangEnum.RU);
+                            resultLineTranslate.setLang(lineTranslate.getLang());
                             resultLineTranslate.setLine(resultLine);
                             resultLineTranslate.setName(lineTranslate.getName());
                             resultLine.getTranslates().add(resultLineTranslate);
