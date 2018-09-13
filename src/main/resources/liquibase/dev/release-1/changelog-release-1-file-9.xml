@@ -5301,4 +5301,74 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-eug-857" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_asp1_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_asp1_headers">
+            <column name="contract_id" type="number" remarks="Идентификатор договора">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-858" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_headers</comment>
+        <createIndex indexName="idx_calc_asp1_headers_5"
+                 schemaName="apps"
+                 tableName="calc_asp1_headers"
+                 unique="false">
+            <column name="contract_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-859" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_headers to cm_doc_keg_cte</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_headers"
+                baseColumnNames="contract_id"
+                constraintName="fk_calc_asp1_headers_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_keg_cte"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-860" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_asp1_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_asp1_result_headers">
+            <column name="contract_id" type="number" remarks="Идентификатор договора">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-861" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_result_headers</comment>
+        <createIndex indexName="idx_calc_asp1_result_headers_7"
+                 schemaName="apps"
+                 tableName="calc_asp1_result_headers"
+                 unique="false">
+            <column name="contract_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-862" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_asp1_result_headers to cm_doc_keg_cte</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_asp1_result_headers"
+                baseColumnNames="contract_id"
+                constraintName="fk_calc_asp1_result_headers_8"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_keg_cte"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
