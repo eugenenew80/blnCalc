@@ -33,12 +33,14 @@ public class MessageServiceImpl implements MessageService {
         mapErrors.put("PE_SNOM_NOT_FOUND",          new MessageError("PE_SNOM_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение snom"));
         mapErrors.put("PE_UNOMH_NOT_FOUND",         new MessageError("PE_UNOMH_NOT_FOUND",         MessageTypeEnum.W,"Не задано значение unomh"));
         mapErrors.put("PE_UAVG_NOT_FOUND",          new MessageError("PE_UAVG_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение uavg"));
-
         mapErrors.put("MR_METER_NOT_FOUND",         new MessageError("MR_METER_NOT_FOUND",         MessageTypeEnum.W,"Не найден счётчик для точки учёта"));
         mapErrors.put("MR_METER_HISTORY_NOT_FOUND", new MessageError("MR_METER_HISTORY_NOT_FOUND", MessageTypeEnum.W,"Не задано аакт замены прибора учёта для счетчика"));
         mapErrors.put("MR_SECTION_NOT_FOUND",       new MessageError("MR_SECTION_NOT_FOUND",       MessageTypeEnum.E,"Не задан раздел для точки учёта"));
-
         mapErrors.put("UB_UAVG_NOT_FOUND",          new MessageError("UB_UAVG_NOT_FOUND",          MessageTypeEnum.E,"Не задан класс напряжения для точки учёта"));
+        mapErrors.put("BS_MP_SECTION1_NOT_FOUND",   new MessageError("BS_MP_SECTION1_NOT_FOUND",   MessageTypeEnum.W,"Не задан точка уч1та для итогов по разделу 1 баланса"));
+        mapErrors.put("BS_MP_SECTION2_NOT_FOUND",   new MessageError("BS_MP_SECTION2_NOT_FOUND",   MessageTypeEnum.W,"Не задан точка уч1та для итогов по разделу 2 баланса"));
+        mapErrors.put("BS_MP_SECTION3_NOT_FOUND",   new MessageError("BS_MP_SECTION3_NOT_FOUND",   MessageTypeEnum.W,"Не задан точка уч1та для итогов по разделу 3 баланса"));
+        mapErrors.put("BS_MP_SECTION4_NOT_FOUND",   new MessageError("BS_MP_SECTION4_NOT_FOUND",   MessageTypeEnum.W,"Не задан точка уч1та для итогов по разделу 4 баланса"));
     }
 
     @Override

@@ -62,4 +62,16 @@ public class SvrHeader {
     @Column(name = "is_active")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isActive;
+
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @Column(name = "last_update_date")
+    private LocalDateTime lastUpdateDate;
+
+    @Column(name = "create_by")
+    private Long createBy;
+
+    @Column(name = "last_update_by")
+    private Long lastUpdateBy;
 }

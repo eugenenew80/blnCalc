@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 @SuppressWarnings("ALL")
@@ -97,6 +99,8 @@ public class SvrService {
                 resultLines.add(line);
                 saveLines(resultLines);
             }
+
+            header.setLastUpdateDate(LocalDateTime.now());
             updateStatus(header, BatchStatusEnum.C);
 
             logger.info("Metering reading for header " + header.getId() + " completed");
