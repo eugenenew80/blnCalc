@@ -5287,4 +5287,9 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-855" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping not null constraint from table: calc_balance_result_u_lines</comment>
+        <dropNotNullConstraint schemaName="apps" tableName="calc_balance_result_u_lines" columnName="ti_num" />
+    </changeSet>
+
 </databaseChangeLog>
