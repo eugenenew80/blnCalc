@@ -77,9 +77,15 @@ public class BalanceSubstMrService {
                     if (t.getMeterHistory() == null)
                         messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_HISTORY_NOT_FOUND");
 
+                    String section = getSection(mrLine);
+                    if (section == null) {
+                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_SECTION_NOT_FOUND");
+                        continue;
+                    }
+
                     line.setHeader(header);
                     line.setMeteringPoint(mrLine.getMeteringPoint());
-                    line.setSection(getSection(mrLine));
+                    line.setSection(section);
                     line.setBypassMeteringPoint(t.getBypassMeteringPoint());
                     line.setBypassMode(t.getBypassMode());
                     line.setIsBypassSection(t.getIsBypassSection());

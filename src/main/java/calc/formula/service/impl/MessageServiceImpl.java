@@ -27,14 +27,16 @@ public class MessageServiceImpl implements MessageService {
 
     @PostConstruct
     public void init() {
-        mapErrors.put("PE_INPUT_NOT_FOUND",      new MessageError("PE_INPUT_NOT_FOUND",      MessageTypeEnum.W,"Не задана точка учёта на вводах"));
-        mapErrors.put("UNOM_NOT_FOUND",          new MessageError("UNOM_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение unom"));
-        mapErrors.put("WN_NOT_FOUND",            new MessageError("WN_NOT_FOUND",            MessageTypeEnum.W,"Не количество обмоток в трансформаторе"));
-        mapErrors.put("SNOM_NOT_FOUND",          new MessageError("SNOM_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение snom"));
-        mapErrors.put("UNOMH_NOT_FOUND",         new MessageError("UNOMH_NOT_FOUND",         MessageTypeEnum.W,"Не задано значение unomh"));
-        mapErrors.put("UAVG_NOT_FOUND",          new MessageError("UAVG_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение uavg"));
-        mapErrors.put("METER_NOT_FOUND",         new MessageError("METER_NOT_FOUND",         MessageTypeEnum.W,"Не найден счётчик для точки учёта"));
-        mapErrors.put("METER_HISTORY_NOT_FOUND", new MessageError("METER_HISTORY_NOT_FOUND", MessageTypeEnum.W,"Не задано аакт замены прибора учёта для счетчика"));
+        mapErrors.put("PE_INPUT_NOT_FOUND",         new MessageError("PE_INPUT_NOT_FOUND",         MessageTypeEnum.W,"Не задана точка учёта на вводах"));
+        mapErrors.put("PE_UNOM_NOT_FOUND",          new MessageError("PE_UNOM_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение unom"));
+        mapErrors.put("PE_WN_NOT_FOUND",            new MessageError("PE_WN_NOT_FOUND",            MessageTypeEnum.W,"Не количество обмоток в трансформаторе"));
+        mapErrors.put("PE_SNOM_NOT_FOUND",          new MessageError("PE_SNOM_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение snom"));
+        mapErrors.put("PE_UNOMH_NOT_FOUND",         new MessageError("PE_UNOMH_NOT_FOUND",         MessageTypeEnum.W,"Не задано значение unomh"));
+        mapErrors.put("PE_UAVG_NOT_FOUND",          new MessageError("PE_UAVG_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение uavg"));
+
+        mapErrors.put("MR_METER_NOT_FOUND",         new MessageError("MR_METER_NOT_FOUND",         MessageTypeEnum.W,"Не найден счётчик для точки учёта"));
+        mapErrors.put("MR_METER_HISTORY_NOT_FOUND", new MessageError("MR_METER_HISTORY_NOT_FOUND", MessageTypeEnum.W,"Не задано аакт замены прибора учёта для счетчика"));
+        mapErrors.put("MR_SECTION_NOT_FOUND",       new MessageError("MR_SECTION_NOT_FOUND",       MessageTypeEnum.E,"Не задан раздел для точки учёта"));
     }
 
     @Override

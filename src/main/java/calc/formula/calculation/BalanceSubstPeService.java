@@ -95,7 +95,7 @@ public class BalanceSubstPeService {
                     .doubleValue();
 
                 if (uNom == 0) {
-                    messageService.addMessage(header, peLine.getId(), docCode, "UNOM_NOT_FOUND");
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_UNOM_NOT_FOUND");
                     continue;
                 }
 
@@ -123,7 +123,7 @@ public class BalanceSubstPeService {
                     continue;
 
                 if (transformer.getWindingsNumber() == null) {
-                    messageService.addMessage(header, peLine.getId(), docCode, "WN_NOT_FOUND");
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_WN_NOT_FOUND");
                     continue;
                 }
 
@@ -171,17 +171,17 @@ public class BalanceSubstPeService {
                     .doubleValue();
 
                 if (sNom  == 0) {
-                    messageService.addMessage(header, peLine.getId(), docCode, "SNOM_NOT_FOUND");
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_SNOM_NOT_FOUND");
                     continue;
                 }
 
                 if (uNomH == 0) {
-                    messageService.addMessage(header, peLine.getId(), docCode, "UNOMH_NOT_FOUND");
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_UNOMH_NOT_FOUND");
                     continue;
                 }
 
                 if (uAvg  == 0) {
-                    messageService.addMessage(header, peLine.getId(), docCode, "UAVG_NOT_FOUND");
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_UAVG_NOT_FOUND");
                     continue;
                 }
 
