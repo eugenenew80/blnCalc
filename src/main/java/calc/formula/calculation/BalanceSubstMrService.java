@@ -78,7 +78,7 @@ public class BalanceSubstMrService {
                         messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_HISTORY_NOT_FOUND");
 
                     String section = getSection(mrLine);
-                    if (section == null) {
+                    if (section == null || section.equals("")) {
                         messageService.addMessage(header, mrLine.getId(), docCode, "MR_SECTION_NOT_FOUND");
                         continue;
                     }
