@@ -5632,4 +5632,343 @@
         </insert>
         <rollback/>
     </changeSet>
+
+    <changeSet id="calc-eug-881" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_bs_result_notes</comment>
+        <createTable tableName="calc_bs_result_notes" schemaName="apps" remarks="Примечания к балансу по подстанции - результат расчёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bs_result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="note_order" type="number" remarks="Порядок вывода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-882" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_bs_result_notes</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bs_result_notes"
+                schemaName="apps"
+                tableName="calc_bs_result_notes"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-883" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_bs_result_notes</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bs_result_notes_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-884" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_asp1_result_notes</comment>
+        <createIndex indexName="idx_calc_bs_result_notes_1"
+                     schemaName="apps"
+                     tableName="calc_bs_result_notes"
+                     unique="false">
+            <column name="bs_result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-885" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_notes to calc_bs_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_notes"
+                baseColumnNames="bs_result_header_id"
+                constraintName="fk_calc_bs_result_notes_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-886" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_bs_result_notes_tl</comment>
+        <createTable tableName="calc_bs_result_notes_tl" schemaName="apps" remarks="Перевод - к балансу по подстанции для результата расчета">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bs_result_note_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-887" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_bs_result_notes_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bs_result_notes_tl"
+                schemaName="apps"
+                tableName="calc_bs_result_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-888" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_bs_result_notes_tl</comment>
+        <addUniqueConstraint
+                columnNames="bs_result_note_id, lang"
+                constraintName="uk_calc_bs_result_notes_tl_1"
+                schemaName="apps"
+                tableName="calc_bs_result_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-889" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_bs_result_notes_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bs_result_notes_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-890" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_bs_result_notes_tl</comment>
+        <createIndex indexName="idx_calc_bs_result_notes_tl_1" schemaName="apps" tableName="calc_bs_result_notes_tl">
+            <column name="bs_result_note_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-891" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_notes_tl to calc_bs_result_notes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_notes_tl"
+                baseColumnNames="bs_result_note_id"
+                constraintName="fk_calc_bs_result_notes_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_notes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+
+    <changeSet id="calc-eug-892" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_bs_result_mr_notes</comment>
+        <createTable tableName="calc_bs_result_mr_notes" schemaName="apps" remarks="Примечания к акту съема показаний для результат расчёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bs_result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="note_order" type="number" remarks="Порядок вывода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-893" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_bs_result_mr_notes</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bs_result_mr_notes"
+                schemaName="apps"
+                tableName="calc_bs_result_mr_notes"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-894" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_bs_result_mr_notes</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bs_result_mr_notes_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-895" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_mr_notes</comment>
+        <createIndex indexName="idx_calc_bs_result_mr_notes_1"
+                     schemaName="apps"
+                     tableName="calc_bs_result_mr_notes"
+                     unique="false">
+            <column name="bs_result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-896" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_mr_notes to calc_bs_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_mr_notes"
+                baseColumnNames="bs_result_header_id"
+                constraintName="fk_calc_bs_result_mr_notes_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-897" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_bs_result_mr_notes_tl</comment>
+        <createTable tableName="calc_bs_result_mr_notes_tl" schemaName="apps" remarks="Перевод - примечания к акту съема показаний по подстанции для результата расчета">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bs_result_mr_note_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-898" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_bs_result_mr_notes_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bs_result_mr_notes_tl"
+                schemaName="apps"
+                tableName="calc_bs_result_mr_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-899" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_bs_result_mr_notes_tl</comment>
+        <addUniqueConstraint
+                columnNames="bs_result_mr_note_id, lang"
+                constraintName="uk_calc_bs_result_mr_notes_tl_1"
+                schemaName="apps"
+                tableName="calc_bs_result_mr_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-900" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_bs_result_mr_notes_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bs_result_mr_notes_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-901" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_bs_result_mr_notes_tl</comment>
+        <createIndex indexName="idx_calc_bs_result_mr_notes_tl_1" schemaName="apps" tableName="calc_bs_result_mr_notes_tl">
+            <column name="bs_result_mr_note_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-902" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_mr_notes_tl to calc_bs_result_mr_notes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_mr_notes_tl"
+                baseColumnNames="bs_result_mr_note_id"
+                constraintName="fk_calc_bs_result_mr_notes_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_mr_notes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>

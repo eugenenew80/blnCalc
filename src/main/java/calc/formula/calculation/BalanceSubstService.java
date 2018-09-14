@@ -31,6 +31,7 @@ public class BalanceSubstService {
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
     private final ParameterRepo parameterRepo;
     private final BsResultMrService mrService;
+    //private final Balac aspResultNoteRepo;
     private final MessageService messageService;
     private static final String docCode = "BALANCE";
     private Map<String, Parameter> mapParams = null;
