@@ -59,4 +59,13 @@
                                tableName="calc_asp1_lines_tl"/>
         <rollback/>
     </changeSet>
+
+    <changeSet id="calc-rus-313" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>change default value calc_formula_var_det</comment>
+        <addDefaultValue columnDataType="varchar2"
+                         columnName="param_type"
+                         defaultValue="PT"
+                         schemaName="apps"
+                         tableName="calc_formula_var_det"/>
+    </changeSet>
 </databaseChangeLog>
