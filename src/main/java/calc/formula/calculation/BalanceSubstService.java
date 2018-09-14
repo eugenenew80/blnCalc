@@ -4,13 +4,13 @@ import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
-import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.MrExpression;
 import calc.formula.service.BsResultMrService;
 import calc.formula.service.MessageService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultLineRepo;
+import calc.repo.calc.BalanceSubstResultNoteRepo;
 import calc.repo.calc.ParameterRepo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class BalanceSubstService {
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
     private final ParameterRepo parameterRepo;
     private final BsResultMrService mrService;
-    //private final Balac aspResultNoteRepo;
+    private final BalanceSubstResultNoteRepo balanceSubstResultNoteRepo;
     private final MessageService messageService;
     private static final String docCode = "BALANCE";
     private Map<String, Parameter> mapParams = null;
@@ -107,6 +107,7 @@ public class BalanceSubstService {
             }
 
             balanceSubstResultLineRepo.save(resultLines);
+            copyNotes(header);
 
             Double total1 = resultLines.stream()
                 .filter(t -> t.getSection().equals("1"))
@@ -177,12 +178,44 @@ public class BalanceSubstService {
             .doubleValue();
     }
 
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void copyNotes(BalanceSubstResultHeader header) {
+        List<BalanceSubstResultNote> resultNotes = new ArrayList<>();
+        for (BalanceSubstNote note : header.getHeader().getNotes()) {
+            BalanceSubstResultNote resultNote = new BalanceSubstResultNote();
+            resultNote.setHeader(header);
+            resultNote.setMeteringPoint(note.getMeteringPoint());
+            resultNote.setLineNum(note.getLineNum());
+
+            if (resultNote.getTranslates() == null)
+                resultNote.setTranslates(new ArrayList<>());
+
+            for (BalanceSubstNoteTranslate noteTranslate : note.getTranslates()) {
+                BalanceSubstResultNoteTranslate resultNoteTranslate = new BalanceSubstResultNoteTranslate();
+                resultNoteTranslate.setNote(resultNote);
+                resultNoteTranslate.setLang(noteTranslate.getLang());
+                resultNoteTranslate.setNoteText(noteTranslate.getNoteText());
+                resultNote.getTranslates().add(resultNoteTranslate);
+            }
+            resultNotes.add(resultNote);
+        }
+        balanceSubstResultNoteRepo.save(resultNotes);
+        balanceSubstResultNoteRepo.flush();
+    }
+
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultLine> lines = balanceSubstResultLineRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultLineRepo.delete(lines.get(i));
         balanceSubstResultLineRepo.flush();
+
+        List<BalanceSubstResultNote> notes = balanceSubstResultNoteRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<notes.size(); i++)
+            balanceSubstResultNoteRepo.delete(notes.get(i));
+        balanceSubstResultNoteRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -18,12 +18,12 @@ public class BalanceSubstMrNoteTranslate {
 
     @ManyToOne
     @JoinColumn(name = "balance_subst_mr_note_id")
-    private BalanceSubstLine line;
+    private BalanceSubstMrNote note;
 
     @Column(name="lang")
     @Enumerated(EnumType.STRING)
     private LangEnum lang;
 
     @Column(name = "note")
-    private String note;
+    private String noteText;
 }

@@ -3,6 +3,7 @@ package calc.entity.calc.bs;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
 import calc.entity.calc.Substation;
+import calc.entity.calc.asp.AspNote;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -62,4 +63,10 @@ public class BalanceSubstHeader {
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<BalanceSubstPeLine> peLines;
+
+    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
+    private List<BalanceSubstNote> notes;
+
+    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
+    private List<BalanceSubstMrNote> mrNotes;
 }

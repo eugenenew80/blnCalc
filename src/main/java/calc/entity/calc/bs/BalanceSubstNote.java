@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -25,4 +26,7 @@ public class BalanceSubstNote {
 
     @Column(name = "note_order")
     private Long lineNum;
+
+    @OneToMany(mappedBy = "note", fetch = FetchType.EAGER)
+    private List<BalanceSubstNoteTranslate> translates;
 }

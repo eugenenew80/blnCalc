@@ -27,5 +27,5 @@ public class BalanceSubstResultNoteTranslate {
     private LangEnum lang;
 
     @Column(name = "note")
-    private String text;
+    private String noteText;
 }

@@ -21,7 +21,7 @@ public class BalanceSubstResultNote {
 
     @ManyToOne
     @JoinColumn(name = "bs_result_header_id")
-    private BalanceSubstHeader header;
+    private BalanceSubstResultHeader header;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id")

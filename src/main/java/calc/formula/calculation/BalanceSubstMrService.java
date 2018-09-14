@@ -1,9 +1,7 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
-import calc.entity.calc.bs.BalanceSubstMrLine;
-import calc.entity.calc.bs.BalanceSubstResultHeader;
-import calc.entity.calc.bs.BalanceSubstResultMrLine;
+import calc.entity.calc.bs.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
 import calc.formula.service.MessageService;
@@ -28,6 +26,7 @@ public class BalanceSubstMrService {
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final MrService mrService;
     private final ParameterRepo parameterRepo;
+    private final BalanceSubstResultMrNoteRepo balanceSubstResultMrNoteRepo;
     private final MessageService messageService;
     private static final String docCode = "ACT";
     private Map<String, Parameter> mapParams = null;
@@ -108,6 +107,7 @@ public class BalanceSubstMrService {
             }
 
             saveLines(resultLines);
+            copyNotes(header);
             updateStatus(header, BatchStatusEnum.C);
 
             logger.info("Metering reading for header " + header.getId() + " completed");
@@ -124,6 +124,31 @@ public class BalanceSubstMrService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void copyNotes(BalanceSubstResultHeader header) {
+        List<BalanceSubstResultMrNote> resultNotes = new ArrayList<>();
+        for (BalanceSubstMrNote note : header.getHeader().getMrNotes()) {
+            BalanceSubstResultMrNote resultNote = new BalanceSubstResultMrNote();
+            resultNote.setHeader(header);
+            resultNote.setMeteringPoint(note.getMeteringPoint());
+            resultNote.setLineNum(note.getLineNum());
+
+            if (resultNote.getTranslates() == null)
+                resultNote.setTranslates(new ArrayList<>());
+
+            for (BalanceSubstMrNoteTranslate noteTranslate : note.getTranslates()) {
+                BalanceSubstResultMrNoteTranslate resultNoteTranslate = new BalanceSubstResultMrNoteTranslate();
+                resultNoteTranslate.setNote(resultNote);
+                resultNoteTranslate.setLang(noteTranslate.getLang());
+                resultNoteTranslate.setNoteText(noteTranslate.getNoteText());
+                resultNote.getTranslates().add(resultNoteTranslate);
+            }
+            resultNotes.add(resultNote);
+        }
+        balanceSubstResultMrNoteRepo.save(resultNotes);
+        balanceSubstResultMrNoteRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void saveLines(List<BalanceSubstResultMrLine> resultLines) {
         balanceSubstResultMrLineRepo.save(resultLines);
         balanceSubstResultMrLineRepo.flush();
@@ -135,6 +160,11 @@ public class BalanceSubstMrService {
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultMrLineRepo.delete(lines.get(i));
         balanceSubstResultMrLineRepo.flush();
+
+        List<BalanceSubstResultMrNote> notes = balanceSubstResultMrNoteRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<notes.size(); i++)
+            balanceSubstResultMrNoteRepo.delete(notes.get(i));
+        balanceSubstResultMrNoteRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
