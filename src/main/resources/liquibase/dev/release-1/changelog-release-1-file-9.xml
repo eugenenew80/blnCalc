@@ -5371,4 +5371,58 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-863" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_balance_subst_headers">
+            <column name="loss_fact_metering_point_id" type="number" remarks="Идентификатор точки учёта для фактическоих потерь">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-864" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_headers"
+                baseColumnNames="loss_fact_metering_point_id"
+                constraintName="fk_calc_balance_subst_headers_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-865" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_bs_result_headers">
+            <column name="loss_fact_metering_point_id" type="number" remarks="Идентификатор точки учёта для фактическоих потерь">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="loss_fact" type="number" remarks="Фактические потери на ПС">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-866" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_headers"
+                baseColumnNames="loss_fact_metering_point_id"
+                constraintName="fk_calc_bs_result_headers_11"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>

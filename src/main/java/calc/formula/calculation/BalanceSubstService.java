@@ -111,25 +111,27 @@ public class BalanceSubstService {
                 .filter(t -> t.getSection().equals("1"))
                 .map(t -> t.getVal())
                 .reduce((t1, t2) -> Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
-                .orElse(null);
+                .orElse(0d);
 
             Double total2 = resultLines.stream()
                 .filter(t -> t.getSection().equals("2"))
                 .map(t -> t.getVal())
                 .reduce((t1, t2) -> Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
-                .orElse(null);
+                .orElse(0d);
 
             Double total3 = resultLines.stream()
                 .filter(t -> t.getSection().equals("3"))
                 .map(t -> t.getVal())
                 .reduce((t1, t2) -> Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
-                .orElse(null);
+                .orElse(0d);
 
             Double total4 = resultLines.stream()
                 .filter(t -> t.getSection().equals("4"))
                 .map(t -> t.getVal())
                 .reduce((t1, t2) -> Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
-                .orElse(null);
+                .orElse(0d);
+
+            Double lossFact = total1 - total2 - total3 - total4;
 
             if (header.getHeader().getMeteringPoint1() ==null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION1_NOT_FOUND");
             if (header.getHeader().getMeteringPoint2() ==null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION2_NOT_FOUND");
@@ -143,10 +145,12 @@ public class BalanceSubstService {
             header.setMeteringPoint2(header.getHeader().getMeteringPoint2());
             header.setMeteringPoint3(header.getHeader().getMeteringPoint3());
             header.setMeteringPoint4(header.getHeader().getMeteringPoint4());
+            header.setLossFactMeteringPoint(header.getHeader().getLossFactMeteringPoint());
             header.setTotal1(total1);
             header.setTotal2(total2);
             header.setTotal3(total3);
             header.setTotal4(total4);
+            header.setLossFact(lossFact);
 
             updateStatus(header, BatchStatusEnum.C);
             return true;

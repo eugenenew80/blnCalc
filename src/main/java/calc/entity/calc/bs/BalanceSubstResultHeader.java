@@ -73,6 +73,10 @@ public class BalanceSubstResultHeader {
     @JoinColumn(name = "section4_metering_point_id")
     private MeteringPoint meteringPoint4;
 
+    @ManyToOne
+    @JoinColumn(name = "loss_fact_metering_point_id")
+    private MeteringPoint lossFactMeteringPoint;
+
     @Column(name = "section1_total")
     private Double total1;
 
@@ -84,6 +88,9 @@ public class BalanceSubstResultHeader {
 
     @Column(name = "section4_total")
     private Double total4;
+
+    @Column(name = "loss_fact")
+    private Double lossFact;
 
     @Column(name = "is_active")
     @Convert(converter = BooleanToIntConverter.class)
