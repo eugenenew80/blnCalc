@@ -5432,4 +5432,204 @@
         </dropColumn>
         <rollback />
     </changeSet>
+
+    <changeSet id="calc-eug-868" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_activation_history</comment>
+        <createTable tableName="calc_activation_history" schemaName="apps" remarks="История активации / деактивации документов">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="source" type="varchar2(30)" remarks="Код документа-источника данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="source_id" type="number" remarks="Идентификатор заголовка документа-источника данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="activation_type_code" type="varchar2(20)" remarks="Код действия связанного с активацией / деактивацией">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-869" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_activation_history</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_activation_history"
+                schemaName="apps"
+                tableName="calc_activation_history"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-870" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_activation_history</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_activation_history_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-871" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_data_types</comment>
+        <createTable tableName="calc_activation_types" schemaName="apps" remarks="Коды активации / деактивации">
+            <column name="code" type="varchar2(20)" remarks="Код статуса данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-872" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_activation_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_activation_typess"
+                schemaName="apps"
+                tableName="calc_activation_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-873" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_activation_types_tl</comment>
+        <createTable tableName="calc_activation_types_tl" schemaName="apps" remarks="Коды активации / деактивации - перевод">
+            <column name="code" type="varchar2(20)" remarks="Код активации / деактивации">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование статуса данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-874" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_activation_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_activation_types_tl"
+                schemaName="apps"
+                tableName="calc_activation_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-875" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_activation_types_tl to calc_activation_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_activation_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_activation_types_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_activation_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-876" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_activation_history to calc_activation_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_activation_history"
+                baseColumnNames="activation_type_code"
+                constraintName="fk_calc_activation_history_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_activation_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-877" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_activation_types</comment>
+        <insert tableName="calc_activation_types" schemaName="apps">
+            <column name="code" value="ACTIVATE" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-878" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_activation_types</comment>
+        <insert tableName="calc_activation_types" schemaName="apps">
+            <column name="code" value="DEACTIVATE" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-879" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_activation_types_tl</comment>
+        <insert tableName="calc_activation_types_tl" schemaName="apps">
+            <column name="code" value="ACTIVATE" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Активировать" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-880" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_activation_types_tl</comment>
+        <insert tableName="calc_activation_types_tl" schemaName="apps">
+            <column name="code" value="DEACTIVATE" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Деактивировать" />
+        </insert>
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
