@@ -5425,4 +5425,11 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-867" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: calc_bs_result_headers</comment>
+        <dropColumn tableName="calc_bs_result_headers" schemaName="apps">
+            <column name="section5_total" />
+        </dropColumn>
+        <rollback />
+    </changeSet>
 </databaseChangeLog>
