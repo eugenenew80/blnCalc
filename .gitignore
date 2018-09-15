@@ -1,6 +1,6 @@
 .classpath
 .project
-blnCalc.iml
+bln-calc.iml
 .settings/
 .idea/
 target/
