@@ -3,7 +3,6 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.bs.mr.*;
-import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
@@ -19,12 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstMrService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstMrService.class);
-    private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final MrService mrService;
     private final ParamService paramService;
@@ -53,8 +50,6 @@ public class BalanceSubstMrService {
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
-
-            deleteLines(header);
 
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
@@ -99,6 +94,7 @@ public class BalanceSubstMrService {
                 }
             }
 
+            deleteLines(header);
             saveLines(resultLines);
             copyNotes(header);
 
@@ -112,6 +108,26 @@ public class BalanceSubstMrService {
             e.printStackTrace();
             return false;
         }
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void saveLines(List<BalanceSubstResultMrLine> resultLines) {
+        balanceSubstResultMrLineRepo.save(resultLines);
+        balanceSubstResultMrLineRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void deleteLines(BalanceSubstResultHeader header) {
+        List<BalanceSubstResultMrLine> lines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<lines.size(); i++)
+            balanceSubstResultMrLineRepo.delete(lines.get(i));
+        balanceSubstResultMrLineRepo.flush();
+
+        List<BalanceSubstResultMrNote> notes = balanceSubstResultMrNoteRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<notes.size(); i++)
+            balanceSubstResultMrNoteRepo.delete(notes.get(i));
+        balanceSubstResultMrNoteRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -136,25 +152,6 @@ public class BalanceSubstMrService {
             resultNotes.add(resultNote);
         }
         balanceSubstResultMrNoteRepo.save(resultNotes);
-        balanceSubstResultMrNoteRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveLines(List<BalanceSubstResultMrLine> resultLines) {
-        balanceSubstResultMrLineRepo.save(resultLines);
-        balanceSubstResultMrLineRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteLines(BalanceSubstResultHeader header) {
-        List<BalanceSubstResultMrLine> lines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            balanceSubstResultMrLineRepo.delete(lines.get(i));
-        balanceSubstResultMrLineRepo.flush();
-
-        List<BalanceSubstResultMrNote> notes = balanceSubstResultMrNoteRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<notes.size(); i++)
-            balanceSubstResultMrNoteRepo.delete(notes.get(i));
         balanceSubstResultMrNoteRepo.flush();
     }
 

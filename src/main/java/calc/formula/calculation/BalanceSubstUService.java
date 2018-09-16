@@ -4,7 +4,6 @@ import calc.entity.calc.*;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.u.BalanceSubstResultULine;
 import calc.entity.calc.bs.u.BalanceSubstULine;
-import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
@@ -25,12 +24,11 @@ import java.util.*;
 @RequiredArgsConstructor
 public class BalanceSubstUService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstUService.class);
-    private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
-    private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private final ParamService paramService;
     private final PeriodTimeValueService periodTimeValueService;
     private final MessageService messageService;
-    private static final String docCode = "UAVG";
+    private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
+    private static final String docCode = "U_AVG";
 
     public boolean calc(BalanceSubstResultHeader header)  {
         try {
@@ -48,21 +46,25 @@ public class BalanceSubstUService {
                 .values(new HashMap<>())
                 .build();
 
-            deleteLines(header);
             Parameter parU = paramService.getValues().get("U");
 
             List<BalanceSubstResultULine> resultLines = new ArrayList<>();
             List<BalanceSubstULine> uLines = header.getHeader().getULines();
             for (BalanceSubstULine uLine : uLines) {
-                BalanceSubstResultULine resultLine = calcLine(uLine.getMeteringPoint(), parU, context);
+                Double val = getVal(uLine.getMeteringPoint(), parU, context);
+
+                BalanceSubstResultULine resultLine = new BalanceSubstResultULine();
                 resultLine.setHeader(header);
                 resultLine.setMeteringPoint(uLine.getMeteringPoint());
                 resultLine.setTiNum(uLine.getTiNum());
                 resultLine.setTiName(uLine.getTiName());
+                resultLine.setVal(val);
                 resultLines.add(resultLine);
             }
 
-            balanceSubstResultULineRepo.save(resultLines);
+            deleteLines(header);
+            saveLines(resultLines);
+
             logger.info("U avg for balance with headerId " + header.getId() + " completed");
             return true;
         }
@@ -76,6 +78,11 @@ public class BalanceSubstUService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void saveLines(List<BalanceSubstResultULine> resultLines) {
+        balanceSubstResultULineRepo.save(resultLines);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultULine> lines = balanceSubstResultULineRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
@@ -83,39 +90,31 @@ public class BalanceSubstUService {
         balanceSubstResultULineRepo.flush();
     }
 
-    private BalanceSubstResultULine calcLine(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
-        BalanceSubstResultULine line = new BalanceSubstResultULine();
-        try {
-            DoubleExpression expression = PeriodTimeValueExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(parameter.getCode())
-                .rate(1d)
-                .startHour((byte) 0)
-                .endHour((byte) 23)
-                .periodType(PeriodTypeEnum.H)
-                .context(context)
-                .service(periodTimeValueService)
-                .build();
+    private Double getVal(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
+        DoubleExpression expression = PeriodTimeValueExpression.builder()
+            .meteringPointCode(meteringPoint.getCode())
+            .parameterCode(parameter.getCode())
+            .rate(1d)
+            .startHour((byte) 0)
+            .endHour((byte) 23)
+            .periodType(PeriodTypeEnum.H)
+            .context(context)
+            .service(periodTimeValueService)
+            .build();
 
-            Double[] values = expression.doubleValues();
-            Double sum = 0d;
-            Double count = 0d;
-            for (Double d : values) {
-                if (d != null) {
-                    sum+=d;
-                    count++;
-                }
+        Double[] values = expression.doubleValues();
+        Double sum = 0d;
+        Double count = 0d;
+        for (Double d : values) {
+            if (d != null) {
+                sum+=d;
+                count++;
             }
-            if (count != 0)
-                line.setVal(sum / count);
-            else
-                line.setVal(0d);
         }
 
-        catch (Exception e) {
-            logger.error("ERROR: " + e.toString() + ", " + e.getMessage());
-        }
-
-        return line;
+        if (count != 0)
+            return  sum / count;
+        else
+            return 0d;
     }
 }

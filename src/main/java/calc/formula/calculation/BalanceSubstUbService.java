@@ -5,7 +5,6 @@ import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.mr.BalanceSubstResultMrLine;
 import calc.entity.calc.bs.ub.BalanceSubstResultUbLine;
 import calc.entity.calc.bs.ub.BalanceSubstUbLine;
-import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.UavgExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
@@ -34,7 +33,7 @@ public class BalanceSubstUbService {
     private final BalanceSubstResultUbLineRepo balanceSubstResultUbLineRepo;
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private final WorkingHoursService workingHoursService;
-    private final BalanceSubstResultUService resultUavgService;
+    private final BalanceSubstResultUService resultUService;
     private final MessageService messageService;
     private static final String docCode = "UNBALANCE";
 
@@ -56,7 +55,6 @@ public class BalanceSubstUbService {
                 .values(new HashMap<>())
                 .build();
 
-            deleteLines(header);
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
 
             Double wSum1 = header.getHeader().getUbLines()
@@ -107,7 +105,7 @@ public class BalanceSubstUbService {
                     .meteringPointCode(inputMp.getCode())
                     .def(inputMp.getVoltageClass().getValue() / 1000d)
                     .context(context)
-                    .service(resultUavgService)
+                    .service(resultUService)
                     .build()
                     .doubleValue();
 
@@ -225,13 +223,6 @@ public class BalanceSubstUbService {
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
-            Double r2SumW = lines.stream()
-                .filter(t -> t.getDirection().equals("2"))
-                .filter(t -> t.getW() != null)
-                .map(t -> t.getW())
-                .reduce((t1, t2) -> t1 + t2)
-                .orElse(0d);
-
             Double r2SumB2D2 = lines.stream()
                 .filter(t -> t.getDirection().equals("2"))
                 .filter(t -> t.getB2dol2() != null)
@@ -245,7 +236,8 @@ public class BalanceSubstUbService {
             header.setNbdProc(nbdProc);
             header.setNbdVal(nbdVal);
 
-            balanceSubstResultUbLineRepo.save(lines);
+            deleteLines(header);
+            saveLines(lines);
             balanceSubstResultHeaderRepo.save(header);
 
             logger.info("Unbalance for balance with headerId " + header.getId() + " completed");
@@ -258,6 +250,12 @@ public class BalanceSubstUbService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void saveLines(List<BalanceSubstResultUbLine> lines) {
+        balanceSubstResultUbLineRepo.save(lines);
+        balanceSubstResultUbLineRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

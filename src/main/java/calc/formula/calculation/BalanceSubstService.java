@@ -19,14 +19,14 @@ import java.util.*;
 @RequiredArgsConstructor
 public class BalanceSubstService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstService.class);
-    private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
-    private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
-    private final MessageService messageService;
     private final BalanceSubstMrService balanceSubstMrService;
     private final BalanceSubstUbService balanceSubstUbService;
     private final BalanceSubstUService balanceSubstUService;
     private final BalanceSubstPeService balanceSubstPeService;
     private final BalanceSubstLineService balanceSubstLineService;
+    private final MessageService messageService;
+    private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
+    private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
     private static final String docCode = "BALANCE";
 
     public boolean calc(BalanceSubstResultHeader header) {
