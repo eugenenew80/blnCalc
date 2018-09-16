@@ -22,7 +22,8 @@ public class BalanceSubstService {
     private final BalanceSubstMrService balanceSubstMrService;
     private final BalanceSubstUbService balanceSubstUbService;
     private final BalanceSubstUService balanceSubstUService;
-    private final BalanceSubstPeService balanceSubstPeService;
+    private final BalanceSubstReactorService balanceSubstReactorService;
+    private final BalanceSubstTransformerService balanceSubstTransformerService;
     private final BalanceSubstLineService balanceSubstLineService;
     private final MessageService messageService;
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
@@ -54,7 +55,12 @@ public class BalanceSubstService {
                 return false;
             }
 
-            if (!balanceSubstPeService.calc(header)) {
+            if (!balanceSubstReactorService.calc(header)) {
+                updateStatus(header, BatchStatusEnum.E);
+                return false;
+            }
+
+            if (!balanceSubstTransformerService.calc(header)) {
                 updateStatus(header, BatchStatusEnum.E);
                 return false;
             }

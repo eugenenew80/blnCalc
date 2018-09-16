@@ -1,15 +1,16 @@
 package calc.formula.calculation;
 
-import calc.entity.calc.*;
-import calc.entity.calc.bs.pe.BalanceSubstPeLine;
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.PowerTransformer;
+import calc.entity.calc.Unit;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
+import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.pe.PowerTransformerValue;
-import calc.entity.calc.bs.pe.ReactorValue;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
-import calc.repo.calc.*;
+import calc.repo.calc.PowerTransformerValueRepo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,17 +21,15 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class BalanceSubstPeService {
-    private static final Logger logger = LoggerFactory.getLogger(BalanceSubstPeService.class);
+public class BalanceSubstTransformerService {
+    private static final Logger logger = LoggerFactory.getLogger(BalanceSubstTransformerService.class);
     private final WorkingHoursService workingHoursService;
     private final PowerTransformerService powerTransformerService;
-    private final ReactorService reactorService;
-    private final BalanceSubstResultUService resultUavgService;
+    private final BalanceSubstResultUService resultUService;
     private final BalanceSubstResultMrService resultMrService;
     private final CalcService calcService;
     private final MessageService messageService;
     private final ParamService paramService;
-    private final ReactorValueRepo reactorValueRepo;
     private final PowerTransformerValueRepo powerTransformerValueRepo;
     private static final String docCode = "LOSSES";
 
@@ -53,26 +52,23 @@ public class BalanceSubstPeService {
                 .values(new HashMap<>())
                 .build();
 
-            List<ReactorValue> reactorLines = calcReactorValues(header, context);
-            List<PowerTransformerValue> transformerLines = calcTransformerValues(header, context);
-
+            List<PowerTransformerValue> lines = calcLines(header, context);
             deleteLines(header);
-            saveReactorLines(reactorLines);
-            saveTransformerLines(transformerLines);
+            saveLines(lines);
 
-            logger.info("Power equipment losses for balance with headerId " + header.getId() + " completed");
+            logger.info("Transformer losses for balance with headerId " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
-            logger.error("Power equipment losses for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
+            logger.error("Transformer losses for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    private List<PowerTransformerValue> calcTransformerValues(BalanceSubstResultHeader header, CalcContext context) throws Exception  {
+    private List<PowerTransformerValue> calcLines(BalanceSubstResultHeader header, CalcContext context) throws Exception  {
         Unit unit = paramService.getValues()
             .get("WL")
             .getUnit();
@@ -127,7 +123,7 @@ public class BalanceSubstPeService {
                 .meteringPointCode(inputMp.getCode())
                 .def(inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() / 1000d : 0d)
                 .context(context)
-                .service(resultUavgService)
+                .service(resultUService)
                 .build()
                 .doubleValue();
 
@@ -268,66 +264,6 @@ public class BalanceSubstPeService {
         return transformerLines;
     }
 
-    private List<ReactorValue> calcReactorValues(BalanceSubstResultHeader header, CalcContext context) {
-        Unit unit = paramService.getValues()
-            .get("WL")
-            .getUnit();
-
-        List<ReactorValue> reactorLines = new ArrayList<>();
-        for (BalanceSubstPeLine peLine : header.getHeader().getPeLines()) {
-            Reactor reactor = peLine.getReactor();
-            if (reactor == null)
-                continue;
-
-            MeteringPoint inputMp = reactor.getInputMp();
-            if (inputMp == null) {
-                messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND");
-                continue;
-            }
-
-            Double uNom    = getReactorAttr(reactor, "unom",     context);
-            Double deltaPr = getReactorAttr(reactor, "delta_pr", context);
-
-            Double hours = WorkingHoursExpression.builder()
-                .objectType("re")
-                .objectId(reactor.getId())
-                .context(context)
-                .service(workingHoursService)
-                .build()
-                .doubleValue();
-
-            Double uAvg = UavgExpression.builder()
-                .meteringPointCode(inputMp.getCode())
-                .def(inputMp.getVoltageClass().getValue() / 1000d)
-                .context(context)
-                .service(resultUavgService)
-                .build()
-                .doubleValue();
-
-            if (uNom == 0) {
-                messageService.addMessage(header, peLine.getId(), docCode, "PE_UNOM_NOT_FOUND");
-                continue;
-            }
-
-            Double val = deltaPr * hours * Math.pow(uAvg / uNom, 2);
-            if (val !=null) val = Math.round(val * 100d) / 100d;
-
-            ReactorValue reactorLine = new ReactorValue();
-            reactorLine.setHeader(header);
-            reactorLine.setReactor(reactor);
-            reactorLine.setDeltaPr(deltaPr);
-            reactorLine.setOperatingTime(hours);
-            reactorLine.setUavg(uAvg);
-            reactorLine.setUnom(uNom);
-            reactorLine.setUnit(unit);
-            reactorLine.setVal(val);
-            reactorLine.setInputMp(inputMp);
-            reactorLine.setMeteringPointOut(peLine.getMeteringPointOut());
-            reactorLines.add(reactorLine);
-        }
-        return reactorLines;
-    }
-
     private Double getTransformerAttr(PowerTransformer transformer, String attr, CalcContext context) {
         return PowerTransformerExpression.builder()
             .id(transformer.getId())
@@ -335,17 +271,6 @@ public class BalanceSubstPeService {
             .def(0d)
             .context(context)
             .service(powerTransformerService)
-            .build()
-            .doubleValue();
-    }
-
-    private Double getReactorAttr(Reactor reactor, String attr, CalcContext context) {
-        return ReactorExpression.builder()
-            .id(reactor.getId())
-            .attr(attr)
-            .def(0d)
-            .context(context)
-            .service(reactorService)
             .build()
             .doubleValue();
     }
@@ -375,26 +300,15 @@ public class BalanceSubstPeService {
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveTransformerLines(List<PowerTransformerValue> transformerLines) {
+    void saveLines(List<PowerTransformerValue> transformerLines) {
         powerTransformerValueRepo.save(transformerLines);
         powerTransformerValueRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveReactorLines(List<ReactorValue> reactorLines) {
-        reactorValueRepo.save(reactorLines);
-        reactorValueRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void deleteLines(BalanceSubstResultHeader header) {
-        List<ReactorValue> reactorValues = reactorValueRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<reactorValues.size(); i++)
-            reactorValueRepo.delete(reactorValues.get(i));
-        reactorValueRepo.flush();
-
         List<PowerTransformerValue> transformerValues = powerTransformerValueRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<reactorValues.size(); i++)
+        for (int i=0; i<transformerValues.size(); i++)
             powerTransformerValueRepo.delete(transformerValues.get(i));
         powerTransformerValueRepo.flush();
     }
