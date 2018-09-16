@@ -24,7 +24,6 @@ public class TaskExecutor {
     private final AspService aspService;
     private final SvrService svrService;
 
-
     @Scheduled(cron = "*/30 * * * * *")
     public void run() {
         calc_bs();
@@ -36,7 +35,7 @@ public class TaskExecutor {
         List<BalanceSubstResultHeader> headers = balanceSubstResultHeaderRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
-        logger.info("Balance calculation, count of tasks: " + headers.size());
+        logger.info("BS calculation, count of tasks: " + headers.size());
         for (BalanceSubstResultHeader header : headers) {
             logger.info("Header " + header.getId() + " started");
             balanceSubstService.calc(header);
