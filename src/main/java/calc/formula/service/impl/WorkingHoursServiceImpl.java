@@ -1,7 +1,7 @@
 package calc.formula.service.impl;
 
 import calc.entity.calc.MeteringPointMode;
-import calc.entity.calc.Period;
+import calc.entity.calc.interfaces.Period;
 import calc.entity.calc.PowerTransformerMode;
 import calc.entity.calc.ReactorMode;
 import calc.formula.CalcContext;

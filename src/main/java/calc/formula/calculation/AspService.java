@@ -73,7 +73,7 @@ public class AspService {
 
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
-            deleteMessages(header, docCode);
+            deleteMessages(header);
 
             calcInfoRows(header);
             calcInRows(header, context);
@@ -297,8 +297,8 @@ public class AspService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteMessages(AspResultHeader header, String docCode) {
-        messageService.deleteMessages(header, docCode);
+    public void deleteMessages(AspResultHeader header) {
+        messageService.deleteMessages(header);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

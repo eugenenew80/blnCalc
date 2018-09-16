@@ -1,5 +1,8 @@
-package calc.entity.calc;
+package calc.entity.calc.bs.pe;
 
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Reactor;
+import calc.entity.calc.Unit;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -2,14 +2,15 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
-import calc.entity.calc.bs.BalanceSubstResultULine;
-import calc.entity.calc.bs.BalanceSubstULine;
+import calc.entity.calc.bs.u.BalanceSubstResultULine;
+import calc.entity.calc.bs.u.BalanceSubstULine;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.MessageService;
+import calc.formula.service.ParamService;
 import calc.formula.service.PeriodTimeValueService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -26,21 +27,14 @@ public class BalanceSubstUService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstUService.class);
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
-    private final ParameterRepo parameterRepo;
+    private final ParamService paramService;
     private final PeriodTimeValueService periodTimeValueService;
     private final MessageService messageService;
     private static final String docCode = "UAVG";
 
     public boolean calc(BalanceSubstResultHeader header)  {
         try {
-            logger.info("Uavg for header " + header.getId() + " started");
-            header = balanceSubstResultHeaderRepo.findOne(header.getId());
-            if (header.getStatus() == BatchStatusEnum.E)
-                return false;
-
-            updateStatus(header, BatchStatusEnum.P);
-            deleteLines(header);
-            deleteMessages(header, docCode);
+            logger.info("U avg for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
                 .startDate(header.getStartDate())
@@ -54,7 +48,8 @@ public class BalanceSubstUService {
                 .values(new HashMap<>())
                 .build();
 
-            Parameter parU = parameterRepo.findByCode("U");
+            deleteLines(header);
+            Parameter parU = paramService.getValues().get("U");
 
             List<BalanceSubstResultULine> resultLines = new ArrayList<>();
             List<BalanceSubstULine> uLines = header.getHeader().getULines();
@@ -68,16 +63,13 @@ public class BalanceSubstUService {
             }
 
             balanceSubstResultULineRepo.save(resultLines);
-            updateStatus(header, BatchStatusEnum.C);
-            logger.info("Uavg for header " + header.getId() + " completed");
+            logger.info("U avg for balance with headerId " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
-            updateStatus(header, BatchStatusEnum.E);
-            logger.error("Uavg for header " + header.getId() + " terminated with exception");
-            logger.error(e.toString() + ": " + e.getMessage());
+            logger.error("U avg for balance with headerId " + header.getId() + " terminated with exception: " +  e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -89,17 +81,6 @@ public class BalanceSubstUService {
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultULineRepo.delete(lines.get(i));
         balanceSubstResultULineRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteMessages(BalanceSubstResultHeader header, String docCode) {
-        messageService.deleteMessages(header, docCode);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
-        header.setStatus(status);
-        balanceSubstResultHeaderRepo.save(header);
     }
 
     private BalanceSubstResultULine calcLine(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {

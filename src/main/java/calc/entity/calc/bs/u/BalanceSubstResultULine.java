@@ -1,6 +1,7 @@
-package calc.entity.calc.bs;
+package calc.entity.calc.bs.u;
 
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.bs.BalanceSubstResultHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

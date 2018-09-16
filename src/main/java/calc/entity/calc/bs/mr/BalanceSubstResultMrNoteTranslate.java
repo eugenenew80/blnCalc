@@ -1,4 +1,4 @@
-package calc.entity.calc.bs;
+package calc.entity.calc.bs.mr;
 
 import calc.entity.calc.enums.LangEnum;
 import lombok.Data;

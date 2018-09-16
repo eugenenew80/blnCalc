@@ -26,7 +26,7 @@ public class CalcServiceImpl implements CalcService {
     private final ExpressionService expressionService;
     private final PeriodTimeValueService periodTimeValueService;
     private final AtTimeValueService atTimeValueService;
-    private final BsResultMrService mrService;
+    private final BalanceSubstResultMrService mrService;
     private final AspResultService aspService;
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;

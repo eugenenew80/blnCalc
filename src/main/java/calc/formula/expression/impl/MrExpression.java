@@ -1,9 +1,9 @@
 package calc.formula.expression.impl;
 
-import calc.entity.calc.bs.BalanceSubstResultMrLine;
+import calc.entity.calc.bs.mr.BalanceSubstResultMrLine;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
-import calc.formula.service.BsResultMrService;
+import calc.formula.service.BalanceSubstResultMrService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class MrExpression implements DoubleExpression {
     private final String meteringPointCode;
     private final String parameterCode;
     private final Double rate;
-    private final BsResultMrService service;
+    private final BalanceSubstResultMrService service;
     private final CalcContext context;
 
     @Override

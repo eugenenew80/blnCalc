@@ -18,10 +18,6 @@ import java.util.*;
 public class TaskExecutor {
     private static final Logger logger = LoggerFactory.getLogger(TaskExecutor.class);
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
-    private final BalanceSubstMrService balanceSubstMrService;
-    private final BalanceSubstUbService balanceSubstUbService;
-    private final BalanceSubstUService balanceSubstUService;
-    private final BalanceSubstPeService balanceSubstPeService;
     private final BalanceSubstService balanceSubstService;
     private final AspResultHeaderRepo aspResultHeaderRepo;
     private final SvrHeaderRepo svrHeaderRepo;
@@ -43,21 +39,7 @@ public class TaskExecutor {
         logger.info("Balance calculation, count of tasks: " + headers.size());
         for (BalanceSubstResultHeader header : headers) {
             logger.info("Header " + header.getId() + " started");
-            if (!balanceSubstMrService.calc(header))
-                continue;
-
-            if (!balanceSubstUbService.calc(header))
-                continue;
-
-            if (!balanceSubstUService.calc(header))
-                continue;
-
-            if (!balanceSubstPeService.calc(header))
-                continue;
-
-            if (!balanceSubstService.calc(header))
-                continue;
-
+            balanceSubstService.calc(header);
             logger.info("Header " + header.getId() + " completed");
         }
     }

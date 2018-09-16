@@ -71,11 +71,10 @@
                 <driver>oracle.jdbc.OracleDriver</driver>
                 <url>jdbc:oracle:thin:@192.168.82.33:1521:blndprod</url>
                 <username>system</username>
-                <password>${settings.servers.server.ora.password}</password>
+                <!-- <password>${settings.servers.server.ora.password}</password> -->
                 <scripts>dev</scripts>
                 <skipTests>true</skipTests>
             </properties>
-
         </profile>
     </profiles>
 

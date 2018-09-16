@@ -1,5 +1,6 @@
 package calc.entity.calc;
 
+import calc.entity.calc.interfaces.Period;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;

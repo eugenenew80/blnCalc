@@ -1,8 +1,10 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
-import calc.entity.calc.bs.BalanceSubstPeLine;
+import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
+import calc.entity.calc.bs.pe.PowerTransformerValue;
+import calc.entity.calc.bs.pe.ReactorValue;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
@@ -28,23 +30,15 @@ public class BalanceSubstPeService {
     private final WorkingHoursService workingHoursService;
     private final ReactorService reactorService;
     private final PowerTransformerService powerTransformerService;
-    private final BsResultUavgService resultUavgService;
-    private final BsResultMrService resultMrService;
+    private final BalanceSubstResultUService resultUavgService;
+    private final BalanceSubstResultMrService resultMrService;
     private final CalcService calcService;
     private final MessageService messageService;
     private static final String docCode = "LOSSES";
 
     public boolean calc(BalanceSubstResultHeader header)  {
         try {
-            logger.info("Power equipment values for header " + header.getId() + " started");
-            header = balanceSubstResultHeaderRepo.findOne(header.getId());
-            if (header.getStatus() == BatchStatusEnum.E)
-                return false;
-
-            updateStatus(header, BatchStatusEnum.P);
-            deleteReactorLines(header);
-            deleteTransformerLines(header);
-            deleteMessages(header, docCode);
+            logger.info("Power equipment losses for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
@@ -61,6 +55,7 @@ public class BalanceSubstPeService {
                 .values(new HashMap<>())
                 .build();
 
+            deleteLines(header);
             Unit unit = unitRepo.findByCode("kW.h");
 
             List<ReactorValue> reactorLines = new ArrayList<>();
@@ -307,16 +302,14 @@ public class BalanceSubstPeService {
 
             saveReactorLines(reactorLines);
             saveTransformerLines(transformerLines);
-            updateStatus(header, BatchStatusEnum.C);
 
-            logger.info("Power equipment values for header " + header.getId() + " completed");
+            logger.info("Power equipment losses for balance with headerId " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
-            updateStatus(header, BatchStatusEnum.E);
-            logger.error("Power equipment values for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
+            logger.error("Power equipment losses for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -381,29 +374,15 @@ public class BalanceSubstPeService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteReactorLines(BalanceSubstResultHeader header) {
-        List<ReactorValue> lines = reactorValueRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            reactorValueRepo.delete(lines.get(i));
+    void deleteLines(BalanceSubstResultHeader header) {
+        List<ReactorValue> reactorValues = reactorValueRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<reactorValues.size(); i++)
+            reactorValueRepo.delete(reactorValues.get(i));
         reactorValueRepo.flush();
-    }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteTransformerLines(BalanceSubstResultHeader header) {
-        List<PowerTransformerValue> lines = powerTransformerValueRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            powerTransformerValueRepo.delete(lines.get(i));
+        List<PowerTransformerValue> transformerValues = powerTransformerValueRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<reactorValues.size(); i++)
+            powerTransformerValueRepo.delete(transformerValues.get(i));
         powerTransformerValueRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteMessages(BalanceSubstResultHeader header, String docCode) {
-        messageService.deleteMessages(header, docCode);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
-        header.setStatus(status);
-        balanceSubstResultHeaderRepo.save(header);
     }
 }

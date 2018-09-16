@@ -3,7 +3,11 @@ package calc.entity.calc.bs;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
 import calc.entity.calc.Substation;
-import calc.entity.calc.asp.AspNote;
+import calc.entity.calc.bs.mr.BalanceSubstMrLine;
+import calc.entity.calc.bs.mr.BalanceSubstMrNote;
+import calc.entity.calc.bs.pe.BalanceSubstPeLine;
+import calc.entity.calc.bs.u.BalanceSubstULine;
+import calc.entity.calc.bs.ub.BalanceSubstUbLine;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

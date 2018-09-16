@@ -1,6 +1,6 @@
 package calc.repo.calc;
 
-import calc.entity.calc.bs.BalanceSubstResultUbLine;
+import calc.entity.calc.bs.ub.BalanceSubstResultUbLine;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

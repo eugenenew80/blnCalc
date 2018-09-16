@@ -1,6 +1,7 @@
-package calc.entity.calc.bs;
+package calc.entity.calc.bs.mr;
 
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.bs.BalanceSubstHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;

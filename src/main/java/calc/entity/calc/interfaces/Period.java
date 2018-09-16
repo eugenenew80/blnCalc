@@ -1,4 +1,4 @@
-package calc.entity.calc;
+package calc.entity.calc.interfaces;
 
 import java.time.LocalDateTime;
 

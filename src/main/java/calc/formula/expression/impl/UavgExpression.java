@@ -2,7 +2,7 @@ package calc.formula.expression.impl;
 
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
-import calc.formula.service.BsResultUavgService;
+import calc.formula.service.BalanceSubstResultUService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class UavgExpression implements DoubleExpression {
     private final String meteringPointCode;
     private final Double def;
-    private final BsResultUavgService service;
+    private final BalanceSubstResultUService service;
     private final CalcContext context;
 
     @Override

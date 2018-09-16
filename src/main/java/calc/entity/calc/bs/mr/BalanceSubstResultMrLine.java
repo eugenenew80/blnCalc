@@ -1,8 +1,9 @@
-package calc.entity.calc.bs;
+package calc.entity.calc.bs.mr;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.*;
 import calc.entity.calc.Parameter;
+import calc.entity.calc.bs.BalanceSubstResultHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;

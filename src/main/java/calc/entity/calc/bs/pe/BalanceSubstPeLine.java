@@ -1,9 +1,10 @@
-package calc.entity.calc.bs;
+package calc.entity.calc.bs.pe;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.PowerTransformer;
 import calc.entity.calc.Reactor;
+import calc.entity.calc.bs.BalanceSubstHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

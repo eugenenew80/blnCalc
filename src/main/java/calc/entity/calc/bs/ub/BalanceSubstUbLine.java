@@ -1,7 +1,8 @@
-package calc.entity.calc.bs;
+package calc.entity.calc.bs.ub;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.bs.BalanceSubstHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,8 +11,8 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_balance_subst_mr_lines")
-public class BalanceSubstMrLine {
+@Table(name = "calc_balance_subst_ub_lines")
+public class BalanceSubstUbLine {
     @Id
     private Long id;
 
@@ -34,16 +35,4 @@ public class BalanceSubstMrLine {
     @Column(name = "is_section_2")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection2;
-
-    @Column(name = "is_section_3")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isSection3;
-
-    @Column(name = "is_section_4")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isSection4;
-
-    @Column(name = "is_section_5")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isSection5;
 }

@@ -1,8 +1,8 @@
 package calc.formula.service.impl;
 
-import calc.entity.calc.bs.BalanceSubstResultMrLine;
+import calc.entity.calc.bs.mr.BalanceSubstResultMrLine;
 import calc.entity.calc.MeteringPoint;
-import calc.formula.service.BsResultMrService;
+import calc.formula.service.BalanceSubstResultMrService;
 import calc.repo.calc.BalanceSubstResultMrLineRepo;
 import calc.repo.calc.MeteringPointRepo;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class BsResultMtServiceImpl implements BsResultMrService {
+public class BalanceSubstResultMtServiceImpl implements BalanceSubstResultMrService {
     private final MeteringPointRepo meteringPointRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
 

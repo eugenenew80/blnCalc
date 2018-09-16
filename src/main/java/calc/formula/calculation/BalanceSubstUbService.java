@@ -2,14 +2,14 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
-import calc.entity.calc.bs.BalanceSubstResultMrLine;
-import calc.entity.calc.bs.BalanceSubstResultUbLine;
-import calc.entity.calc.bs.BalanceSubstUbLine;
+import calc.entity.calc.bs.mr.BalanceSubstResultMrLine;
+import calc.entity.calc.bs.ub.BalanceSubstResultUbLine;
+import calc.entity.calc.bs.ub.BalanceSubstUbLine;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.UavgExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
-import calc.formula.service.BsResultUavgService;
+import calc.formula.service.BalanceSubstResultUService;
 import calc.formula.service.MessageService;
 import calc.formula.service.WorkingHoursService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
@@ -34,20 +34,13 @@ public class BalanceSubstUbService {
     private final BalanceSubstResultUbLineRepo balanceSubstResultUbLineRepo;
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private final WorkingHoursService workingHoursService;
-    private final BsResultUavgService resultUavgService;
+    private final BalanceSubstResultUService resultUavgService;
     private final MessageService messageService;
     private static final String docCode = "UNBALANCE";
 
     public boolean calc(BalanceSubstResultHeader header) {
         try {
-            logger.info("Unbalance for header " + header.getId() + " started");
-            header = balanceSubstResultHeaderRepo.findOne(header.getId());
-            if (header.getStatus() == BatchStatusEnum.E)
-                return false;
-
-            updateStatus(header, BatchStatusEnum.P);
-            deleteLines(header);
-            deleteMessages(header, docCode);
+            logger.info("Unbalance for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
                 .headerId(header.getId())
@@ -63,6 +56,7 @@ public class BalanceSubstUbService {
                 .values(new HashMap<>())
                 .build();
 
+            deleteLines(header);
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
 
             Double wSum1 = header.getHeader().getUbLines()
@@ -253,16 +247,14 @@ public class BalanceSubstUbService {
 
             balanceSubstResultUbLineRepo.save(lines);
             balanceSubstResultHeaderRepo.save(header);
-            updateStatus(header, BatchStatusEnum.C);
-            logger.info("Unbalance for header " + header.getId() + " completed");
+
+            logger.info("Unbalance for balance with headerId " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
-            updateStatus(header, BatchStatusEnum.E);
-            logger.error("Unbalance for header " + header.getId() + " terminated with exception");
-            logger.error(e.toString() + ": " + e.getMessage());
+            logger.error("Unbalance for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -274,16 +266,5 @@ public class BalanceSubstUbService {
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultUbLineRepo.delete(lines.get(i));
         balanceSubstResultUbLineRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteMessages(BalanceSubstResultHeader header, String docCode) {
-        messageService.deleteMessages(header, docCode);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
-        header.setStatus(status);
-        balanceSubstResultHeaderRepo.save(header);
     }
 }

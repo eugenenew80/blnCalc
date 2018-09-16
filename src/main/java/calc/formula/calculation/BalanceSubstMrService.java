@@ -2,11 +2,13 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
+import calc.entity.calc.bs.mr.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.formula.CalcContext;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MrService;
+import calc.formula.service.ParamService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -25,7 +27,7 @@ public class BalanceSubstMrService {
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final MrService mrService;
-    private final ParameterRepo parameterRepo;
+    private final ParamService paramService;
     private final BalanceSubstResultMrNoteRepo balanceSubstResultMrNoteRepo;
     private final MessageService messageService;
     private static final String docCode = "ACT";
@@ -33,23 +35,12 @@ public class BalanceSubstMrService {
 
     @PostConstruct
     public void init() {
-        mapParams = new HashMap<>();
-        mapParams.put("A-", parameterRepo.findByCode("A-"));
-        mapParams.put("A+", parameterRepo.findByCode("A+"));
-        mapParams.put("R-", parameterRepo.findByCode("R-"));
-        mapParams.put("R+", parameterRepo.findByCode("R+"));
+        mapParams = paramService.getValues();
     }
 
     public boolean calc(BalanceSubstResultHeader header) {
         try {
-            logger.info("Metering reading for header " + header.getId() + " started");
-            header = balanceSubstResultHeaderRepo.findOne(header.getId());
-            if (header.getStatus() == BatchStatusEnum.E)
-                return false;
-
-            updateStatus(header, BatchStatusEnum.P);
-            deleteLines(header);
-            deleteMessages(header, docCode);
+            logger.info("Act for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
@@ -62,6 +53,8 @@ public class BalanceSubstMrService {
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
+
+            deleteLines(header);
 
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
@@ -108,23 +101,21 @@ public class BalanceSubstMrService {
 
             saveLines(resultLines);
             copyNotes(header);
-            updateStatus(header, BatchStatusEnum.C);
 
-            logger.info("Metering reading for header " + header.getId() + " completed");
+            logger.info("Act for balance with headerId " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
-            updateStatus(header, BatchStatusEnum.E);
-            logger.error("Metering reading for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
+            logger.error("Act for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void copyNotes(BalanceSubstResultHeader header) {
+    void copyNotes(BalanceSubstResultHeader header) {
         List<BalanceSubstResultMrNote> resultNotes = new ArrayList<>();
         for (BalanceSubstMrNote note : header.getHeader().getMrNotes()) {
             BalanceSubstResultMrNote resultNote = new BalanceSubstResultMrNote();
@@ -165,17 +156,6 @@ public class BalanceSubstMrService {
         for (int i=0; i<notes.size(); i++)
             balanceSubstResultMrNoteRepo.delete(notes.get(i));
         balanceSubstResultMrNoteRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteMessages(BalanceSubstResultHeader header, String docCode) {
-        messageService.deleteMessages(header, docCode);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
-        header.setStatus(status);
-        balanceSubstResultHeaderRepo.save(header);
     }
 
     private String getSection(BalanceSubstMrLine mrLine) {

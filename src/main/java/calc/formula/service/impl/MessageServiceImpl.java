@@ -44,7 +44,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteMessages(AspResultHeader header, String docCode) {
+    public void deleteMessages(AspResultHeader header) {
         List<AspResultMessage> lines = aspResultMessageRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             aspResultMessageRepo.delete(lines.get(i));
@@ -52,12 +52,10 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteMessages(BalanceSubstResultHeader header, String docCode) {
+    public void deleteMessages(BalanceSubstResultHeader header) {
         List<BalanceSubstResultMessage> lines = bsResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++) {
-            if (lines.get(i).getSection().equals(docCode))
+        for (int i=0; i<lines.size(); i++)
                 bsResultMessageRepo.delete(lines.get(i));
-        }
         bsResultMessageRepo.flush();
     }
 

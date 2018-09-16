@@ -1,6 +1,6 @@
 package calc.repo.calc;
 
-import calc.entity.calc.ReactorValue;
+import calc.entity.calc.bs.pe.ReactorValue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

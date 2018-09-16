@@ -1,6 +1,6 @@
 package calc.repo.calc;
 
-import calc.entity.calc.PowerTransformerValue;
+import calc.entity.calc.bs.pe.PowerTransformerValue;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
