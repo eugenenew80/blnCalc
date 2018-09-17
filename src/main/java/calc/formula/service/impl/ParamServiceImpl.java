@@ -24,6 +24,7 @@ public class ParamServiceImpl implements ParamService {
         mapParams.put("R-", parameterRepo.findByCode("R-"));
         mapParams.put("R+", parameterRepo.findByCode("R+"));
         mapParams.put("U",  parameterRepo.findByCode("U"));
+        mapParams.put("WL",  parameterRepo.findByCode("U"));
         return mapParams;
     }
 }
