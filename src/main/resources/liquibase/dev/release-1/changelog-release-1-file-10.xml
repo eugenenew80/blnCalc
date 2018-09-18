@@ -100,4 +100,102 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-317" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_bs_result_bp_lines</comment>
+        <createTable tableName="calc_bs_result_bp_lines" schemaName="apps" remarks="Режимы работы обходных выключателей">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bs_result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bypass_metering_point_id" type="number" remarks="ID обходного счетчика">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_bus_section" type="number" remarks="Включен между секциями шин">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="ID точки учета на которую работал">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="ID параметра измерений">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="meter_id" type="number" remarks="ID счётчика на обходном выключателе">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_metering_date" type="TIMESTAMP" remarks="Дата и время начальных показаний">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_metering_date" type="TIMESTAMP" remarks="Дата и время конечных показаний">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_val" type="number" remarks="Начальные показания счетчика">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_val" type="number" remarks="Конечные показания счетчика">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="delta" type="number" remarks="Разность показаний">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="meter_rate" type="number" remarks="Коэффициент счетчика">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="val" type="number" remarks="Расход электроэнергии за период">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="unit_id" type="number" remarks="Единица измерения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bypass_turn_on_time" type="TIMESTAMP" remarks="Дата и время включения обходного выключателя">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="bypass_turn_off_time" type="TIMESTAMP" remarks="Дата и время отключения обходного выключателя">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-318" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_bs_result_bp_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bs_result_bp_lines"
+                schemaName="apps"
+                tableName="calc_bs_result_bp_lines"/>
+    </changeSet>
 </databaseChangeLog>
