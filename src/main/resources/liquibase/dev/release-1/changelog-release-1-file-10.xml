@@ -68,4 +68,36 @@
                          schemaName="apps"
                          tableName="calc_formula_var_det"/>
     </changeSet>
+
+    <changeSet id="calc-rus-314" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop column calc_signatories</comment>
+        <dropColumn columnName="doc_type_id"
+                    schemaName="apps"
+                    tableName="calc_balance_units"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-315" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_units">
+            <column name="doc_type" type="varchar2(30)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-316" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_units to dm_regulations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_units"
+                baseColumnNames="doc_type"
+                constraintName="fk_calc_balance_units_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_regulations"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>
