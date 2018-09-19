@@ -198,4 +198,138 @@
                 schemaName="apps"
                 tableName="calc_bs_result_bp_lines"/>
     </changeSet>
+
+    <changeSet id="calc-rus-319" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating index: calc_bs_result_bp_lines</comment>
+        <createIndex indexName="idx_calc_bs_result_bp_lines_n1"
+                     schemaName="apps"
+                     tableName="calc_bs_result_bp_lines"
+                     unique="false">
+            <column name="bs_result_header_id" type="number"/>
+            <column name="bypass_metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-320" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating index: calc_bs_result_bp_lines</comment>
+        <createIndex indexName="idx_calc_bs_result_bp_lines_n2"
+                     schemaName="apps"
+                     tableName="calc_bs_result_bp_lines"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-321" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_bp_lines</comment>
+        <createIndex indexName="idx_calc_bs_result_bp_lines_n3"
+                     schemaName="apps"
+                     tableName="calc_bs_result_bp_lines"
+                     unique="false">
+            <column name="unit_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-322" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to calc_bs_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_bp_lines"
+                baseColumnNames="bs_result_header_id"
+                constraintName="fk_calc_bs_result_bp_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-323" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_bp_lines"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_bs_result_bp_lines_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-324" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_bp_lines"
+                baseColumnNames="bypass_metering_point_id"
+                constraintName="fk_calc_bs_result_bp_lines_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-325" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_bp_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_bs_result_bp_lines_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-326" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to mdfem_eem_base</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_bp_lines"
+                baseColumnNames="meter_id"
+                constraintName="fk_calc_bs_result_bp_lines_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_eem_base"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-327" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to dict_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_bp_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_bs_result_bp_lines_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
+
