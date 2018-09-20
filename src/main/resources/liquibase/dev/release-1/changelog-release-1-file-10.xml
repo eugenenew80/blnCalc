@@ -331,5 +331,62 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-328" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns CALC_DAILY_SHEET_LINES</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            update apps.calc_data_statuses_tl
+            set name = 'Корректно'
+            where code = 'OK';
+        </sql>
+    </changeSet>
+
+    <changeSet id="calc-rus-329" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns CALC_DAILY_SHEET_LINES</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            update apps.calc_activation_types_tl
+            set name = 'Активирован'
+            where code = 'ACTIVATE';
+        </sql>
+    </changeSet>
+
+    <changeSet id="calc-rus-330" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns CALC_DAILY_SHEET_LINES</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            update apps.calc_activation_types_tl
+            set name = 'Деактивирован'
+            where code = 'DEACTIVATE';
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-331" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_balance_types</comment>
+        <insert tableName="calc_activation_types" schemaName="apps">
+            <column name="code" value="PUBLISH" />
+        </insert>
+
+        <insert tableName="calc_activation_types" schemaName="apps">
+            <column name="code" value="UNPUBLISH" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-332" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_activation_types_tl</comment>
+        <insert tableName="calc_activation_types_tl" schemaName="apps">
+            <column name="code" value="PUBLISH" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Опубликован" />
+        </insert>
+
+        <insert tableName="calc_activation_types_tl" schemaName="apps">
+            <column name="code" value="UNPUBLISH" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Отменен доступ" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
 </databaseChangeLog>
 
