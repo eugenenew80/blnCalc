@@ -388,5 +388,27 @@
         <rollback/>
     </changeSet>
 
+    <changeSet id="calc-rus-333" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop foreign constraint: calc_metering_data_sources_tl to calc_metering_data_sources_tl</comment>
+        <dropForeignKeyConstraint baseTableName="calc_service_values_reconciliations" constraintName="fk_calc_service_values_reconciliations_5" baseTableSchemaName="apps"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-334" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to dict_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations"
+                baseColumnNames="status"
+                constraintName="fk_calc_service_values_reconciliations_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batch_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
