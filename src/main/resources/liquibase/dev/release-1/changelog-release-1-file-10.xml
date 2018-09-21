@@ -410,5 +410,13 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-335" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_service_values_reconciliations_l</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations_l">
+            <column name="is_total" type="number" remarks="итого по договору"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
