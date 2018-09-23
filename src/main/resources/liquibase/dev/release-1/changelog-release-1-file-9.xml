@@ -6574,4 +6574,10 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-924" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop column from table: calc_bs_result_messages</comment>
+        <dropColumn schemaName="apps"  tableName="calc_bs_result_messages" columnName="msg_text" />
+        <rollback/>
+    </changeSet>
+
 </databaseChangeLog>
