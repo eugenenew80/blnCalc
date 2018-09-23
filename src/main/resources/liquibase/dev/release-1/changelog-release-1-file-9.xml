@@ -6483,10 +6483,6 @@
         <rollback/>
     </changeSet>
 
-
-
-
-
     <changeSet id="calc-eug-918" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_bs_result_messages_tl</comment>
         <createTable tableName="calc_bs_result_messages_tl" schemaName="apps" remarks="Перевод - замечния к сформированному документу Баланс по подстанции">
@@ -6578,6 +6574,204 @@
         <comment>Drop column from table: calc_bs_result_messages</comment>
         <dropColumn schemaName="apps"  tableName="calc_bs_result_messages" columnName="msg_text" />
         <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-925" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_sections</comment>
+        <createTable tableName="calc_balance_subst_sections" schemaName="apps" remarks="Разделы баланса по подстанции">
+            <column name="code" type="varchar2(30)" remarks="Код раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-926" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_sections</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_balance_subst_sections"
+                schemaName="apps"
+                tableName="calc_balance_subst_sections"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-927" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_sections_tl</comment>
+        <createTable tableName="calc_balance_subst_sections_tl" schemaName="apps" remarks="Разделы баланса по подстанции - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-928" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_sections_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_balance_subst_sections_tl"
+                schemaName="apps"
+                tableName="calc_balance_subst_sections_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-929" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_sections_tl to calc_balance_subst_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_sections_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_balance_subst_sections_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_subst_sections"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-930" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_balance_subst_sections</comment>
+        <insert tableName="calc_balance_subst_sections" schemaName="apps">
+            <column name="code" value="BALANCE" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections" schemaName="apps">
+            <column name="code" value="ACT" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections" schemaName="apps">
+            <column name="code" value="LOSSES" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections" schemaName="apps">
+            <column name="code" value="UNBALANCE" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections" schemaName="apps">
+            <column name="code" value="U_AVG" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-931" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_balance_subst_sections_tl</comment>
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="BALANCE" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Баланс подстанции" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="BALANCE" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Баланс подстанции" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="ACT" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Акт съема показаний" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="ACT" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Акт съема показаний" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="LOSSES" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Расчет потерь" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="LOSSES" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Расчет потерь" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="UNBALANCE" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Расчет допустимого небаланса" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="UNBALANCE" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Расчет допустимого небаланса" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="U_AVG" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Расчет средних напряжений" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="U_AVG" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Расчет средних напряжений" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-932" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_messages to calc_balance_subst_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_messages"
+                baseColumnNames="section_type"
+                constraintName="fk_calc_bs_result_messages_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_subst_sections"
+                referencedColumnNames="code"
+        />
     </changeSet>
 
 </databaseChangeLog>
