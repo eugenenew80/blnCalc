@@ -18,6 +18,7 @@ import calc.repo.calc.MessageRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class MessageServiceImpl implements MessageService {
         for (Message message : messages) {
             Map<LangEnum, String> texts = new HashMap<>();
             for (MessageTranslate translate : message.getTranslates()) {
-                texts.putIfAbsent(translate.getLang(), translate.getText());
+                texts.putIfAbsent(translate.getId().getLang(), translate.getText());
                 mapErrors.put(message.getCode(), new MessageError(message.getCode(), message.getMessageType(), texts));
             }
         }
@@ -73,6 +74,7 @@ public class MessageServiceImpl implements MessageService {
             message.setMessageType(messageType);
             message.setErrorCode(errCode);
             message.setSection(docCode);
+            message.setTranslates(new ArrayList<>());
 
             BalanceSubstResultMessageTranslate messageTranslate = new BalanceSubstResultMessageTranslate();
             messageTranslate.setMessage(message);
@@ -101,6 +103,7 @@ public class MessageServiceImpl implements MessageService {
             message.setLineNum(lineNum);
             message.setMessageType(messageType);
             message.setErrorCode(errCode);
+            message.setTranslates(new ArrayList<>());
 
             AspResultMessageTranslate messageTranslate = new AspResultMessageTranslate();
             messageTranslate.setMessage(message);

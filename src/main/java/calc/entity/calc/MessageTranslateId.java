@@ -7,11 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import java.io.Serializable;
 
 @Data
 @EqualsAndHashCode(of= {"code", "lang"})
 @Embeddable
-public class MessageTranslateId {
+public class MessageTranslateId implements Serializable {
     @Column(name = "code")
     private String code;
 

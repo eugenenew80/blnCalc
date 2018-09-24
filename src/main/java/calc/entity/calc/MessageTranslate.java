@@ -16,10 +16,10 @@ public class MessageTranslate {
     private MessageTranslateId id;
 
     @ManyToOne
-    @JoinColumn(name = "code")
+    @JoinColumn(name = "code", insertable = false, updatable = false)
     private Message message;
 
-    @Column(name="lang")
+    @Column(name="lang", insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private LangEnum lang;
 
