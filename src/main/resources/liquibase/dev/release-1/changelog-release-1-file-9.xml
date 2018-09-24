@@ -5971,4 +5971,807 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-903" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_message_types</comment>
+        <createTable tableName="calc_message_types" schemaName="apps" remarks="Типы ссобщений">
+            <column name="code" type="varchar2(1)" remarks="Код типа сообщения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-904" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_message_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_message_types"
+                schemaName="apps"
+                tableName="calc_message_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-905" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_message_types_tl</comment>
+        <createTable tableName="calc_message_types_tl" schemaName="apps" remarks="Типы сообщений - перевод">
+            <column name="code" type="varchar2(1)" remarks="Код типа сообщения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование типа сообщения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-906" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_message_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_message_types_tl"
+                schemaName="apps"
+                tableName="calc_message_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-907" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_message_types_tl to calc_message_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_message_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_message_types_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_message_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-908" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_message_types</comment>
+        <insert tableName="calc_message_types" schemaName="apps">
+            <column name="code" value="I" />
+        </insert>
+
+        <insert tableName="calc_message_types" schemaName="apps">
+            <column name="code" value="W" />
+        </insert>
+
+        <insert tableName="calc_message_types" schemaName="apps">
+            <column name="code" value="E" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-909" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_message_types_tl</comment>
+        <insert tableName="calc_message_types_tl" schemaName="apps">
+            <column name="code" value="I" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Инфо" />
+        </insert>
+
+        <insert tableName="calc_message_types_tl" schemaName="apps">
+            <column name="code" value="I" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Инфо" />
+        </insert>
+
+        <insert tableName="calc_message_types_tl" schemaName="apps">
+            <column name="code" value="W" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Предупреждение" />
+        </insert>
+
+        <insert tableName="calc_message_types_tl" schemaName="apps">
+            <column name="code" value="W" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Предупреждение" />
+        </insert>
+
+        <insert tableName="calc_message_types_tl" schemaName="apps">
+            <column name="code" value="E" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Ошибка" />
+        </insert>
+
+        <insert tableName="calc_message_types_tl" schemaName="apps">
+            <column name="code" value="E" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Ошибка" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-910" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_messages</comment>
+        <createTable tableName="calc_messages" schemaName="apps" remarks="Ссобщений">
+            <column name="code" type="varchar2(30)" remarks="Код сообщения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="message_type" type="varchar2(1)" remarks="Код типа сообщения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-911" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_messages</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_messages"
+                schemaName="apps"
+                tableName="calc_messages"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-912" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_messages_tl</comment>
+        <createTable tableName="calc_messages_tl" schemaName="apps" remarks="Сообщения - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код сообщения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="text" type="varchar(300)" remarks="Текст сообщения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-913" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_messages_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_messages_tl"
+                schemaName="apps"
+                tableName="calc_messages_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-914" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_messages_tl to calc_messages</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_messages_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_messages_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_messages"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-915" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_messages to calc_message_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_messages"
+                baseColumnNames="message_type"
+                constraintName="fk_calc_messages_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_message_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-916" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_messages</comment>
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="PE_INPUT_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="PE_UNOM_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="PE_WN_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="PE_SNOM_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="PE_UNOMH_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="PE_UAVG_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="MR_METER_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="MR_METER_HISTORY_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="MR_SECTION_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="UB_UAVG_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION1_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION2_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION3_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION4_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-917" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_messages_tl</comment>
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_INPUT_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задана точка учёта на вводах" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_INPUT_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задана точка учёта на вводах" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_UNOM_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задано значение unom" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_UNOM_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задано значение unom" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_WN_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задано количество обмоток в трансформаторе" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_WN_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задано количество обмоток в трансформаторе" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_SNOM_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задано значение snom" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_SNOM_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задано значение snom" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_UNOMH_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задано значение unomh" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_UNOMH_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задано значение unomh" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_UAVG_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задано значение uavg" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="PE_UAVG_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задано значение uavg" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="MR_METER_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не найден счётчик для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="MR_METER_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не найден счётчик для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="MR_METER_HISTORY_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задано аакт замены прибора учёта для счетчика" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="MR_METER_HISTORY_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задано аакт замены прибора учёта для счетчика" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="MR_SECTION_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан раздел для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="MR_SECTION_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан раздел для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_UAVG_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан класс напряжения для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_UAVG_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан класс напряжения для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION1_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан точка уч1та для итогов по разделу 1 баланса" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION1_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан точка уч1та для итогов по разделу 1 баланса" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION2_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан точка уч1та для итогов по разделу 2 баланса" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION2_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан точка уч1та для итогов по разделу 2 баланса" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION3_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан точка уч1та для итогов по разделу 3 баланса" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION3_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан точка уч1та для итогов по разделу 3 баланса" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION4_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан точка уч1та для итогов по разделу 4 баланса" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="BS_MP_SECTION4_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан точка уч1та для итогов по разделу 4 баланса" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-918" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_bs_result_messages_tl</comment>
+        <createTable tableName="calc_bs_result_messages_tl" schemaName="apps" remarks="Перевод - замечния к сформированному документу Баланс по подстанции">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bs_result_message_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="msg" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-919" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_bs_result_messages_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_bs_result_messages_tl"
+                schemaName="apps"
+                tableName="calc_bs_result_messages_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-920" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_bs_result_messages_tl</comment>
+        <addUniqueConstraint
+                columnNames="bs_result_message_id, lang"
+                constraintName="uk_calc_bs_result_messages_tl_1"
+                schemaName="apps"
+                tableName="calc_bs_result_messages_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-921" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_bs_result_messages_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_bs_result_messages_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-922" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_bs_result_messages_tl</comment>
+        <createIndex indexName="idx_calc_bs_result_messages_tl_1" schemaName="apps" tableName="calc_bs_result_messages_tl">
+            <column name="bs_result_message_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-923" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_messages_tl to calc_bs_result_messages</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_messages_tl"
+                baseColumnNames="bs_result_message_id"
+                constraintName="fk_calc_bs_result_messages_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bs_result_messages"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-924" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop column from table: calc_bs_result_messages</comment>
+        <dropColumn schemaName="apps"  tableName="calc_bs_result_messages" columnName="msg_text" />
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-925" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_sections</comment>
+        <createTable tableName="calc_balance_subst_sections" schemaName="apps" remarks="Разделы баланса по подстанции">
+            <column name="code" type="varchar2(30)" remarks="Код раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-926" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_sections</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_balance_subst_sections"
+                schemaName="apps"
+                tableName="calc_balance_subst_sections"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-927" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_subst_sections_tl</comment>
+        <createTable tableName="calc_balance_subst_sections_tl" schemaName="apps" remarks="Разделы баланса по подстанции - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-928" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_subst_sections_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_balance_subst_sections_tl"
+                schemaName="apps"
+                tableName="calc_balance_subst_sections_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-929" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_sections_tl to calc_balance_subst_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_sections_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_balance_subst_sections_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_subst_sections"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-930" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_balance_subst_sections</comment>
+        <insert tableName="calc_balance_subst_sections" schemaName="apps">
+            <column name="code" value="BALANCE" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections" schemaName="apps">
+            <column name="code" value="ACT" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections" schemaName="apps">
+            <column name="code" value="LOSSES" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections" schemaName="apps">
+            <column name="code" value="UNBALANCE" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections" schemaName="apps">
+            <column name="code" value="U_AVG" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-931" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_balance_subst_sections_tl</comment>
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="BALANCE" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Баланс подстанции" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="BALANCE" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Баланс подстанции" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="ACT" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Акт съема показаний" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="ACT" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Акт съема показаний" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="LOSSES" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Расчет потерь" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="LOSSES" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Расчет потерь" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="UNBALANCE" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Расчет допустимого небаланса" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="UNBALANCE" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Расчет допустимого небаланса" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="U_AVG" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Расчет средних напряжений" />
+        </insert>
+
+        <insert tableName="calc_balance_subst_sections_tl" schemaName="apps">
+            <column name="code" value="U_AVG" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Расчет средних напряжений" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-932" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_messages to calc_balance_subst_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_messages"
+                baseColumnNames="section_type"
+                constraintName="fk_calc_bs_result_messages_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_subst_sections"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>

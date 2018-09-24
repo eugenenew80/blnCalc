@@ -1,6 +1,5 @@
 package calc.entity.calc.bs;
 
-import calc.entity.calc.asp.AspResultMessageTranslate;
 import calc.entity.calc.enums.MessageTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,9 +33,6 @@ public class BalanceSubstResultMessage {
     @Column(name = "error_code")
     private String errorCode;
 
-    @Column(name = "msg_text")
-    private String msgText;
-
     @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<AspResultMessageTranslate> translates;
+    private List<BalanceSubstResultMessageTranslate> translates;
 }

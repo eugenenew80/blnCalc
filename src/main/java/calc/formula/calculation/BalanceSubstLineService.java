@@ -29,7 +29,7 @@ public class BalanceSubstLineService {
     private final BalanceSubstResultMrService mrService;
     private final BalanceSubstResultNoteRepo balanceSubstResultNoteRepo;
     private final MessageService messageService;
-    private static final String docCode = "BALANCE_LINES";
+    private static final String docCode = "BALANCE";
     private Map<String, Parameter> mapParams = null;
 
     @PostConstruct

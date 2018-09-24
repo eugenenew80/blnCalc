@@ -1,8 +1,11 @@
 package calc.formula.service.impl;
 
+import calc.entity.calc.Message;
+import calc.entity.calc.MessageTranslate;
 import calc.entity.calc.asp.AspResultHeader;
 import calc.entity.calc.asp.AspResultMessage;
 import calc.entity.calc.asp.AspResultMessageTranslate;
+import calc.entity.calc.bs.BalanceSubstResultMessageTranslate;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.BalanceSubstResultMessage;
 import calc.entity.calc.enums.LangEnum;
@@ -11,9 +14,11 @@ import calc.formula.service.MessageError;
 import calc.formula.service.MessageService;
 import calc.repo.calc.AspResultMessageRepo;
 import calc.repo.calc.BsResultMessageRepo;
+import calc.repo.calc.MessageRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,24 +28,19 @@ import java.util.Map;
 public class MessageServiceImpl implements MessageService {
     private final BsResultMessageRepo bsResultMessageRepo;
     private final AspResultMessageRepo aspResultMessageRepo;
+    private final MessageRepo messageRepo;
     private Map<String, MessageError> mapErrors = new HashMap<>();
 
     @PostConstruct
     public void init() {
-        mapErrors.put("PE_INPUT_NOT_FOUND",         new MessageError("PE_INPUT_NOT_FOUND",         MessageTypeEnum.W,"Не задана точка учёта на вводах"));
-        mapErrors.put("PE_UNOM_NOT_FOUND",          new MessageError("PE_UNOM_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение unom"));
-        mapErrors.put("PE_WN_NOT_FOUND",            new MessageError("PE_WN_NOT_FOUND",            MessageTypeEnum.W,"Не задано количество обмоток в трансформаторе"));
-        mapErrors.put("PE_SNOM_NOT_FOUND",          new MessageError("PE_SNOM_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение snom"));
-        mapErrors.put("PE_UNOMH_NOT_FOUND",         new MessageError("PE_UNOMH_NOT_FOUND",         MessageTypeEnum.W,"Не задано значение unomh"));
-        mapErrors.put("PE_UAVG_NOT_FOUND",          new MessageError("PE_UAVG_NOT_FOUND",          MessageTypeEnum.W,"Не задано значение uavg"));
-        mapErrors.put("MR_METER_NOT_FOUND",         new MessageError("MR_METER_NOT_FOUND",         MessageTypeEnum.W,"Не найден счётчик для точки учёта"));
-        mapErrors.put("MR_METER_HISTORY_NOT_FOUND", new MessageError("MR_METER_HISTORY_NOT_FOUND", MessageTypeEnum.W,"Не задано аакт замены прибора учёта для счетчика"));
-        mapErrors.put("MR_SECTION_NOT_FOUND",       new MessageError("MR_SECTION_NOT_FOUND",       MessageTypeEnum.E,"Не задан раздел для точки учёта"));
-        mapErrors.put("UB_UAVG_NOT_FOUND",          new MessageError("UB_UAVG_NOT_FOUND",          MessageTypeEnum.E,"Не задан класс напряжения для точки учёта"));
-        mapErrors.put("BS_MP_SECTION1_NOT_FOUND",   new MessageError("BS_MP_SECTION1_NOT_FOUND",   MessageTypeEnum.W,"Не задан точка уч1та для итогов по разделу 1 баланса"));
-        mapErrors.put("BS_MP_SECTION2_NOT_FOUND",   new MessageError("BS_MP_SECTION2_NOT_FOUND",   MessageTypeEnum.W,"Не задан точка уч1та для итогов по разделу 2 баланса"));
-        mapErrors.put("BS_MP_SECTION3_NOT_FOUND",   new MessageError("BS_MP_SECTION3_NOT_FOUND",   MessageTypeEnum.W,"Не задан точка уч1та для итогов по разделу 3 баланса"));
-        mapErrors.put("BS_MP_SECTION4_NOT_FOUND",   new MessageError("BS_MP_SECTION4_NOT_FOUND",   MessageTypeEnum.W,"Не задан точка уч1та для итогов по разделу 4 баланса"));
+        List<Message> messages = messageRepo.findAll();
+        for (Message message : messages) {
+            Map<LangEnum, String> texts = new HashMap<>();
+            for (MessageTranslate translate : message.getTranslates()) {
+                texts.putIfAbsent(translate.getId().getLang(), translate.getText());
+                mapErrors.put(message.getCode(), new MessageError(message.getCode(), message.getMessageType(), texts));
+            }
+        }
     }
 
     @Override
@@ -61,15 +61,27 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void addMessage(BalanceSubstResultHeader header, Long lineNum, String docCode, String errCode) {
+        MessageError err = mapErrors.getOrDefault(errCode, null);
         try {
-            MessageError err = mapErrors.getOrDefault(errCode, null);
+            LangEnum defLang = LangEnum.RU;
+            String defTExt = "Описание не найдено";
+            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
+            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
+
             BalanceSubstResultMessage message = new BalanceSubstResultMessage();
             message.setHeader(header);
             message.setLineNum(lineNum);
-            message.setMessageType(err != null ? err.getMessageType() : MessageTypeEnum.E);
+            message.setMessageType(messageType);
             message.setErrorCode(errCode);
-            message.setMsgText(err != null ? err.getText() : "Описание не найдено");
             message.setSection(docCode);
+            message.setTranslates(new ArrayList<>());
+
+            BalanceSubstResultMessageTranslate messageTranslate = new BalanceSubstResultMessageTranslate();
+            messageTranslate.setMessage(message);
+            messageTranslate.setLang(defLang);
+            messageTranslate.setMsg(msg);
+            message.getTranslates().add(messageTranslate);
+
             bsResultMessageRepo.save(message);
         }
         catch (Exception e) {
@@ -81,18 +93,23 @@ public class MessageServiceImpl implements MessageService {
     public void addMessage(AspResultHeader header, Long lineNum, String docCode, String errCode) {
         MessageError err = mapErrors.getOrDefault(errCode, null);
         try {
+            LangEnum defLang = LangEnum.RU;
+            String defTExt = "Описание не найдено";
+            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
+            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
+
             AspResultMessage message = new AspResultMessage();
             message.setHeader(header);
             message.setLineNum(lineNum);
-            message.setMessageType(err != null ? err.getMessageType() : MessageTypeEnum.E);
+            message.setMessageType(messageType);
             message.setErrorCode(errCode);
+            message.setTranslates(new ArrayList<>());
 
             AspResultMessageTranslate messageTranslate = new AspResultMessageTranslate();
             messageTranslate.setMessage(message);
-            messageTranslate.setLang(LangEnum.RU);
-            messageTranslate.setMsg(err != null ? err.getText() : "Описание не найдено");
+            messageTranslate.setLang(defLang);
+            messageTranslate.setMsg(msg);
             message.getTranslates().add(messageTranslate);
-
             aspResultMessageRepo.save(message);
         }
         catch (Exception e) {
