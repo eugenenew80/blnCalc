@@ -1,0 +1,1024 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="dm-eug-1" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_doc_files</comment>
+        <createTable tableName="dm_doc_files" schemaName="apps" remarks="Таблица для хранения файлов">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_content" type="blob" remarks="Двоичное содержимое файла">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-2" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_doc_files</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_dm_doc_files"
+                schemaName="apps"
+                tableName="dm_doc_files"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-3" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: dm_doc_files</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="dm_doc_files_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-4" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_doc_locations</comment>
+        <createTable tableName="dm_doc_locations" schemaName="apps" remarks="Места хранения файлов">
+            <column name="code" type="varchar2(30)" remarks="Код места хранения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-5" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_doc_locations</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_dm_doc_locations"
+                schemaName="apps"
+                tableName="dm_doc_locations"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-6" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_doc_locations_tl</comment>
+        <createTable tableName="dm_doc_locations_tl" schemaName="apps" remarks="Места хранения файлов - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код места хранения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование места хранения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-7" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_doc_locations_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_dm_doc_locations_tl"
+                schemaName="apps"
+                tableName="dm_doc_locations_tl"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-8" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_locations_tl to dm_doc_locations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_locations_tl"
+                baseColumnNames="code"
+                constraintName="fk_dm_doc_locations_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_locations"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-9" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: dm_doc_locations</comment>
+        <insert tableName="dm_doc_locations" schemaName="apps">
+            <column name="code" value="INTERNAL" />
+        </insert>
+
+        <insert tableName="dm_doc_locations" schemaName="apps">
+            <column name="code" value="EXTERNAL" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="dm-eug-10" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: dm_doc_locations_tl</comment>
+        <insert tableName="dm_doc_locations_tl" schemaName="apps">
+            <column name="code" value="INTERNAL" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Внутренний" />
+        </insert>
+
+        <insert tableName="dm_doc_locations_tl" schemaName="apps">
+            <column name="code" value="INTERNAL" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Внутренний" />
+        </insert>
+
+        <insert tableName="dm_doc_locations_tl" schemaName="apps">
+            <column name="code" value="EXTERNAL" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Внешний" />
+        </insert>
+
+        <insert tableName="dm_doc_locations_tl" schemaName="apps">
+            <column name="code" value="EXTERNAL" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Внешний" />
+        </insert>
+    </changeSet>
+
+    <changeSet id="dm-eug-11" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_file_transfer_states</comment>
+        <createTable tableName="dm_file_transfer_states" schemaName="apps" remarks="Статусы передачи файлов во внешние системы">
+            <column name="code" type="varchar2(30)" remarks="Код статуса">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-12" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_file_transfer_states</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_dm_file_transfer_states"
+                schemaName="apps"
+                tableName="dm_file_transfer_states"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-13" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_file_transfer_states_tl</comment>
+        <createTable tableName="dm_file_transfer_states_tl" schemaName="apps" remarks="Статусы передачи файлов во внешние системы - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код статуса">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование статуса">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-14" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_file_transfer_states_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_dm_file_transfer_states_tl"
+                schemaName="apps"
+                tableName="dm_file_transfer_states_tl"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-15" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_file_transfer_states_tl to dm_file_transfer_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_file_transfer_states_tl"
+                baseColumnNames="code"
+                constraintName="fk_dm_file_transfer_states_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_file_transfer_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-16" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: dm_file_transfer_states</comment>
+        <insert tableName="dm_file_transfer_states" schemaName="apps">
+            <column name="code" value="TRANSFERRED" />
+        </insert>
+
+        <insert tableName="dm_file_transfer_states" schemaName="apps">
+            <column name="code" value="NOT_TRANSFERRED" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="dm-eug-17" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: dm_file_transfer_states_tl</comment>
+        <insert tableName="dm_file_transfer_states_tl" schemaName="apps">
+            <column name="code" value="TRANSFERRED" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Передан" />
+        </insert>
+
+        <insert tableName="dm_file_transfer_states_tl" schemaName="apps">
+            <column name="code" value="TRANSFERRED" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Передан" />
+        </insert>
+
+        <insert tableName="dm_file_transfer_states_tl" schemaName="apps">
+            <column name="code" value="NOT_TRANSFERRED" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Не передан" />
+        </insert>
+
+        <insert tableName="dm_file_transfer_states_tl" schemaName="apps">
+            <column name="code" value="NOT_TRANSFERRED" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Не передан" />
+        </insert>
+    </changeSet>
+
+
+    <changeSet id="dm-eug-18" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_doc_way_of_signing</comment>
+        <createTable tableName="dm_doc_way_of_signing" schemaName="apps" remarks="Способы подписания документа">
+            <column name="code" type="varchar2(30)" remarks="Код способа подписания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-19" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_doc_way_of_signing</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_dm_doc_way_of_signing"
+                schemaName="apps"
+                tableName="dm_doc_way_of_signing"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-20" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_doc_way_of_signing_tl</comment>
+        <createTable tableName="dm_doc_way_of_signing_tl" schemaName="apps" remarks="Способы подписания документа - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код способа подписания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование способа подписания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-21" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_doc_way_of_signing_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_dm_doc_way_of_signing_tl"
+                schemaName="apps"
+                tableName="dm_doc_way_of_signing_tl"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-22" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_way_of_signing_tl to dm_doc_way_of_signing</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_way_of_signing_tl"
+                baseColumnNames="code"
+                constraintName="fk_dm_doc_way_of_signing_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_way_of_signing"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-23" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: dm_doc_way_of_signing</comment>
+        <insert tableName="dm_doc_way_of_signing" schemaName="apps">
+            <column name="code" value="DS" />
+        </insert>
+
+        <insert tableName="dm_doc_way_of_signing" schemaName="apps">
+            <column name="code" value="WITHOUT_DS" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="dm-eug-24" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: dm_doc_way_of_signing_tl</comment>
+        <insert tableName="dm_doc_way_of_signing_tl" schemaName="apps">
+            <column name="code" value="TRANSFERRED" />
+            <column name="lang" value="RU" />
+            <column name="name" value="ЭЦП" />
+        </insert>
+
+        <insert tableName="dm_doc_way_of_signing_tl" schemaName="apps">
+            <column name="code" value="TRANSFERRED" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="ЭЦП" />
+        </insert>
+
+        <insert tableName="dm_doc_way_of_signing_tl" schemaName="apps">
+            <column name="code" value="NOT_TRANSFERRED" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Без ЭЦП" />
+        </insert>
+
+        <insert tableName="dm_doc_way_of_signing_tl" schemaName="apps">
+            <column name="code" value="NOT_TRANSFERRED" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Без ЭЦП" />
+        </insert>
+    </changeSet>
+
+    <changeSet id="dm-eug-25" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_doc_file_refs</comment>
+        <createTable tableName="dm_doc_file_refs" schemaName="apps" remarks="Ссылки на файлы">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="object_code" type="varchar2(30)" remarks="Код объекта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="object_id" type="number" remarks="Идентификатор объекта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_id" type="number" remarks="Идентификатор файла">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_display_to_user" type="number" remarks="Флаг - отображать обычному пользователю?">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-26" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_doc_file_refs</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_dm_doc_file_refs"
+                schemaName="apps"
+                tableName="dm_doc_file_refs"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-27" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: dm_doc_file_refs</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="dm_doc_file_refs_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-28" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_file_refs to dm_doc_files</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_file_refs"
+                baseColumnNames="file_id"
+                constraintName="fk_dm_doc_file_refs_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_files"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-29" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_file_refs to wf_objects</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_file_refs"
+                baseColumnNames="object_code"
+                constraintName="fk_dm_doc_file_refs_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_objects"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-30" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_doc_file_info</comment>
+        <createTable tableName="dm_doc_file_info" schemaName="apps" remarks="Информация о файлах">
+            <column name="file_id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_name" type="varchar(300)" remarks="Наименование файла с расширением">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_type" type="varchar(100)" remarks="Тип файла">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="file_size" type="number" remarks="Размер файла">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_hash" type="varchar(150)" remarks="Хэш файла">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="hash_algorithm" type="varchar(150)" remarks="Алгоритм хэширования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="location_code" type="varchar(30)" remarks="Код места хранения файла">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="way_to_upload" type="varchar(30)" remarks="Способ добавления файла в систему">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_update_allowed" type="number" remarks="Флаг - разрешено обновление?">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="doc_type_code" type="varchar(30)" remarks="Код типа документа">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="doc_name" type="varchar(300)" remarks="Наименование документа">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="comment" type="varchar(300)" remarks="Комментарий к документу">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="Код языка документа">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-31" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_doc_file_info</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_dm_doc_file_info"
+                schemaName="apps"
+                tableName="dm_doc_file_info"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-32" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_file_info to dm_doc_files</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_file_info"
+                baseColumnNames="file_id"
+                constraintName="fk_dm_doc_file_info_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_files"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-33" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_file_info to dm_doc_locations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_file_info"
+                baseColumnNames="location_code"
+                constraintName="fk_dm_doc_file_info_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_locations"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-34" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_file_info to cm_doc_formation_ways</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_file_info"
+                baseColumnNames="way_to_upload"
+                constraintName="fk_dm_doc_file_info_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_formation_ways"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-35" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_file_info to dm_doc_formation_ways</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_file_info"
+                baseColumnNames="doc_type_code"
+                constraintName="fk_dm_doc_file_info_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-36" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_ecm_systems</comment>
+        <createTable tableName="dm_ecm_systems" schemaName="apps" remarks="Список внешних систем для хранения файлов">
+            <column name="code" type="varchar2(30)" remarks="Код системы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-37" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_ecm_systems</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_dm_ecm_systems"
+                schemaName="apps"
+                tableName="dm_ecm_systems"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-38" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_ecm_systems_tl</comment>
+        <createTable tableName="dm_ecm_systems_tl" schemaName="apps" remarks="Список внешних систем для хранения файлов - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код системы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование системы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-39" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_ecm_systems_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_dm_ecm_systems_tl"
+                schemaName="apps"
+                tableName="dm_ecm_systems_tl"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-40" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_ecm_systems_tl to dm_ecm_systems</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_ecm_systems_tl"
+                baseColumnNames="code"
+                constraintName="fk_dm_ecm_systems_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_ecm_systems"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-41" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: dm_ecm_systems</comment>
+        <insert tableName="dm_ecm_systems" schemaName="apps">
+            <column name="code" value="OPEN_TEXT" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="dm-eug-42" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: dm_ecm_systems_tl</comment>
+        <insert tableName="dm_ecm_systems_tl" schemaName="apps">
+            <column name="code" value="OPEN_TEXT" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Система OPEN TEXT" />
+        </insert>
+
+        <insert tableName="dm_doc_locations_tl" schemaName="apps">
+            <column name="code" value="OPEN_TEXT" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Система OPEN TEXT" />
+        </insert>
+    </changeSet>
+
+    <changeSet id="dm-eug-43" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_doc_file_transfer</comment>
+        <createTable tableName="dm_doc_file_transfer" schemaName="apps" remarks="Таблица для хранения о передаче файлов во внешние системы">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_id" type="number" remarks="Идентификатор файла">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="ext_system_code" type="varchar2(30)" remarks="Код внешней системы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="transfer_state_code" type="varchar2(30)" remarks="Код состояния передачи файла">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="transfer_start_date" type="TIMESTAMP" remarks="Дата и время начала передачи файла">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="transfer_end_date" type="TIMESTAMP" remarks="Дата и время окончания передачи файла">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="ext_guid" type="varchar2(30)" remarks="Глобальный идентификатор файла, присвоенный внешней системой">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-44" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_doc_file_transfer</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_dm_doc_file_transfer"
+                schemaName="apps"
+                tableName="dm_doc_file_transfer"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-45" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: dm_doc_file_transfer</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="dm_doc_file_transfer_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-46" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_file_transfer to dm_doc_files</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_file_transfer"
+                baseColumnNames="file_id"
+                constraintName="fk_dm_doc_file_transfer_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_files"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-47" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_file_transfer to dm_ecm_systems</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_file_transfer"
+                baseColumnNames="ext_system_code"
+                constraintName="fk_dm_doc_file_transfer_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_ecm_systems"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-48" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_file_transfer to dm_ecm_systems</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_file_transfer"
+                baseColumnNames="transfer_state_code"
+                constraintName="fk_dm_doc_file_transfer_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_file_transfer_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-49" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding fields to table: wf_object_workflows</comment>
+        <addColumn schemaName="apps" tableName="wf_object_workflows">
+            <column name="xml_body" type="clob" remarks="XML-представление подписываемого контента">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="hash" type="varchar2(50)" remarks="Хэш сумма подписываемого контента">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="hash_algorithm" type="varchar(150)" remarks="Алгоритм хэширования">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="dm-eug-50" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: dm_doc_signatures</comment>
+        <createTable tableName="dm_doc_signatures" schemaName="apps" remarks="Таблица для хранения цифровых подписей к документам">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="task_id" type="number" remarks="Идентификатор задачи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="way_of_signing" type="varchar2(30)" remarks="Способ подписания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="signing_date" type="TIMESTAMP" remarks="Дата подписания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="signature" type="varchar2(150)" remarks="Способ подписания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="hash_algorithm" type="varchar(150)" remarks="Алгоритм хэширования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="dm-eug-51" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_doc_signatures</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_dm_doc_signatures"
+                schemaName="apps"
+                tableName="dm_doc_signatures"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-52" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: dm_doc_signatures</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="dm_doc_signatures_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="dm-eug-53" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_signatures to wf_object_workflow_tasks</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_signatures"
+                baseColumnNames="task_id"
+                constraintName="fk_dm_doc_signatures_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_object_workflow_tasks"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="dm-eug-54" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_file_transfer to dm_ecm_systems</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_signatures"
+                baseColumnNames="way_of_signing"
+                constraintName="fk_dm_doc_signatures_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_way_of_signing"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+</databaseChangeLog>
+
