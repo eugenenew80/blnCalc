@@ -410,5 +410,86 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-335" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_service_values_reconciliations_l</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations_l">
+            <column name="is_total" type="number" remarks="итого по договору"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-336" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_service_values_reconciliations_l</comment>
+        <dropNotNullConstraint columnDataType="number"
+                               columnName="create_by"
+                               schemaName="apps"
+                               tableName="calc_service_values_reconciliations_l"/>
+        <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-337" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_service_values_reconciliations_l</comment>
+        <dropNotNullConstraint columnDataType="TIMESTAMP"
+                               columnName="create_date"
+                               schemaName="apps"
+                               tableName="calc_service_values_reconciliations_l"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-338" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_service_values_reconciliations_l</comment>
+        <dropNotNullConstraint columnDataType="number"
+                               columnName="last_update_by"
+                               schemaName="apps"
+                               tableName="calc_service_values_reconciliations_l"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-339" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_service_values_reconciliations_l</comment>
+        <dropNotNullConstraint columnDataType="TIMESTAMP"
+                               columnName="last_update_date"
+                               schemaName="apps"
+                               tableName="calc_service_values_reconciliations_l"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-340" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_service_values_reconciliations</comment>
+        <dropNotNullConstraint columnDataType="number"
+                               columnName="create_by"
+                               schemaName="apps"
+                               tableName="calc_service_values_reconciliations"/>
+        <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-341" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_service_values_reconciliations</comment>
+        <dropNotNullConstraint columnDataType="TIMESTAMP"
+                               columnName="create_date"
+                               schemaName="apps"
+                               tableName="calc_service_values_reconciliations"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-342" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_service_values_reconciliations</comment>
+        <dropNotNullConstraint columnDataType="number"
+                               columnName="last_update_by"
+                               schemaName="apps"
+                               tableName="calc_service_values_reconciliations"/>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-343" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_service_values_reconciliations</comment>
+        <dropNotNullConstraint columnDataType="TIMESTAMP"
+                               columnName="last_update_date"
+                               schemaName="apps"
+                               tableName="calc_service_values_reconciliations"/>
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
 
