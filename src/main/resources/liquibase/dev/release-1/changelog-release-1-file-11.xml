@@ -418,25 +418,25 @@
     <changeSet id="dm-eug-24" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Adding data to table: dm_doc_way_of_signing_tl</comment>
         <insert tableName="dm_doc_way_of_signing_tl" schemaName="apps">
-            <column name="code" value="TRANSFERRED" />
+            <column name="code" value="DS" />
             <column name="lang" value="RU" />
             <column name="name" value="ЭЦП" />
         </insert>
 
         <insert tableName="dm_doc_way_of_signing_tl" schemaName="apps">
-            <column name="code" value="TRANSFERRED" />
+            <column name="code" value="DS" />
             <column name="lang" value="KZ" />
             <column name="name" value="ЭЦП" />
         </insert>
 
         <insert tableName="dm_doc_way_of_signing_tl" schemaName="apps">
-            <column name="code" value="NOT_TRANSFERRED" />
+            <column name="code" value="WITHOUT_DS" />
             <column name="lang" value="RU" />
             <column name="name" value="Без ЭЦП" />
         </insert>
 
         <insert tableName="dm_doc_way_of_signing_tl" schemaName="apps">
-            <column name="code" value="NOT_TRANSFERRED" />
+            <column name="code" value="WITHOUT_DS" />
             <column name="lang" value="KZ" />
             <column name="name" value="Без ЭЦП" />
         </insert>
@@ -609,7 +609,7 @@
     <changeSet id="dm-eug-31" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: dm_doc_file_info</comment>
         <addPrimaryKey
-                columnNames="id"
+                columnNames="file_id"
                 constraintName="pk_dm_doc_file_info"
                 schemaName="apps"
                 tableName="dm_doc_file_info"/>
@@ -787,7 +787,7 @@
             <column name="name" value="Система OPEN TEXT" />
         </insert>
 
-        <insert tableName="dm_doc_locations_tl" schemaName="apps">
+        <insert tableName="dm_ecm_systems_tl" schemaName="apps">
             <column name="code" value="OPEN_TEXT" />
             <column name="lang" value="KZ" />
             <column name="name" value="Система OPEN TEXT" />
