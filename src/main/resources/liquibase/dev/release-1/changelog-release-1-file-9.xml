@@ -6774,4 +6774,36 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-933" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_messages to calc_message_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_messages"
+                baseColumnNames="message_type_code"
+                constraintName="fk_calc_bs_result_messages_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_message_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-934" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_messages to calc_messages</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_messages"
+                baseColumnNames="error_code"
+                constraintName="fk_calc_bs_result_messages_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_messages"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
