@@ -1,11 +1,15 @@
-package calc.entity.calc;
+package calc.entity.calc.svr;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.calc.ContractKeg;
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.bs.mr.BalanceSubstMrNoteTranslate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -36,4 +40,7 @@ public class MeteringPointSetting {
     @Column(name = "is_total")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isTotal;
+
+    @OneToMany(mappedBy = "pointSetting", fetch = FetchType.EAGER)
+    private List<MeteringPointSettingTranslate> translates;
 }

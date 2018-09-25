@@ -1,6 +1,6 @@
 package calc.repo.calc;
 
-import calc.entity.calc.MeteringPointSetting;
+import calc.entity.calc.svr.MeteringPointSetting;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

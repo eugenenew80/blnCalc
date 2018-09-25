@@ -1,10 +1,12 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
+import calc.entity.calc.asp.AspLineTranslate;
+import calc.entity.calc.asp.AspResultLineTranslate;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
-import calc.entity.calc.svr.SvrHeader;
-import calc.entity.calc.svr.SvrLine;
+import calc.entity.calc.enums.LangEnum;
+import calc.entity.calc.svr.*;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.PeriodTimeValueService;
@@ -64,8 +66,8 @@ public class SvrService {
             );
 
             List<SvrLine> resultLines = new ArrayList<>();
-            for (MeteringPointSetting mps : lines) {
-                MeteringPoint meteringPoint = mps.getMeteringPoint();
+            for (MeteringPointSetting line : lines) {
+                MeteringPoint meteringPoint = line.getMeteringPoint();
 
                 PeriodTimeValueExpression ap = PeriodTimeValueExpression.builder()
                     .meteringPointCode(meteringPoint.getCode())
@@ -91,13 +93,24 @@ public class SvrService {
 
                 Double val = Math.abs(Optional.of(ap.doubleValue()).orElse(0d) - Optional.of(am.doubleValue()).orElse(0d));
 
-                SvrLine line = new SvrLine();
-                line.setHeader(header);
-                line.setMeteringPoint(mps.getMeteringPoint());
-                line.setTypeCode(mps.getTypeCode());
-                line.setVal(val);
+                SvrLine resultLine = new SvrLine();
+                resultLine.setHeader(header);
+                resultLine.setMeteringPoint(line.getMeteringPoint());
+                resultLine.setTypeCode(line.getTypeCode());
+                resultLine.setVal(val);
 
-                resultLines.add(line);
+                if (resultLine.getTranslates() == null)
+                    resultLine.setTranslates(new ArrayList<>());
+
+                for (MeteringPointSettingTranslate lineTranslate : line.getTranslates()) {
+                    SvrLineTranslate resultLineTranslate = new SvrLineTranslate();
+                    resultLineTranslate.setLang(lineTranslate.getLang());
+                    resultLineTranslate.setLine(resultLine);
+                    resultLineTranslate.setName(lineTranslate.getName());
+                    resultLine.getTranslates().add(resultLineTranslate);
+                }
+
+                resultLines.add(resultLine);
                 saveLines(resultLines);
             }
 

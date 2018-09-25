@@ -4,6 +4,7 @@ import calc.entity.calc.MeteringPoint;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -29,4 +30,7 @@ public class SvrLine {
 
     @Column(name = "val")
     private Double val;
+
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<SvrLineTranslate> translates;
 }
