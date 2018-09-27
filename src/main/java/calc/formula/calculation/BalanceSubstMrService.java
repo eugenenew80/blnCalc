@@ -139,9 +139,7 @@ public class BalanceSubstMrService {
             resultNote.setMeteringPoint(note.getMeteringPoint());
             resultNote.setLineNum(note.getLineNum());
 
-            if (resultNote.getTranslates() == null)
-                resultNote.setTranslates(new ArrayList<>());
-
+            resultNote.setTranslates(Optional.ofNullable(resultNote.getTranslates()).orElse(new ArrayList<>()));
             for (BalanceSubstMrNoteTranslate noteTranslate : note.getTranslates()) {
                 BalanceSubstResultMrNoteTranslate resultNoteTranslate = new BalanceSubstResultMrNoteTranslate();
                 resultNoteTranslate.setNote(resultNote);

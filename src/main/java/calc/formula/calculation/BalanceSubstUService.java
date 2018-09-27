@@ -52,7 +52,6 @@ public class BalanceSubstUService {
             List<BalanceSubstULine> uLines = header.getHeader().getULines();
             for (BalanceSubstULine uLine : uLines) {
                 Double val = getVal(uLine.getMeteringPoint(), parU, context);
-
                 BalanceSubstResultULine resultLine = new BalanceSubstResultULine();
                 resultLine.setHeader(header);
                 resultLine.setMeteringPoint(uLine.getMeteringPoint());
@@ -80,6 +79,7 @@ public class BalanceSubstUService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void saveLines(List<BalanceSubstResultULine> resultLines) {
         balanceSubstResultULineRepo.save(resultLines);
+        balanceSubstResultULineRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -298,7 +298,6 @@ public class BalanceSubstTransformerService {
         return value;
     }
 
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void saveLines(List<PowerTransformerValue> transformerLines) {
         powerTransformerValueRepo.save(transformerLines);
