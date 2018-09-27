@@ -6,4 +6,151 @@
         <modifyDataType schemaName="apps" tableName="calc_asp1_result_messages" columnName="error_code" newDataType="varchar2(30)" />
     </changeSet>
 
+    <changeSet id="calc-eug-936" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop not null constraint  in table: calc_asp1_result_lines_tl</comment>
+        <dropNotNullConstraint schemaName="apps" tableName="calc_asp1_result_lines_tl" columnName="name" />
+    </changeSet>
+
+    <changeSet id="calc-eug-937" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_messages</comment>
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="UB_WORK_HOURS_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="UB_VOLTAGE_CLASS_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="UB_TT_TYPE_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="UB_TN_TYPE_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="UB_EEM_TYPE_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="UB_TT_TYPE_RATED_CURRENT_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="UB_TT_TYPE_ACCURACY_CLASS_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+
+        <insert tableName="calc_messages" schemaName="apps">
+            <column name="code" value="UB_TN_TYPE_ACCURACY_CLASS_NOT_FOUND" />
+            <column name="message_type" value="W" />
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-eug-917" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_messages_tl</comment>
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_WORK_HOURS_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Точка учёта отключена" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_WORK_HOURS_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Точка учёта отключена" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_VOLTAGE_CLASS_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан класс напряжения для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_VOLTAGE_CLASS_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан класс напряжения для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_TT_TYPE_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан трансформатор тока для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_TT_TYPE_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан трансформатор тока для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_TN_TYPE_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан трансформатор напряжения для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_TN_TYPE_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан трансформатор напряжения для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_EEM_TYPE_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан тип счётчика для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_EEM_TYPE_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан тип счётчика для точки учёта" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_TT_TYPE_RATED_CURRENT_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан номинальный ток для трансформатора тока" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_TT_TYPE_RATED_CURRENT_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан номинальный ток для трансформатора тока" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_TT_TYPE_ACCURACY_CLASS_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан класс точночти для трансформатора тока" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_TT_TYPE_ACCURACY_CLASS_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан класс точночти для трансформатора тока" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_TN_TYPE_ACCURACY_CLASS_NOT_FOUND" />
+            <column name="lang" value="RU" />
+            <column name="text" value="Не задан класс точночти для трансформатора напряжения" />
+        </insert>
+
+        <insert tableName="calc_messages_tl" schemaName="apps">
+            <column name="code" value="UB_TN_TYPE_ACCURACY_CLASS_NOT_FOUND" />
+            <column name="lang" value="KZ" />
+            <column name="text" value="Не задан класс точночти для трансформатора напряжения" />
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>

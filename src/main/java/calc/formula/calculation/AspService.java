@@ -122,18 +122,13 @@ public class AspService {
                 resultLine.setTreatmentType(line.getTreatmentType());
                 resultLine.setVal(value);
 
-                if (resultLine.getTranslates() == null)
-                    resultLine.setTranslates(new ArrayList<>());
-
+                resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
                 for (AspLineTranslate lineTranslate : line.getTranslates()) {
                     AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
-                    resultLineTranslate.setLang(LangEnum.RU);
+                    resultLineTranslate.setLang(lineTranslate.getLang());
                     resultLineTranslate.setLine(resultLine);
-                    resultLineTranslate.setName(lineTranslate.getName());
-                    if (resultLineTranslate.getName() == null || resultLineTranslate.getName().equals(""))
-                        resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
-                    if (resultLineTranslate.getName() != null && !resultLineTranslate.getName().equals(""))
-                        resultLine.getTranslates().add(resultLineTranslate);
+                    resultLineTranslate.setName(Optional.ofNullable(lineTranslate.getName()).orElse(resultLine.getMeteringPoint().getShortName()));
+                    resultLine.getTranslates().add(resultLineTranslate);
                 }
                 resultLines.add(resultLine);
             }
@@ -163,14 +158,12 @@ public class AspService {
                 resultLine.setTreatmentType(line.getTreatmentType());
                 resultLine.setVal(value);
 
-                if (resultLine.getTranslates() == null)
-                    resultLine.setTranslates(new ArrayList<>());
-
+                resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
                 for (AspLineTranslate lineTranslate : line.getTranslates()) {
                     AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
-                    resultLineTranslate.setLang(LangEnum.RU);
+                    resultLineTranslate.setLang(lineTranslate.getLang());
                     resultLineTranslate.setLine(resultLine);
-                    resultLineTranslate.setName(lineTranslate.getName());
+                    resultLineTranslate.setName(Optional.ofNullable(lineTranslate.getName()).orElse(resultLine.getMeteringPoint().getShortName()));
                     resultLine.getTranslates().add(resultLineTranslate);
                 }
                 resultLines.add(resultLine);
@@ -213,14 +206,12 @@ public class AspService {
                 resultLine.setUndercount(t.getUnderCount());
                 resultLine.setTreatmentType(line.getTreatmentType());
 
-                if (resultLine.getTranslates() == null)
-                    resultLine.setTranslates(new ArrayList<>());
-
+                resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
                 for (AspLineTranslate lineTranslate : line.getTranslates()) {
                     AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
-                    resultLineTranslate.setLang(LangEnum.RU);
+                    resultLineTranslate.setLang(lineTranslate.getLang());
                     resultLineTranslate.setLine(resultLine);
-                    resultLineTranslate.setName(lineTranslate.getName());
+                    resultLineTranslate.setName(Optional.ofNullable(lineTranslate.getName()).orElse(resultLine.getMeteringPoint().getShortName()));
                     resultLine.getTranslates().add(resultLineTranslate);
                 }
                 resultLines.add(resultLine);
@@ -240,14 +231,12 @@ public class AspService {
             resultLine.setLineNum(line.getLineNum());
             resultLine.setTreatmentType(line.getTreatmentType());
 
-            if (resultLine.getTranslates() == null)
-                resultLine.setTranslates(new ArrayList<>());
-
+            resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
             for (AspLineTranslate lineTranslate : line.getTranslates()) {
                 AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
-                resultLineTranslate.setLang(LangEnum.RU);
+                resultLineTranslate.setLang(lineTranslate.getLang());
                 resultLineTranslate.setLine(resultLine);
-                resultLineTranslate.setName(lineTranslate.getName());
+                resultLineTranslate.setName(Optional.ofNullable(lineTranslate.getName()).orElse(resultLine.getMeteringPoint().getShortName()));
                 resultLine.getTranslates().add(resultLineTranslate);
             }
             resultLines.add(resultLine);
@@ -264,9 +253,7 @@ public class AspService {
             resultNote.setLineNum(note.getLineNum());
             resultNote.setNoteNum(note.getNoteNum());
 
-            if (resultNote.getTranslates() == null)
-                resultNote.setTranslates(new ArrayList<>());
-
+            resultNote.setTranslates(Optional.ofNullable(resultNote.getTranslates()).orElse(new ArrayList<>()));
             for (AspNoteTranslate noteTranslate : note.getTranslates()) {
                 AspResultNoteTranslate resultNoteTranslate = new AspResultNoteTranslate();
                 resultNoteTranslate.setNote(resultNote);

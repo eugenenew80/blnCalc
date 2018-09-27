@@ -89,15 +89,22 @@ public class BalanceSubstUbService {
                     .build()
                     .doubleValue();
 
+                workHours = Optional.ofNullable(workHours).orElse(0d);
+                if (workHours.equals(0d)) {
+                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_WORK_HOURS_NOT_FOUND");
+                    continue;
+                }
+
                 MeteringPoint inputMp = balanceSubstResultULineRepo.findAllByHeaderId(header.getId())
                     .stream()
-                    .filter(t -> t.getMeteringPoint().getVoltageClass()!=null && t.getMeteringPoint().getVoltageClass().equals(meteringPoint.getVoltageClass()))
+                    .filter(t -> t.getMeteringPoint().getVoltageClass()!=null)
+                    .filter(t -> t.getMeteringPoint().getVoltageClass().equals(meteringPoint.getVoltageClass()))
                     .map(t -> t.getMeteringPoint())
                     .findFirst()
                     .orElse(meteringPoint);
 
                 if (inputMp.getVoltageClass() == null) {
-                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_UAVG_NOT_FOUND");
+                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_VOLTAGE_CLASS_NOT_FOUND");
                     continue;
                 }
 
@@ -109,6 +116,11 @@ public class BalanceSubstUbService {
                     .build()
                     .doubleValue();
 
+                uAvg = Optional.of(uAvg).orElse(0d);
+                if (uAvg.equals(0d)) {
+                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_UAVG_NOT_FOUND");
+                    continue;
+                }
 
                 List<MeterHistory> meterHistories = mrLines.stream()
                     .filter(t -> t.getMeteringPoint().equals(meteringPoint))
@@ -128,6 +140,36 @@ public class BalanceSubstUbService {
                         TtType ttType = meterHistory.getTtType();
                         TnType tnType = meterHistory.getTnType();
                         EemType eemType = meterHistory.getMeter().getEemType();
+
+                        if (ttType == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TT_TYPE_NOT_FOUND");
+                            continue;
+                        }
+
+                        if (tnType == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TN_TYPE_NOT_FOUND");
+                            continue;
+                        }
+
+                        if (eemType == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_EEM_TYPE_NOT_FOUND");
+                            continue;
+                        }
+
+                        if (ttType.getRatedCurrent1() == null || ttType.getRatedCurrent1().equals(0d)) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TT_TYPE_RATED_CURRENT_NOT_FOUND");
+                            continue;
+                        }
+
+                        if (ttType.getAccuracyClass() == null || ttType.getAccuracyClass().equals(0d)) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TT_TYPE_ACCURACY_CLASS_NOT_FOUND");
+                            continue;
+                        }
+
+                        if (tnType.getAccuracyClass() == null || tnType.getAccuracyClass().equals(0d)) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TN_TYPE_ACCURACY_CLASS_NOT_FOUND");
+                            continue;
+                        }
 
                         String paramCode = direction.equals("1") ? "A+" : "A-";
                         Double w = mrLines.stream()
@@ -160,11 +202,6 @@ public class BalanceSubstUbService {
                             .reduce((t1, t2) -> t1 + t2)
                             .orElse(0d);
 
-                        if (ttType.getRatedCurrent1() == null)
-                            continue;
-
-                        if (ttType.getAccuracyClass() == null)
-                            continue;
 
                         Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / ( 1.73d * uAvg * workHours);
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
@@ -177,16 +214,15 @@ public class BalanceSubstUbService {
                         else                      bttProc = 1.5;
 
                         Double biProc = Math.sqrt(2d) * bttProc;
-                        Double buProc = tnType == null || tnType.getAccuracyClass() == null ? 0d : tnType.getAccuracyClass().getValue();
+                        Double buProc = Optional.ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
                         Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
-                        Double bsoProc = eemType == null || eemType.getAccuracyClass() == null ? 0d : eemType.getAccuracyClass().getValue();
+                        Double bsoProc = Optional.ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
                         Double bProc =  Math.sqrt(Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2)) * 1.1d;
 
                         Double dol = 0d;
-                        if (direction.equals("1")) dol = w / wSum1;
-                        if (direction.equals("2")) dol = w / wSum2;
-
-                        Double b2dol2 = Math.pow(bProc/100d, 2) * Math.pow(dol, 2);
+                        if (direction.equals("1") && !wSum1.equals(0d)) dol = w / wSum1;
+                        if (direction.equals("2") && !wSum2.equals(0d)) dol = w / wSum2;
+                        Double b2dol2 = Math.pow(bProc / 100d, 2) * Math.pow(dol, 2);
 
                         line.setHeader(header);
                         line.setMeteringPoint(meteringPoint);
