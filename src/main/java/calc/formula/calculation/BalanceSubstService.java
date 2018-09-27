@@ -30,44 +30,44 @@ public class BalanceSubstService {
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
     private static final String docCode = "BALANCE";
 
-    public boolean calc(BalanceSubstResultHeader header) {
+    public void calc(BalanceSubstResultHeader header) {
         try {
             logger.info("Balance for substation with headerId " + header.getId() + " started");
             header = balanceSubstResultHeaderRepo.findOne(header.getId());
             if (header.getStatus() != BatchStatusEnum.W)
-                return false;
+                return;
 
             updateStatus(header, BatchStatusEnum.P);
             deleteMessages(header);
 
             if (!balanceSubstMrService.calc(header)) {
                 updateStatus(header, BatchStatusEnum.E);
-                return false;
+                return;
             }
 
             if (!balanceSubstUbService.calc(header)) {
                 updateStatus(header, BatchStatusEnum.E);
-                return false;
+                return;
             }
 
             if (!balanceSubstUService.calc(header)) {
                 updateStatus(header, BatchStatusEnum.E);
-                return false;
+                return;
             }
 
             if (!balanceSubstReactorService.calc(header)) {
                 updateStatus(header, BatchStatusEnum.E);
-                return false;
+                return;
             }
 
             if (!balanceSubstTransformerService.calc(header)) {
                 updateStatus(header, BatchStatusEnum.E);
-                return false;
+                return;
             }
 
             if (!balanceSubstLineService.calc(header)) {
                 updateStatus(header, BatchStatusEnum.E);
-                return false;
+                return;
             }
 
             List<BalanceSubstResultLine> resultLines = balanceSubstResultLineRepo.findAllByHeaderId(header.getId());
@@ -77,10 +77,10 @@ public class BalanceSubstService {
             Double total4 = getTotal(resultLines, "4");
             Double lossFact = total1 - total2 - total3 - total4;
 
-            if (header.getHeader().getMeteringPoint1() ==null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION1_NOT_FOUND");
-            if (header.getHeader().getMeteringPoint2() ==null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION2_NOT_FOUND");
-            if (header.getHeader().getMeteringPoint3() ==null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION3_NOT_FOUND");
-            if (header.getHeader().getMeteringPoint4() ==null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION4_NOT_FOUND");
+            if (header.getHeader().getMeteringPoint1() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION1_NOT_FOUND");
+            if (header.getHeader().getMeteringPoint2() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION2_NOT_FOUND");
+            if (header.getHeader().getMeteringPoint3() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION3_NOT_FOUND");
+            if (header.getHeader().getMeteringPoint4() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION4_NOT_FOUND");
 
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
@@ -97,7 +97,6 @@ public class BalanceSubstService {
             header.setLossFact(lossFact);
 
             updateStatus(header, BatchStatusEnum.C);
-            return true;
         }
 
         catch (Exception e) {
@@ -105,7 +104,6 @@ public class BalanceSubstService {
             updateStatus(header, BatchStatusEnum.E);
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();
-            return false;
         }
     }
 
