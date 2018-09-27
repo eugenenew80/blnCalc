@@ -21,6 +21,9 @@ public class MeteringPoint {
     @Column
     private String name;
 
+    @Column(name = "short_name")
+    private String shortName;
+
     @Column(name = "org_id")
     private Long orgId;
 

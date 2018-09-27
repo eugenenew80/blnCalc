@@ -160,6 +160,12 @@ public class BalanceSubstUbService {
                             .reduce((t1, t2) -> t1 + t2)
                             .orElse(0d);
 
+                        if (ttType.getRatedCurrent1() == null)
+                            continue;
+
+                        if (ttType.getAccuracyClass() == null)
+                            continue;
+
                         Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / ( 1.73d * uAvg * workHours);
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
                         Double ttAcProc = ttType.getAccuracyClass().getValue();

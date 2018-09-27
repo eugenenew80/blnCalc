@@ -130,7 +130,10 @@ public class AspService {
                     resultLineTranslate.setLang(LangEnum.RU);
                     resultLineTranslate.setLine(resultLine);
                     resultLineTranslate.setName(lineTranslate.getName());
-                    resultLine.getTranslates().add(resultLineTranslate);
+                    if (resultLineTranslate.getName() == null || resultLineTranslate.getName().equals(""))
+                        resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
+                    if (resultLineTranslate.getName() != null && !resultLineTranslate.getName().equals(""))
+                        resultLine.getTranslates().add(resultLineTranslate);
                 }
                 resultLines.add(resultLine);
             }

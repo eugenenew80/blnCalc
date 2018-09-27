@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-935" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Modify data type in table: calc_asp1_result_messages</comment>
+        <modifyDataType schemaName="apps" tableName="calc_asp1_result_messages" columnName="error_code" newDataType="varchar2(30)" />
+    </changeSet>
+
+</databaseChangeLog>
