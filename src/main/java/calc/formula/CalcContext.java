@@ -24,6 +24,7 @@ public class CalcContext {
     private Long docId;
     private boolean isMeteringReading;
     private boolean isAsp;
+    private Exception exception;
 
     private Map<String, List<CalcResult>> values;
     private Map<String, List<CalcTrace>> trace;
