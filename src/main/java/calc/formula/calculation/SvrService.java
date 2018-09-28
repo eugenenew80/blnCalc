@@ -68,6 +68,7 @@ public class SvrService {
             List<SvrLine> resultLines = new ArrayList<>();
             for (MeteringPointSetting line : lines) {
                 MeteringPoint meteringPoint = line.getMeteringPoint();
+                if (meteringPoint == null) continue;
 
                 PeriodTimeValueExpression ap = PeriodTimeValueExpression.builder()
                     .meteringPointCode(meteringPoint.getCode())
