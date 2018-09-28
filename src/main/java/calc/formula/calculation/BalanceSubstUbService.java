@@ -171,6 +171,11 @@ public class BalanceSubstUbService {
                             continue;
                         }
 
+                        if (eemType.getAccuracyClass() == null || eemType.getAccuracyClass().equals(0d)) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND");
+                            continue;
+                        }
+
                         String paramCode = direction.equals("1") ? "A+" : "A-";
                         Double w = mrLines.stream()
                             .filter(t -> !t.getIsIgnore())

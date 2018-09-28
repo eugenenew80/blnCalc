@@ -84,6 +84,7 @@ public class AspService {
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
             header.setDataType(DataTypeEnum.OPER);
+
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Metering reading for header " + header.getId() + " completed");
 
@@ -127,7 +128,11 @@ public class AspService {
                     AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
                     resultLineTranslate.setLang(lineTranslate.getLang());
                     resultLineTranslate.setLine(resultLine);
-                    resultLineTranslate.setName(Optional.ofNullable(lineTranslate.getName()).orElse(resultLine.getMeteringPoint().getShortName()));
+
+                    resultLineTranslate.setName(lineTranslate.getName());
+                    if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
+                        resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
+
                     resultLine.getTranslates().add(resultLineTranslate);
                 }
                 resultLines.add(resultLine);
@@ -163,7 +168,11 @@ public class AspService {
                     AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
                     resultLineTranslate.setLang(lineTranslate.getLang());
                     resultLineTranslate.setLine(resultLine);
-                    resultLineTranslate.setName(Optional.ofNullable(lineTranslate.getName()).orElse(resultLine.getMeteringPoint().getShortName()));
+
+                    resultLineTranslate.setName(lineTranslate.getName());
+                    if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
+                        resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
+
                     resultLine.getTranslates().add(resultLineTranslate);
                 }
                 resultLines.add(resultLine);
@@ -211,7 +220,11 @@ public class AspService {
                     AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
                     resultLineTranslate.setLang(lineTranslate.getLang());
                     resultLineTranslate.setLine(resultLine);
-                    resultLineTranslate.setName(Optional.ofNullable(lineTranslate.getName()).orElse(resultLine.getMeteringPoint().getShortName()));
+
+                    resultLineTranslate.setName(lineTranslate.getName());
+                    if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
+                        resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
+
                     resultLine.getTranslates().add(resultLineTranslate);
                 }
                 resultLines.add(resultLine);
@@ -236,7 +249,11 @@ public class AspService {
                 AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
                 resultLineTranslate.setLang(lineTranslate.getLang());
                 resultLineTranslate.setLine(resultLine);
-                resultLineTranslate.setName(Optional.ofNullable(lineTranslate.getName()).orElse(resultLine.getMeteringPoint().getShortName()));
+
+                resultLineTranslate.setName(lineTranslate.getName());
+                if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
+                    resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
+
                 resultLine.getTranslates().add(resultLineTranslate);
             }
             resultLines.add(resultLine);
