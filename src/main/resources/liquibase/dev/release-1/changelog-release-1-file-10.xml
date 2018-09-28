@@ -527,5 +527,52 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="calc-rus-347" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop sequence </comment>
+        <dropSequence schemaName="apps"
+                      sequenceName="calc_doc_asp1_headers_s"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-348" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop sequence </comment>
+        <dropSequence schemaName="apps"
+                      sequenceName="calc_doc_asp1_headers_tl_s"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-349" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop sequence </comment>
+        <dropSequence schemaName="apps"
+                      sequenceName="calc_doc_asp1_lines_s"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-350" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop sequence </comment>
+        <dropSequence schemaName="apps"
+                      sequenceName="calc_doc_asp1_lines_tl_s"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-351" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop sequence </comment>
+        <dropSequence schemaName="apps"
+                      sequenceName="calc_doc_messages_s"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-352" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop sequence </comment>
+        <dropSequence schemaName="apps"
+                      sequenceName="calc_doc_messages_tl_s"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-353" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop sequence </comment>
+        <dropSequence schemaName="apps"
+                      sequenceName="calc_doc_notes_s"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-354" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop sequence </comment>
+        <dropSequence schemaName="apps"
+                      sequenceName="calc_doc_notes_tl_s"/>
+    </changeSet>
 </databaseChangeLog>
 
