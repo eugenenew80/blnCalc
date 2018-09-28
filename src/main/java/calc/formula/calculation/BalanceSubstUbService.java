@@ -157,17 +157,17 @@ public class BalanceSubstUbService {
                         }
 
                         if (ttType.getRatedCurrent1() == null || ttType.getRatedCurrent1().equals(0d)) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TT_TYPE_RATED_CURRENT_NOT_FOUND");
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_RATED_CURRENT_NOT_FOUND");
                             continue;
                         }
 
                         if (ttType.getAccuracyClass() == null || ttType.getAccuracyClass().equals(0d)) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TT_TYPE_ACCURACY_CLASS_NOT_FOUND");
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND");
                             continue;
                         }
 
                         if (tnType.getAccuracyClass() == null || tnType.getAccuracyClass().equals(0d)) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TN_TYPE_ACCURACY_CLASS_NOT_FOUND");
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND");
                             continue;
                         }
 
