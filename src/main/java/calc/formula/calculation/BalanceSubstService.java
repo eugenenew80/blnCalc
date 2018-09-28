@@ -109,9 +109,12 @@ public class BalanceSubstService {
 
     private Double getTotal(List<BalanceSubstResultLine> resultLines, String section) {
         return resultLines.stream()
+            .filter(t -> t.getSection() != null)
+            .filter(t -> t!=null)
+            .filter(t -> t.getVal() != null)
             .filter(t -> t.getSection().equals(section))
-            .map(t -> t.getVal())
-            .reduce((t1, t2) -> Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d))
+            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) )
+            .reduce((t1, t2) -> t1 + t2)
             .orElse(0d);
     }
 
