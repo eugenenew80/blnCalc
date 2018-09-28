@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-
 @RestController
 @RequiredArgsConstructor
 public class FormulaRestController {
@@ -47,11 +46,13 @@ public class FormulaRestController {
         resultDto.setFormulaId(formulaDto.getFormulaId());
         try {
             List<CalcResult> results = calcService.calcFormulas(Arrays.asList(formula), context);
+            if (context.getException()!=null)
+                throw context.getException();
+
            if (!results.isEmpty()) {
-                resultDto.setStatus("S");
                CalcResult result = results.get(0);
                if (formula.getParamType() == ParamTypeEnum.AT)
-                    resultDto.setVal(result.getDoubleValue());
+                   resultDto.setVal(result.getDoubleValue());
                else {
                    Double sum =0d;
                    for (int i=0; i<result.getDoubleValues().length; i++)
@@ -59,7 +60,8 @@ public class FormulaRestController {
                   resultDto.setVal(sum);
                }
 
-                resultDto.setMsg("Формула синтаксички верная");
+               resultDto.setStatus("S");
+               resultDto.setMsg("Формула синтаксички верная");
             }
         }
         catch (Exception e) {

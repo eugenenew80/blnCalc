@@ -185,6 +185,7 @@ public class CalcServiceImpl implements CalcService {
             .src(formula.getText())
             .attributes(attrs)
             .engine(engine)
+            .context(context)
             .build();
     }
 

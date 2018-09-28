@@ -1,5 +1,6 @@
 package calc.formula.expression.impl;
 
+import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,6 +18,7 @@ public class JsExpression implements DoubleExpression {
     private final String src;
     private final Map<String, DoubleExpression> attributes;
     private final ScriptEngine engine;
+    private final CalcContext context;
 
     @Override
     public DoubleExpression doubleExpression() {
@@ -73,7 +75,7 @@ public class JsExpression implements DoubleExpression {
             return eval!=null ? Double.parseDouble(eval.toString()) : null;
         }
         catch (ScriptException e) {
-            e.printStackTrace();
+            context.setException(e);
         }
         return null;
     }
