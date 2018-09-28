@@ -491,5 +491,15 @@
                                tableName="calc_service_values_reconciliations"/>
         <rollback/>
     </changeSet>
+
+
+    <changeSet id="calc-rus-336" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_service_values_reconciliations_l</comment>
+        <dropNotNullConstraint columnDataType="number"
+                               columnName="create_by"
+                               schemaName="apps"
+                               tableName="calc_service_values_reconciliations_l"/>
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
 
