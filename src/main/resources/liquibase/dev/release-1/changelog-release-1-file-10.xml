@@ -492,14 +492,40 @@
         <rollback/>
     </changeSet>
 
-
-    <changeSet id="calc-rus-336" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>drop not null constraint calc_service_values_reconciliations_l</comment>
-        <dropNotNullConstraint columnDataType="number"
-                               columnName="create_by"
-                               schemaName="apps"
-                               tableName="calc_service_values_reconciliations_l"/>
-        <rollback/>
+    <changeSet id="calc-rus-344" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_metering_point_settings</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_metering_point_settings">
+            <column name="org_id" type="number"/>
+        </addColumn>
     </changeSet>
+
+    <changeSet id="calc-rus-345" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_settings to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_point_settings"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_metering_point_settings_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-346" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating index: calc_metering_point_settings</comment>
+        <createIndex indexName="idx_calc_metering_point_settings_n1"
+                     schemaName="apps"
+                     tableName="calc_metering_point_settings"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
 
