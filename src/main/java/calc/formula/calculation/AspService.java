@@ -84,6 +84,7 @@ public class AspService {
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
             header.setDataType(DataTypeEnum.OPER);
+
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Metering reading for header " + header.getId() + " completed");
 
