@@ -75,26 +75,9 @@ public class CalcServiceImpl implements CalcService {
             .collect(toList());
     }
 
-    private Set<MeteringPoint> getChildPoints(MeteringPoint parentPoint, Set<String> set) {
-        Set<MeteringPoint> points = parentPoint.getFormulas().stream()
-            .flatMap(f -> f.getVars().stream())
-            .flatMap(v -> v.getDetails().stream())
-            .map(d -> d.getMeteringPoint())
-            .collect(toSet());
 
-        for (MeteringPoint point : points) {
-            set.add(parentPoint.getCode() + "#" + point.getCode());
-            if (set.contains(point.getCode() + "#" + parentPoint.getCode()))
-                continue;
-
-            points.addAll(getChildPoints(point, set));
-        }
-
-        return points;
-    }
-
-
-    private List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws Exception {
+    @Override
+    public List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws Exception {
         Map<String, Formula> formulaMap = new HashMap<>();
         Map<String, DoubleExpression> expressionMap = new HashMap<>();
         Map<String, Set<String>> codesMap = new HashMap<>();
@@ -142,6 +125,26 @@ public class CalcServiceImpl implements CalcService {
 
         return results;
     }
+
+
+    private Set<MeteringPoint> getChildPoints(MeteringPoint parentPoint, Set<String> set) {
+        Set<MeteringPoint> points = parentPoint.getFormulas().stream()
+                .flatMap(f -> f.getVars().stream())
+                .flatMap(v -> v.getDetails().stream())
+                .map(d -> d.getMeteringPoint())
+                .collect(toSet());
+
+        for (MeteringPoint point : points) {
+            set.add(parentPoint.getCode() + "#" + point.getCode());
+            if (set.contains(point.getCode() + "#" + parentPoint.getCode()))
+                continue;
+
+            points.addAll(getChildPoints(point, set));
+        }
+
+        return points;
+    }
+
 
     private void cacheResult(CalcContext context, CalcResult cacheResult) {
         String code = cacheResult.getMeteringPoint().getCode();

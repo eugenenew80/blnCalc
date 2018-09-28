@@ -1,5 +1,6 @@
 package calc.formula.service;
 
+import calc.entity.calc.Formula;
 import calc.entity.calc.MeteringPoint;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
@@ -12,4 +13,6 @@ public interface CalcService {
     CalcResult calcExpression(DoubleExpression expression);
 
     List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, String param, CalcContext context) throws Exception;
+
+    List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws Exception;
 }

@@ -63,8 +63,6 @@ public class AspService {
                 .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
                 .isAsp(true)
                 .trace(new HashMap<>())
