@@ -125,18 +125,7 @@ public class AspService {
                 resultLine.setTreatmentType(line.getTreatmentType());
                 resultLine.setVal(value);
 
-                resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
-                for (AspLineTranslate lineTranslate : line.getTranslates()) {
-                    AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
-                    resultLineTranslate.setLang(lineTranslate.getLang());
-                    resultLineTranslate.setLine(resultLine);
-
-                    resultLineTranslate.setName(lineTranslate.getName());
-                    if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
-                        resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
-
-                    resultLine.getTranslates().add(resultLineTranslate);
-                }
+                addTranslates(line, resultLine);
                 resultLines.add(resultLine);
             }
         }
@@ -169,18 +158,7 @@ public class AspService {
                 resultLine.setTreatmentType(line.getTreatmentType());
                 resultLine.setVal(value);
 
-                resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
-                for (AspLineTranslate lineTranslate : line.getTranslates()) {
-                    AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
-                    resultLineTranslate.setLang(lineTranslate.getLang());
-                    resultLineTranslate.setLine(resultLine);
-
-                    resultLineTranslate.setName(lineTranslate.getName());
-                    if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
-                        resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
-
-                    resultLine.getTranslates().add(resultLineTranslate);
-                }
+                addTranslates(line, resultLine);
                 resultLines.add(resultLine);
             }
         }
@@ -197,6 +175,19 @@ public class AspService {
                 .stream()
                 .filter(t -> t.getParam().equals(line.getParam()))
                 .collect(Collectors.toList());
+
+            if (meteringReadings.size() == 0) {
+                AspResultLine resultLine = new AspResultLine();
+                resultLine.setHeader(header);
+                resultLine.setLineNum(line.getLineNum());
+                resultLine.setMeteringPoint(line.getMeteringPoint());
+                resultLine.setParam(line.getParam());
+                resultLine.setUnit(line.getParam().getUnit());
+                resultLine.setFormula(line.getFormula());
+                resultLine.setTreatmentType(line.getTreatmentType());
+                addTranslates(line, resultLine);
+                resultLines.add(resultLine);
+            }
 
             for (MeteringReading t : meteringReadings) {
                 AspResultLine resultLine = new AspResultLine();
@@ -220,19 +211,7 @@ public class AspService {
                 resultLine.setUnderCountVal(t.getUnderCountVal());
                 resultLine.setUndercount(t.getUnderCount());
                 resultLine.setTreatmentType(line.getTreatmentType());
-
-                resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
-                for (AspLineTranslate lineTranslate : line.getTranslates()) {
-                    AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
-                    resultLineTranslate.setLang(lineTranslate.getLang());
-                    resultLineTranslate.setLine(resultLine);
-
-                    resultLineTranslate.setName(lineTranslate.getName());
-                    if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
-                        resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
-
-                    resultLine.getTranslates().add(resultLineTranslate);
-                }
+                addTranslates(line, resultLine);
                 resultLines.add(resultLine);
             }
         }
@@ -249,22 +228,25 @@ public class AspService {
             resultLine.setHeader(header);
             resultLine.setLineNum(line.getLineNum());
             resultLine.setTreatmentType(line.getTreatmentType());
-
-            resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
-            for (AspLineTranslate lineTranslate : line.getTranslates()) {
-                AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
-                resultLineTranslate.setLang(lineTranslate.getLang());
-                resultLineTranslate.setLine(resultLine);
-
-                resultLineTranslate.setName(lineTranslate.getName());
-                if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
-                    resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
-
-                resultLine.getTranslates().add(resultLineTranslate);
-            }
+            addTranslates(line, resultLine);
             resultLines.add(resultLine);
         }
         saveLines(resultLines);
+    }
+
+    private void addTranslates(AspLine line, AspResultLine resultLine) {
+        resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
+        for (AspLineTranslate lineTranslate : line.getTranslates()) {
+            AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();
+            resultLineTranslate.setLang(lineTranslate.getLang());
+            resultLineTranslate.setLine(resultLine);
+
+            resultLineTranslate.setName(lineTranslate.getName());
+            if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
+                resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
+
+            resultLine.getTranslates().add(resultLineTranslate);
+        }
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
