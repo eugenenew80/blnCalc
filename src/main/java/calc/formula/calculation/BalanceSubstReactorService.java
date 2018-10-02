@@ -64,9 +64,8 @@ public class BalanceSubstReactorService {
     }
 
     private List<ReactorValue> calcLines(BalanceSubstResultHeader header, CalcContext context) {
-        Unit unit = paramService.getValues()
-            .get("WL")
-            .getUnit();
+        Parameter param = paramService.getValues().get("WL");
+        Unit unit = param.getUnit();
 
         List<ReactorValue> reactorLines = new ArrayList<>();
         for (BalanceSubstPeLine peLine : header.getHeader().getPeLines()) {
@@ -105,7 +104,10 @@ public class BalanceSubstReactorService {
             }
 
             Double val = deltaPr * hours * Math.pow(uAvg / uNom, 2);
-            if (val !=null) val = Math.round(val * 100d) / 100d;
+            if (param != null) {
+                double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
+                if (val != null) val = Math.round(val * rounding) / rounding;
+            }
 
             ReactorValue reactorLine = new ReactorValue();
             reactorLine.setHeader(header);

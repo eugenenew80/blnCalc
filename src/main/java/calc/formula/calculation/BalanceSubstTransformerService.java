@@ -1,6 +1,7 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Parameter;
 import calc.entity.calc.PowerTransformer;
 import calc.entity.calc.Unit;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
@@ -69,9 +70,8 @@ public class BalanceSubstTransformerService {
     }
 
     private List<PowerTransformerValue> calcLines(BalanceSubstResultHeader header, CalcContext context) throws Exception  {
-        Unit unit = paramService.getValues()
-            .get("WL")
-            .getUnit();
+        Parameter param = paramService.getValues().get("WL");
+        Unit unit = param.getUnit();
 
         List<PowerTransformerValue> transformerLines = new ArrayList<>();
         for (BalanceSubstPeLine peLine : header.getHeader().getPeLines()) {
@@ -175,8 +175,11 @@ public class BalanceSubstTransformerService {
                 Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
                 Double valN = totalEH * resistH / (Math.pow(uAvg,2) * operatingTime);
 
-                if (valXX !=null) valXX = Math.round(valXX * 100d) / 100d;
-                if (valN !=null) valN = Math.round(valN * 100d) / 100d;
+                if (param != null) {
+                    double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
+                    if (valXX != null) valXX = Math.round(valXX * rounding) / rounding;
+                    if (valN != null)  valN  = Math.round(valN  * rounding) / rounding;
+                }
 
                 transformerLine.setApH(apH);
                 transformerLine.setAmH(amH);
@@ -227,8 +230,11 @@ public class BalanceSubstTransformerService {
                 Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
                 Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * operatingTime * 1000d);
 
-                if (valXX !=null) valXX = Math.round(valXX * 100d) / 100d;
-                if (valN  !=null) valN  = Math.round(valN * 100d) / 100d;
+                if (param != null) {
+                    double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
+                    if (valXX != null) valXX = Math.round(valXX * rounding) / rounding;
+                    if (valN != null)  valN  = Math.round(valN  * rounding) / rounding;
+                }
 
                 transformerLine.setApL(apL);
                 transformerLine.setAmL(amL);

@@ -110,6 +110,10 @@ public class AspService {
             if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
                 List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), param.getCode(), context);
                 Double value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+                if (param != null) {
+                    double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
+                    if (value != null) value = Math.round(value * rounding) / rounding;
+                }
 
                 AspResultLine resultLine = new AspResultLine();
                 resultLine.setHeader(header);
@@ -150,6 +154,10 @@ public class AspService {
             if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
                 List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), param.getCode(), context);
                 Double value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+                if (param != null) {
+                    double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
+                    if (value != null) value = Math.round(value * rounding) / rounding;
+                }
 
                 AspResultLine resultLine = new AspResultLine();
                 resultLine.setHeader(header);

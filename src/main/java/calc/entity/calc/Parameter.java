@@ -28,4 +28,7 @@ public class Parameter {
     @Column(name = "is_pt")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isPt;
+
+    @Column(name = "digits_rounding")
+    private Integer digitsRounding;
 }

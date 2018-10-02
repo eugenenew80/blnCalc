@@ -10,6 +10,7 @@ import calc.formula.expression.impl.UavgExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
 import calc.formula.service.BalanceSubstResultUService;
 import calc.formula.service.MessageService;
+import calc.formula.service.ParamService;
 import calc.formula.service.WorkingHoursService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultMrLineRepo;
@@ -35,6 +36,7 @@ public class BalanceSubstUbService {
     private final WorkingHoursService workingHoursService;
     private final BalanceSubstResultUService resultUService;
     private final MessageService messageService;
+    private final ParamService paramService;
     private static final String docCode = "UNBALANCE";
 
     public boolean calc(BalanceSubstResultHeader header) {
@@ -279,6 +281,12 @@ public class BalanceSubstUbService {
 
             Double nbdProc = Math.sqrt(r1SumB2D2 + r2SumB2D2) * 100d;
             Double nbdVal = nbdProc * r1SumW / 100d;
+
+            Parameter param = paramService.getValues().get("A+");
+            if (param != null) {
+                double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
+                if (nbdVal != null) nbdVal = Math.round(nbdVal * rounding) / rounding;
+            }
 
             header.setNbdProc(nbdProc);
             header.setNbdVal(nbdVal);

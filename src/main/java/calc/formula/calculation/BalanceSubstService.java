@@ -1,9 +1,11 @@
 package calc.formula.calculation;
 
+import calc.entity.calc.Parameter;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
 import calc.formula.service.MessageService;
+import calc.formula.service.ParamService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultLineRepo;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class BalanceSubstService {
     private final MessageService messageService;
     private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
+    private final ParamService paramService;
     private static final String docCode = "BALANCE";
 
     public void calc(BalanceSubstResultHeader header) {
@@ -75,6 +78,21 @@ public class BalanceSubstService {
             Double total2 = getTotal(resultLines, "2");
             Double total3 = getTotal(resultLines, "3");
             Double total4 = getTotal(resultLines, "4");
+
+            Parameter parAp = paramService.getValues().get("A+");
+            if (parAp != null) {
+                double rounding =  Math.pow(10, Optional.ofNullable(parAp.getDigitsRounding()).orElse(0));
+                if (total1 != null) total1 = Math.round(total1 * rounding) / rounding;
+            }
+
+            Parameter parAm = paramService.getValues().get("A-");
+            if (parAm != null) {
+                double rounding =  Math.pow(10, Optional.ofNullable(parAm.getDigitsRounding()).orElse(0));
+                if (total2 != null) total2 = Math.round(total2 * rounding) / rounding;
+                if (total2 != null) total3 = Math.round(total3 * rounding) / rounding;
+                if (total4 != null) total4 = Math.round(total4 * rounding) / rounding;
+            }
+
             Double lossFact = total1 - total2 - total3 - total4;
 
             if (header.getHeader().getMeteringPoint1() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION1_NOT_FOUND");
