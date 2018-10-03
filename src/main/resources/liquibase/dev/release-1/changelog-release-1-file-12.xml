@@ -136,4 +136,374 @@
         </insert>
     </changeSet>
 
+
+    <changeSet id="calc-eug-939" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_mps_notes</comment>
+        <createTable tableName="calc_mps_notes" schemaName="apps" remarks="Примечания к настройке акта сверки объемов оказанных услуг">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="contract_id" type="number" remarks="Идентификатор договора">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note_num" type="number" remarks="Номер примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-940" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_mps_notes</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_mps_notes"
+                schemaName="apps"
+                tableName="calc_mps_notes"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-941" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_mps_notes</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_mps_notes_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-942" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_mps_notes</comment>
+        <createIndex indexName="idx_calc_mps_notes_1"
+                     schemaName="apps"
+                     tableName="calc_mps_notes"
+                     unique="false">
+            <column name="contract_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-943" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_mps_notes to cm_doc_keg_cte</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mps_notes"
+                baseColumnNames="contract_id"
+                constraintName="fk_calc_mps_notes_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_keg_cte"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-944" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_mps_notes to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mps_notes"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_mps_notes_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-945" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_mps_notes_tl</comment>
+        <createTable tableName="calc_mps_notes_tl" schemaName="apps" remarks="Перевод - примечания к настройке акта съема сверки объемов оказанных услуг">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="mps_note_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-946" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_mps_notes_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_mps_notes_tl"
+                schemaName="apps"
+                tableName="calc_mps_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-947" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_mps_notes_tl</comment>
+        <addUniqueConstraint
+                columnNames="mps_note_id, lang"
+                constraintName="uk_calc_mps_notes_tl_1"
+                schemaName="apps"
+                tableName="calc_mps_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-948" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_mps_notes_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_mps_notes_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-949" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_mps_notes_tl</comment>
+        <createIndex indexName="idx_calc_mps_notes_tl_1" schemaName="apps" tableName="calc_mps_notes_tl">
+            <column name="mps_note_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-950" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_mps_notes_tl to calc_mps_notes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mps_notes_tl"
+                baseColumnNames="mps_note_id"
+                constraintName="fk_calc_mps_notes_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_mps_notes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-951" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_svr_notes</comment>
+        <createTable tableName="calc_svr_notes" schemaName="apps" remarks="Примечания к акту сверки объемов оказанных услуг">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="svr_id" type="number" remarks="Идентификатор акт сверки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note_num" type="number" remarks="Номер примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-952" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_svr_notes</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_svr_notes"
+                schemaName="apps"
+                tableName="calc_svr_notes"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-953" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_svr_notes</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_svr_notes_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-954" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_svr_notes</comment>
+        <createIndex indexName="idx_calc_svr_notes_1"
+                     schemaName="apps"
+                     tableName="calc_svr_notes"
+                     unique="false">
+            <column name="svr_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-955" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_svr_notes to calc_service_values_reconciliations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_svr_notes"
+                baseColumnNames="svr_id"
+                constraintName="fk_calc_svr_notes_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_service_values_reconciliations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-956" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_svr_notes to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_svr_notes"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_svr_notes_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-957" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_svr_notes_tl</comment>
+        <createTable tableName="calc_svr_notes_tl" schemaName="apps" remarks="Перевод - примечания к акту съема сверки объемов оказанных услуг">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="svr_note_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-958" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_svr_notes_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_svr_notes_tl"
+                schemaName="apps"
+                tableName="calc_svr_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-959" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_svr_notes_tl</comment>
+        <addUniqueConstraint
+                columnNames="svr_note_id, lang"
+                constraintName="uk_calc_svr_notes_tl_1"
+                schemaName="apps"
+                tableName="calc_svr_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-960" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_svr_notes_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_svr_notes_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-961" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_svr_notes_tl</comment>
+        <createIndex indexName="idx_calc_svr_notes_tl_1" schemaName="apps" tableName="calc_svr_notes_tl">
+            <column name="svr_note_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-962" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_svr_notes_tl to calc_svr_notes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_svr_notes_tl"
+                baseColumnNames="svr_note_id"
+                constraintName="fk_calc_svr_notes_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_svr_notes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
 </databaseChangeLog>

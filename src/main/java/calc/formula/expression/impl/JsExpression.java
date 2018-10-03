@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toCollection;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -27,13 +27,11 @@ public class JsExpression implements DoubleExpression {
 
     @Override
     public Set<String> pointCodes() {
-        Set<String> set = attributes
+        return attributes
             .values()
             .stream()
             .flatMap(t -> t.pointCodes().stream())
-            .collect(toSet());
-
-        return new TreeSet<>(set);
+            .collect(toCollection(TreeSet::new));
     }
 
     @Override
@@ -52,10 +50,12 @@ public class JsExpression implements DoubleExpression {
         for (int i=0; i<count; i++) {
             final ScriptContext ctx = new SimpleScriptContext();
             int ind = i;
-            attributes.keySet().stream().forEach(key -> ctx.setAttribute(key, attrs.get(key)[ind], ScriptContext.ENGINE_SCOPE));
+            attributes.keySet()
+                .stream()
+                .forEach(key -> ctx.setAttribute(key, attrs.get(key)[ind], ScriptContext.ENGINE_SCOPE));
+
             results[i] = eval(src, ctx);
         }
-
         return results;
     }
 
@@ -64,7 +64,10 @@ public class JsExpression implements DoubleExpression {
         if (src.equals("a0") && attributes.size()==1) return attributes.get("a0").doubleValue();
 
         final ScriptContext ctx = new SimpleScriptContext();
-        attributes.keySet().stream().forEach(key -> ctx.setAttribute(key, attributes.get(key).doubleValue(), ScriptContext.ENGINE_SCOPE));
+        attributes.keySet()
+            .stream()
+            .forEach(key -> ctx.setAttribute(key, attributes.get(key).doubleValue(), ScriptContext.ENGINE_SCOPE));
+
         Double eval = eval(src, ctx);
         return eval;
     }
