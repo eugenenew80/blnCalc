@@ -1,6 +1,7 @@
 package calc.entity.calc.svr;
 
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Organization;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
@@ -30,6 +31,10 @@ public class SvrLine {
 
     @Column(name = "val")
     private Double val;
+
+    @ManyToOne
+    @JoinColumn(name = "org_id")
+    private Organization organization;
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<SvrLineTranslate> translates;

@@ -3,6 +3,7 @@ package calc.entity.calc.svr;
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.ContractKeg;
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Organization;
 import calc.entity.calc.bs.mr.BalanceSubstMrNoteTranslate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -40,6 +41,10 @@ public class MeteringPointSetting {
     @Column(name = "is_total")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isTotal;
+
+    @ManyToOne
+    @JoinColumn(name = "org_id")
+    private Organization organization;
 
     @OneToMany(mappedBy = "pointSetting", fetch = FetchType.EAGER)
     private List<MeteringPointSettingTranslate> translates;

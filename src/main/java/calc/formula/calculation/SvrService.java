@@ -67,6 +67,9 @@ public class SvrService {
 
             List<SvrLine> resultLines = new ArrayList<>();
             for (MeteringPointSetting line : lines) {
+                if (line.getOrganization()!=null && !line.getOrganization().equals(header.getOrganization()))
+                    continue;
+
                 MeteringPoint meteringPoint = line.getMeteringPoint();
                 if (meteringPoint == null) continue;
 
