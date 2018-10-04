@@ -102,6 +102,7 @@ public class SvrService {
                 resultLine.setMeteringPoint(line.getMeteringPoint());
                 resultLine.setTypeCode(line.getTypeCode());
                 resultLine.setVal(val);
+                resultLine.setOrganization(header.getOrganization());
 
                 if (resultLine.getTranslates() == null)
                     resultLine.setTranslates(new ArrayList<>());
