@@ -574,5 +574,14 @@
         <dropSequence schemaName="apps"
                       sequenceName="calc_doc_notes_tl_s"/>
     </changeSet>
+
+    <changeSet id="calc-rus-355" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_metering_point_settings</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations_l">
+            <column name="org_id" type="number" remarks="Идентификатор филиала"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
