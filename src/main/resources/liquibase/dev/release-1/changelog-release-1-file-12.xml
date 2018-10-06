@@ -505,5 +505,22 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-963" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_asp1_lines</comment>
+        <addColumn schemaName="apps" tableName="calc_asp1_lines">
+            <column name="is_bold" type="number"  defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-964" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_asp1_result_lines</comment>
+        <addColumn schemaName="apps" tableName="calc_asp1_result_lines">
+            <column name="is_bold" type="number"  defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
