@@ -508,7 +508,7 @@
     <changeSet id="calc-eug-963" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Adding column to table: calc_asp1_lines</comment>
         <addColumn schemaName="apps" tableName="calc_asp1_lines">
-            <column name="is_bold" type="number"  defaultValue="0">
+            <column name="is_bold" type="number"  defaultValue="0" remarks="Выделять жирным">
                 <constraints nullable="false" />
             </column>
         </addColumn>
@@ -517,9 +517,38 @@
     <changeSet id="calc-eug-964" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Adding column to table: calc_asp1_result_lines</comment>
         <addColumn schemaName="apps" tableName="calc_asp1_result_lines">
-            <column name="is_bold" type="number"  defaultValue="0">
+            <column name="is_bold" type="number"  defaultValue="0" remarks="Выделять жирным">
                 <constraints nullable="false" />
             </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-965" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Add comments to the columns: mdfem_history</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            comment on column apps.mdfem_history.counter_factor is 'Расчётный коэффициент';
+        </sql>
+    </changeSet>
+
+    <changeSet id="calc-eug-966" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: mdfem_history</comment>
+        <addColumn schemaName="apps" tableName="mdfem_history">
+            <column name="meter_tf_tt" type="number"  defaultValue="1" remarks="Коэффициент трансформации тока запрограммированный в самом счетчике">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="meter_tf_tn" type="number"  defaultValue="1" remarks="Коэффициент трансформации напряжения запрограммированный в самом счетчике">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="is_tt_installed" type="number"  defaultValue="1" remarks="Трансформатор тока установлен">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="is_tn_installed" type="number"  defaultValue="1" remarks="Трансформатор напряжения установлен">
+                <constraints nullable="false" />
+            </column>
+
         </addColumn>
     </changeSet>
 
