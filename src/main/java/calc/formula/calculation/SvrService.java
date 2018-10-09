@@ -1,18 +1,13 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
-import calc.entity.calc.asp.AspLineTranslate;
-import calc.entity.calc.asp.AspResultLineTranslate;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
-import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.svr.*;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.PeriodTimeValueService;
-import calc.repo.calc.MeteringPointSettingRepo;
-import calc.repo.calc.SvrHeaderRepo;
-import calc.repo.calc.SvrLineRepo;
+import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +27,8 @@ public class SvrService {
     private final SvrLineRepo svrLineRepo;
     private final MeteringPointSettingRepo meteringPointSettingRepo;
     private final PeriodTimeValueService periodTimeValueService;
+    private final SvrNoteRepo svrNoteRepo;
+    private final MeteringPointSettingNoteRepo mpsRepo;
     private static final String docCode = "SVR";
 
     public boolean calc(SvrHeader header) {
@@ -119,6 +116,7 @@ public class SvrService {
                 saveLines(resultLines);
             }
 
+            copyNotes(header);
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
             header.setDataType(DataTypeEnum.OPER);
@@ -136,6 +134,31 @@ public class SvrService {
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void copyNotes(SvrHeader header) {
+        List<MeteringPointSettingNote> mpsNotes = mpsRepo.findAllByContractId(header.getContract().getId());
+
+        List<SvrNote> resultNotes = new ArrayList<>();
+        for (MeteringPointSettingNote note : mpsNotes) {
+            SvrNote resultNote = new SvrNote();
+            resultNote.setHeader(header);
+            resultNote.setNoteNum(note.getNoteNum());
+            resultNote.setOrg(note.getOrg());
+
+            resultNote.setTranslates(Optional.ofNullable(resultNote.getTranslates()).orElse(new ArrayList<>()));
+            for (MeteringPointSettingNoteTranslate noteTranslate : note.getTranslates()) {
+                SvrNoteTranslate resultNoteTranslate = new SvrNoteTranslate();
+                resultNoteTranslate.setNote(resultNote);
+                resultNoteTranslate.setLang(noteTranslate.getLang());
+                resultNoteTranslate.setNoteText(noteTranslate.getNoteText());
+                resultNote.getTranslates().add(resultNoteTranslate);
+            }
+            resultNotes.add(resultNote);
+        }
+        svrNoteRepo.save(resultNotes);
+        svrNoteRepo.flush();
+    }
+
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void saveLines(List<SvrLine> lines) {
@@ -148,6 +171,11 @@ public class SvrService {
         for (int i=0; i<lines.size(); i++)
             svrLineRepo.delete(lines.get(i));
         svrLineRepo.flush();
+
+        List<SvrNote> notes = svrNoteRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<notes.size(); i++)
+            svrNoteRepo.delete(notes.get(i));
+        svrNoteRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
