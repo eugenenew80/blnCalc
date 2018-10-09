@@ -583,5 +583,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-rus-356" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop not null constraint calc_metering_data_sources_tl</comment>
+        <dropNotNullConstraint columnDataType="varchar2(300)"
+                               columnName="contact_info"
+                               schemaName="apps"
+                               tableName="calc_metering_data_sources_tl"/>
+        <rollback/>
+    </changeSet>
+
+
 </databaseChangeLog>
 
