@@ -33,6 +33,7 @@ public class AspService {
     private final AspResultHeaderRepo aspResultHeaderRepo;
     private final AspResultLineRepo aspResultLineRepo;
     private final AspResultNoteRepo aspResultNoteRepo;
+    private final AspResultAppRepo aspResultAppRepo;
     private final MessageService messageService;
     private final MrService mrService;
     private final ParameterRepo parameterRepo;
@@ -78,6 +79,7 @@ public class AspService {
             calcEmptyRows(header, context);
             calcOutRows(header, context);
             copyNotes(header);
+            copyApps(header);
 
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
@@ -273,6 +275,28 @@ public class AspService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void copyApps(AspResultHeader header) {
+        List<AspResultApp> resultApps = new ArrayList<>();
+        for (AspApp app : header.getHeader().getApps()) {
+            AspResultApp resultApp = new AspResultApp();
+            resultApp.setHeader(header);
+            resultApp.setAppNum(app.getAppNum());
+
+            resultApp.setTranslates(Optional.ofNullable(resultApp.getTranslates()).orElse(new ArrayList<>()));
+            for (AspAppTranslate appTranslate : app.getTranslates()) {
+                AspResultAppTranslate resultAppTranslate = new AspResultAppTranslate();
+                resultAppTranslate.setApp(resultApp);
+                resultAppTranslate.setLang(appTranslate.getLang());
+                resultAppTranslate.setAppName(appTranslate.getAppName());
+                resultApp.getTranslates().add(resultAppTranslate);
+            }
+            resultApps.add(resultApp);
+        }
+        aspResultAppRepo.save(resultApps);
+        aspResultAppRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void saveLines(List<AspResultLine> lines) {
         aspResultLineRepo.save(lines);
         aspResultLineRepo.flush();
@@ -289,6 +313,11 @@ public class AspService {
         for (int i=0; i<notes.size(); i++)
             aspResultNoteRepo.delete(notes.get(i));
         aspResultNoteRepo.flush();
+
+        List<AspResultApp> apps = aspResultAppRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<apps.size(); i++)
+            aspResultAppRepo.delete(apps.get(i));
+        aspResultAppRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

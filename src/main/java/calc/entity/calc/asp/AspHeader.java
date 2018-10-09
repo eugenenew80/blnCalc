@@ -40,4 +40,7 @@ public class AspHeader {
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<AspNote> notes;
+
+    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
+    private List<AspApp> apps;
 }
