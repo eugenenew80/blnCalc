@@ -26,6 +26,9 @@ public class BalanceSubstResultMrLine {
     @Column(name = "section")
     private String section;
 
+    @Column(name = "sub_section")
+    private String subSection;
+
     @ManyToOne
     @JoinColumn(name = "metering_point_id")
     private MeteringPoint meteringPoint;

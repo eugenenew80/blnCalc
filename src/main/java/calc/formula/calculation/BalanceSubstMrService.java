@@ -53,8 +53,9 @@ public class BalanceSubstMrService {
 
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
-                List<MeteringReading> meteringReadings = mrService.calc(mrLine.getMeteringPoint(), context);
+                MeteringPoint meteringPoint = mrLine.getMeteringPoint();
 
+                List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context);
                 for (MeteringReading t : meteringReadings) {
                     BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
 
@@ -71,7 +72,7 @@ public class BalanceSubstMrService {
                     }
 
                     line.setHeader(header);
-                    line.setMeteringPoint(mrLine.getMeteringPoint());
+                    line.setMeteringPoint(meteringPoint);
                     line.setSection(section);
                     line.setBypassMeteringPoint(t.getBypassMeteringPoint());
                     line.setBypassMode(t.getBypassMode());
@@ -90,6 +91,9 @@ public class BalanceSubstMrService {
                     line.setVal(t.getVal());
                     line.setUnderCountVal(t.getUnderCountVal());
                     line.setUndercount(t.getUnderCount());
+                    if (meteringPoint.getVoltageClass()!=null)
+                        line.setSubSection(meteringPoint.getVoltageClass().getValue().toString());
+
                     resultLines.add(line);
                 }
             }

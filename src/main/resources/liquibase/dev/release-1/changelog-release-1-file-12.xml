@@ -889,4 +889,13 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-eug-990" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_bs_result_mr_lines</comment>
+        <addColumn schemaName="apps" tableName="calc_bs_result_mr_lines">
+            <column name="sub_section" type="varchar2(10)"  remarks="Подраздел">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
