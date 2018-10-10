@@ -881,4 +881,12 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-989" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: mdfem_history</comment>
+        <addColumn schemaName="apps" tableName="mdfem_history">
+            <column name="transform_factor" type="number"  defaultValue="1" remarks="Общий коэффициент трансформации тока и напряжения">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
