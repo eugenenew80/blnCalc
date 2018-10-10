@@ -231,7 +231,7 @@ public class MrServiceImpl implements MrService {
     }
 
     private List<Parameter> getParameters(List<MeterHistory> meters) {
-        if (meters==null || meters.size()==0)
+        if (meters==null || meters.size()==0 || meters.get(0).getMeter() == null)
             return mapParams.values().stream().collect(toList());
 
         List<Parameter> parameters = new ArrayList<>();
