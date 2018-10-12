@@ -18,7 +18,7 @@ public class AspAppTranslate {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "asp1_note_id")
+    @JoinColumn(name = "asp1_app_id")
     private AspApp app;
 
     @Column(name="lang")
