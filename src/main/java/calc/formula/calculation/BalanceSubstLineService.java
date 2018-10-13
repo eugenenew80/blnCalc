@@ -182,8 +182,8 @@ public class BalanceSubstLineService {
 
         if (Optional.of(val).orElse(0d) == 0d) {
             try {
-                List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(bsLine.getMeteringPoint()), param, context);
-                val = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+                CalcResult result = calcService.calcMeteringPoint(bsLine.getMeteringPoint(), param, context);
+                val = result!=null ? result.getDoubleValue() : null;
             }
             catch (Exception e) {
                 e.printStackTrace();

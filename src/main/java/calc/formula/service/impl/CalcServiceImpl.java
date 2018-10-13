@@ -8,10 +8,10 @@ import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.formula.exception.CycleDetectionException;
 import calc.formula.expression.DoubleExpression;
-import calc.formula.expression.StringExpression;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import javax.script.ScriptEngine;
 import java.time.LocalDateTime;
@@ -31,69 +31,45 @@ public class CalcServiceImpl implements CalcService {
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
 
-    public CalcResult calcStr(String text, CalcContext context) throws Exception {
-        Formula formula = new Formula();
-        formula.setText(text);
-
-        DoubleExpression expression = expressionService.parse(formula, context);
-        return calcExpression(expression);
-    }
-
     @Override
-    public CalcResult calcExpression(DoubleExpression expression) {
-        CalcResult result = new CalcResult();
-        result.setDoubleValue(expression.doubleValue());
-        result.setDoubleValues(expression.doubleValues());
+    public CalcResult calcMeteringPoint(MeteringPoint point, String param, CalcContext context) throws Exception {
+        Formula formula = point.getFormulas()
+            .stream()
+            .filter(t -> t.getParam().getCode().equals(param))
+            .findFirst()
+            .orElse(null);
 
-        if (expression instanceof StringExpression) {
-            StringExpression stringExpression = (StringExpression) expression;
-            result.setStringValue(stringExpression.stringValue());
-        }
+        if (formula == null) return null;
 
-        return result;
-    }
-
-    @Override
-    public List<CalcResult> calcMeteringPoints(List<MeteringPoint> points, String param, CalcContext context) throws Exception {
         Set<String> set = new HashSet<>();
-        List<MeteringPoint> allPoints = points.stream()
-            .flatMap(t -> getChildPoints(t, set).stream())
-            .collect(toList());
+        Set<MeteringPoint> childPoints = getChildPoints(point, set);
 
-        allPoints.addAll(points);
-
-        List<Formula> formulas = allPoints.stream()
+        List<Formula> formulas = childPoints.stream()
             .flatMap(p -> p.getFormulas().stream())
-            .filter(f -> f.getParam().getCode().equals(param))
             .collect(Collectors.toList());
+        formulas.add(formula);
 
         List<CalcResult> results = calcFormulas(formulas, context);
-
         return results.stream()
-            .filter(r -> points.stream()
-            .filter(t -> t.getCode().equals(r.getMeteringPoint().getCode())).findFirst().isPresent())
-            .collect(toList());
+            .filter(t -> t.getMeteringPoint().equals(point))
+            .findFirst()
+            .orElse(null);
     }
-
 
     @Override
     public List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws Exception {
-        Map<String, Formula> formulaMap = new HashMap<>();
-        Map<String, DoubleExpression> expressionMap = new HashMap<>();
-        Map<String, Set<String>> codesMap = new HashMap<>();
+        Map<String, Pair<Formula, DoubleExpression>> expressions = new HashMap<>();
         for (Formula formula : formulas) {
-            formulaMap.putIfAbsent(formula.getMeteringPoint().getCode(), formula);
             DoubleExpression expression = buildExpression(formula, context);
-            expressionMap.putIfAbsent(formula.getMeteringPoint().getCode(), expression);
-            codesMap.putIfAbsent(formula.getMeteringPoint().getCode(), expression.pointCodes());
+            expressions.putIfAbsent(formula.getMeteringPoint().getCode(), Pair.of(formula, expression));
         }
 
         List<CalcResult> results = new ArrayList<>();
         try {
-            List<String> pointCodes = expressionService.sort(codesMap);
-            for (String pointCode : pointCodes) {
-                DoubleExpression expression = expressionMap.get(pointCode);
-                Formula formula = formulaMap.get(pointCode);
+            List<String> sortedPointCodes = sort(expressions);
+            for (String pointCode : sortedPointCodes) {
+                Formula formula = expressions.get(pointCode).getFirst();
+                DoubleExpression expression = expressions.get(pointCode).getSecond();
 
                 CalcResult result = new CalcResult();
                 result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
@@ -126,23 +102,31 @@ public class CalcServiceImpl implements CalcService {
         return results;
     }
 
+    private List<String> sort(Map<String, Pair<Formula, DoubleExpression>> expressions) throws CycleDetectionException {
+        Map<String, Set<String>> codesMap = new HashMap<>();
+        for (String pointCode : expressions.keySet())
+            codesMap.putIfAbsent(pointCode, expressions.get(pointCode).getSecond().pointCodes());
 
-    private Set<MeteringPoint> getChildPoints(MeteringPoint parentPoint, Set<String> set) {
-        Set<MeteringPoint> points = parentPoint.getFormulas().stream()
-                .flatMap(f -> f.getVars().stream())
-                .flatMap(v -> v.getDetails().stream())
-                .map(d -> d.getMeteringPoint())
-                .collect(toSet());
+        List<String> pointCodes = expressionService.sort(codesMap);
+        return pointCodes;
+    }
 
-        for (MeteringPoint point : points) {
-            set.add(parentPoint.getCode() + "#" + point.getCode());
-            if (set.contains(point.getCode() + "#" + parentPoint.getCode()))
+    private Set<MeteringPoint> getChildPoints(MeteringPoint rootPoint, Set<String> set) {
+        Set<MeteringPoint> childPoints = rootPoint.getFormulas().stream()
+            .flatMap(f -> f.getVars().stream())
+            .flatMap(v -> v.getDetails().stream())
+            .map(d -> d.getMeteringPoint())
+            .collect(toSet());
+
+        for (MeteringPoint point : childPoints) {
+            set.add(rootPoint.getCode() + "#" + point.getCode());
+            if (set.contains(point.getCode() + "#" + rootPoint.getCode()))
                 continue;
 
-            points.addAll(getChildPoints(point, set));
+            childPoints.addAll(getChildPoints(point, set));
         }
 
-        return points;
+        return childPoints;
     }
 
 

@@ -288,8 +288,8 @@ public class BalanceSubstTransformerService {
 
         Double value;
         if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
-            List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(meteringPoint), param, context);
-            value = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+            CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+            value = result!=null ? result.getDoubleValue() : null;
         }
         else {
             value = MrExpression.builder()
