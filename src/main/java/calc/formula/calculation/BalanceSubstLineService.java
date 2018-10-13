@@ -3,10 +3,11 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.formula.CalcContext;
+import calc.formula.CalcResult;
+import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.MrExpression;
-import calc.formula.service.BalanceSubstResultMrService;
-import calc.formula.service.MessageService;
-import calc.formula.service.ParamService;
+import calc.formula.expression.impl.PeriodTimeValueExpression;
+import calc.formula.service.*;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultLineRepo;
 import calc.repo.calc.BalanceSubstResultNoteRepo;
@@ -23,11 +24,12 @@ import java.util.*;
 @RequiredArgsConstructor
 public class BalanceSubstLineService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstLineService.class);
-    private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
     private final ParamService paramService;
     private final BalanceSubstResultMrService mrService;
+    private final PeriodTimeValueService periodTimeValueService;
     private final BalanceSubstResultNoteRepo balanceSubstResultNoteRepo;
+    private final CalcService calcService;
     private final MessageService messageService;
     private static final String docCode = "BALANCE";
     private Map<String, Parameter> mapParams = null;
@@ -155,14 +157,40 @@ public class BalanceSubstLineService {
     }
 
     private Double getMrVal(BalanceSubstLine bsLine, String param, CalcContext context) {
-        return MrExpression.builder()
+        if (bsLine.getMeteringPoint().getMeteringPointTypeId().equals(1l)) {
+            return MrExpression.builder()
+                .meteringPointCode(bsLine.getMeteringPoint().getCode())
+                .parameterCode(param)
+                .rate(bsLine.getRate())
+                .context(context)
+                .service(mrService)
+                .build()
+                .doubleValue();
+        }
+
+        Double val = PeriodTimeValueExpression.builder()
             .meteringPointCode(bsLine.getMeteringPoint().getCode())
             .parameterCode(param)
-            .rate(bsLine.getRate())
+            .rate(1d)
+            .startHour((byte) 0)
+            .endHour((byte) 23)
+            .periodType(context.getPeriodType())
             .context(context)
-            .service(mrService)
+            .service(periodTimeValueService)
             .build()
             .doubleValue();
+
+        if (Optional.of(val).orElse(0d) == 0d) {
+            try {
+                List<CalcResult> results = calcService.calcMeteringPoints(Arrays.asList(bsLine.getMeteringPoint()), param, context);
+                val = results.size() > 0 ? results.get(0).getDoubleValue() : null;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return val;
     }
 
     private Map<String, String> getSections(BalanceSubstLine bLine) {

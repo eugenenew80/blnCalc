@@ -88,13 +88,14 @@ public class BalanceSubstTransformerService {
             MeteringPoint inputMpM = transformer.getInputMpM();
             MeteringPoint inputMpL = transformer.getInputMpL();
             MeteringPoint inputMp =  transformer.getInputMp();
+            MeteringPoint inptutMpW22 = inputMpH != null ? inputMpH : inputMpL;
 
             if  (transformer.getWindingsNumber().equals(3l) && (inputMp == null || inputMpH == null || inputMpM == null || inputMpL == null)) {
                 messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND");
                 continue;
             }
 
-            if  (transformer.getWindingsNumber().equals(2l) && (inputMp == null || inputMpH == null)) {
+            if  (transformer.getWindingsNumber().equals(2l) && (inputMp == null || inptutMpW22 == null)) {
                 messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND");
                 continue;
             }
@@ -162,12 +163,12 @@ public class BalanceSubstTransformerService {
             transformerLine.setMeteringPointOut(peLine.getMeteringPointOut());
 
             if (transformer.getWindingsNumber().equals(2l)) {
-                Double apH = getMrVal(inputMpH, "A+", context);
-                Double amH = getMrVal(inputMpH, "A-", context);
+                Double apH = getMrVal(inptutMpW22, "A+", context);
+                Double amH = getMrVal(inptutMpW22, "A-", context);
                 Double totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
 
-                Double rpH = getMrVal(inputMpH, "R+", context);
-                Double rmH = getMrVal(inputMpH, "R-", context);;
+                Double rpH = getMrVal(inptutMpW22, "R+", context);
+                Double rmH = getMrVal(inptutMpW22, "R-", context);;
                 Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);
 
                 Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
@@ -196,7 +197,7 @@ public class BalanceSubstTransformerService {
 
             if (transformer.getWindingsNumber().equals(3l)) {
                 Double apL = getMrVal(inputMpL, "A+", context);
-                Double amL = getMrVal(inputMpL, "A-", context);;
+                Double amL = getMrVal(inputMpL, "A-", context);
                 Double totalAL = Optional.ofNullable(apL).orElse(0d) + Optional.ofNullable(amL).orElse(0d);
 
                 Double rpL = getMrVal(inputMpL, "R+", context);
@@ -208,15 +209,15 @@ public class BalanceSubstTransformerService {
                 Double totalAM = Optional.ofNullable(apM).orElse(0d) + Optional.ofNullable(amM).orElse(0d);
 
                 Double rpM = getMrVal(inputMpM, "R+", context);
-                Double rmM = getMrVal(inputMpM, "R-", context);;
+                Double rmM = getMrVal(inputMpM, "R-", context);
                 Double totalRM = Optional.ofNullable(rpM).orElse(0d) + Optional.ofNullable(rmM).orElse(0d);;
 
                 Double apH = getMrVal(inputMpH, "A+", context);
-                Double amH = getMrVal(inputMpH, "A-", context);;
+                Double amH = getMrVal(inputMpH, "A-", context);
                 Double totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
 
                 Double rpH = getMrVal(inputMpH, "R+", context);
-                Double rmH = getMrVal(inputMpH, "R-", context);;
+                Double rmH = getMrVal(inputMpH, "R-", context);
                 Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);;
 
                 Double totalEL = Math.pow(totalAL, 2) + Math.pow(totalRL, 2);

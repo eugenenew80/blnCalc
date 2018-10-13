@@ -35,13 +35,15 @@ public class BalanceSubstUService {
             logger.info("U avg for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
+                .docCode(docCode)
+                .docId(header.getId())
+                .headerId(header.getId())
+                .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
-                .docCode(docCode)
-                .docId(header.getId())
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
@@ -97,7 +99,7 @@ public class BalanceSubstUService {
             .rate(1d)
             .startHour((byte) 0)
             .endHour((byte) 23)
-            .periodType(PeriodTypeEnum.H)
+            .periodType(context.getPeriodType())
             .context(context)
             .service(periodTimeValueService)
             .build();
