@@ -71,9 +71,11 @@ public class MrServiceImpl implements MrService {
         LocalDateTime startDate = context.getStartDate().atStartOfDay();
         LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
 
-        List<MeterHistory> meterHistories = meterHistoryRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate);
-        List<Parameter> parameters = getParameters(meterHistories);
+        List<Parameter> parameters =meteringPoint.getParameters().stream()
+            .map(t -> t.getParameter())
+            .collect(toList());
 
+        List<MeterHistory> meterHistories = meterHistoryRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate);
         List<MeteringReading> resultLines = new ArrayList<>();
         for (Parameter param : parameters) {
             if (meterHistories.size() == 0) {

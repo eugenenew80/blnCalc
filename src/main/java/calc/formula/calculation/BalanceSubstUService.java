@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
+import static java.util.Optional.*;
+
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstUService {
@@ -58,7 +60,7 @@ public class BalanceSubstUService {
                 resultLine.setHeader(header);
                 resultLine.setMeteringPoint(uLine.getMeteringPoint());
                 resultLine.setTiNum(uLine.getTiNum());
-                resultLine.setTiName(uLine.getTiName());
+                resultLine.setTiName(ofNullable(uLine.getTiName()).orElse("-"));
                 resultLine.setVal(val);
                 resultLines.add(resultLine);
             }

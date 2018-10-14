@@ -183,8 +183,10 @@ public class AspService {
                 resultLine.setHeader(header);
                 resultLine.setLineNum(line.getLineNum());
                 resultLine.setMeteringPoint(line.getMeteringPoint());
-                resultLine.setParam(line.getParam());
-                resultLine.setUnit(line.getParam().getUnit());
+                if (line.getParam() != null) {
+                    resultLine.setParam(line.getParam());
+                    resultLine.setUnit(line.getParam().getUnit());
+                }
                 resultLine.setFormula(line.getFormula());
                 resultLine.setTreatmentType(line.getTreatmentType());
                 addTranslates(line, resultLine);
