@@ -60,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void addMessage(BalanceSubstResultHeader header, Long lineNum, String docCode, String errCode) {
+    public void addMessage(BalanceSubstResultHeader header, Long lineNum, String docCode, String errCode, String info) {
         MessageError err = mapErrors.getOrDefault(errCode, null);
         try {
             LangEnum defLang = LangEnum.RU;
@@ -79,7 +79,7 @@ public class MessageServiceImpl implements MessageService {
             BalanceSubstResultMessageTranslate messageTranslate = new BalanceSubstResultMessageTranslate();
             messageTranslate.setMessage(message);
             messageTranslate.setLang(defLang);
-            messageTranslate.setMsg(msg);
+            messageTranslate.setMsg(msg + ", " + info);
             message.getTranslates().add(messageTranslate);
 
             bsResultMessageRepo.save(message);

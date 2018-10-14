@@ -56,7 +56,7 @@ public class BalanceSubstReactorService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", e.getClass().getCanonicalName());
             logger.error("Reactor losses for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
@@ -73,9 +73,11 @@ public class BalanceSubstReactorService {
             if (reactor == null)
                 continue;
 
+            String info = reactor.getName();
+
             MeteringPoint inputMp = reactor.getInputMp();
             if (inputMp == null) {
-                messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND");
+                messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND", info);
                 continue;
             }
 
@@ -99,7 +101,7 @@ public class BalanceSubstReactorService {
                 .doubleValue();
 
             if (uNom == 0) {
-                messageService.addMessage(header, peLine.getId(), docCode, "PE_UNOM_NOT_FOUND");
+                messageService.addMessage(header, peLine.getId(), docCode, "PE_UNOM_NOT_FOUND", info);
                 continue;
             }
 

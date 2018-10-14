@@ -95,10 +95,10 @@ public class BalanceSubstService {
 
             Double lossFact = total1 - total2 - total3 - total4;
 
-            if (header.getHeader().getMeteringPoint1() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION1_NOT_FOUND");
-            if (header.getHeader().getMeteringPoint2() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION2_NOT_FOUND");
-            if (header.getHeader().getMeteringPoint3() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION3_NOT_FOUND");
-            if (header.getHeader().getMeteringPoint4() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION4_NOT_FOUND");
+            if (header.getHeader().getMeteringPoint1() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION1_NOT_FOUND", "раздел 1");
+            if (header.getHeader().getMeteringPoint2() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION2_NOT_FOUND", "раздел 2");
+            if (header.getHeader().getMeteringPoint3() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION3_NOT_FOUND", "раздел 3");
+            if (header.getHeader().getMeteringPoint4() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION4_NOT_FOUND", "раздел 4");
 
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
@@ -120,7 +120,7 @@ public class BalanceSubstService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", e.getClass().getCanonicalName());
             updateStatus(header, BatchStatusEnum.E);
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();

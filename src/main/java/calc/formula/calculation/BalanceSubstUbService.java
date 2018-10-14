@@ -82,6 +82,10 @@ public class BalanceSubstUbService {
             List<BalanceSubstResultUbLine> lines = new ArrayList<>();
             for (BalanceSubstUbLine ubLine : header.getHeader().getUbLines()) {
                 MeteringPoint meteringPoint = ubLine.getMeteringPoint();
+                if (meteringPoint == null)
+                    continue;;
+
+                String info = "ТУ = " + meteringPoint.getCode();
 
                 Double workHours = WorkingHoursExpression.builder()
                     .objectType("mp")
@@ -93,7 +97,7 @@ public class BalanceSubstUbService {
 
                 workHours = Optional.ofNullable(workHours).orElse(0d);
                 if (workHours.equals(0d)) {
-                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_WORK_HOURS_NOT_FOUND");
+                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_WORK_HOURS_NOT_FOUND", info);
                     continue;
                 }
 
@@ -106,7 +110,7 @@ public class BalanceSubstUbService {
                     .orElse(meteringPoint);
 
                 if (inputMp.getVoltageClass() == null) {
-                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_VOLTAGE_CLASS_NOT_FOUND");
+                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_VOLTAGE_CLASS_NOT_FOUND", info);
                     continue;
                 }
 
@@ -120,7 +124,7 @@ public class BalanceSubstUbService {
 
                 uAvg = Optional.of(uAvg).orElse(0d);
                 if (uAvg.equals(0d)) {
-                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_UAVG_NOT_FOUND");
+                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_UAVG_NOT_FOUND", info);
                     continue;
                 }
 
@@ -143,38 +147,38 @@ public class BalanceSubstUbService {
                         TnType tnType = meterHistory.getTnType();
                         EemType eemType = meterHistory.getMeter().getEemType();
 
-                        if (ttType == null) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TT_TYPE_NOT_FOUND");
-                            continue;
-                        }
-
-                        if (tnType == null) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TN_TYPE_NOT_FOUND");
-                            continue;
-                        }
-
                         if (eemType == null) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_EEM_TYPE_NOT_FOUND");
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_EEM_TYPE_NOT_FOUND", info);
                             continue;
                         }
 
-                        if (ttType.getRatedCurrent1() == null || ttType.getRatedCurrent1().equals(0d)) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_RATED_CURRENT_NOT_FOUND");
+                        if (eemType.getAccuracyClass() == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND", info);
                             continue;
                         }
 
-                        if (ttType.getAccuracyClass() == null || ttType.getAccuracyClass().equals(0d)) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND");
+                        if (ttType == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TT_TYPE_NOT_FOUND", info);
                             continue;
                         }
 
-                        if (tnType.getAccuracyClass() == null || tnType.getAccuracyClass().equals(0d)) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND");
+                        if (ttType.getRatedCurrent1() == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_RATED_CURRENT_NOT_FOUND", info);
                             continue;
                         }
 
-                        if (eemType.getAccuracyClass() == null || eemType.getAccuracyClass().equals(0d)) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND");
+                        if (ttType.getAccuracyClass() == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND", info);
+                            continue;
+                        }
+
+                        if (tnType == null && !meterHistory.getIsTnDirectInclusion()) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TN_TYPE_NOT_FOUND", info);
+                            continue;
+                        }
+
+                        if (tnType != null && tnType.getAccuracyClass() == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND", info);
                             continue;
                         }
 
@@ -220,8 +224,11 @@ public class BalanceSubstUbService {
                         else if (i1avgProc >= 5)  bttProc = 1.75 - 0.05 * i1avgProc;
                         else                      bttProc = 1.5;
 
+                        Double buProc = 0d;
+                        if (tnType != null && tnType.getAccuracyClass() != null)
+                            buProc = Optional.ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
+
                         Double biProc = Math.sqrt(2d) * bttProc;
-                        Double buProc = Optional.ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
                         Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
                         Double bsoProc = Optional.ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
                         Double bProc =  Math.sqrt(Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2)) * 1.1d;
@@ -300,7 +307,7 @@ public class BalanceSubstUbService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", e.getClass().getCanonicalName());
             logger.error("Unbalance for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;

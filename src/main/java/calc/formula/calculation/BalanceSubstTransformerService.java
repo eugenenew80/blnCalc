@@ -62,7 +62,7 @@ public class BalanceSubstTransformerService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", e.getClass().getCanonicalName());
             logger.error("Transformer losses for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
@@ -79,8 +79,10 @@ public class BalanceSubstTransformerService {
             if (transformer == null)
                 continue;
 
+            String info = transformer.getName();
+
             if (transformer.getWindingsNumber() == null) {
-                messageService.addMessage(header, peLine.getId(), docCode, "PE_WN_NOT_FOUND");
+                messageService.addMessage(header, peLine.getId(), docCode, "PE_WN_NOT_FOUND", info);
                 continue;
             }
 
@@ -88,15 +90,15 @@ public class BalanceSubstTransformerService {
             MeteringPoint inputMpM = transformer.getInputMpM();
             MeteringPoint inputMpL = transformer.getInputMpL();
             MeteringPoint inputMp =  transformer.getInputMp();
-            MeteringPoint inptutMpW22 = inputMpH != null ? inputMpH : inputMpL;
+            MeteringPoint inputMpW2 = inputMpH != null ? inputMpH : inputMpL;
 
             if  (transformer.getWindingsNumber().equals(3l) && (inputMp == null || inputMpH == null || inputMpM == null || inputMpL == null)) {
-                messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND");
+                messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND", info);
                 continue;
             }
 
-            if  (transformer.getWindingsNumber().equals(2l) && (inputMp == null || inptutMpW22 == null)) {
-                messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND");
+            if  (transformer.getWindingsNumber().equals(2l) && (inputMp == null || inputMpW2 == null)) {
+                messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND", info);
                 continue;
             }
 
@@ -129,17 +131,17 @@ public class BalanceSubstTransformerService {
                 .doubleValue();
 
             if (sNom  == 0) {
-                messageService.addMessage(header, peLine.getId(), docCode, "PE_SNOM_NOT_FOUND");
+                messageService.addMessage(header, peLine.getId(), docCode, "PE_SNOM_NOT_FOUND", info);
                 continue;
             }
 
             if (uNomH == 0) {
-                messageService.addMessage(header, peLine.getId(), docCode, "PE_UNOMH_NOT_FOUND");
+                messageService.addMessage(header, peLine.getId(), docCode, "PE_UNOMH_NOT_FOUND", info);
                 continue;
             }
 
             if (uAvg  == 0) {
-                messageService.addMessage(header, peLine.getId(), docCode, "PE_UAVG_NOT_FOUND");
+                messageService.addMessage(header, peLine.getId(), docCode, "PE_UAVG_NOT_FOUND", info);
                 continue;
             }
 
@@ -163,24 +165,18 @@ public class BalanceSubstTransformerService {
             transformerLine.setMeteringPointOut(peLine.getMeteringPointOut());
 
             if (transformer.getWindingsNumber().equals(2l)) {
-                Double apH = getMrVal(inptutMpW22, "A+", context);
-                Double amH = getMrVal(inptutMpW22, "A-", context);
+                Double apH = getMrVal(inputMpW2, "A+", context);
+                Double amH = getMrVal(inputMpW2, "A-", context);
                 Double totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
 
-                Double rpH = getMrVal(inptutMpW22, "R+", context);
-                Double rmH = getMrVal(inptutMpW22, "R-", context);;
+                Double rpH = getMrVal(inputMpW2, "R+", context);
+                Double rmH = getMrVal(inputMpW2, "R-", context);;
                 Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);
 
                 Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
                 Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2));
                 Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
                 Double valN = totalEH * resistH / (Math.pow(uAvg,2) * operatingTime);
-
-                if (param != null) {
-                    double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
-                    if (valXX != null) valXX = Math.round(valXX * rounding) / rounding;
-                    if (valN != null)  valN  = Math.round(valN  * rounding) / rounding;
-                }
 
                 transformerLine.setApH(apH);
                 transformerLine.setAmH(amH);
@@ -192,7 +188,6 @@ public class BalanceSubstTransformerService {
                 transformerLine.setResistH(resistH);
                 transformerLine.setValXX(valXX);
                 transformerLine.setValN(valN);
-                transformerLine.setVal(valXX + valN);
             }
 
             if (transformer.getWindingsNumber().equals(3l)) {
@@ -231,12 +226,6 @@ public class BalanceSubstTransformerService {
                 Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
                 Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * operatingTime * 1000d);
 
-                if (param != null) {
-                    double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
-                    if (valXX != null) valXX = Math.round(valXX * rounding) / rounding;
-                    if (valN != null)  valN  = Math.round(valN  * rounding) / rounding;
-                }
-
                 transformerLine.setApL(apL);
                 transformerLine.setAmL(amL);
                 transformerLine.setRpL(rpL);
@@ -263,8 +252,14 @@ public class BalanceSubstTransformerService {
                 transformerLine.setResistL(resistL);
                 transformerLine.setValXX(valXX);
                 transformerLine.setValN(valN);
-                transformerLine.setVal(valXX + valN);
             }
+
+            if (param != null) {
+                double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
+                if (transformerLine.getValXX() != null) transformerLine.setValXX(Math.round(transformerLine.getValXX() * rounding) / rounding);
+                if (transformerLine.getValN()  != null) transformerLine.setValN(Math.round(transformerLine.getValN() * rounding) / rounding);
+            }
+            transformerLine.setVal(transformerLine.getValXX() + transformerLine.getValN());
 
             transformerLines.add(transformerLine);
         }

@@ -31,6 +31,7 @@ public class CalcServiceImpl implements CalcService {
     private final PeriodTimeValueService periodTimeValueService;
     private final AtTimeValueService atTimeValueService;
     private final BalanceSubstResultMrService mrService;
+    private final TransformerValueService transformerValueService;
     private final AspResultService aspService;
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
@@ -193,7 +194,7 @@ public class CalcServiceImpl implements CalcService {
     }
 
     private DoubleExpression buildExpression(Formula formula, CalcContext context) {
-        if (formula.getFormulaType() != FormulaTypeEnum.DIALOG)
+        if (formula.getFormulaType() != FormulaTypeEnum.DIALOG || formula.getText() == null)
             return DoubleValueExpression.builder().build();
 
         Map<String, DoubleExpression> attrs = new HashMap<>();
@@ -226,18 +227,51 @@ public class CalcServiceImpl implements CalcService {
 
     private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context) {
         MeteringPoint meteringPoint = det.getMeteringPoint();
+        Parameter param = det.getParam();
+        ParamTypeEnum paramType = det.getParamType();
+
         if (meteringPoint.getMeteringPointTypeId().equals(2L)) {
-            if (meteringPoint.getFormulas().isEmpty())
-                return DoubleValueExpression.builder().value(null).build();
-            else
+            Formula formula = meteringPoint.getFormulas()
+                .stream()
+                .filter(t -> t.getParam().equals(param))
+                .filter(t -> t.getParamType() == paramType)
+                .findFirst()
+                .orElse(null);
+
+            if (formula != null) {
+                logger.trace("nested formula");
+                logger.trace("formulaId: " + formula.getId());
+                logger.trace("pointCode: " + formula.getMeteringPoint().getCode());
+                logger.trace("param: " + formula.getParam());
+                logger.trace("paramType: " + formula.getParamType());
+                return buildExpression(formula, context);
+            }
+
+            /*
+            if (!meteringPoint.getFormulas().isEmpty())
                 return buildExpression(meteringPoint.getFormulas().get(0), context);
+            */
         }
 
         if (context.isMeteringReading()) {
+            logger.trace("context: mr");
             Double sign = det.getSign().equals("-") ? -1d : 1d;
+
+            if (param.getCode().equals("WL")) {
+                logger.trace("expression: TransformerValueExpression");
+                return TransformerValueExpression.builder()
+                    .meteringPointCode(meteringPoint.getCode())
+                    .parameterCode(param.getCode())
+                    .rate(det.getRate() * sign)
+                    .context(context)
+                    .service(transformerValueService)
+                    .build();
+            }
+
+            logger.trace("expression: MrExpression");
             return MrExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(det.getParam().getCode())
+                .parameterCode(param.getCode())
                 .rate(det.getRate() * sign)
                 .context(context)
                 .service(mrService)
@@ -245,20 +279,24 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (context.isAsp()) {
+            logger.trace("context: asp");
             Double sign = det.getSign().equals("-") ? -1d : 1d;
+
+            logger.trace("expression: AspExpression");
             return AspExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(det.getParam().getCode())
+                .parameterCode(param.getCode())
                 .rate(det.getRate() * sign)
                 .context(context)
                 .service(aspService)
                 .build();
         }
 
-        if (det.getParamType() == ParamTypeEnum.PT) {
+        if (paramType == ParamTypeEnum.PT) {
+            logger.trace("expression: PeriodTimeValueExpression");
             return PeriodTimeValueExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(det.getParam().getCode())
+                .parameterCode(param.getCode())
                 .periodType(context.getPeriodType())
                 .rate(det.getRate())
                 .startHour((byte) 0)
@@ -268,17 +306,18 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (det.getParamType() == ParamTypeEnum.AT || det.getParamType() == ParamTypeEnum.ATS || det.getParamType() == ParamTypeEnum.ATE) {
+        if (paramType == ParamTypeEnum.AT || paramType == ParamTypeEnum.ATS || paramType == ParamTypeEnum.ATE) {
+            logger.trace("expression: AtTimeValueExpression");
             String per = "end";
-            if (det.getParamType() == ParamTypeEnum.ATS)
+            if (paramType == ParamTypeEnum.ATS)
                 per = "start";
 
-            if (det.getParamType() == ParamTypeEnum.ATE)
+            if (paramType == ParamTypeEnum.ATE)
                 per = "end";
 
             return AtTimeValueExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(det.getParam().getCode())
+                .parameterCode(param.getCode())
                 .per(per)
                 .rate(det.getRate())
                 .service(atTimeValueService)

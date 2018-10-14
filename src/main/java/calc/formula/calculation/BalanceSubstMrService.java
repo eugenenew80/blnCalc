@@ -54,20 +54,24 @@ public class BalanceSubstMrService {
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
                 MeteringPoint meteringPoint = mrLine.getMeteringPoint();
+                if (meteringPoint == null)
+                    continue;
+
+                String info = meteringPoint.getCode();
 
                 List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context);
                 for (MeteringReading t : meteringReadings) {
                     BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
 
                     if (t.getMeter() == null)
-                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_NOT_FOUND");
+                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_NOT_FOUND", info);
 
                     if (t.getMeterHistory() == null)
-                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_HISTORY_NOT_FOUND");
+                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_HISTORY_NOT_FOUND", info);
 
                     String section = getSection(mrLine);
                     if (section == null || section.equals("")) {
-                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_SECTION_NOT_FOUND");
+                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_SECTION_NOT_FOUND", info);
                         continue;
                     }
 
@@ -107,7 +111,7 @@ public class BalanceSubstMrService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", e.getClass().getCanonicalName());
             logger.error("Act for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;

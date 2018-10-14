@@ -1,5 +1,6 @@
 package calc.entity.calc;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
@@ -71,4 +72,12 @@ public class MeterHistory {
     @ManyToOne
     @JoinColumn(name = "tn_type_id")
     private TnType tnType;
+
+    @Column(name = "tn_direct_inclusion")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isTnDirectInclusion;
+
+    @Column(name = "tt_direct_inclusion")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isTtDirectInclusion;
 }

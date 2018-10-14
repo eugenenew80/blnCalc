@@ -73,7 +73,7 @@ public class BalanceSubstUService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION");
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", e.getClass().getCanonicalName());
             logger.error("U avg for balance with headerId " + header.getId() + " terminated with exception: " +  e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
