@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.script.ScriptEngine;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -55,7 +56,7 @@ public class CalcServiceImpl implements CalcService {
         logger.trace("formulaId: " + formula.getId());
 
         Set<String> set = new HashSet<>();
-        Set<MeteringPoint> childPoints = getChildPoints(point, set);
+        Set<MeteringPoint> childPoints =  new HashSet<>(getChildPoints(point, set).values());
 
         List<Formula> formulas = childPoints.stream()
             .flatMap(p -> p.getFormulas().stream())
@@ -140,22 +141,28 @@ public class CalcServiceImpl implements CalcService {
         return pointCodes;
     }
 
-    private Set<MeteringPoint> getChildPoints(MeteringPoint rootPoint, Set<String> set) {
-        Set<MeteringPoint> childPoints = rootPoint.getFormulas().stream()
+    private Map<String, MeteringPoint> getChildPoints(MeteringPoint rootPoint, Set<String> set) {
+        Map<String, MeteringPoint> map = new ConcurrentHashMap<>();
+        rootPoint.getFormulas().stream()
             .flatMap(f -> f.getVars().stream())
             .flatMap(v -> v.getDetails().stream())
             .map(d -> d.getMeteringPoint())
-            .collect(toSet());
+            .forEach(t -> {
+                map.putIfAbsent(t.getCode(), t);
+            });
 
-        for (MeteringPoint point : childPoints) {
+        for (String key : map.keySet()) {
+            MeteringPoint point = map.get(key);
             set.add(rootPoint.getCode() + "#" + point.getCode());
             if (set.contains(point.getCode() + "#" + rootPoint.getCode()))
                 continue;
 
-            childPoints.addAll(getChildPoints(point, set));
+            Map<String, MeteringPoint> childPoints = getChildPoints(point, set);
+            for (String childKey : childPoints.keySet())
+                map.putIfAbsent(childKey, childPoints.get(childKey));
         }
 
-        return childPoints;
+        return map;
     }
 
 
