@@ -185,7 +185,6 @@ public class CalcServiceImpl implements CalcService {
         }
     }
 
-
     private DoubleExpression buildExpression(Formula formula, CalcContext context) {
         if (formula.getFormulaType() != FormulaTypeEnum.DIALOG)
             return DoubleValueExpression.builder().build();
