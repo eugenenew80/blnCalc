@@ -11,6 +11,8 @@ import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import javax.script.ScriptEngine;
@@ -23,6 +25,7 @@ import static java.util.stream.Collectors.toSet;
 @Service
 @RequiredArgsConstructor
 public class CalcServiceImpl implements CalcService {
+    private static final Logger logger = LoggerFactory.getLogger(CalcService.class);
     private final ExpressionService expressionService;
     private final PeriodTimeValueService periodTimeValueService;
     private final AtTimeValueService atTimeValueService;
@@ -33,13 +36,23 @@ public class CalcServiceImpl implements CalcService {
 
     @Override
     public CalcResult calcMeteringPoint(MeteringPoint point, String param, CalcContext context) throws Exception {
+        logger.trace("---------------------------------------------");
+        logger.trace("point: " + point.getCode());
+        logger.trace("param: " + param);
+        logger.trace("periodType: " + context.getPeriodType());
+
         Formula formula = point.getFormulas()
             .stream()
             .filter(t -> t.getParam().getCode().equals(param))
             .findFirst()
             .orElse(null);
 
-        if (formula == null) return null;
+        if (formula == null) {
+            logger.trace("Formula not found");
+            return null;
+        }
+
+        logger.trace("formulaId: " + formula.getId());
 
         Set<String> set = new HashSet<>();
         Set<MeteringPoint> childPoints = getChildPoints(point, set);
@@ -50,6 +63,22 @@ public class CalcServiceImpl implements CalcService {
         formulas.add(formula);
 
         List<CalcResult> results = calcFormulas(formulas, context);
+        logger.trace("result:");
+        results.forEach(t -> {
+            logger.trace("point: " + t.getMeteringPoint().getCode());
+            logger.trace("param: " + t.getParam().getCode());
+            logger.trace("paramType: " + t.getParamType());
+            logger.trace("meteringDate: " + t.getMeteringDate());
+            logger.trace("periodType: " + t.getPeriodType());
+
+            if (t.getPeriodType() != PeriodTypeEnum.H)
+                logger.trace("value: " + t.getDoubleValue());
+
+            if (t.getPeriodType() == PeriodTypeEnum.H)
+                logger.trace("values: " + Arrays.deepToString(t.getDoubleValues()));
+        });
+        logger.trace("---------------------------------------------");
+
         return results.stream()
             .filter(t -> t.getMeteringPoint().equals(point))
             .findFirst()

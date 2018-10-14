@@ -5,6 +5,9 @@ import calc.formula.expression.DoubleExpression;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.script.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +18,7 @@ import static java.util.stream.Collectors.toCollection;
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsExpression implements DoubleExpression {
+    private static final Logger logger = LoggerFactory.getLogger(JsExpression.class);
     private final String src;
     private final Map<String, DoubleExpression> attributes;
     private final ScriptEngine engine;
@@ -62,13 +66,19 @@ public class JsExpression implements DoubleExpression {
     @Override
     public Double doubleValue() {
         if (src.equals("a0") && attributes.size()==1) return attributes.get("a0").doubleValue();
+        logger.trace("src: " +src);
 
         final ScriptContext ctx = new SimpleScriptContext();
         attributes.keySet()
             .stream()
-            .forEach(key -> ctx.setAttribute(key, attributes.get(key).doubleValue(), ScriptContext.ENGINE_SCOPE));
+            .forEach(key ->  {
+                Double value = attributes.get(key).doubleValue();
+                ctx.setAttribute(key, value, ScriptContext.ENGINE_SCOPE);
+                logger.trace(key + " : " + value);
+            });
 
         Double eval = eval(src, ctx);
+        logger.trace(eval !=null ? eval.toString() : null);
         return eval;
     }
 
@@ -79,6 +89,7 @@ public class JsExpression implements DoubleExpression {
         }
         catch (ScriptException e) {
             context.setException(e);
+            logger.trace(e.getClass().getCanonicalName(), e);
         }
         return null;
     }
