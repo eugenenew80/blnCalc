@@ -65,7 +65,8 @@ public class CalcServiceImpl implements CalcService {
         formulas.add(formula);
 
         List<CalcResult> results = calcFormulas(formulas, context);
-        logger.trace("result:");
+
+        logger.trace("results:");
         results.forEach(t -> {
             logger.trace("point: " + t.getMeteringPoint().getCode());
             logger.trace("param: " + t.getParam().getCode());
@@ -143,29 +144,26 @@ public class CalcServiceImpl implements CalcService {
     }
 
     private Map<String, MeteringPoint> getChildPoints(MeteringPoint rootPoint, Set<String> set) {
-        Map<String, MeteringPoint> map = new ConcurrentHashMap<>();
+        Map<String, MeteringPoint> points = new ConcurrentHashMap<>();
         rootPoint.getFormulas().stream()
             .flatMap(f -> f.getVars().stream())
             .flatMap(v -> v.getDetails().stream())
             .map(d -> d.getMeteringPoint())
-            .forEach(t -> {
-                map.putIfAbsent(t.getCode(), t);
-            });
+            .forEach(t -> points.putIfAbsent(t.getCode(), t));
 
-        for (String key : map.keySet()) {
-            MeteringPoint point = map.get(key);
+        for (String key : points.keySet()) {
+            MeteringPoint point = points.get(key);
             set.add(rootPoint.getCode() + "#" + point.getCode());
             if (set.contains(point.getCode() + "#" + rootPoint.getCode()))
                 continue;
 
             Map<String, MeteringPoint> childPoints = getChildPoints(point, set);
             for (String childKey : childPoints.keySet())
-                map.putIfAbsent(childKey, childPoints.get(childKey));
+                points.putIfAbsent(childKey, childPoints.get(childKey));
         }
 
-        return map;
+        return points;
     }
-
 
     private void cacheResult(CalcContext context, CalcResult cacheResult) {
         String code = cacheResult.getMeteringPoint().getCode();
