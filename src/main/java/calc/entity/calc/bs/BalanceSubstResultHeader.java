@@ -57,6 +57,18 @@ public class BalanceSubstResultHeader {
     @Column(name = "nbd_proc")
     private Double nbdProc;
 
+    @Column(name = "nbf_val")
+    private Double nbfVal;
+
+    @Column(name = "nbf_proc")
+    private Double nbfProc;
+
+    @Column(name = "nbdiff_val")
+    private Double nbDifVal;
+
+    @Column(name = "nbdiff_proc")
+    private Double nbDifProc;
+
     @ManyToOne
     @JoinColumn(name = "section1_metering_point_id")
     private MeteringPoint meteringPoint1;
@@ -88,6 +100,12 @@ public class BalanceSubstResultHeader {
 
     @Column(name = "section4_total")
     private Double total4;
+
+    @Column(name = "section5_total")
+    private Double total5;
+
+    @Column(name = "section6_total")
+    private Double total6;
 
     @Column(name = "loss_fact")
     private Double lossFact;

@@ -1,5 +1,6 @@
 package calc.entity.calc.bs.pe;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Reactor;
 import calc.entity.calc.Unit;
@@ -49,6 +50,10 @@ public class ReactorValue {
     @ManyToOne
     @JoinColumn(name = "input_mp_id")
     private MeteringPoint inputMp;
+
+    @Column(name = "is_balance")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isBalance;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id_out")

@@ -898,4 +898,34 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-eug-991" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_bs_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_bs_result_headers">
+            <column name="section5_total" type="number"  remarks="Итого по разделу 5">
+                <constraints nullable="true" />
+            </column>
+            <column name="section6_total" type="number"  remarks="Итого по разделу 6">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-992" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_power_transformer_values</comment>
+        <addColumn schemaName="apps" tableName="calc_bs_result_headers">
+            <column name="is_balance" type="number"  remarks="Учитывать в балансе">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-993" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_reactor_values</comment>
+        <addColumn schemaName="apps" tableName="calc_reactor_values">
+            <column name="is_balance" type="number"  remarks="Учитывать в балансе">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

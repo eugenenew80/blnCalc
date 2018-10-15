@@ -162,6 +162,7 @@ public class BalanceSubstTransformerService {
             transformerLine.setOperatingTime(operatingTime);
             transformerLine.setUavg(uAvg);
             transformerLine.setWindingsNumber(transformer.getWindingsNumber());
+            transformerLine.setIsBalance(peLine.getIsBalance());
             transformerLine.setMeteringPointOut(peLine.getMeteringPointOut());
 
             if (transformer.getWindingsNumber().equals(2l)) {

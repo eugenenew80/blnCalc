@@ -16,6 +16,7 @@ import calc.repo.calc.AspResultMessageRepo;
 import calc.repo.calc.BsResultMessageRepo;
 import calc.repo.calc.MessageRepo;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.awt.SystemColor.info;
+
+@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
@@ -67,6 +71,37 @@ public class MessageServiceImpl implements MessageService {
             String defTExt = "Описание не найдено";
             String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
             MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
+
+            BalanceSubstResultMessage message = new BalanceSubstResultMessage();
+            message.setHeader(header);
+            message.setLineNum(lineNum);
+            message.setMessageType(messageType);
+            message.setErrorCode(errCode);
+            message.setSection(docCode);
+            message.setTranslates(new ArrayList<>());
+
+            BalanceSubstResultMessageTranslate messageTranslate = new BalanceSubstResultMessageTranslate();
+            messageTranslate.setMessage(message);
+            messageTranslate.setLang(defLang);
+            messageTranslate.setMsg(msg + ", " + info);
+            message.getTranslates().add(messageTranslate);
+
+            bsResultMessageRepo.save(message);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addMessage(BalanceSubstResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
+        MessageError err = mapErrors.getOrDefault(errCode, null);
+        try {
+            LangEnum defLang = LangEnum.RU;
+            String defTExt = "Описание не найдено";
+            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
+            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
+            msg = StrSubstitutor.replace(msg, params);
 
             BalanceSubstResultMessage message = new BalanceSubstResultMessage();
             message.setHeader(header);

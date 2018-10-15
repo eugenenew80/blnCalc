@@ -19,12 +19,14 @@ import calc.repo.calc.BalanceSubstResultUbLineRepo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import static java.util.stream.Collectors.toList;
 
+@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstUbService {
@@ -86,6 +88,8 @@ public class BalanceSubstUbService {
                     continue;;
 
                 String info = meteringPoint.getCode();
+                Map<String, String> params = new HashMap<>();
+                params.put("point", meteringPoint.getCode());
 
                 Double workHours = WorkingHoursExpression.builder()
                     .objectType("mp")
@@ -217,9 +221,12 @@ public class BalanceSubstUbService {
                         Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / ( 1.73d * uAvg * workHours);
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
                         Double ttAcProc = ttType.getAccuracyClass().getValue();
-                        Double bttProc = getBttProc(ttType.getAccuracyClass(), i1avgProc);
+
+                        Pair<Double, String> bttProcResult = getBttProc(ttType.getAccuracyClass(), i1avgProc);
+                        Double bttProc = bttProcResult.getFirst();
+
                         if (bttProc == null) {
-                            messageService.addMessage(header, ubLine.getId(), docCode, "BTT_PROC_NOT_FOUND", info);
+                            messageService.addMessage(header, ubLine.getId(), docCode, bttProcResult.getSecond(), params);
                             continue;
                         }
 
@@ -313,82 +320,83 @@ public class BalanceSubstUbService {
         }
     }
 
-    private Double getBttProc(AccuracyClass accuracyClass, Double i1avgProc) {
+    private Pair<Double, String> getBttProc(AccuracyClass accuracyClass, Double i1avgProc) {
         Double bttProc = null;
+        String msgCode = null;
 
         if (accuracyClass.getDesignation().equals("0.1")) {
-            if (i1avgProc > 120) bttProc = null;
+            if (i1avgProc > 120)        msgCode = "B_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = 0.225d - 0.00125d * i1avgProc;
             else if (i1avgProc >= 5)    bttProc = 0.46666d - 0.01333d * i1avgProc;
             else if (i1avgProc >= 1)    bttProc = 0.4d;
-            else                        bttProc = 0.4d;
+            else if (i1avgProc > 0)     bttProc = 0.4d;
+            else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
         else if (accuracyClass.getDesignation().equals("0.2S")) {
-            if (i1avgProc > 120) bttProc = null;
+            if (i1avgProc > 120)        msgCode = "B_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 5)    bttProc = 0.4d - 0.01d * i1avgProc;
             else if (i1avgProc >= 1)    bttProc = 0.85d - 0.1d * i1avgProc;
-            else                        bttProc = 0.75d;
+            else if (i1avgProc > 0)     bttProc = 0.75d;
+            else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
         else if (accuracyClass.getDesignation().equals("0.2")) {
-            if (i1avgProc > 120) bttProc = null;
+            if (i1avgProc > 120)        msgCode = "B_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = 0.3875d - 0.001875d * i1avgProc;
             else if (i1avgProc >= 5)    bttProc = (13.25d - 0.4d * i1avgProc) / 15d;
             else if (i1avgProc >= 1)    bttProc = 1.6875d - 0.1875d * i1avgProc;
-            else                        bttProc = 1.5d;
+            else if (i1avgProc > 0)     bttProc = 1.5d;
+            else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
         else if (accuracyClass.getDesignation().equals("0.5S")) {
-            if (i1avgProc > 120) bttProc = null;
+            if (i1avgProc > 120)        msgCode = "B_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 5)    bttProc = (12.5d - 0.25d * i1avgProc) / 15d;
             else if (i1avgProc >= 1)    bttProc = 1.6875d - 0.1875d * i1avgProc;
-            else                        bttProc = 1.5d;
+            else if (i1avgProc > 0)     bttProc = 1.5d;
+            else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
         else if (accuracyClass.getDesignation().equals("0.5")) {
-            if (i1avgProc > 120)        bttProc = null;
+            if (i1avgProc > 120)        msgCode = "B_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = 0.8125d - 0.003125d * i1avgProc;
             else if (i1avgProc >= 5)    bttProc = 1.75d - 0.05d * i1avgProc;
             else if (i1avgProc >= 1)    bttProc = 1.5d;
-            else                        bttProc = 1.5d;
+            else if (i1avgProc > 0)     bttProc = 1.5d;
+            else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
         else if (accuracyClass.getDesignation().equals("1")) {
-            if (i1avgProc > 120)        bttProc = null;
+            if (i1avgProc > 120)        msgCode = "B_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = 1.625d - 0.00625d * i1avgProc;
             else if (i1avgProc >= 5)    bttProc = 3.5d - 0.1d * i1avgProc;
             else if (i1avgProc >= 1)    bttProc = 3d;
-            else                        bttProc = 3d;
+            else if (i1avgProc > 0)     bttProc = 3d;
+            else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
-        else if (accuracyClass.getDesignation().equals("5")) {
-            if (i1avgProc > 120)        bttProc = null;
+        else if (accuracyClass.getDesignation().equals("5") || accuracyClass.getDesignation().equals("10")) {
+            if (i1avgProc > 120)        msgCode = "B_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 5)    bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 1)    bttProc = accuracyClass.getValue();
-            else                        bttProc =  accuracyClass.getValue();
+            else if (i1avgProc > 0)     bttProc = accuracyClass.getValue();
+            else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
+        else
+            msgCode = "UB_ACCURACY_CLASS_UNKNOWN";
 
-        else if (accuracyClass.getDesignation().equals("10")) {
-            if (i1avgProc > 120)        bttProc = null;
-            else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
-            else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
-            else if (i1avgProc >= 5)    bttProc = accuracyClass.getValue();
-            else if (i1avgProc >= 1)    bttProc = accuracyClass.getValue();
-            else                        bttProc =  accuracyClass.getValue();
-        }
-
-        return bttProc;
+        return Pair.of(bttProc, msgCode);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

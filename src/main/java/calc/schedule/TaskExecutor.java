@@ -1,7 +1,7 @@
 package calc.schedule;
 
 import calc.entity.calc.asp.AspResultHeader;
-import calc.entity.calc.bs.BalanceSubstResultHeader;
+import calc.entity.calc.bs.BalanceSubstResultHeaderW;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.svr.SvrHeader;
 import calc.formula.calculation.*;
@@ -17,14 +17,14 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TaskExecutor {
     private static final Logger logger = LoggerFactory.getLogger(TaskExecutor.class);
-    private final BalanceSubstResultHeaderRepo balanceSubstResultHeaderRepo;
+    private final BalanceSubstResultHeaderWRepo balanceSubstResultHeaderWRepo;
     private final BalanceSubstService balanceSubstService;
     private final AspResultHeaderRepo aspResultHeaderRepo;
     private final SvrHeaderRepo svrHeaderRepo;
     private final AspService aspService;
     private final SvrService svrService;
 
-    @Scheduled(cron = "*/5 * * * * *")
+    @Scheduled(cron = "*/30 * * * * *")
     public void run() {
         calc_bs();
         calc_asp();
@@ -32,14 +32,14 @@ public class TaskExecutor {
     }
 
     private void calc_bs() {
-        List<BalanceSubstResultHeader> headers = balanceSubstResultHeaderRepo.findAllByStatus(BatchStatusEnum.W);
+        List<BalanceSubstResultHeaderW> headers = balanceSubstResultHeaderWRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
         logger.info("BS calculation, count of tasks: " + headers.size());
-        for (BalanceSubstResultHeader header : headers) {
-            logger.info("Header " + header.getId() + " started");
-            balanceSubstService.calc(header);
-            logger.info("Header " + header.getId() + " completed");
+        for (BalanceSubstResultHeaderW h : headers) {
+            logger.info("Header " + h.getId() + " started");
+            balanceSubstService.calc(h.getId());
+            logger.info("Header " + h.getId() + " completed");
         }
     }
 

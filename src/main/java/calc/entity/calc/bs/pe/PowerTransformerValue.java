@@ -1,5 +1,6 @@
 package calc.entity.calc.bs.pe;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.PowerTransformer;
 import calc.entity.calc.Unit;
@@ -154,6 +155,10 @@ public class PowerTransformerValue {
 
     @Column(name = "rm_h")
     private Double rmH;
+
+    @Column(name = "is_balance")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isBalance;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id_out")
