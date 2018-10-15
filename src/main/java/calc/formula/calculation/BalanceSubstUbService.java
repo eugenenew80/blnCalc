@@ -325,7 +325,7 @@ public class BalanceSubstUbService {
             else                        bttProc = 0.4d;
         }
 
-        if (accuracyClass.getDesignation().equals("0.2s")) {
+        if (accuracyClass.getDesignation().equals("0.2S")) {
             if (i1avgProc > 120) bttProc = null;
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
@@ -343,7 +343,7 @@ public class BalanceSubstUbService {
             else                        bttProc = 1.5d;
         }
 
-        if (accuracyClass.getDesignation().equals("0.5s")) {
+        if (accuracyClass.getDesignation().equals("0.5S")) {
             if (i1avgProc > 120) bttProc = null;
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
