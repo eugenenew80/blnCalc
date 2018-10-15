@@ -40,6 +40,8 @@ public class BalanceSubstService {
     public void calc(Long headerId) {
         logger.info("Balance for substation with headerId " + headerId + " started");
         BalanceSubstResultHeader header = balanceSubstResultHeaderRepo.findOne(headerId);
+        BalanceSubstHeader templateHeader = header.getHeader();
+
         if (header.getStatus() != BatchStatusEnum.W)
             return;
 
@@ -76,6 +78,8 @@ public class BalanceSubstService {
                 updateStatus(header, BatchStatusEnum.E);
                 return;
             }
+
+            logger.trace("totals calculation");
 
             List<BalanceSubstResultLine> resultLines = balanceSubstResultLineRepo.findAllByHeaderId(header.getId());
             Double total1 = getTotal(resultLines, "1");
@@ -119,27 +123,27 @@ public class BalanceSubstService {
             }
 
             Double lossFact = total1 - total2 - total3 - total4;
-            Double nbfVal = total1 - total2 - total3 - total4 - total5 - total6;
-            Double nbfProc = total1 != 0d ? 100d * nbfVal / total1 :  0d;
+            Double nbfVal   = total1 - total2 - total3 - total4 - total5 - total6;
+            Double nbfProc  = total1 != 0d ? 100d * nbfVal / total1 :  0d;
 
-            Double nbdVal = Optional.ofNullable(header.getNbdVal()).orElse(0d);
-            Double nbDifVal = Math.abs(nbfVal) - Math.abs(nbdVal);
+            Double nbdVal    = Optional.ofNullable(header.getNbdVal()).orElse(0d);
+            Double nbDifVal  = Math.abs(nbfVal) - Math.abs(nbdVal);
             Double nbDifProc = nbDifVal != 0d ? nbDifVal / Math.abs(nbdVal) : 0d;
 
-            if (header.getHeader().getMeteringPoint1() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION1_NOT_FOUND", "раздел 1");
-            if (header.getHeader().getMeteringPoint2() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION2_NOT_FOUND", "раздел 2");
-            if (header.getHeader().getMeteringPoint3() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION3_NOT_FOUND", "раздел 3");
-            if (header.getHeader().getMeteringPoint4() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION4_NOT_FOUND", "раздел 4");
+            if (templateHeader.getMeteringPoint1() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION1_NOT_FOUND", "раздел 1");
+            if (templateHeader.getMeteringPoint2() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION2_NOT_FOUND", "раздел 2");
+            if (templateHeader.getMeteringPoint3() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION3_NOT_FOUND", "раздел 3");
+            if (templateHeader.getMeteringPoint4() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION4_NOT_FOUND", "раздел 4");
 
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
             header.setDataType(DataTypeEnum.OPER);
 
-            header.setMeteringPoint1(header.getHeader().getMeteringPoint1());
-            header.setMeteringPoint2(header.getHeader().getMeteringPoint2());
-            header.setMeteringPoint3(header.getHeader().getMeteringPoint3());
-            header.setMeteringPoint4(header.getHeader().getMeteringPoint4());
-            header.setLossFactMeteringPoint(header.getHeader().getLossFactMeteringPoint());
+            header.setMeteringPoint1(templateHeader.getMeteringPoint1());
+            header.setMeteringPoint2(templateHeader.getMeteringPoint2());
+            header.setMeteringPoint3(templateHeader.getMeteringPoint3());
+            header.setMeteringPoint4(templateHeader.getMeteringPoint4());
+            header.setLossFactMeteringPoint(templateHeader.getLossFactMeteringPoint());
             header.setTotal1(total1);
             header.setTotal2(total2);
             header.setTotal3(total3);
