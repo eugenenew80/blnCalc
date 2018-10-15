@@ -85,7 +85,7 @@ public class BalanceSubstUbService {
                 if (meteringPoint == null)
                     continue;;
 
-                String info = "ТУ = " + meteringPoint.getCode();
+                String info = meteringPoint.getCode();
 
                 Double workHours = WorkingHoursExpression.builder()
                     .objectType("mp")
