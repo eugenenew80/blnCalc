@@ -1,15 +1,13 @@
 package calc.formula;
 
-import calc.entity.calc.MeteringPoint;
-import calc.entity.calc.Parameter;
-import calc.entity.calc.SourceType;
-import calc.entity.calc.Unit;
+import calc.entity.calc.*;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
 public class CalcResult {
+    private Formula formula;
     private String paramType;
     private MeteringPoint meteringPoint;
     private Parameter param;

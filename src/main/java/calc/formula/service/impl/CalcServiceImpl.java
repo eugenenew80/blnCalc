@@ -59,15 +59,23 @@ public class CalcServiceImpl implements CalcService {
         Set<String> set = new HashSet<>();
         Set<MeteringPoint> childPoints =  new HashSet<>(getChildPoints(point, set).values());
 
+        logger.trace("child points:");
+        childPoints.forEach(t -> logger.trace("point: " + t.getCode()));
+
         List<Formula> formulas = childPoints.stream()
             .flatMap(p -> p.getFormulas().stream())
             .collect(Collectors.toList());
         formulas.add(formula);
 
+        logger.trace("all formulas:");
+        formulas.forEach(t -> logger.trace("formulaId: " + t.getId() + ", src: " + t.getText()));
+
         List<CalcResult> results = calcFormulas(formulas, context);
 
         logger.trace("results:");
         results.forEach(t -> {
+            logger.trace("formulaId: " + t.getFormula().getId());
+            logger.trace("src: " + t.getFormula().getText());
             logger.trace("point: " + t.getMeteringPoint().getCode());
             logger.trace("param: " + t.getParam().getCode());
             logger.trace("paramType: " + t.getParamType());
@@ -104,6 +112,7 @@ public class CalcServiceImpl implements CalcService {
                 DoubleExpression expression = expressions.get(pointCode).getSecond();
 
                 CalcResult result = new CalcResult();
+                result.setFormula(formula);
                 result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
                 result.setMeteringPoint(formula.getMeteringPoint());
                 result.setParam(formula.getParam());
@@ -139,7 +148,9 @@ public class CalcServiceImpl implements CalcService {
         for (String pointCode : expressions.keySet())
             codesMap.putIfAbsent(pointCode, expressions.get(pointCode).getSecond().pointCodes());
 
+        logger.trace("before sorting: " + codesMap.keySet());
         List<String> pointCodes = expressionService.sort(codesMap);
+        logger.trace("after sorting: " + pointCodes);
         return pointCodes;
     }
 
