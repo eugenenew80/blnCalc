@@ -251,7 +251,7 @@ public class CalcServiceImpl implements CalcService {
                 logger.trace("nested formula");
                 logger.trace("formulaId: " + formula.getId());
                 logger.trace("pointCode: " + formula.getMeteringPoint().getCode());
-                logger.trace("param: " + formula.getParam());
+                logger.trace("param: " + formula.getParam().getCode());
                 logger.trace("paramType: " + formula.getParamType());
                 return buildExpression(formula, context);
             }
