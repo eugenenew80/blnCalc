@@ -20,4 +20,7 @@ public class AccuracyClass {
 
     @Column(name = "value")
     private Double value;
+
+    @Column(name = "designation")
+    private String designation;
 }

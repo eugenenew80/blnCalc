@@ -217,12 +217,11 @@ public class BalanceSubstUbService {
                         Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / ( 1.73d * uAvg * workHours);
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
                         Double ttAcProc = ttType.getAccuracyClass().getValue();
-
-                        Double bttProc;
-                        if      (i1avgProc > 100) bttProc = ttAcProc;
-                        else if (i1avgProc >= 20) bttProc = 0.8125 - 0.003125 * i1avgProc;
-                        else if (i1avgProc >= 5)  bttProc = 1.75 - 0.05 * i1avgProc;
-                        else                      bttProc = 1.5;
+                        Double bttProc = getBttProc(ttType.getAccuracyClass(), i1avgProc);
+                        if (bttProc == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "BTT_PROC_NOT_FOUND", info);
+                            continue;
+                        }
 
                         Double buProc = 0d;
                         if (tnType != null && tnType.getAccuracyClass() != null)
@@ -312,6 +311,84 @@ public class BalanceSubstUbService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private Double getBttProc(AccuracyClass accuracyClass, Double i1avgProc) {
+        Double bttProc = null;
+
+        if (accuracyClass.getDesignation().equals("0.1")) {
+            if (i1avgProc > 120) bttProc = null;
+            else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 20)   bttProc = 0.225d - 0.00125d * i1avgProc;
+            else if (i1avgProc >= 5)    bttProc = 0.46666d - 0.01333d * i1avgProc;
+            else if (i1avgProc >= 1)    bttProc = 0.4d;
+            else                        bttProc = 0.4d;
+        }
+
+        if (accuracyClass.getDesignation().equals("0.2s")) {
+            if (i1avgProc > 120) bttProc = null;
+            else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 5)    bttProc = 0.4d - 0.01d * i1avgProc;
+            else if (i1avgProc >= 1)    bttProc = 0.85d - 0.1d * i1avgProc;
+            else                        bttProc = 0.75d;
+        }
+
+        if (accuracyClass.getDesignation().equals("0.2")) {
+            if (i1avgProc > 120) bttProc = null;
+            else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 20)   bttProc = 0.3875d - 0.001875d * i1avgProc;
+            else if (i1avgProc >= 5)    bttProc = (13.25d - 0.4d * i1avgProc) / 15d;
+            else if (i1avgProc >= 1)    bttProc = 1.6875d - 0.1875d * i1avgProc;
+            else                        bttProc = 1.5d;
+        }
+
+        if (accuracyClass.getDesignation().equals("0.5s")) {
+            if (i1avgProc > 120) bttProc = null;
+            else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 5)    bttProc = (12.5d - 0.25d * i1avgProc) / 15d;
+            else if (i1avgProc >= 1)    bttProc = 1.6875d - 0.1875d * i1avgProc;
+            else                        bttProc = 1.5d;
+        }
+
+        if (accuracyClass.getDesignation().equals("0.5")) {
+            if (i1avgProc > 120)        bttProc = null;
+            else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 20)   bttProc = 0.8125d - 0.003125d * i1avgProc;
+            else if (i1avgProc >= 5)    bttProc = 1.75d - 0.05d * i1avgProc;
+            else if (i1avgProc >= 1)    bttProc = 1.5d;
+            else                        bttProc = 1.5d;
+        }
+
+        if (accuracyClass.getDesignation().equals("1")) {
+            if (i1avgProc > 120)        bttProc = null;
+            else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 20)   bttProc = 1.625d - 0.00625d * i1avgProc;
+            else if (i1avgProc >= 5)    bttProc = 3.5d - 0.1d * i1avgProc;
+            else if (i1avgProc >= 1)    bttProc = 3d;
+            else                        bttProc = 3d;
+        }
+
+        if (accuracyClass.getDesignation().equals("5")) {
+            if (i1avgProc > 120)        bttProc = null;
+            else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 5)    bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 1)    bttProc = accuracyClass.getValue();
+            else                        bttProc =  accuracyClass.getValue();
+        }
+
+        if (accuracyClass.getDesignation().equals("10")) {
+            if (i1avgProc > 120)        bttProc = null;
+            else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 5)    bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 1)    bttProc = accuracyClass.getValue();
+            else                        bttProc =  accuracyClass.getValue();
+        }
+
+        return bttProc;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
