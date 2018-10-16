@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    
+    <changeSet id="calc-eug-1047" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_result_headers</comment>
+        <createTable tableName="calc_act_inter_pl_result_headers" schemaName="apps" remarks="Акт сверки расчётов по МГЛЭП - заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="act_inter_pl_header_id" type="number" remarks="Идентификатор шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_active" type="number" defaultValue="0" remarks="Флаг - документ активирован">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="period_type" type="varchar2(20)" remarks="Тип периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Дата начала расчётного периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Дата окончания расчётного периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="varchar2(30)" remarks="Статус формирования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="state_code" type="varchar2(30)" remarks="Статус согласования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1048" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_result_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_result_headers"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_result_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1049" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_result_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_result_headers_s"
+                startValue="1"/>
+    </changeSet>
+    
+    <changeSet id="calc-eug-1050" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_result_headers</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_headers_1"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_result_headers"
+                     unique="false">
+            <column name="act_inter_pl_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1051" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_headers_2"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_result_headers"
+                     unique="false">
+            <column name="period_type" type="varchar2(20)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1052" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_headers_3"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_result_headers"
+                     unique="false">
+            <column name="status" type="varchar2(30)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1053" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_headers_4"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_result_headers"
+                     unique="false">
+            <column name="state_code" type="varchar2(30)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1054" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_headers to calc_act_inter_pl_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_headers"
+                baseColumnNames="act_inter_pl_header_id"
+                constraintName="fk_calc_act_inter_pl_result_headers_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1055" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_headers to calc_period_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_headers"
+                baseColumnNames="period_type"
+                constraintName="fk_calc_act_inter_pl_result_headers_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1056" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_headers to media_batch_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_headers"
+                baseColumnNames="status"
+                constraintName="fk_calc_act_inter_pl_result_headers_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batch_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1057" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_headers to wf_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_headers"
+                baseColumnNames="state_code"
+                constraintName="fk_calc_act_inter_pl_result_headers_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1058" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_result_headers_tl</comment>
+        <createTable tableName="calc_act_inter_pl_result_headers_tl" schemaName="apps" remarks="Перевод для акта сверки расчётов по МГЛЭП - заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(500)" remarks="Наименование документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1059" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_result_headers_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_result_headers_tl"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_result_headers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1060" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_act_inter_pl_result_headers_tl</comment>
+        <addUniqueConstraint
+                columnNames="result_header_id, lang"
+                constraintName="uk_calc_act_inter_pl_result_headers_tl_1"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_result_headers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1061" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_result_headers_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_result_headers_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1062" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_act_inter_pl_result_headers_tl</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_headers_tl_1" schemaName="apps" tableName="calc_act_inter_pl_result_headers_tl">
+            <column name="result_header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1063" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_headers_tl to calc_act_inter_pl_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_headers_tl"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_act_inter_pl_result_headers_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    
+    
+
+</databaseChangeLog>

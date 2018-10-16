@@ -1,0 +1,841 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-996" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_headers</comment>
+        <createTable tableName="calc_act_inter_pl_headers" schemaName="apps" remarks="Шаблон для акта сверки расчётов по МГЛЭП - заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_type_code" type="varchar2(50)" remarks="Код типа документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="template_id" type="number" remarks="На основе шаблона">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="state_code" type="varchar2(20)" remarks="Статус шаблона">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-997" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_headers"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-998" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-999" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_headers</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_headers_1"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_headers"
+                     unique="false">
+            <column name="template_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1000" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_headers</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_headers_2"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_headers"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1001" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_headers</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_headers_3"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_headers"
+                     unique="false">
+            <column name="doc_type_code" type="varchar2(50)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1002" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_headers</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_headers_4"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_headers"
+                     unique="false">
+            <column name="state_code" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1003" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_act_inter_pl_headers_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1004" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_headers to calc_act_inter_pl_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_headers"
+                baseColumnNames="template_id"
+                constraintName="fk_calc_act_inter_pl_headers_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1005" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_headers to dm_doc_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_headers"
+                baseColumnNames="doc_type_code"
+                constraintName="fk_calc_act_inter_pl_headers_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1006" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_headers to wf_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_headers"
+                baseColumnNames="state_code"
+                constraintName="fk_calc_act_inter_pl_headers_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1007" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_headers_tl</comment>
+        <createTable tableName="calc_act_inter_pl_headers_tl" schemaName="apps" remarks="Перевод для шаблона акта сверки расчётов по МГЛЭП - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="act_inter_pl_header_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(500)" remarks="Наименование шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_name" type="varchar(500)" remarks="Наименование документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1008" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_headers_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_headers_tl"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_headers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1009" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_act_inter_pl_headers_tl</comment>
+        <addUniqueConstraint
+                columnNames="act_inter_pl_header_id, lang"
+                constraintName="uk_calc_act_inter_pl_headers_tl_1"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_headers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1010" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_headers_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_headers_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1011" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_act_inter_pl_headers_tl</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_headers_tl_1" schemaName="apps" tableName="calc_act_inter_pl_headers_tl">
+            <column name="act_inter_pl_header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1012" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_headers_tl to calc_act_inter_pl_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_headers_tl"
+                baseColumnNames="act_inter_pl_header_id"
+                constraintName="fk_calc_act_inter_pl_headers_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1013" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_lines</comment>
+        <createTable tableName="calc_act_inter_pl_lines" schemaName="apps" remarks="Шаблон для акта сверки расчётов по МГЛЭП - строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="power_line_id" type="number" remarks="Идентификатор ЛЭП">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_bound_meter_inst" type="number" remarks="Флаг - граница раздела совпадает с местом установки прибора учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_proportion_length" type="number" remarks="Флаг - Доли потерь определяются пропорционально протяженности участков ЛЭП">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id_1" type="number" remarks="ТУ на участке 1, по отношению к которой определяется направление сальдо-перетока на границе раздела">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="metering_point_id_2" type="number" remarks="ТУ на кчастке 2, на противоположном конце ЛЭП">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="bound_metering_point_id" type="number" remarks="ТУ на границе раздела">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="metering_point_id_out_1" type="number" remarks="ТУ для сохранения потерь на участке 1">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="metering_point_id_out_2" type="number" remarks="ТУ для сохранения потерь на участке 2">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="proportion_1" type="number" remarks="Доля потерь для участка 1">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="proportion_2" type="number" remarks="Доля потерь для участка 2">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="power_line_length" type="number" remarks="Протяженность линии">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="power_line_length_1" type="number" remarks="Протяженность участка 1">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="power_line_length_2" type="number" remarks="Протяженность участка 2">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1014" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_lines"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1015" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1016" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_lines</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_lines_1"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_lines"
+                     unique="false">
+            <column name="header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1017" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_lines</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_lines_2"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_lines"
+                     unique="false">
+            <column name="power_line_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1018" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_lines to calc_act_inter_pl_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_lines"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_act_inter_pl_lines_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1019" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_lines to dict_power_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_lines"
+                baseColumnNames="power_line_id"
+                constraintName="fk_calc_act_inter_pl_lines_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_power_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1020" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_lines"
+                baseColumnNames="metering_point_id_1"
+                constraintName="fk_calc_act_inter_pl_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1021" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_lines"
+                baseColumnNames="metering_point_id_2"
+                constraintName="fk_calc_act_inter_pl_lines_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1022" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_lines"
+                baseColumnNames="bound_metering_point_id"
+                constraintName="fk_calc_act_inter_pl_lines_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1023" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_lines"
+                baseColumnNames="metering_point_id_out_1"
+                constraintName="fk_calc_act_inter_pl_lines_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1024" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_lines"
+                baseColumnNames="metering_point_id_out_2"
+                constraintName="fk_calc_act_inter_pl_lines_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1025" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_notes</comment>
+        <createTable tableName="calc_act_inter_pl_notes" schemaName="apps" remarks="Примечания к акту сверки расчётов по МГЛЭП - шаблон">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="act_inter_pl_header_id" type="number" remarks="Идентификатор заголовка шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note_num" type="number" remarks="Номер примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки документа, к которому относится примечание">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1026" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_notes</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_notes"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_notes"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1027" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_notes</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_notes_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1028" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_notes</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_notes_1"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_notes"
+                     unique="false">
+            <column name="act_inter_pl_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1029" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_notes to calc_act_inter_pl_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_notes"
+                baseColumnNames="act_inter_pl_header_id"
+                constraintName="fk_calc_act_inter_pl_notes_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1030" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_notes_tl</comment>
+        <createTable tableName="calc_act_inter_pl_notes_tl" schemaName="apps" remarks="Перевод примечаний к акту сверки расчётов по МГЛЭП для шаблона">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="act_inter_pl_note_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1031" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_notes_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_notes_tl"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1032" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_act_inter_pl_notes_tl</comment>
+        <addUniqueConstraint
+                columnNames="act_inter_pl_note_id, lang"
+                constraintName="uk_calc_act_inter_pl_notes_tl_1"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1033" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_notes_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_notes_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1034" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_act_inter_pl_notes_tl</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_notes_tl_1" schemaName="apps" tableName="calc_act_inter_pl_notes_tl">
+            <column name="act_inter_pl_note_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1035" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_notes_tl to calc_act_inter_pl_notes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_notes_tl"
+                baseColumnNames="act_inter_pl_note_id"
+                constraintName="fk_calc_act_inter_pl_notes_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_notes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1036" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_apps</comment>
+        <createTable tableName="calc_act_inter_pl_apps" schemaName="apps" remarks="Приложения к акту сверки расчётов по МГЛЭП - шаблон">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="act_inter_pl_header_id" type="number" remarks="Идентификатор заголовка шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="app_num" type="number" remarks="Номер приложения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1037" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_apps</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_apps"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_apps"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1038" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_apps</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_apps_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1039" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_apps</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_apps_1"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_apps"
+                     unique="false">
+            <column name="act_inter_pl_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1040" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_apps to calc_act_inter_pl_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_apps"
+                baseColumnNames="act_inter_pl_header_id"
+                constraintName="fk_calc_act_inter_pl_apps_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1041" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_apps_tl</comment>
+        <createTable tableName="calc_act_inter_pl_apps_tl" schemaName="apps" remarks="Переводы к акту сверки расчётов по МГЛЭП для шаблона">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="act_inter_pl_app_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="app_name" type="varchar(500)" remarks="Название приложения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1042" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_apps_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_apps_tl"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_apps_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1043" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_act_inter_pl_apps_tl</comment>
+        <addUniqueConstraint
+                columnNames="act_inter_pl_app_id, lang"
+                constraintName="uk_calc_act_inter_pl_apps_tl_1"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_apps_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1044" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_apps_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_apps_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1045" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_act_inter_pl_apps_tl</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_apps_tl_1" schemaName="apps" tableName="calc_act_inter_pl_apps_tl">
+            <column name="act_inter_pl_app_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1046" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_apps_tl to calc_act_inter_pl_apps</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_apps_tl"
+                baseColumnNames="act_inter_pl_app_id"
+                constraintName="fk_calc_act_inter_pl_apps_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_apps"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+</databaseChangeLog>

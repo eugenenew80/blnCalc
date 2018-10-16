@@ -128,7 +128,8 @@ public class BalanceSubstService {
 
             Double nbdVal    = Optional.ofNullable(header.getNbdVal()).orElse(0d);
             Double nbDifVal  = Math.abs(nbfVal) - Math.abs(nbdVal);
-            Double nbDifProc = nbDifVal != 0d ? nbDifVal / Math.abs(nbdVal) : 0d;
+            if (nbDifVal < 0) nbDifVal= 0d;
+            Double nbDifProc = nbdVal != 0d ? 100d * nbDifVal / nbdVal : 0d;
 
             if (templateHeader.getMeteringPoint1() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION1_NOT_FOUND", "раздел 1");
             if (templateHeader.getMeteringPoint2() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION2_NOT_FOUND", "раздел 2");
