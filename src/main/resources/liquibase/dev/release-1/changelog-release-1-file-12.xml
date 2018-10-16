@@ -937,4 +937,9 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-eug-995" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop column from table: calc_bs_result_headers</comment>
+        <dropColumn schemaName="apps" tableName="calc_bs_result_headers" columnName="is_balance" />
+    </changeSet>
 </databaseChangeLog>
