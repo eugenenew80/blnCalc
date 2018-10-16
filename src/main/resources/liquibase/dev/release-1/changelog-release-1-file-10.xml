@@ -592,6 +592,326 @@
         <rollback/>
     </changeSet>
 
+    <changeSet id="calc-rus-357" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_fact_balance_types</comment>
+        <createTable tableName="calc_fact_balance_types" schemaName="apps" remarks="Справочник Типы Фактического баланса">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
 
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-358" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_fact_balance_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_fact_balance_types"
+                schemaName="apps"
+                tableName="calc_fact_balance_types"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-359" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_fact_balance_types_tl</comment>
+        <createTable tableName="calc_fact_balance_types_tl" schemaName="apps" remarks="Перевод Справочник Типы Фактического баланса">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(200)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-360" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_fact_balance_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code,lang"
+                constraintName="pk_calc_fact_balance_types_tl"
+                schemaName="apps"
+                tableName="calc_fact_balance_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-361" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_fact_balance_types_tl to calc_fact_balance_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_fact_balance_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_fact_balance_types_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_fact_balance_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-362" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_fact_balance_types</comment>
+        <insert schemaName="apps" tableName="calc_fact_balance_types">
+            <column name="code" type="varchar2" value="ADVANCE"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_fact_balance_types">
+            <column name="code" type="varchar2" value="FINALE"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-363" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_fact_balance_types_tl</comment>
+        <insert schemaName="apps" tableName="calc_fact_balance_types_tl">
+            <column name="code" type="varchar2" value="ADVANCE"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Предварительный"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_fact_balance_types_tl">
+            <column name="code" type="varchar2" value="ADVANCE"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Предварительный"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_fact_balance_types_tl">
+            <column name="code" type="varchar2" value="FINALE"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Окончательный"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_fact_balance_types_tl">
+            <column name="code" type="varchar2" value="FINALE"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Окончательный"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="сalc-rus-364" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_fact_balance</comment>
+        <createTable tableName="calc_fact_balance" schemaName="apps" remarks="Факт баланс">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="period_id" type="number" remarks="Идентификатор периода">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="fact_type" type="varchar2(30)" remarks="Тип фактического баланса">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="state" type="varchar2(20)" remarks="Статус согласования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-365" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_fact_balance</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pkcalc_fact_balance"
+                schemaName="apps"
+                tableName="calc_fact_balance"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-366" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_fact_balance</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_fact_balance_s"
+                startValue="1"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-367" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_fact_balance_tl</comment>
+        <createTable tableName="calc_fact_balance_tl" schemaName="apps" remarks="Перевод Фактический баланс">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Ссылка на родительскую запись">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(200)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-368" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_fact_balance_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_fact_balance_tl"
+                schemaName="apps"
+                tableName="calc_fact_balance_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-369" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_fact_balance_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_fact_balance_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-370" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating unique key for table: calc_fact_balance_tl</comment>
+        <addUniqueConstraint
+                columnNames="header_id,lang"
+                constraintName="uk_calc_fact_balance_tl"
+                schemaName="apps"
+                tableName="calc_fact_balance_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-371" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_fact_balance_tl to calc_fact_balance</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_fact_balance_tl"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_fact_balance_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_fact_balance"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-372" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_fact_balance to fin_periods</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_fact_balance"
+                baseColumnNames="period_id"
+                constraintName="fk_calc_fact_balance_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="fin_periods"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-373" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_fact_balance to calc_fact_balance_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_fact_balance"
+                baseColumnNames="fact_type"
+                constraintName="fk_calc_fact_balance_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_fact_balance_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-374" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_fact_balance to wf_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_fact_balance"
+                baseColumnNames="state"
+                constraintName="fk_calc_fact_balance_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>
 
