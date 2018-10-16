@@ -330,7 +330,7 @@ public class BalanceSubstUbService {
             else if (i1avgProc >= 20)   bttProc = 0.225d - 0.00125d * i1avgProc;
             else if (i1avgProc >= 5)    bttProc = 0.46666d - 0.01333d * i1avgProc;
             else if (i1avgProc >= 1)    bttProc = 0.4d;
-            else if (i1avgProc > 0)     bttProc = 0.4d;
+            else if (i1avgProc >= 0)    bttProc = 0.4d;
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
@@ -340,7 +340,7 @@ public class BalanceSubstUbService {
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 5)    bttProc = 0.4d - 0.01d * i1avgProc;
             else if (i1avgProc >= 1)    bttProc = 0.85d - 0.1d * i1avgProc;
-            else if (i1avgProc > 0)     bttProc = 0.75d;
+            else if (i1avgProc >= 0)    bttProc = 0.75d;
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
@@ -350,7 +350,7 @@ public class BalanceSubstUbService {
             else if (i1avgProc >= 20)   bttProc = 0.3875d - 0.001875d * i1avgProc;
             else if (i1avgProc >= 5)    bttProc = (13.25d - 0.4d * i1avgProc) / 15d;
             else if (i1avgProc >= 1)    bttProc = 1.6875d - 0.1875d * i1avgProc;
-            else if (i1avgProc > 0)     bttProc = 1.5d;
+            else if (i1avgProc >= 0)    bttProc = 1.5d;
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
@@ -360,7 +360,7 @@ public class BalanceSubstUbService {
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 5)    bttProc = (12.5d - 0.25d * i1avgProc) / 15d;
             else if (i1avgProc >= 1)    bttProc = 1.6875d - 0.1875d * i1avgProc;
-            else if (i1avgProc > 0)     bttProc = 1.5d;
+            else if (i1avgProc >= 0)    bttProc = 1.5d;
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
@@ -370,7 +370,7 @@ public class BalanceSubstUbService {
             else if (i1avgProc >= 20)   bttProc = 0.8125d - 0.003125d * i1avgProc;
             else if (i1avgProc >= 5)    bttProc = 1.75d - 0.05d * i1avgProc;
             else if (i1avgProc >= 1)    bttProc = 1.5d;
-            else if (i1avgProc > 0)     bttProc = 1.5d;
+            else if (i1avgProc >=0)     bttProc = 1.5d;
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
@@ -380,7 +380,7 @@ public class BalanceSubstUbService {
             else if (i1avgProc >= 20)   bttProc = 1.625d - 0.00625d * i1avgProc;
             else if (i1avgProc >= 5)    bttProc = 3.5d - 0.1d * i1avgProc;
             else if (i1avgProc >= 1)    bttProc = 3d;
-            else if (i1avgProc > 0)     bttProc = 3d;
+            else if (i1avgProc >= 0)    bttProc = 3d;
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
@@ -390,7 +390,7 @@ public class BalanceSubstUbService {
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 5)    bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 1)    bttProc = accuracyClass.getValue();
-            else if (i1avgProc > 0)     bttProc = accuracyClass.getValue();
+            else if (i1avgProc >= 0)    bttProc = accuracyClass.getValue();
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
         else
