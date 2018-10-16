@@ -94,7 +94,7 @@ public class BalanceSubstReactorService {
 
             Double uAvg = UavgExpression.builder()
                 .meteringPointCode(inputMp.getCode())
-                .def(inputMp.getVoltageClass().getValue() / 1000d)
+                .def(inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() / 1000d : 0d)
                 .context(context)
                 .service(resultUService)
                 .build()
