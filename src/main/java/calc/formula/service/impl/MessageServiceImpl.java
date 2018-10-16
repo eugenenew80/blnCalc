@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.awt.SystemColor.info;
-
 @SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
@@ -114,7 +112,7 @@ public class MessageServiceImpl implements MessageService {
             BalanceSubstResultMessageTranslate messageTranslate = new BalanceSubstResultMessageTranslate();
             messageTranslate.setMessage(message);
             messageTranslate.setLang(defLang);
-            messageTranslate.setMsg(msg + ", " + info);
+            messageTranslate.setMsg(msg);
             message.getTranslates().add(messageTranslate);
 
             bsResultMessageRepo.save(message);

@@ -225,7 +225,7 @@ public class BalanceSubstUbService {
                         Pair<Double, String> bttProcResult = getBttProc(ttType.getAccuracyClass(), i1avgProc);
                         Double bttProc = bttProcResult.getFirst();
 
-                        if (bttProc == null) {
+                        if (!bttProcResult.getSecond().equals("OK")) {
                             messageService.addMessage(header, ubLine.getId(), docCode, bttProcResult.getSecond(), params);
                             continue;
                         }
@@ -321,8 +321,8 @@ public class BalanceSubstUbService {
     }
 
     private Pair<Double, String> getBttProc(AccuracyClass accuracyClass, Double i1avgProc) {
-        Double bttProc = null;
-        String msgCode = null;
+        Double bttProc = Double.MIN_VALUE;
+        String msgCode = "OK";
 
         if (accuracyClass.getDesignation().equals("0.1")) {
             if (i1avgProc > 120)        msgCode = "UB_I1_AVG_PROC_MORE_THAN_120";

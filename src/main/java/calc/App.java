@@ -11,17 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class App  {
     public static void main(String[] args) {
-        /*
-        String template = "Hi ${name}! Your number is ${number}";
-
-        Map<String, String> data = new HashMap<String, String>();
-        data.put("name", "John");
-        data.put("number", "1");
-
-        String formattedString = StrSubstitutor.replace(template, data);
-        System.out.println(formattedString);
-        */
-
         SpringApplication.run(App.class, args);
     }
 }

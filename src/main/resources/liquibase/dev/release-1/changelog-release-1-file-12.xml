@@ -928,4 +928,13 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-eug-994" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_power_transformer_values</comment>
+        <addColumn schemaName="apps" tableName="calc_power_transformer_values">
+            <column name="is_balance" type="number"  remarks="Учитывать в балансе">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
