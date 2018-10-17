@@ -179,7 +179,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="act_inter_pl_header_id" type="number" remarks="Идентификатор родительской записи">
+            <column name="header_id" type="number" remarks="Идентификатор родительской записи">
                 <constraints nullable="false"/>
             </column>
 
@@ -225,7 +225,7 @@
     <changeSet id="calc-eug-1009" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating unique key for table: calc_act_inter_pl_headers_tl</comment>
         <addUniqueConstraint
-                columnNames="act_inter_pl_header_id, lang"
+                columnNames="header_id, lang"
                 constraintName="uk_calc_act_inter_pl_headers_tl_1"
                 schemaName="apps"
                 tableName="calc_act_inter_pl_headers_tl"/>
@@ -243,7 +243,7 @@
     <changeSet id="calc-eug-1011" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>creating index for table: calc_act_inter_pl_headers_tl</comment>
         <createIndex indexName="idx_calc_act_inter_pl_headers_tl_1" schemaName="apps" tableName="calc_act_inter_pl_headers_tl">
-            <column name="act_inter_pl_header_id"  type="number"/>
+            <column name="header_id"  type="number"/>
         </createIndex>
     </changeSet>
 
@@ -252,7 +252,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_headers_tl"
-                baseColumnNames="act_inter_pl_header_id"
+                baseColumnNames="header_id"
                 constraintName="fk_calc_act_inter_pl_headers_tl_1"
                 deferrable="true"
                 onDelete="CASCADE"
@@ -513,7 +513,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="act_inter_pl_header_id" type="number" remarks="Идентификатор заголовка шаблона">
+            <column name="header_id" type="number" remarks="Идентификатор заголовка шаблона">
                 <constraints nullable="false"/>
             </column>
 
@@ -567,7 +567,7 @@
                      schemaName="apps"
                      tableName="calc_act_inter_pl_notes"
                      unique="false">
-            <column name="act_inter_pl_header_id" type="number"/>
+            <column name="header_id" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -576,7 +576,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_notes"
-                baseColumnNames="act_inter_pl_header_id"
+                baseColumnNames="header_id"
                 constraintName="fk_calc_act_inter_pl_notes_1"
                 deferrable="true"
                 onDelete="RESTRICT"
@@ -594,7 +594,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="act_inter_pl_note_id" type="number" remarks="Идентификатор родительской записи">
+            <column name="note_id" type="number" remarks="Идентификатор родительской записи">
                 <constraints nullable="false"/>
             </column>
 
@@ -636,7 +636,7 @@
     <changeSet id="calc-eug-1032" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating unique key for table: calc_act_inter_pl_notes_tl</comment>
         <addUniqueConstraint
-                columnNames="act_inter_pl_note_id, lang"
+                columnNames="note_id, lang"
                 constraintName="uk_calc_act_inter_pl_notes_tl_1"
                 schemaName="apps"
                 tableName="calc_act_inter_pl_notes_tl"/>
@@ -654,7 +654,7 @@
     <changeSet id="calc-eug-1034" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>creating index for table: calc_act_inter_pl_notes_tl</comment>
         <createIndex indexName="idx_calc_act_inter_pl_notes_tl_1" schemaName="apps" tableName="calc_act_inter_pl_notes_tl">
-            <column name="act_inter_pl_note_id"  type="number"/>
+            <column name="note_id"  type="number"/>
         </createIndex>
     </changeSet>
 
@@ -663,7 +663,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_notes_tl"
-                baseColumnNames="act_inter_pl_note_id"
+                baseColumnNames="note_id"
                 constraintName="fk_calc_act_inter_pl_notes_tl_1"
                 deferrable="true"
                 onDelete="CASCADE"
@@ -681,7 +681,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="act_inter_pl_header_id" type="number" remarks="Идентификатор заголовка шаблона">
+            <column name="header_id" type="number" remarks="Идентификатор заголовка шаблона">
                 <constraints nullable="false"/>
             </column>
 
@@ -731,7 +731,7 @@
                      schemaName="apps"
                      tableName="calc_act_inter_pl_apps"
                      unique="false">
-            <column name="act_inter_pl_header_id" type="number"/>
+            <column name="header_id" type="number"/>
         </createIndex>
     </changeSet>
 
@@ -740,7 +740,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_apps"
-                baseColumnNames="act_inter_pl_header_id"
+                baseColumnNames="header_id"
                 constraintName="fk_calc_act_inter_pl_apps_1"
                 deferrable="true"
                 onDelete="RESTRICT"
@@ -758,7 +758,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="act_inter_pl_app_id" type="number" remarks="Идентификатор родительской записи">
+            <column name="app_id" type="number" remarks="Идентификатор родительской записи">
                 <constraints nullable="false"/>
             </column>
 
@@ -800,7 +800,7 @@
     <changeSet id="calc-eug-1043" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating unique key for table: calc_act_inter_pl_apps_tl</comment>
         <addUniqueConstraint
-                columnNames="act_inter_pl_app_id, lang"
+                columnNames="app_id, lang"
                 constraintName="uk_calc_act_inter_pl_apps_tl_1"
                 schemaName="apps"
                 tableName="calc_act_inter_pl_apps_tl"/>
@@ -818,7 +818,7 @@
     <changeSet id="calc-eug-1045" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>creating index for table: calc_act_inter_pl_apps_tl</comment>
         <createIndex indexName="idx_calc_act_inter_pl_apps_tl_1" schemaName="apps" tableName="calc_act_inter_pl_apps_tl">
-            <column name="act_inter_pl_app_id"  type="number"/>
+            <column name="app_id"  type="number"/>
         </createIndex>
     </changeSet>
 
@@ -827,7 +827,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_apps_tl"
-                baseColumnNames="act_inter_pl_app_id"
+                baseColumnNames="app_id"
                 constraintName="fk_calc_act_inter_pl_apps_tl_1"
                 deferrable="true"
                 onDelete="CASCADE"
