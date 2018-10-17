@@ -184,6 +184,8 @@ public class BalanceSubstLineService {
             try {
                 CalcResult result = calcService.calcMeteringPoint(bsLine.getMeteringPoint(), param, context);
                 val = result!=null ? result.getDoubleValue() : null;
+                if (val != null)
+                    val = val * Optional.ofNullable(bsLine.getRate()).orElse(1d);
             }
             catch (Exception e) {
                 e.printStackTrace();
