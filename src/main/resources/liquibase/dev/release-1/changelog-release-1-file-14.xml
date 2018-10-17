@@ -468,5 +468,340 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-1078" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_result_apps</comment>
+        <createTable tableName="calc_act_inter_pl_result_apps" schemaName="apps" remarks="Приложения к акту сверки расчётов по МГЛЭП">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
 
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="app_num" type="number" remarks="Номер приложения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1079" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_result_apps</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_result_apps"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_result_apps"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1080" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_result_apps</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_result_apps_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1081" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_result_apps</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_apps_1"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_result_apps"
+                     unique="false">
+            <column name="result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1082" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_apps to calc_act_inter_pl_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_apps"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_act_inter_pl_result_apps_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1083" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_result_apps_tl</comment>
+        <createTable tableName="calc_act_inter_pl_result_apps_tl" schemaName="apps" remarks="Приложения к акту сверки расчётов по МГЛЭП - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_app_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="app" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1084" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_result_apps_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_result_apps_tl"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_result_apps_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1085" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_act_inter_pl_result_apps_tl</comment>
+        <addUniqueConstraint
+                columnNames="result_app_id, lang"
+                constraintName="uk_calc_act_inter_pl_result_apps_tl_1"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_result_apps_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1086" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_result_apps_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_result_apps_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1087" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_act_inter_pl_result_apps_tl</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_apps_tl_1" schemaName="apps" tableName="calc_act_inter_pl_result_apps_tl">
+            <column name="result_app_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1088" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_apps_tl to calc_act_inter_pl_result_apps</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_apps_tl"
+                baseColumnNames="result_app_id"
+                constraintName="fk_calc_act_inter_pl_result_apps_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_result_apps"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1089" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_result_messages</comment>
+        <createTable tableName="calc_act_inter_pl_result_messages" schemaName="apps" remarks="Сообщения к акту сверки расчётов по МГЛЭП - результат расчёта">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки документа, к которой относится сообщение">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="message_type_code" type="varchar2(10)" remarks="Тип ошибки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="error_code" type="varchar2(10)" remarks="Код ошибки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1090" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_result_messages</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_result_messages"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_result_messages"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1091" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_result_messages</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_result_messages_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1092" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_result_messages</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_messages_1"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_result_messages"
+                     unique="false">
+            <column name="result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1093" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_messages to calc_act_inter_pl_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_messages"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_act_inter_pl_result_messages_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-1094" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_result_messages_tl</comment>
+        <createTable tableName="calc_act_inter_pl_result_messages_tl" schemaName="apps" remarks="Сообщения к акту сверки расчётов по МГЛЭП - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_message_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="msg" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1095" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_result_messages_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_result_messages_tl"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_result_messages_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1096" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_act_inter_pl_result_messages_tl</comment>
+        <addUniqueConstraint
+                columnNames="act_inter_pl_result_message_id, lang"
+                constraintName="uk_calc_act_inter_pl_result_messages_tl_1"
+                schemaName="apps"
+                tableName="result_messages_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1097" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_result_messages_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_result_messages_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1098" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_act_inter_pl_result_messages_tl</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_messages_tl_1" schemaName="apps" tableName="calc_act_inter_pl_result_messages_tl">
+            <column name="result_message_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1099" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_messages_tl to calc_act_inter_pl_result_messages</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_messages_tl"
+                baseColumnNames="result_message_id"
+                constraintName="fk_calc_act_inter_pl_result_messages_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_result_messages"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
