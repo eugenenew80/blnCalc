@@ -122,13 +122,13 @@ public class BalanceSubstService {
                 if (total6 != null) total6 = Math.round(total6 * rounding) / rounding;
             }
 
-            Double lossFact = total1 - total2 - total3 - total4;
+            Double lossFact = total1 - total3 - total4;
             Double nbfVal   = total1 - total2 - total3 - total4 - total5 - total6;
             Double nbfProc  = total1 != 0d ? 100d * nbfVal / total1 :  0d;
 
             Double nbdVal    = Optional.ofNullable(header.getNbdVal()).orElse(0d);
             Double nbDifVal  = Math.abs(nbfVal) - Math.abs(nbdVal);
-            if (nbDifVal < 0) nbDifVal= 0d;
+            if (nbDifVal < 0) nbDifVal = 0d;
             Double nbDifProc = nbdVal != 0d ? 100d * nbDifVal / nbdVal : 0d;
 
             if (templateHeader.getMeteringPoint1() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION1_NOT_FOUND", "раздел 1");
