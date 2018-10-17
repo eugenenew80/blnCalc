@@ -266,11 +266,9 @@
     <changeSet id="calc-eug-1064" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Adding column to table: calc_act_inter_pl_result_headers</comment>
         <addColumn schemaName="apps" tableName="calc_act_inter_pl_result_headers">
-            <column></column>
             <column name="org_id" type="number" remarks="Идентификатор филиала">
                 <constraints nullable="false"/>
             </column>
-
         </addColumn>
     </changeSet>
 
@@ -706,7 +704,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_result_messages"
-                baseColumnNames="header_id"
+                baseColumnNames="result_header_id"
                 constraintName="fk_calc_act_inter_pl_result_messages_1"
                 deferrable="true"
                 onDelete="RESTRICT"
@@ -767,10 +765,10 @@
     <changeSet id="calc-eug-1096" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating unique key for table: calc_act_inter_pl_result_messages_tl</comment>
         <addUniqueConstraint
-                columnNames="act_inter_pl_result_message_id, lang"
+                columnNames="result_message_id, lang"
                 constraintName="uk_calc_act_inter_pl_result_messages_tl_1"
                 schemaName="apps"
-                tableName="result_messages_tl"/>
+                tableName="calc_act_inter_pl_result_messages_tl"/>
     </changeSet>
 
     <changeSet id="calc-eug-1097" logicalFilePath="path-independent" author="eugene" context="dev">
