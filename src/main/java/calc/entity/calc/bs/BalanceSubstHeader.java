@@ -66,6 +66,7 @@ public class BalanceSubstHeader {
     private List<BalanceSubstULine> uLines;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
+    @OrderBy("powerTransformer.windingsNumber, id")
     private List<BalanceSubstPeLine> peLines;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
