@@ -1,13 +1,11 @@
-package calc.entity.calc.asp;
+package calc.entity.calc.inter;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,15 +13,15 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_asp1_result_headers")
-public class AspResultHeader {
+@Table(name = "calc_act_inter_pl_result_headers")
+public class InterResultHeader {
 
     @Id
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "asp1_header_id")
-    private AspHeader header;
+    @JoinColumn(name = "act_inter_pl_header_id")
+    private InterHeader header;
 
     @ManyToOne
     @JoinColumn(name = "org_id")
@@ -32,10 +30,6 @@ public class AspResultHeader {
     @Column(name="period_type")
     @Enumerated(EnumType.STRING)
     private PeriodTypeEnum periodType;
-
-    @Column(name="data_type_code")
-    @Enumerated(EnumType.STRING)
-    private DataTypeEnum dataType;
 
     @Column(name = "start_date")
     private LocalDate startDate;

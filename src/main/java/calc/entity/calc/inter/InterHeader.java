@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -34,14 +35,12 @@ public class InterHeader {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    /*
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
-    private List<AspLine> lines;
+    private List<InterLine> lines;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
-    private List<AspNote> notes;
+    private List<InterNote> notes;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
-    private List<AspApp> apps;
-    */
+    private List<InterApp> apps;
 }

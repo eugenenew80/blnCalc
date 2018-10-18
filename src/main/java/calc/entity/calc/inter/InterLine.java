@@ -77,9 +77,4 @@ public class InterLine {
 
     @Column(name = "end_date")
     private LocalDate endDate;
-
-    /*
-    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
-    private List<AspLineTranslate> translates;
-    */
 }
