@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-1100" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_segment_headers</comment>
+        <createTable tableName="calc_balance_segment_headers" schemaName="apps" remarks="Шаблон для баланса по участку сети - заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_type_code" type="varchar2(50)" remarks="Код типа документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="template_id" type="number" remarks="На основе шаблона">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="balance_unit_id" type="number" remarks="Идентификатор единицы баланса">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="state_code" type="varchar2(20)" remarks="Статус шаблона">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1101" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_segment_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_segment_headers"
+                schemaName="apps"
+                tableName="calc_balance_segment_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1102" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_segment_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_segment_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1103" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_segment_headers</comment>
+        <createIndex indexName="idx_calc_balance_segment_headers_1"
+                     schemaName="apps"
+                     tableName="calc_balance_segment_headers"
+                     unique="false">
+            <column name="template_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1104" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_segment_headers</comment>
+        <createIndex indexName="idx_calc_balance_segment_headers_2"
+                     schemaName="apps"
+                     tableName="calc_balance_segment_headers"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1105" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_segment_headers</comment>
+        <createIndex indexName="idx_calc_balance_segment_headers_3"
+                     schemaName="apps"
+                     tableName="calc_balance_segment_headers"
+                     unique="false">
+            <column name="doc_type_code" type="varchar2(50)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1106" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_segment_headers</comment>
+        <createIndex indexName="idx_calc_balance_segment_headers_4"
+                     schemaName="apps"
+                     tableName="calc_balance_segment_headers"
+                     unique="false">
+            <column name="state_code" type="varchar2(20)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1107" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_balance_segment_headers_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1108" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_headers to calc_balance_segment_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_headers"
+                baseColumnNames="template_id"
+                constraintName="fk_calc_balance_segment_headers_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_segment_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1109" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_headers to dm_doc_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_headers"
+                baseColumnNames="doc_type_code"
+                constraintName="fk_calc_balance_segment_headers_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1110" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_headers to wf_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_headers"
+                baseColumnNames="state_code"
+                constraintName="fk_calc_balance_segment_headers_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1111" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_headers to calc_balance_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_headers"
+                baseColumnNames="balance_unit_id"
+                constraintName="fk_calc_balance_segment_headers_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1112" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_segment_headers_tl</comment>
+        <createTable tableName="calc_balance_segment_headers_tl" schemaName="apps" remarks="Перевод для заголовка шаблона для баланса по участку сети">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(500)" remarks="Наименование шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_name" type="varchar(500)" remarks="Наименование документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1113" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_segment_headers_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_segment_headers_tl"
+                schemaName="apps"
+                tableName="calc_balance_segment_headers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1114" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_balance_segment_headers_tl</comment>
+        <addUniqueConstraint
+                columnNames="header_id, lang"
+                constraintName="uk_calc_balance_segment_headers_tl_1"
+                schemaName="apps"
+                tableName="calc_balance_segment_headers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1115" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_segment_headers_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_segment_headers_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1116" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_segment_headers_tl</comment>
+        <createIndex indexName="idx_calc_balance_segment_headers_tl_1" schemaName="apps" tableName="calc_balance_segment_headers_tl">
+            <column name="header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1117" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_headers_tl to calc_balance_segment_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_headers_tl"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_balance_segment_headers_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_segment_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1118" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_segment_notes</comment>
+        <createTable tableName="calc_balance_segment_notes" schemaName="apps" remarks="Примечания к шаблону баланса по участку сети">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note_num" type="number" remarks="Номер примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки документа, к которому относится примечание">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1119" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_segment_notes</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_segment_notes"
+                schemaName="apps"
+                tableName="calc_balance_segment_notes"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1120" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_segment_notes</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_segment_notes_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1121" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_segment_notes</comment>
+        <createIndex indexName="idx_calc_balance_segment_notes_1"
+                     schemaName="apps"
+                     tableName="calc_balance_segment_notes"
+                     unique="false">
+            <column name="header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1122" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_notes to calc_balance_segment_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_notes"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_balance_segment_notes_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_segment_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1123" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_segment_notes_tl</comment>
+        <createTable tableName="calc_balance_segment_notes_tl" schemaName="apps" remarks="Перевод примечаний к шаблону баланса по участку сети">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="note" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1124" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_segment_notes_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_segment_notes_tl"
+                schemaName="apps"
+                tableName="calc_balance_segment_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1125" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_balance_segment_notes_tl</comment>
+        <addUniqueConstraint
+                columnNames="note_id, lang"
+                constraintName="uk_calc_balance_segment_notes_tl_1"
+                schemaName="apps"
+                tableName="calc_balance_segment_notes_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1126" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_segment_notes_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_segment_notes_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1127" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_segment_notes_tl</comment>
+        <createIndex indexName="idx_calc_balance_segment_notes_tl_1" schemaName="apps" tableName="calc_balance_segment_notes_tl">
+            <column name="note_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1128" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_notes_tl to calc_balance_segment_notes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_notes_tl"
+                baseColumnNames="note_id"
+                constraintName="fk_calc_balance_segment_notes_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_segment_notes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1129" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_segment_apps</comment>
+        <createTable tableName="calc_balance_segment_apps" schemaName="apps" remarks="Приложения к шаблону баланса по участку сети">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="app_num" type="number" remarks="Номер приложения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1130" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_segment_apps</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_segment_apps"
+                schemaName="apps"
+                tableName="calc_balance_segment_apps"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1131" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_segment_apps</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_segment_apps_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1132" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_segment_apps</comment>
+        <createIndex indexName="idx_calc_balance_segment_apps_1"
+                     schemaName="apps"
+                     tableName="calc_balance_segment_apps"
+                     unique="false">
+            <column name="header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1133" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_apps to calc_balance_segment_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_apps"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_balance_segment_apps_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_segment_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1134" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_segment_apps_tl</comment>
+        <createTable tableName="calc_balance_segment_apps_tl" schemaName="apps" remarks="Переводы к шаблону баланса по участку сети">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="app_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="app_name" type="varchar(500)" remarks="Название приложения">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1135" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_segment_apps_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_segment_apps_tl"
+                schemaName="apps"
+                tableName="calc_balance_segment_apps_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1136" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_balance_segment_apps_tl</comment>
+        <addUniqueConstraint
+                columnNames="app_id, lang"
+                constraintName="uk_calc_balance_segment_apps_tl_1"
+                schemaName="apps"
+                tableName="calc_balance_segment_apps_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1137" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_segment_apps_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_segment_apps_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1138" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_segment_apps_tl</comment>
+        <createIndex indexName="idx_calc_balance_segment_apps_tl_1" schemaName="apps" tableName="calc_balance_segment_apps_tl">
+            <column name="app_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1139" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_apps_tl to calc_balance_segment_apps</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_apps_tl"
+                baseColumnNames="app_id"
+                constraintName="fk_calc_balance_segment_apps_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_segment_apps"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+</databaseChangeLog>
