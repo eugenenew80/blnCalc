@@ -1198,6 +1198,4 @@
                 referencedColumnNames="id"
         />
     </changeSet>
-
-
 </databaseChangeLog>
