@@ -6,6 +6,7 @@ import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
+import calc.formula.ContextType;
 import calc.formula.exception.CycleDetectionException;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.*;
@@ -257,7 +258,7 @@ public class CalcServiceImpl implements CalcService {
             }
         }
 
-        if (context.isMeteringReading()) {
+        if (context.getContextType() == ContextType.MR) {
             logger.trace("context: mr");
             Double sign = det.getSign().equals("-") ? -1d : 1d;
 
@@ -291,7 +292,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (context.isAsp()) {
+        if (context.getContextType() == ContextType.ASP) {
             logger.trace("context: asp");
             Double sign = det.getSign().equals("-") ? -1d : 1d;
 

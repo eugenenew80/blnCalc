@@ -5,6 +5,7 @@ import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.pe.ReactorValue;
 import calc.formula.CalcContext;
+import calc.formula.ContextType;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import calc.repo.calc.*;
@@ -42,7 +43,8 @@ public class BalanceSubstReactorService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
-                .isMeteringReading(true)
+                .contextType(ContextType.MR)
+                //.isMeteringReading(true)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();

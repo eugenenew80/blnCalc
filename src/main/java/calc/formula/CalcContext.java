@@ -3,6 +3,7 @@ package calc.formula;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.*;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,19 +16,28 @@ public class CalcContext {
     private PeriodTypeEnum periodType;
     private Long orgId;
     private String orgName;
-    private String reportType;
-    private String reportName;
     private String energyObjectType;
     private Long energyObjectId;
     private String energyObjectName;
     private String docCode;
     private Long docId;
-    private boolean isMeteringReading;
-    private boolean isAsp;
     private Exception exception;
 
-    private Map<String, Double> transformerValues;
-    private Map<String, List<CalcResult>> values;
-    private Map<String, List<CalcTrace>> trace;
-    private Map<Long, CalcResult> results;
+    @Builder.Default
+    private ContextType contextType = ContextType.DEFAULT;
+
+    @Builder.Default
+    private Map<String, Double> transformerValues = new HashMap<>();
+
+    @Builder.Default
+    private Map<String, List<CalcResult>> values = new  HashMap<>();
+
+    @Builder.Default
+    private Map<String, List<CalcTrace>> trace = new  HashMap<>();
+
+    @Builder.Default
+    private Map<Long, CalcResult> results = new  HashMap<>();
+
+    //private boolean isMeteringReading;
+    //private boolean isAsp;
 }

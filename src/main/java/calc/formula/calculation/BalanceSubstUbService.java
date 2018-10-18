@@ -6,6 +6,7 @@ import calc.entity.calc.bs.mr.BalanceSubstResultMrLine;
 import calc.entity.calc.bs.ub.BalanceSubstResultUbLine;
 import calc.entity.calc.bs.ub.BalanceSubstUbLine;
 import calc.formula.CalcContext;
+import calc.formula.ContextType;
 import calc.formula.expression.impl.UavgExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
 import calc.formula.service.BalanceSubstResultUService;
@@ -55,6 +56,7 @@ public class BalanceSubstUbService {
                 .energyObjectId(header.getSubstation().getId())
                 .docCode(docCode)
                 .docId(header.getId())
+                .contextType(ContextType.DEFAULT)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();

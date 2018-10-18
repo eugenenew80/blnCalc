@@ -4,6 +4,7 @@ import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
+import calc.formula.ContextType;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.MrExpression;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
@@ -53,7 +54,8 @@ public class BalanceSubstLineService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
-                .isMeteringReading(true)
+                .contextType(ContextType.MR)
+                //.isMeteringReading(true)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();

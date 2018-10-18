@@ -9,6 +9,7 @@ import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.pe.PowerTransformerValue;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
+import calc.formula.ContextType;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import calc.repo.calc.PowerTransformerValueRepo;
@@ -48,7 +49,8 @@ public class BalanceSubstTransformerService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
-                .isMeteringReading(true)
+                .contextType(ContextType.MR)
+                //.isMeteringReading(true)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .transformerValues(new HashMap<>())

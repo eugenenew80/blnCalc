@@ -71,8 +71,8 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
     private Element createSheetHeaderElement(Document doc, CalcContext context) {
         Element headElement = doc.createElement("head");
-        headElement.setAttribute("type", context.getReportType());
-        headElement.setAttribute("name", context.getReportName());
+        //headElement.setAttribute("type", context.getReportType());
+        //headElement.setAttribute("name", context.getReportName());
 
         Element repPeriodElement = doc.createElement("period");
         repPeriodElement.setAttribute("start-date", context.getStartDate().format(DateTimeFormatter.ISO_DATE));

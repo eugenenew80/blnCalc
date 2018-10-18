@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
 
 @Data
-@EqualsAndHashCode(of= {"id"})
 public class MeteringReading {
     private MeteringPoint meteringPoint;
     private MeteringPoint bypassMeteringPoint;

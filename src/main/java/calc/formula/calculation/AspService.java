@@ -8,6 +8,7 @@ import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.TreatmentTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
+import calc.formula.ContextType;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
@@ -65,7 +66,8 @@ public class AspService {
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
-                .isAsp(true)
+                .contextType(ContextType.ASP)
+                //.isAsp(true)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();

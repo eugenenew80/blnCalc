@@ -6,6 +6,7 @@ import calc.entity.calc.bs.u.BalanceSubstResultULine;
 import calc.entity.calc.bs.u.BalanceSubstULine;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
+import calc.formula.ContextType;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.MessageService;
@@ -46,6 +47,7 @@ public class BalanceSubstUService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
+                .contextType(ContextType.DEFAULT)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();

@@ -4,6 +4,7 @@ import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.bs.mr.*;
 import calc.formula.CalcContext;
+import calc.formula.ContextType;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MrService;
@@ -47,6 +48,7 @@ public class BalanceSubstMrService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
+                .contextType(ContextType.DEFAULT)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();

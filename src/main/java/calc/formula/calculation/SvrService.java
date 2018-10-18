@@ -5,6 +5,7 @@ import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.svr.*;
 import calc.formula.CalcContext;
+import calc.formula.ContextType;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.PeriodTimeValueService;
 import calc.repo.calc.*;
@@ -51,7 +52,7 @@ public class SvrService {
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
-                .isAsp(true)
+                .contextType(ContextType.DEFAULT)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
