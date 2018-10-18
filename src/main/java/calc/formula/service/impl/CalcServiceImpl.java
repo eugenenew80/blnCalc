@@ -255,11 +255,6 @@ public class CalcServiceImpl implements CalcService {
                 logger.trace("paramType: " + formula.getParamType());
                 return buildExpression(formula, context);
             }
-
-            /*
-            if (!meteringPoint.getFormulas().isEmpty())
-                return buildExpression(meteringPoint.getFormulas().get(0), context);
-            */
         }
 
         if (context.isMeteringReading()) {
@@ -267,6 +262,15 @@ public class CalcServiceImpl implements CalcService {
             Double sign = det.getSign().equals("-") ? -1d : 1d;
 
             if (param.getCode().equals("WL")) {
+                if (context.getTransformerValues() != null) {
+                    if (context.getTransformerValues().containsKey(meteringPoint.getCode())) {
+                        logger.trace("expression: DoubleValueExpression");
+                        return DoubleValueExpression.builder()
+                            .value(context.getTransformerValues().get(meteringPoint.getCode()))
+                            .build();
+                    }
+                }
+
                 logger.trace("expression: TransformerValueExpression");
                 return TransformerValueExpression.builder()
                     .meteringPointCode(meteringPoint.getCode())

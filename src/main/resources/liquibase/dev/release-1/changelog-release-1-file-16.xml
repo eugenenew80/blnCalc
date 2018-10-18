@@ -1169,4 +1169,35 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1218" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_segment_result_lines</comment>
+        <addColumn schemaName="apps" tableName="calc_balance_segment_result_lines">
+            <column name="unit_id" type="number" remarks="Единица измерения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="val" type="number" remarks="Значение">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1219" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_result_lines to dict_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_result_lines"
+                baseColumnNames="unit_id"
+                constraintName="fk_calc_balance_segment_result_lines_8"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
 </databaseChangeLog>

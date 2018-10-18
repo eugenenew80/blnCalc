@@ -51,6 +51,7 @@ public class BalanceSubstTransformerService {
                 .isMeteringReading(true)
                 .trace(new HashMap<>())
                 .values(new HashMap<>())
+                .transformerValues(new HashMap<>())
                 .build();
 
             List<PowerTransformerValue> lines = calcLines(header, context);
@@ -263,6 +264,8 @@ public class BalanceSubstTransformerService {
             transformerLine.setVal(transformerLine.getValXX() + transformerLine.getValN());
 
             transformerLines.add(transformerLine);
+            if (transformerLine.getMeteringPointOut() != null)
+                context.getTransformerValues().putIfAbsent(transformerLine.getMeteringPointOut().getCode(), transformerLine.getVal());
         }
         return transformerLines;
     }

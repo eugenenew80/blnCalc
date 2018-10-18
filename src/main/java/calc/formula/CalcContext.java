@@ -26,6 +26,7 @@ public class CalcContext {
     private boolean isAsp;
     private Exception exception;
 
+    private Map<String, Double> transformerValues;
     private Map<String, List<CalcResult>> values;
     private Map<String, List<CalcTrace>> trace;
     private Map<Long, CalcResult> results;
