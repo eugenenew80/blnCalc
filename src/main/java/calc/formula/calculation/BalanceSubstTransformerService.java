@@ -7,6 +7,7 @@ import calc.entity.calc.Unit;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.pe.PowerTransformerValue;
+import calc.entity.calc.enums.EquipmentTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
@@ -109,9 +110,13 @@ public class BalanceSubstTransformerService {
             Double pkzML    = getTransformerAttr(transformer, "pkz_ml",    context);
             Double pkzHL    = getTransformerAttr(transformer, "pkz_hl",    context);
 
-            if (transformer.getWindingsNumber().equals(3l)) {
-                pkzHL = pkzHL / Math.pow(150d / 501d, 2);
-                pkzML = pkzML / Math.pow(150d / 501d, 2);
+            if (transformer.getWindingsNumber().equals(3l) && transformer.getEquipmentType() == EquipmentTypeEnum.AT) {
+                Double alpha = 1d;
+                if (transformer.getSlNom() != null && transformer.getShNom() != null)
+                    alpha = transformer.getSlNom() / transformer.getShNom();
+
+                pkzHL = pkzHL / Math.pow(alpha, 2);
+                pkzML = pkzML / Math.pow(alpha, 2);
             }
 
             Double operatingTime = WorkingHoursExpression.builder()

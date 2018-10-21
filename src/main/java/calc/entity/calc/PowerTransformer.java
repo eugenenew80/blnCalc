@@ -1,5 +1,7 @@
 package calc.entity.calc;
 
+import calc.entity.calc.enums.EquipmentTypeEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.*;
 import javax.persistence.*;
 import org.hibernate.annotations.Immutable;
@@ -52,4 +54,14 @@ public class PowerTransformer {
 
     @Column(name = "windings_number")
     private Long windingsNumber;
+
+    @Column(name="equipment_type")
+    @Enumerated(EnumType.STRING)
+    private EquipmentTypeEnum equipmentType;
+
+    @Column(name = "nn")
+    private Double slNom;
+
+    @Column(name = "bn")
+    private Double shNom;
 }
