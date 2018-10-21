@@ -4,15 +4,11 @@ import calc.entity.calc.*;
 import calc.entity.calc.asp.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
-import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.TreatmentTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
-import calc.formula.service.CalcService;
-import calc.formula.service.MessageService;
-import calc.formula.service.MeteringReading;
-import calc.formula.service.MrService;
+import calc.formula.service.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -26,7 +22,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("ALL")
+import static calc.util.Util.round;
+
+@SuppressWarnings("ImplicitSubclassInspection")
 @Service
 @RequiredArgsConstructor
 public class AspService {
@@ -37,45 +35,40 @@ public class AspService {
     private final AspResultAppRepo aspResultAppRepo;
     private final MessageService messageService;
     private final MrService mrService;
-    private final ParameterRepo parameterRepo;
+    private final ParamService paramService;
     private static final String docCode = "ASP1";
     private Map<String, Parameter> mapParams = null;
     private final CalcService calcService;
 
     @PostConstruct
     public void init() {
-        mapParams = new HashMap<>();
-        mapParams.put("A-", parameterRepo.findByCode("A-"));
-        mapParams.put("A+", parameterRepo.findByCode("A+"));
-        mapParams.put("R-", parameterRepo.findByCode("R-"));
-        mapParams.put("R+", parameterRepo.findByCode("R+"));
+        mapParams = paramService.getValues();
     }
 
-    public boolean calc(AspResultHeader header) {
+    public boolean calc(Long headerId) {
+        logger.info("Metering reading for header " + headerId + " started");
+        AspResultHeader header = aspResultHeaderRepo.findOne(headerId);
+        if (header.getStatus() == BatchStatusEnum.E)
+            return false;
+
+        CalcContext context = CalcContext.builder()
+            .docCode(docCode)
+            .headerId(header.getId())
+            .periodType(header.getPeriodType())
+            .startDate(header.getStartDate())
+            .endDate(header.getEndDate())
+            .orgId(header.getOrganization().getId())
+            .contextType(ContextType.ASP)
+            .values(new HashMap<>())
+            .build();
+
         try {
-            logger.info("Metering reading for header " + header.getId() + " started");
-            header = aspResultHeaderRepo.findOne(header.getId());
-            if (header.getStatus() == BatchStatusEnum.E)
-                return false;
-
-            CalcContext context = CalcContext.builder()
-                .docCode(docCode)
-                .headerId(header.getId())
-                .periodType(header.getPeriodType())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
-                .contextType(ContextType.ASP)
-                .values(new HashMap<>())
-                .build();
-
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
             deleteMessages(header);
 
-            calcInfoRows(header);
+            copyInfoRows(header);
             calcInRows(header, context);
-            calcEmptyRows(header, context);
             calcOutRows(header, context);
             copyNotes(header);
             copyApps(header);
@@ -103,40 +96,7 @@ public class AspService {
     private void calcOutRows(AspResultHeader header, CalcContext context) throws Exception {
         List<AspResultLine> resultLines = new ArrayList<>();
         for (AspLine line : header.getHeader().getLines()) {
-            if (line.getTreatmentType() != TreatmentTypeEnum.OUT)
-                continue;;
-
-            MeteringPoint meteringPoint = line.getMeteringPoint();
-            Parameter param = line.getParam();
-            if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param.getCode(), context);
-                Double value = result!=null ? result.getDoubleValue() : null;
-                if (param != null) {
-                    double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
-                    if (value != null) value = Math.round(value * rounding) / rounding;
-                }
-
-                AspResultLine resultLine = new AspResultLine();
-                resultLine.setHeader(header);
-                resultLine.setLineNum(line.getLineNum());
-                resultLine.setMeteringPoint(line.getMeteringPoint());
-                resultLine.setParam(line.getParam());
-                resultLine.setUnit(line.getParam().getUnit());
-                resultLine.setFormula(line.getFormula());
-                resultLine.setTreatmentType(line.getTreatmentType());
-                resultLine.setVal(value);
-
-                addTranslates(line, resultLine);
-                resultLines.add(resultLine);
-            }
-        }
-        saveLines(resultLines);
-    }
-
-    private void calcEmptyRows(AspResultHeader header, CalcContext context) throws Exception {
-        List<AspResultLine> resultLines = new ArrayList<>();
-        for (AspLine line : header.getHeader().getLines()) {
-            if (line.getTreatmentType() != TreatmentTypeEnum.EMPTY)
+            if (line.getTreatmentType() != TreatmentTypeEnum.OUT && line.getTreatmentType() != TreatmentTypeEnum.EMPTY)
                 continue;
 
             MeteringPoint meteringPoint = line.getMeteringPoint();
@@ -144,10 +104,7 @@ public class AspService {
             if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
                 CalcResult result = calcService.calcMeteringPoint(meteringPoint, param.getCode(), context);
                 Double value = result!=null ? result.getDoubleValue() : null;
-                if (param != null) {
-                    double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
-                    if (value != null) value = Math.round(value * rounding) / rounding;
-                }
+                value = round(value, param);
 
                 AspResultLine resultLine = new AspResultLine();
                 resultLine.setHeader(header);
@@ -159,7 +116,7 @@ public class AspService {
                 resultLine.setTreatmentType(line.getTreatmentType());
                 resultLine.setVal(value);
 
-                addTranslates(line, resultLine);
+                copyTranslates(line, resultLine);
                 resultLines.add(resultLine);
             }
         }
@@ -188,7 +145,7 @@ public class AspService {
                 }
                 resultLine.setFormula(line.getFormula());
                 resultLine.setTreatmentType(line.getTreatmentType());
-                addTranslates(line, resultLine);
+                copyTranslates(line, resultLine);
                 resultLines.add(resultLine);
             }
 
@@ -214,30 +171,30 @@ public class AspService {
                 resultLine.setUnderCountVal(t.getUnderCountVal());
                 resultLine.setUndercount(t.getUnderCount());
                 resultLine.setTreatmentType(line.getTreatmentType());
-                addTranslates(line, resultLine);
+                copyTranslates(line, resultLine);
                 resultLines.add(resultLine);
             }
         }
         saveLines(resultLines);
     }
 
-    private void calcInfoRows(AspResultHeader header) {
+    private void copyInfoRows(AspResultHeader header) {
         List<AspResultLine> resultLines = new ArrayList<>();
         for (AspLine line : header.getHeader().getLines()) {
             if (line.getTreatmentType() != TreatmentTypeEnum.INFO)
-                continue;;
+                continue;
 
             AspResultLine resultLine = new AspResultLine();
             resultLine.setHeader(header);
             resultLine.setLineNum(line.getLineNum());
             resultLine.setTreatmentType(line.getTreatmentType());
-            addTranslates(line, resultLine);
+            copyTranslates(line, resultLine);
             resultLines.add(resultLine);
         }
         saveLines(resultLines);
     }
 
-    private void addTranslates(AspLine line, AspResultLine resultLine) {
+    private void copyTranslates(AspLine line, AspResultLine resultLine) {
         resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
         for (AspLineTranslate lineTranslate : line.getTranslates()) {
             AspResultLineTranslate resultLineTranslate = new AspResultLineTranslate();

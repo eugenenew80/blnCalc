@@ -37,4 +37,7 @@ public class BalanceSubstPeLine {
     @ManyToOne
     @JoinColumn(name = "metering_point_id_out")
     private MeteringPoint meteringPointOut;
+
+    @Column(name = "calc_num")
+    private Long calcNum;
 }

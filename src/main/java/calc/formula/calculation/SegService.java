@@ -23,7 +23,7 @@ import java.util.*;
 
 import static calc.util.Util.round;
 
-@SuppressWarnings("ALL")
+@SuppressWarnings("ImplicitSubclassInspection")
 @Service
 @RequiredArgsConstructor
 public class SegService {
@@ -67,8 +67,8 @@ public class SegService {
 
             copyInfoRows(header);
             calcInRows(header, context);
-            calcOutRows(header, TreatmentTypeEnum.EMPTY, context);
-            calcOutRows(header, TreatmentTypeEnum.OUT, context);
+            calcOutRows(header, context);
+            setParents(header);
             copyNotes(header);
             copyApps(header);
 
@@ -91,10 +91,10 @@ public class SegService {
         }
     }
 
-    private void calcOutRows(SegResultHeader header, TreatmentTypeEnum treatmentType, CalcContext context) throws Exception {
+    private void calcOutRows(SegResultHeader header, CalcContext context) throws Exception {
         List<SegResultLine> resultLines = new ArrayList<>();
         for (BalanceUnitLine line : header.getBalanceUnit().getLines()) {
-            if (line.getTreatmentType() != treatmentType)
+            if (line.getTreatmentType() != TreatmentTypeEnum.OUT && line.getTreatmentType() != TreatmentTypeEnum.EMPTY)
                 continue;
 
             Map<String, String> msgParams = buildMsgParams(line);
@@ -136,8 +136,11 @@ public class SegService {
             resultLine.setIsInverse(line.getIsInverse());
 
             if (meteringPoint.getPointType() == PointTypeEnum.VMP && formula != null) {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param.getCode(), context);
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param.getCode(), formula, context);
                 Double value = result != null ? result.getDoubleValue() : null;
+                if (value != null)
+                    value = value * Optional.ofNullable(line.getRate()).orElse(1d);
+
                 value = round(value, param);
                 resultLine.setVal(value);
             }
@@ -203,17 +206,11 @@ public class SegService {
         saveLines(resultLines);
     }
 
-    private Map<String, String> buildMsgParams(BalanceUnitLine line) {
-        Map<String, String> msgParams = new HashMap<>();
-        msgParams.put("line", line.getLineNum().toString());
-        return msgParams;
-    }
-
     private void copyInfoRows(SegResultHeader header) {
         List<SegResultLine> resultLines = new ArrayList<>();
         for (BalanceUnitLine line : header.getBalanceUnit().getLines()) {
             if (line.getTreatmentType() != TreatmentTypeEnum.INFO)
-                continue;;
+                continue;
 
             SegResultLine resultLine = new SegResultLine();
             resultLine.setHeader(header);
@@ -295,18 +292,15 @@ public class SegService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void deleteLines(SegResultHeader header) {
         List<SegResultLine> lines = segResultLineRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            segResultLineRepo.delete(lines.get(i));
+        segResultLineRepo.delete(lines);
         segResultLineRepo.flush();
 
         List<SegResultNote> notes = segResultNoteRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<notes.size(); i++)
-            segResultNoteRepo.delete(notes.get(i));
+        segResultNoteRepo.delete(notes);
         segResultNoteRepo.flush();
 
         List<SegResultApp> apps = segResultAppRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<apps.size(); i++)
-            segResultAppRepo.delete(apps.get(i));
+        segResultAppRepo.delete(apps);
         segResultAppRepo.flush();
     }
 
@@ -320,5 +314,39 @@ public class SegService {
         header.setStatus(status);
         segResultHeaderRepo.save(header);
         segResultHeaderRepo.flush();
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void setParents(SegResultHeader header) {
+        List<SegResultLine> lines = segResultLineRepo.findAllByHeaderId(header.getId());
+        List<BalanceUnitLine> balanceUnitLines = header.getBalanceUnit().getLines();
+
+        for (BalanceUnitLine balanceUnitLine : balanceUnitLines) {
+            if (balanceUnitLine.getParent() == null)
+                continue;
+
+            SegResultLine line = lines.stream()
+                .filter(t -> t.getLineNum().equals(balanceUnitLine.getLineNum()))
+                .findFirst()
+                .orElse(null);
+
+            SegResultLine parentLine = lines.stream()
+                .filter(t -> t.getLineNum().equals(balanceUnitLine.getParent().getLineNum()))
+                .findFirst()
+                .orElse(null);
+
+            if (line != null && parentLine!= null)
+                line.setParent(parentLine);
+        }
+
+        segResultLineRepo.save(lines);
+        segResultLineRepo.flush();
+    }
+
+    private Map<String, String> buildMsgParams(BalanceUnitLine line) {
+        Map<String, String> msgParams = new HashMap<>();
+        msgParams.put("line", line.getLineNum().toString());
+        return msgParams;
     }
 }

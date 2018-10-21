@@ -43,24 +43,20 @@ public class FormulaRestController {
         ResultDto resultDto = new ResultDto();
         resultDto.setFormulaId(formulaDto.getFormulaId());
         try {
-            List<CalcResult> results = calcService.calcFormulas(Arrays.asList(formula), context);
+            CalcResult result = calcService.calcMeteringPoint(formula.getMeteringPoint(), formula.getParam().getCode(), formula, context);
             if (context.getException()!=null)
                 throw context.getException();
 
-           if (!results.isEmpty()) {
-               CalcResult result = results.get(0);
-               if (formula.getParamType() == ParamTypeEnum.AT)
-                   resultDto.setVal(result.getDoubleValue());
-               else {
-                   Double sum =0d;
-                   for (int i=0; i<result.getDoubleValues().length; i++)
-                       if (result.getDoubleValues()[i] != null) sum += result.getDoubleValues()[i];
-                  resultDto.setVal(sum);
-               }
-
-               resultDto.setStatus("S");
-               resultDto.setMsg("Формула синтаксички верная");
+            if (formula.getParamType() == ParamTypeEnum.AT)
+               resultDto.setVal(result.getDoubleValue());
+            else {
+               Double sum =0d;
+               for (int i=0; i<result.getDoubleValues().length; i++)
+                   if (result.getDoubleValues()[i] != null) sum += result.getDoubleValues()[i];
+              resultDto.setVal(sum);
             }
+            resultDto.setStatus("S");
+            resultDto.setMsg("Формула синтаксички верная");
         }
         catch (Exception e) {
             resultDto.setStatus("E");

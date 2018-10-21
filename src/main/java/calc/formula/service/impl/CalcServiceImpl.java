@@ -4,6 +4,7 @@ import calc.entity.calc.*;
 import calc.entity.calc.enums.FormulaTypeEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
+import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.formula.ContextType;
@@ -34,21 +35,27 @@ public class CalcServiceImpl implements CalcService {
     private final BalanceSubstResultMrService mrService;
     private final TransformerValueService transformerValueService;
     private final AspResultService aspService;
+    private final SegResultService segService;
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
 
     @Override
     public CalcResult calcMeteringPoint(MeteringPoint point, String param, CalcContext context) throws Exception {
-        logger.trace("---------------------------------------------");
-        logger.trace("point: " + point.getCode());
-        logger.trace("param: " + param);
-        logger.trace("periodType: " + context.getPeriodType());
-
         Formula formula = point.getFormulas()
             .stream()
             .filter(t -> t.getParam().getCode().equals(param))
             .findFirst()
             .orElse(null);
+
+        return calcMeteringPoint(point, param, formula, context);
+    }
+
+    @Override
+    public CalcResult calcMeteringPoint(MeteringPoint point, String param, Formula formula,  CalcContext context) throws Exception {
+        logger.trace("---------------------------------------------");
+        logger.trace("point: " + point.getCode());
+        logger.trace("param: " + param);
+        logger.trace("periodType: " + context.getPeriodType());
 
         if (formula == null) {
             logger.trace("Formula not found");
@@ -97,8 +104,7 @@ public class CalcServiceImpl implements CalcService {
             .orElse(null);
     }
 
-    @Override
-    public List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws Exception {
+    private List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws Exception {
         Map<String, Pair<Formula, DoubleExpression>> expressions = new HashMap<>();
         for (Formula formula : formulas) {
             DoubleExpression expression = buildExpression(formula, context);
@@ -240,7 +246,7 @@ public class CalcServiceImpl implements CalcService {
         Parameter param = det.getParam();
         ParamTypeEnum paramType = det.getParamType();
 
-        if (meteringPoint.getMeteringPointTypeId().equals(2L)) {
+        if (meteringPoint.getPointType() == PointTypeEnum.VMP) {
             Formula formula = meteringPoint.getFormulas()
                 .stream()
                 .filter(t -> t.getParam().equals(param))
@@ -263,13 +269,12 @@ public class CalcServiceImpl implements CalcService {
             Double sign = det.getSign().equals("-") ? -1d : 1d;
 
             if (param.getCode().equals("WL")) {
-                if (context.getTransformerValues() != null) {
-                    if (context.getTransformerValues().containsKey(meteringPoint.getCode())) {
-                        logger.trace("expression: DoubleValueExpression");
-                        return DoubleValueExpression.builder()
-                            .value(context.getTransformerValues().get(meteringPoint.getCode()))
-                            .build();
-                    }
+                Map<String, Double> transformerValues = context.getTransformerValues();
+                if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {
+                    logger.trace("expression: DoubleValueExpression");
+                    return DoubleValueExpression.builder()
+                        .value(transformerValues.get(meteringPoint.getCode()))
+                        .build();
                 }
 
                 logger.trace("expression: TransformerValueExpression");
@@ -303,6 +308,20 @@ public class CalcServiceImpl implements CalcService {
                 .rate(det.getRate() * sign)
                 .context(context)
                 .service(aspService)
+                .build();
+        }
+
+        if (context.getContextType() == ContextType.SEG) {
+            logger.trace("context: seg");
+            Double sign = det.getSign().equals("-") ? -1d : 1d;
+
+            logger.trace("expression: SegExpression");
+            return SegExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(param.getCode())
+                .rate(det.getRate() * sign)
+                .context(context)
+                .service(segService)
                 .build();
         }
 

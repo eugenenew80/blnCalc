@@ -1198,4 +1198,14 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1220" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_pe_lines</comment>
+        <addColumn schemaName="apps" tableName="calc_balance_subst_pe_lines">
+            <column name="calc_num" type="number" remarks="Порядок сортировки при расчёте">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
