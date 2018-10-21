@@ -10,17 +10,14 @@ import java.util.Map;
 @Getter @Setter
 @Builder
 public class CalcContext {
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String docCode;
     private Long headerId;
     private PeriodTypeEnum periodType;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private Long orgId;
-    private String orgName;
     private String energyObjectType;
     private Long energyObjectId;
-    private String energyObjectName;
-    private String docCode;
-    private Long docId;
     private Exception exception;
 
     @Builder.Default
@@ -33,11 +30,5 @@ public class CalcContext {
     private Map<String, List<CalcResult>> values = new  HashMap<>();
 
     @Builder.Default
-    private Map<String, List<CalcTrace>> trace = new  HashMap<>();
-
-    @Builder.Default
     private Map<Long, CalcResult> results = new  HashMap<>();
-
-    //private boolean isMeteringReading;
-    //private boolean isAsp;
 }

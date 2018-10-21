@@ -44,7 +44,6 @@ public class SvrService {
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
-                .docId(header.getId())
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
@@ -53,7 +52,6 @@ public class SvrService {
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
                 .contextType(ContextType.DEFAULT)
-                .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
 

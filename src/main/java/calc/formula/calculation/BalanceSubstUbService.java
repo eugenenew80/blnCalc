@@ -47,6 +47,7 @@ public class BalanceSubstUbService {
             logger.info("Unbalance for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
+                .docCode(docCode)
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
@@ -54,10 +55,7 @@ public class BalanceSubstUbService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
-                .docCode(docCode)
-                .docId(header.getId())
                 .contextType(ContextType.DEFAULT)
-                .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
 

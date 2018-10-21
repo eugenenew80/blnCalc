@@ -81,7 +81,7 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
         Element repEnergyObjectElement = doc.createElement("energy-object");
         repEnergyObjectElement.setAttribute("type", context.getEnergyObjectType());
-        repEnergyObjectElement.setAttribute("name", context.getEnergyObjectName());
+        //repEnergyObjectElement.setAttribute("name", context.getEnergyObjectName());
         headElement.appendChild(repEnergyObjectElement);
 
         return headElement;

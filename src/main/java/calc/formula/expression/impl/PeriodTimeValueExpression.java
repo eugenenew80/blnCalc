@@ -2,9 +2,7 @@ package calc.formula.expression.impl;
 
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
-import calc.entity.calc.SourceType;
 import calc.formula.CalcContext;
-import calc.formula.CalcTrace;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
@@ -69,8 +67,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         Arrays.fill(count, null);
         Arrays.fill(avg, null);
 
-        CalcTrace calcTrace = trace(list);
-
         list.stream()
             .map(t -> t.getMeteringDate().toLocalDate())
             .distinct()
@@ -100,29 +96,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         if (parameterCode.equals("U")) result = avg;
         else result = sum;
 
-        calcTrace.setValues(result);
         return result;
-    }
-
-    @SuppressWarnings("Duplicates")
-    private CalcTrace trace(List<CalcResult> list) {
-        List<CalcTrace> traces = context.getTrace().get(meteringPointCode);
-        if (traces == null)
-            traces = new ArrayList<>();
-
-        List<SourceType> sourceTypeList = list.stream()
-            .map(t -> t.getSourceType())
-            .distinct()
-            .collect(toList());
-
-        CalcTrace calcTrace = CalcTrace.builder()
-            .sourceTypeCount(sourceTypeList.size())
-            .meteringPointCode(meteringPointCode)
-            .parameterCode(parameterCode)
-            .build();
-
-        traces.add(calcTrace);
-        context.getTrace().putIfAbsent(meteringPointCode, traces);
-        return calcTrace;
     }
 }

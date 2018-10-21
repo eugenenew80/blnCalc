@@ -60,15 +60,12 @@ public class AspService {
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
-                .docId(header.getId())
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
                 .contextType(ContextType.ASP)
-                //.isAsp(true)
-                .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
 

@@ -1,5 +1,6 @@
 package calc.entity.calc;
 
+import calc.entity.calc.enums.PointTypeEnum;
 import lombok.*;
 import javax.persistence.*;
 
@@ -42,4 +43,10 @@ public class MeteringPoint {
 
     @OneToMany(mappedBy = "meteringPoint", fetch = FetchType.LAZY)
     private List<MeterHistory> meterHistory;
+
+    @Transient
+    public PointTypeEnum getPointType() {
+        if (meteringPointTypeId == null || meteringPointTypeId > 2) return null;
+        return PointTypeEnum.values()[meteringPointTypeId.intValue()-1];
+    }
 }

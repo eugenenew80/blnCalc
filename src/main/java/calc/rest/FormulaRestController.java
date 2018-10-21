@@ -32,13 +32,11 @@ public class FormulaRestController {
 
         CalcContext context = CalcContext.builder()
             .docCode("TEST")
-            .docId(formula.getId())
             .headerId(formula.getId())
             .periodType(PeriodTypeEnum.H)
             .startDate(startDate)
             .endDate(endDate)
             .orgId(1l)
-            .trace(new HashMap<>())
             .values(new HashMap<>())
             .build();
 

@@ -39,7 +39,6 @@ public class BalanceSubstUService {
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
-                .docId(header.getId())
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
@@ -48,7 +47,6 @@ public class BalanceSubstUService {
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
                 .contextType(ContextType.DEFAULT)
-                .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
 

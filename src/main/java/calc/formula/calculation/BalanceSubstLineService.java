@@ -46,7 +46,6 @@ public class BalanceSubstLineService {
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
-                .docId(header.getId())
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
@@ -55,8 +54,6 @@ public class BalanceSubstLineService {
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
                 .contextType(ContextType.MR)
-                //.isMeteringReading(true)
-                .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
 

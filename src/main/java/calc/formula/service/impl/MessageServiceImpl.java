@@ -10,11 +10,15 @@ import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.BalanceSubstResultMessage;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.MessageTypeEnum;
+import calc.entity.calc.seg.SegResultHeader;
+import calc.entity.calc.seg.SegResultMessage;
+import calc.entity.calc.seg.SegResultMessageTranslate;
 import calc.formula.service.MessageError;
 import calc.formula.service.MessageService;
 import calc.repo.calc.AspResultMessageRepo;
 import calc.repo.calc.BsResultMessageRepo;
 import calc.repo.calc.MessageRepo;
+import calc.repo.calc.SegResultMessageRepo;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.stereotype.Service;
@@ -30,6 +34,7 @@ import java.util.Map;
 public class MessageServiceImpl implements MessageService {
     private final BsResultMessageRepo bsResultMessageRepo;
     private final AspResultMessageRepo aspResultMessageRepo;
+    private final SegResultMessageRepo segResultMessageRepo;
     private final MessageRepo messageRepo;
     private Map<String, MessageError> mapErrors = new HashMap<>();
 
@@ -144,6 +149,43 @@ public class MessageServiceImpl implements MessageService {
             messageTranslate.setMsg(msg);
             message.getTranslates().add(messageTranslate);
             aspResultMessageRepo.save(message);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteMessages(SegResultHeader header) {
+        List<SegResultMessage> lines = segResultMessageRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<lines.size(); i++)
+            segResultMessageRepo.delete(lines.get(i));
+        segResultMessageRepo.flush();
+    }
+
+    @Override
+    public void addMessage(SegResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
+        MessageError err = mapErrors.getOrDefault(errCode, null);
+        try {
+            LangEnum defLang = LangEnum.RU;
+            String defTExt = "Описание не найдено";
+            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
+            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
+            msg = StrSubstitutor.replace(msg, params);
+
+            SegResultMessage message = new SegResultMessage();
+            message.setHeader(header);
+            message.setLineNum(lineNum);
+            message.setMessageType(messageType);
+            message.setErrorCode(errCode);
+            message.setTranslates(new ArrayList<>());
+
+            SegResultMessageTranslate messageTranslate = new SegResultMessageTranslate();
+            messageTranslate.setMessage(message);
+            messageTranslate.setLang(defLang);
+            messageTranslate.setMsg(msg);
+            message.getTranslates().add(messageTranslate);
+            segResultMessageRepo.save(message);
         }
         catch (Exception e) {
             e.printStackTrace();

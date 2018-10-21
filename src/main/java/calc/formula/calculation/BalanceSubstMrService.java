@@ -42,14 +42,12 @@ public class BalanceSubstMrService {
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
-                .docId(header.getId())
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
                 .contextType(ContextType.DEFAULT)
-                .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .build();
 

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -39,14 +40,9 @@ public class SegHeader {
     @Column(name = "end_date")
     private LocalDate endDate;
 
-    /*
-    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
-    private List<AspLine> lines;
-
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<SegNote> notes;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<SegApp> apps;
-    */
 }

@@ -41,7 +41,6 @@ public class BalanceSubstTransformerService {
 
             CalcContext context = CalcContext.builder()
                 .docCode(docCode)
-                .docId(header.getId())
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
                 .startDate(header.getStartDate())
@@ -50,8 +49,6 @@ public class BalanceSubstTransformerService {
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
                 .contextType(ContextType.MR)
-                //.isMeteringReading(true)
-                .trace(new HashMap<>())
                 .values(new HashMap<>())
                 .transformerValues(new HashMap<>())
                 .build();

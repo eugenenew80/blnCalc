@@ -48,26 +48,4 @@ public class AtTimeValueExpression implements DoubleExpression {
 
         return result;
     }
-
-    @SuppressWarnings("Duplicates")
-    private CalcTrace trace(List<CalcResult> list) {
-        List<CalcTrace> traces = context.getTrace().get(meteringPointCode);
-        if (traces == null)
-            traces = new ArrayList<>();
-
-        List<SourceType> sourceTypeList = list.stream()
-            .map(t -> t.getSourceType())
-            .distinct()
-            .collect(toList());
-
-        CalcTrace calcTrace = CalcTrace.builder()
-            .sourceTypeCount(sourceTypeList.size())
-            .meteringPointCode(meteringPointCode)
-            .parameterCode(parameterCode)
-            .build();
-
-        traces.add(calcTrace);
-        context.getTrace().putIfAbsent(meteringPointCode, traces);
-        return calcTrace;
-    }
 }
