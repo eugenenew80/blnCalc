@@ -6,9 +6,9 @@ import calc.formula.expression.impl.AtTimeValueExpression;
 import calc.formula.service.AtTimeValueService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MrService;
+import calc.formula.service.ParamService;
 import calc.repo.calc.BypassModeRepo;
 import calc.repo.calc.MeterHistoryRepo;
-import calc.repo.calc.ParameterRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toList;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MrServiceImpl implements MrService {
-    private final ParameterRepo parameterRepo;
+    private final ParamService paramService;
     private final AtTimeValueService atTimeValueService;
     private final MeterHistoryRepo meterHistoryRepo;
     private final BypassModeRepo bypassModeRepo;
@@ -30,11 +30,7 @@ public class MrServiceImpl implements MrService {
 
     @PostConstruct
     public void init() {
-        mapParams = new HashMap<>();
-        mapParams.put("A-", parameterRepo.findByCode("A-"));
-        mapParams.put("A+", parameterRepo.findByCode("A+"));
-        mapParams.put("R-", parameterRepo.findByCode("R-"));
-        mapParams.put("R+", parameterRepo.findByCode("R+"));
+        mapParams = paramService.getValues();
     }
 
     @Override
@@ -71,8 +67,10 @@ public class MrServiceImpl implements MrService {
         LocalDateTime startDate = context.getStartDate().atStartOfDay();
         LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
 
-        List<Parameter> parameters =meteringPoint.getParameters().stream()
+        List<Parameter> parameters = meteringPoint.getParameters()
+            .stream()
             .map(t -> t.getParameter())
+            .filter(t -> t.getId() <= 4l)
             .collect(toList());
 
         List<MeterHistory> meterHistories = meterHistoryRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate);
@@ -230,17 +228,5 @@ public class MrServiceImpl implements MrService {
             .service(atTimeValueService)
             .build()
             .doubleValue();
-    }
-
-    private List<Parameter> getParameters(List<MeterHistory> meters) {
-        if (meters==null || meters.size()==0 || meters.get(0).getMeter() == null)
-            return mapParams.values().stream().collect(toList());
-
-        List<Parameter> parameters = new ArrayList<>();
-        if (meters.get(0).getMeter().getIsAm()) parameters.add(mapParams.get("A-"));
-        if (meters.get(0).getMeter().getIsAp()) parameters.add(mapParams.get("A+"));
-        if (meters.get(0).getMeter().getIsRm()) parameters.add(mapParams.get("R-"));
-        if (meters.get(0).getMeter().getIsRp()) parameters.add(mapParams.get("R+"));
-        return parameters;
     }
 }
