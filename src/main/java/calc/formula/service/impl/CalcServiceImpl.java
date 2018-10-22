@@ -13,15 +13,14 @@ import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import lombok.RequiredArgsConstructor;
+import org.jgrapht.alg.CycleDetector;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import javax.script.ScriptEngine;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -29,7 +28,6 @@ import static java.util.stream.Collectors.toSet;
 @RequiredArgsConstructor
 public class CalcServiceImpl implements CalcService {
     private static final Logger logger = LoggerFactory.getLogger(CalcService.class);
-    private final ExpressionService expressionService;
     private final PeriodTimeValueService periodTimeValueService;
     private final AtTimeValueService atTimeValueService;
     private final BalanceSubstResultMrService mrService;
@@ -51,7 +49,7 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-    public CalcResult calcMeteringPoint(MeteringPoint point, String param, Formula formula,  CalcContext context) throws Exception {
+    public CalcResult calcMeteringPoint(MeteringPoint point, String param, Formula formula, CalcContext context) throws Exception {
         logger.trace("---------------------------------------------");
         logger.trace("point: " + point.getCode());
         logger.trace("param: " + param);
@@ -61,158 +59,50 @@ public class CalcServiceImpl implements CalcService {
             logger.trace("Formula not found");
             return null;
         }
-
         logger.trace("formulaId: " + formula.getId());
 
-        Set<String> set = new HashSet<>();
-        Set<MeteringPoint> childPoints =  new HashSet<>(getChildPoints(point, set).values());
-
-        MeteringPoint cyclePoint = childPoints.stream().filter(t -> t.getCode().equals(point.getCode())).findFirst().orElse(null);
-        if (cyclePoint != null) {
-            logger.error("Циклическая формула: " + cyclePoint.getCode());
-            return null;
-        }
-
-        logger.trace("child points:");
-        childPoints.forEach(t -> logger.trace("point: " + t.getCode()));
-
-        List<Formula> formulas = childPoints.stream()
-            .flatMap(p -> p.getFormulas().stream())
-            .collect(Collectors.toList());
-        formulas.add(formula);
-
-        logger.trace("all formulas:");
-        formulas.forEach(t -> logger.trace("formulaId: " + t.getId() + ", src: " + t.getText()));
-
-        List<CalcResult> results = calcFormulas(formulas, context);
-
+        CalcResult result = calcFormula(formula, context);
         logger.trace("results:");
-        results.forEach(t -> {
-            logger.trace("formulaId: " + t.getFormula().getId());
-            logger.trace("src: " + t.getFormula().getText());
-            logger.trace("point: " + t.getMeteringPoint().getCode());
-            logger.trace("param: " + t.getParam().getCode());
-            logger.trace("paramType: " + t.getParamType());
-            logger.trace("meteringDate: " + t.getMeteringDate());
-            logger.trace("periodType: " + t.getPeriodType());
+        logger.trace("formulaId: " + result.getFormula().getId());
+        logger.trace("src: " + result.getFormula().getText());
+        logger.trace("point: " + result.getMeteringPoint().getCode());
+        logger.trace("param: " + result.getParam().getCode());
+        logger.trace("paramType: " + result.getParamType());
+        logger.trace("meteringDate: " + result.getMeteringDate());
+        logger.trace("periodType: " + result.getPeriodType());
 
-            if (t.getPeriodType() != PeriodTypeEnum.H)
-                logger.trace("value: " + t.getDoubleValue());
+        if (result.getPeriodType() != PeriodTypeEnum.H)
+            logger.trace("value: " + result.getDoubleValue());
 
-            if (t.getPeriodType() == PeriodTypeEnum.H)
-                logger.trace("values: " + Arrays.deepToString(t.getDoubleValues()));
-        });
+        if (result.getPeriodType() == PeriodTypeEnum.H)
+            logger.trace("values: " + Arrays.deepToString(result.getDoubleValues()));
         logger.trace("---------------------------------------------");
 
-        return results.stream()
-            .filter(t -> t.getMeteringPoint().equals(point))
-            .findFirst()
-            .orElse(null);
+        return result;
     }
 
-    private List<CalcResult> calcFormulas(List<Formula> formulas, CalcContext context) throws Exception {
-        Map<String, Pair<Formula, DoubleExpression>> expressions = new HashMap<>();
-        for (Formula formula : formulas) {
-            DoubleExpression expression = buildExpression(formula, context);
-            expressions.putIfAbsent(formula.getMeteringPoint().getCode(), Pair.of(formula, expression));
-        }
+    private CalcResult calcFormula(Formula formula, CalcContext context) throws Exception {
+        detectCycles(formula);
 
-        List<CalcResult> results = new ArrayList<>();
-        try {
-            List<String> sortedPointCodes = sort(expressions);
-            for (String pointCode : sortedPointCodes) {
-                Formula formula = expressions.get(pointCode).getFirst();
-                DoubleExpression expression = expressions.get(pointCode).getSecond();
+        DoubleExpression expression = buildExpression(formula, context);
+        CalcResult result = new CalcResult();
+        result.setFormula(formula);
+        result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
+        result.setMeteringPoint(formula.getMeteringPoint());
+        result.setParam(formula.getParam());
+        result.setUnit(formula.getParam().getUnit());
+        result.setParamType(formula.getParamType().name());
 
-                CalcResult result = new CalcResult();
-                result.setFormula(formula);
-                result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
-                result.setMeteringPoint(formula.getMeteringPoint());
-                result.setParam(formula.getParam());
-                result.setUnit(formula.getParam().getUnit());
-                result.setParamType(formula.getParamType().name());
-
-                if (context.getPeriodType() != PeriodTypeEnum.H) {
-                    result.setDoubleValue(expression.doubleValue());
-                    result.setPeriodType(context.getPeriodType());
-                }
-
-                if (context.getPeriodType() == PeriodTypeEnum.H) {
-                    result.setDoubleValues(expression.doubleValues());
-                    result.setPeriodType(context.getPeriodType());
-                }
-
-                results.add(result);
-                cacheResult(context, result);
-            }
-        }
-        catch (CycleDetectionException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return results;
-    }
-
-    private List<String> sort(Map<String, Pair<Formula, DoubleExpression>> expressions) throws CycleDetectionException {
-        Map<String, Set<String>> codesMap = new HashMap<>();
-        for (String pointCode : expressions.keySet())
-            codesMap.putIfAbsent(pointCode, expressions.get(pointCode).getSecond().pointCodes());
-
-        logger.trace("before sorting: " + codesMap.keySet());
-        List<String> pointCodes = expressionService.sort(codesMap);
-        logger.trace("after sorting: " + pointCodes);
-        return pointCodes;
-    }
-
-    private Map<String, MeteringPoint> getChildPoints(MeteringPoint rootPoint, Set<String> set) {
-        Map<String, MeteringPoint> points = new ConcurrentHashMap<>();
-        rootPoint.getFormulas().stream()
-            .flatMap(f -> f.getVars().stream())
-            .flatMap(v -> v.getDetails().stream())
-            .map(d -> d.getMeteringPoint())
-            .forEach(t -> points.putIfAbsent(t.getCode(), t));
-
-        for (String key : points.keySet()) {
-            MeteringPoint point = points.get(key);
-            set.add(rootPoint.getCode() + "#" + point.getCode());
-            if (set.contains(point.getCode() + "#" + rootPoint.getCode()))
-                continue;
-
-            Map<String, MeteringPoint> childPoints = getChildPoints(point, set);
-            for (String childKey : childPoints.keySet())
-                points.putIfAbsent(childKey, childPoints.get(childKey));
-        }
-
-        return points;
-    }
-
-    private void cacheResult(CalcContext context, CalcResult cacheResult) {
-        String code = cacheResult.getMeteringPoint().getCode();
         if (context.getPeriodType() != PeriodTypeEnum.H) {
-            List<CalcResult> values = context.getValues().getOrDefault(code, new ArrayList<>());
-            values.add(cacheResult);
-            context.getValues().put(code, values);
+            result.setDoubleValue(expression.doubleValue());
+            result.setPeriodType(context.getPeriodType());
         }
 
         if (context.getPeriodType() == PeriodTypeEnum.H) {
-            List<CalcResult> values = context.getValues().getOrDefault(code, new ArrayList<>());
-            LocalDateTime meteringDate = context.getStartDate().atStartOfDay();
-            for (int i = 0; i < cacheResult.getDoubleValues().length; i++) {
-                CalcResult result = new CalcResult();
-                result.setMeteringDate(meteringDate.plusHours(i));
-                result.setDoubleValue(cacheResult.getDoubleValues()[i]);
-                result.setPeriodType(cacheResult.getPeriodType());
-                result.setMeteringPoint(cacheResult.getMeteringPoint());
-                result.setParam(cacheResult.getParam());
-                result.setUnit(cacheResult.getUnit());
-                result.setParamType(cacheResult.getParamType());
-                values.add(result);
-                context.getValues().put(code, values);
-            }
+            result.setDoubleValues(expression.doubleValues());
+            result.setPeriodType(context.getPeriodType());
         }
+        return result;
     }
 
     private DoubleExpression buildExpression(Formula formula, CalcContext context) {
@@ -365,5 +255,49 @@ public class CalcServiceImpl implements CalcService {
         }
 
         return DoubleValueExpression.builder().build();
+    }
+
+    private void detectCycles(Formula formula) throws CycleDetectionException {
+        DefaultDirectedGraph<MeteringPoint, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
+        fillGraph(formula, graph);
+
+        CycleDetector<MeteringPoint, DefaultEdge> cycleDetector = new CycleDetector<>(graph);
+        Set<MeteringPoint> detectedCycles = cycleDetector.findCycles();
+
+        if (!detectedCycles.isEmpty())
+            throw new CycleDetectionException("Cycles detected", detectedCycles.iterator().next().getCode());
+    }
+
+    private void fillGraph(Formula rootFormula, DefaultDirectedGraph<MeteringPoint, DefaultEdge> graph) {
+        if (rootFormula == null) return;
+
+        if (!graph.containsVertex(rootFormula.getMeteringPoint()))
+            graph.addVertex(rootFormula.getMeteringPoint());
+
+        Set<FormulaVarDet> details = rootFormula.getVars()
+            .stream()
+            .flatMap(t -> t.getDetails().stream())
+            .filter(t -> t.getMeteringPoint() != null)
+            .collect(toSet());
+
+        for (FormulaVarDet det : details) {
+            if (!graph.containsVertex(det.getMeteringPoint()))
+                graph.addVertex(det.getMeteringPoint());
+
+            if (graph.containsEdge(rootFormula.getMeteringPoint(), det.getMeteringPoint()))
+                continue;
+
+            graph.addEdge(rootFormula.getMeteringPoint(), det.getMeteringPoint());
+
+            Formula formula = det.getMeteringPoint()
+                .getFormulas()
+                .stream()
+                .filter(t -> t.getParam().equals(det.getParam()))
+                .findFirst()
+                .orElse(null);
+
+            if (formula != null)
+                fillGraph(formula, graph);
+        }
     }
 }
