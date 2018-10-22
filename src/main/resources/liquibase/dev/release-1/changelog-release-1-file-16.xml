@@ -1208,4 +1208,258 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-eug-1221" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_result_lines</comment>
+        <createTable tableName="calc_act_inter_pl_result_lines" schemaName="apps" remarks="Акт сверки расчётов по МГЛЭП - ЛЭП">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="power_line_id" type="number" remarks="Идентификатор ЛЭП">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="voltage_class_id" type="number" remarks="Идентификатор класса напряжения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="power_line_length" type="number" remarks="Общая протяженности линии">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_bound_meter_inst" type="number" remarks="Флаг - граница раздела совпадает с местом установки прибора учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bound_metering_point_id" type="number" remarks="ТУ на границе раздела">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="boundary_val" type="number" remarks="Итого (сальдо) на границе раздела">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1222" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_result_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_result_lines"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_result_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1223" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_result_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_result_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1224" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_result_lines</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_lines_1"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_result_lines"
+                     unique="false">
+            <column name="result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1225" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_act_inter_pl_result_lines</comment>
+        <createIndex indexName="idx_calc_act_inter_pl_result_lines_2"
+                     schemaName="apps"
+                     tableName="calc_act_inter_pl_result_lines"
+                     unique="false">
+            <column name="power_line_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1226" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_lines to calc_act_inter_pl_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_lines"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_act_inter_pl_result_lines_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_act_inter_pl_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1227" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_lines to dict_power_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_lines"
+                baseColumnNames="power_line_id"
+                constraintName="fk_calc_act_inter_pl_result_lines_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_power_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1228" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_lines to dict_voltage_classes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_lines"
+                baseColumnNames="voltage_class_id"
+                constraintName="fk_calc_act_inter_pl_result_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_voltage_classes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1229" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_lines to dict_voltage_classes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_lines"
+                baseColumnNames="bound_metering_point_id"
+                constraintName="fk_calc_act_inter_pl_result_lines_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1230" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_act_inter_pl_result_lines_d1</comment>
+        <createTable tableName="calc_act_inter_pl_result_lines" schemaName="apps" remarks="Акт сверки расчётов по МГЛЭП - ЛЭП">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_line_id" type="number" remarks="Идентификатор строки расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="direction" type="number" remarks="Идентификатор направления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id_1" type="number" remarks="Идентификатор точки учёта отпускающей стороны">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="metering_point_id_2" type="number" remarks="Идентификатор точки учёта принимающей стороны">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="val_1" type="number" remarks="Всего отпущено">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="val_2" type="number" remarks="Всего принято">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="loss_val" type="number" remarks="Общая величина потерь">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="loss_val_1" type="number" remarks="Доля потерь отпускающей стороны">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="loss_proc_1" type="number" remarks="Доля потерь отпускающей стороны, %">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="loss_val_2" type="number" remarks="Доля потерь принимающей стороны">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="loss_proc_2" type="number" remarks="Доля потерь принимающей стороны, %">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="bound_val" type="number" remarks="Значение перетока на границе раздела">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1231" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_act_inter_pl_result_lines_d1</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_act_inter_pl_result_lines_d1"
+                schemaName="apps"
+                tableName="calc_act_inter_pl_result_lines_d1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1232" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_act_inter_pl_result_lines_d1</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_act_inter_pl_result_lines_d1_s"
+                startValue="1"/>
+    </changeSet>
+
 </databaseChangeLog>
