@@ -85,7 +85,7 @@ public class BalanceSubstUbService {
             for (BalanceSubstUbLine ubLine : header.getHeader().getUbLines()) {
                 MeteringPoint meteringPoint = ubLine.getMeteringPoint();
                 if (meteringPoint == null)
-                    continue;;
+                    continue;
 
                 String info = meteringPoint.getCode();
                 Map<String, String> params = new HashMap<>();

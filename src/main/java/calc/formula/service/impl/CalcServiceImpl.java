@@ -67,6 +67,12 @@ public class CalcServiceImpl implements CalcService {
         Set<String> set = new HashSet<>();
         Set<MeteringPoint> childPoints =  new HashSet<>(getChildPoints(point, set).values());
 
+        MeteringPoint cyclePoint = childPoints.stream().filter(t -> t.getCode().equals(point.getCode())).findFirst().orElse(null);
+        if (cyclePoint != null) {
+            logger.error("Циклическая формула: " + cyclePoint.getCode());
+            return null;
+        }
+
         logger.trace("child points:");
         childPoints.forEach(t -> logger.trace("point: " + t.getCode()));
 

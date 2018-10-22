@@ -26,7 +26,7 @@ public class TaskExecutor {
     private final AspService aspService;
     private final SvrService svrService;
 
-    @Scheduled(cron = "*/30 * * * * *")
+    @Scheduled(cron = "*/5 * * * * *")
     public void run() {
         calcBs();
         calcAsp();
