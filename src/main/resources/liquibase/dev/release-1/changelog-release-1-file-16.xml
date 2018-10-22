@@ -1557,14 +1557,6 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="result_line_id" type="number" remarks="Идентификатор строки расчёта">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="result_det_line_id" type="number" remarks="Идентификатор строки детализации расчёта">
-                <constraints nullable="false"/>
-            </column>
-
             <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
                 <constraints nullable="false"/>
             </column>
@@ -1680,32 +1672,12 @@
     </changeSet>
 
     <changeSet id="calc-eug-1243" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_act_inter_pl_result_mr_lines</comment>
-        <createIndex indexName="idx_calc_act_inter_pl_result_mr_lines_2"
-                     schemaName="apps"
-                     tableName="calc_act_inter_pl_result_mr_lines"
-                     unique="false">
-            <column name="result_line_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-1244" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: calc_act_inter_pl_result_mr_lines</comment>
-        <createIndex indexName="idx_calc_act_inter_pl_result_mr_lines_3"
-                     schemaName="apps"
-                     tableName="calc_act_inter_pl_result_mr_lines"
-                     unique="false">
-            <column name="result_det_line_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-1245" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_det_lines to calc_act_inter_pl_result_headers</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_result_mr_lines"
                 baseColumnNames="result_header_id"
-                constraintName="fk_calc_act_inter_pl_result_mr_lines_1"
+                constraintName="fk_calc_act_inter_pl_result_mr_lines_2"
                 deferrable="true"
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
@@ -1715,45 +1687,13 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1246" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_act_inter_pl_result_mr_lines to calc_act_inter_pl_result_lines</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="calc_act_inter_pl_result_mr_lines"
-                baseColumnNames="result_line_id"
-                constraintName="fk_calc_act_inter_pl_result_mr_lines_2"
-                deferrable="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="calc_act_inter_pl_result_lines"
-                referencedColumnNames="id"
-        />
-    </changeSet>
-
-    <changeSet id="calc-eug-1247" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_act_inter_pl_result_mr_lines to calc_act_inter_pl_result_det_lines</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="calc_act_inter_pl_result_mr_lines"
-                baseColumnNames="result_det_line_id"
-                constraintName="fk_calc_act_inter_pl_result_mr_lines_3"
-                deferrable="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="calc_act_inter_pl_result_det_lines"
-                referencedColumnNames="id"
-        />
-    </changeSet>
-
-    <changeSet id="calc-eug-1248" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1244" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_mr_lines to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_result_mr_lines"
                 baseColumnNames="metering_point_id"
-                constraintName="fk_calc_act_inter_pl_result_mr_lines_4"
+                constraintName="fk_calc_act_inter_pl_result_mr_lines_3"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1764,13 +1704,13 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1249" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1245" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_mr_lines to mdfem_eem_base</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_result_mr_lines"
                 baseColumnNames="meter_id"
-                constraintName="fk_calc_act_inter_pl_result_mr_lines_5"
+                constraintName="fk_calc_act_inter_pl_result_mr_lines_4"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1781,13 +1721,13 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1250" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1246" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_mr_lines to mdfem_history</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_result_mr_lines"
                 baseColumnNames="meter_history_id"
-                constraintName="fk_calc_act_inter_pl_result_mr_lines_6"
+                constraintName="fk_calc_act_inter_pl_result_mr_lines_5"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1798,13 +1738,13 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1251" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1247" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_mr_lines to media_parameters</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_result_mr_lines"
                 baseColumnNames="param_id"
-                constraintName="fk_calc_asp1_result_lines_7"
+                constraintName="fk_calc_act_inter_pl_result_mr_lines_6"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1815,13 +1755,13 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1252" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1248" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_mr_lines to dict_units</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_result_mr_lines"
                 baseColumnNames="unit_id"
-                constraintName="fk_calc_act_inter_pl_result_mr_lines_8"
+                constraintName="fk_calc_act_inter_pl_result_mr_lines_7"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1832,13 +1772,13 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1253" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1249" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_mr_lines to calc_bypass_modes</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_result_mr_lines"
                 baseColumnNames="bypass_mode_id"
-                constraintName="fk_calc_act_inter_pl_result_mr_lines_9"
+                constraintName="fk_calc_act_inter_pl_result_mr_lines_8"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1849,13 +1789,13 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1254" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1250" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_mr_lines to mdfem_undercount_header</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_result_mr_lines"
                 baseColumnNames="under_count_id"
-                constraintName="fk_calc_act_inter_pl_result_mr_lines_10"
+                constraintName="fk_calc_act_inter_pl_result_mr_lines_9"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1866,13 +1806,13 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1255" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1251" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_mr_lines to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_act_inter_pl_result_mr_lines"
                 baseColumnNames="bypass_metering_point_id"
-                constraintName="fk_calc_act_inter_pl_result_mr_lines_11"
+                constraintName="fk_calc_act_inter_pl_result_mr_lines_10"
                 deferrable="true"
                 initiallyDeferred="true"
                 onDelete="RESTRICT"
@@ -1883,7 +1823,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1256" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1252" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Adding columns to table: calc_act_inter_pl_result_lines</comment>
         <addColumn schemaName="apps" tableName="calc_act_inter_pl_result_lines">
             <column name="metering_point_id_out_1" type="number" remarks="ТУ для сохранения потерь на участке 1">
@@ -1896,7 +1836,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="calc-eug-1257" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1253" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_lines to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1912,7 +1852,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1258" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1254" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_act_inter_pl_result_lines to dict_metering_points</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -1928,7 +1868,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-1259" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1255" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_act_inter_pl_result_lines</comment>
         <createIndex indexName="idx_calc_act_inter_pl_result_lines_3"
                      schemaName="apps"
@@ -1938,7 +1878,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-1260" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1256" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating index: calc_act_inter_pl_result_lines</comment>
         <createIndex indexName="idx_calc_act_inter_pl_result_lines_4"
                      schemaName="apps"
@@ -1947,5 +1887,4 @@
             <column name="metering_point_id_out_2" type="number"/>
         </createIndex>
     </changeSet>
-
 </databaseChangeLog>
