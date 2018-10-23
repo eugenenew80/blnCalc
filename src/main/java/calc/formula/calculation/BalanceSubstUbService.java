@@ -228,7 +228,6 @@ public class BalanceSubstUbService {
                         if (!bttProcResult.getSecond().equals("OK")) {
                             messageService.addMessage(header, ubLine.getId(), docCode, bttProcResult.getSecond(), params);
                             bttProc = 0d;
-                            //continue;
                         }
 
                         Double buProc = 0d;

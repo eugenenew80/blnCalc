@@ -122,6 +122,7 @@ public class BalanceSubstReactorService {
             reactorLine.setInputMp(inputMp);
             reactorLine.setIsBalance(peLine.getIsBalance());
             reactorLine.setMeteringPointOut(peLine.getMeteringPointOut());
+            reactorLine.setIsBalance(peLine.getIsBalance());
             reactorLines.add(reactorLine);
         }
         return reactorLines;

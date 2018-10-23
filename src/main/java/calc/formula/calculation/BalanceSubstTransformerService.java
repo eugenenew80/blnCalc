@@ -167,6 +167,7 @@ public class BalanceSubstTransformerService {
             transformerLine.setWindingsNumber(transformer.getWindingsNumber());
             transformerLine.setIsBalance(peLine.getIsBalance());
             transformerLine.setMeteringPointOut(peLine.getMeteringPointOut());
+            transformerLine.setIsBalance(peLine.getIsBalance());
 
             if (transformer.getWindingsNumber().equals(2l)) {
                 Double rpH; Double rmH; Double apH; Double amH;
