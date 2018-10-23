@@ -3,17 +3,12 @@ package calc.formula.service.impl;
 import calc.entity.calc.Formula;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
-import calc.formula.exception.CycleDetectionException;
 import calc.formula.expression.impl.BinaryExpression;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.builder.ExpressionBuilderFactory;
 import calc.formula.service.OperatorFactory;
 import calc.formula.service.XmlExpressionService;
 import lombok.RequiredArgsConstructor;
-import org.jgrapht.alg.CycleDetector;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -21,8 +16,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
@@ -131,32 +124,5 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
             return builder.build(node, parameterCode, context);
 
         return parse(node, parameterCode, context);
-    }
-
-    public List<String> sort(Map<String, Set<String>> pointCodesMap) throws CycleDetectionException {
-        DefaultDirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        for (String key : pointCodesMap.keySet())
-            graph.addVertex(key);
-
-        for (String parentPointCode : pointCodesMap.keySet()) {
-            for (String childPointCode : pointCodesMap.get(parentPointCode))
-                if (graph.containsVertex(childPointCode)) graph.addEdge(childPointCode, parentPointCode);
-        }
-
-        Set<String> detectedCycles = detectCycles(graph);
-        if (!detectedCycles.isEmpty())
-            throw new CycleDetectionException("Cycles detected", detectedCycles.iterator().next());
-
-        List<String> ordered = new ArrayList<>();
-        TopologicalOrderIterator<String, DefaultEdge> orderIterator = new TopologicalOrderIterator<>(graph);
-        while (orderIterator.hasNext())
-            ordered.add(orderIterator.next());
-
-        return ordered;
-    }
-
-    private Set<String> detectCycles(DefaultDirectedGraph<String, DefaultEdge> graph) {
-        CycleDetector<String, DefaultEdge> cycleDetector = new CycleDetector<>(graph);
-        return cycleDetector.findCycles();
     }
 }

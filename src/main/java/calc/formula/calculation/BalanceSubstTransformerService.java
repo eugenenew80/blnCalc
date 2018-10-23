@@ -1,9 +1,6 @@
 package calc.formula.calculation;
 
-import calc.entity.calc.MeteringPoint;
-import calc.entity.calc.Parameter;
-import calc.entity.calc.PowerTransformer;
-import calc.entity.calc.Unit;
+import calc.entity.calc.*;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.pe.PowerTransformerValue;
@@ -11,6 +8,7 @@ import calc.entity.calc.enums.EquipmentTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
+import calc.formula.exception.CycleDetectionException;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import calc.repo.calc.PowerTransformerValueRepo;
@@ -171,18 +169,30 @@ public class BalanceSubstTransformerService {
             transformerLine.setMeteringPointOut(peLine.getMeteringPointOut());
 
             if (transformer.getWindingsNumber().equals(2l)) {
-                Double apH = getMrVal(inputMpW2, "A+", context);
-                Double amH = getMrVal(inputMpW2, "A-", context);
-                Double totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
+                Double rpH; Double rmH; Double apH; Double amH;
+                Map<String, String> msgParams = buildMsgParams(inputMpW2);
+                try {
+                    apH = getMrVal(inputMpW2, "A+", context);
+                    amH = getMrVal(inputMpW2, "A-", context);
+                    rpH = getMrVal(inputMpW2, "R+", context);
+                    rmH = getMrVal(inputMpW2, "R-", context);
+                }
+                catch (CycleDetectionException e) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                    continue;
+                }
+                catch (Exception e) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    continue;
+                }
 
-                Double rpH = getMrVal(inputMpW2, "R+", context);
-                Double rmH = getMrVal(inputMpW2, "R-", context);;
+                Double totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
                 Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);
 
                 Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
                 Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2));
                 Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
-                Double valN = totalEH * resistH / (Math.pow(uAvg,2) * operatingTime);
+                Double valN = totalEH * resistH / (Math.pow(uAvg, 2) * operatingTime);
 
                 transformerLine.setApH(apH);
                 transformerLine.setAmH(amH);
@@ -197,29 +207,63 @@ public class BalanceSubstTransformerService {
             }
 
             if (transformer.getWindingsNumber().equals(3l)) {
-                Double apL = getMrVal(inputMpL, "A+", context);
-                Double amL = getMrVal(inputMpL, "A-", context);
+                Map<String, String> msgParams = buildMsgParams(inputMpL);
+                Double apL; Double amL; Double rpL; Double rmL;
+                try {
+                    amL = getMrVal(inputMpL, "A-", context);
+                    apL = getMrVal(inputMpL, "A+", context);
+                    rpL = getMrVal(inputMpL, "R+", context);
+                    rmL = getMrVal(inputMpL, "R-", context);
+                }
+                catch (CycleDetectionException e) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                    continue;
+                }
+                catch (Exception e) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    continue;
+                }
+
+                msgParams = buildMsgParams(inputMpM);
+                Double apM; Double amM; Double rpM; Double rmM;
+                try {
+                    apM = getMrVal(inputMpM, "A+", context);
+                    amM = getMrVal(inputMpM, "A-", context);
+                    rpM = getMrVal(inputMpM, "R+", context);
+                    rmM = getMrVal(inputMpM, "R-", context);
+                }
+                catch (CycleDetectionException e) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                    continue;
+                }
+                catch (Exception e) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    continue;
+                }
+
+                msgParams = buildMsgParams(inputMpH);
+                Double apH; Double amH; Double rpH; Double rmH;
+                try {
+                    apH = getMrVal(inputMpH, "A+", context);
+                    amH = getMrVal(inputMpH, "A-", context);
+                    rpH = getMrVal(inputMpH, "R+", context);
+                    rmH = getMrVal(inputMpH, "R-", context);
+                }
+                catch (CycleDetectionException e) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                    continue;
+                }
+                catch (Exception e) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    continue;
+                }
+
                 Double totalAL = Optional.ofNullable(apL).orElse(0d) + Optional.ofNullable(amL).orElse(0d);
-
-                Double rpL = getMrVal(inputMpL, "R+", context);
-                Double rmL = getMrVal(inputMpL, "R-", context);;
-                Double totalRL = Optional.ofNullable(rpL).orElse(0d) + Optional.ofNullable(rmL).orElse(0d);;
-
-                Double apM = getMrVal(inputMpM, "A+", context);
-                Double amM = getMrVal(inputMpM, "A-", context);;
+                Double totalRL = Optional.ofNullable(rpL).orElse(0d) + Optional.ofNullable(rmL).orElse(0d);
                 Double totalAM = Optional.ofNullable(apM).orElse(0d) + Optional.ofNullable(amM).orElse(0d);
-
-                Double rpM = getMrVal(inputMpM, "R+", context);
-                Double rmM = getMrVal(inputMpM, "R-", context);
-                Double totalRM = Optional.ofNullable(rpM).orElse(0d) + Optional.ofNullable(rmM).orElse(0d);;
-
-                Double apH = getMrVal(inputMpH, "A+", context);
-                Double amH = getMrVal(inputMpH, "A-", context);
+                Double totalRM = Optional.ofNullable(rpM).orElse(0d) + Optional.ofNullable(rmM).orElse(0d);
                 Double totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
-
-                Double rpH = getMrVal(inputMpH, "R+", context);
-                Double rmH = getMrVal(inputMpH, "R-", context);
-                Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);;
+                Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);
 
                 Double totalEL = Math.pow(totalAL, 2) + Math.pow(totalRL, 2);
                 Double totalEM = Math.pow(totalAM, 2) + Math.pow(totalRM, 2);
@@ -320,5 +364,12 @@ public class BalanceSubstTransformerService {
         for (int i=0; i<transformerValues.size(); i++)
             powerTransformerValueRepo.delete(transformerValues.get(i));
         powerTransformerValueRepo.flush();
+    }
+
+
+    private Map<String, String> buildMsgParams(MeteringPoint mp) {
+        Map<String, String> msgParams = new HashMap<>();
+        msgParams.put("point", mp.getCode());
+        return msgParams;
     }
 }

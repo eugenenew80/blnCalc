@@ -12,5 +12,4 @@ import java.util.Set;
 public interface ExpressionService {
     DoubleExpression parse(Formula formula, CalcContext context) throws Exception;
     DoubleExpression parse(Formula formula, String parameterCode, CalcContext context) throws Exception;
-    List<String> sort(Map<String, Set<String>> pointCodesMap) throws CycleDetectionException;
 }
