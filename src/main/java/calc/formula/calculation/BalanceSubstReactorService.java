@@ -17,17 +17,19 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
+import static calc.util.Util.round;
+
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstReactorService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstReactorService.class);
+    private static final String docCode = "LOSSES";
     private final WorkingHoursService workingHoursService;
     private final ReactorService reactorService;
     private final BalanceSubstResultUService resultUService;
     private final MessageService messageService;
     private final ParamService paramService;
     private final ReactorValueRepo reactorValueRepo;
-    private static final String docCode = "LOSSES";
 
     public boolean calc(BalanceSubstResultHeader header)  {
         try {
@@ -104,11 +106,7 @@ public class BalanceSubstReactorService {
                 continue;
             }
 
-            Double val = deltaPr * hours * Math.pow(uAvg / uNom, 2);
-            if (param != null) {
-                double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
-                if (val != null) val = Math.round(val * rounding) / rounding;
-            }
+            Double val = round(deltaPr * hours * Math.pow(uAvg / uNom, 2), param);
 
             ReactorValue reactorLine = new ReactorValue();
             reactorLine.setHeader(header);

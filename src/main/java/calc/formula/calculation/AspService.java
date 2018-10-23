@@ -16,12 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static calc.util.Util.round;
 
 @SuppressWarnings("ImplicitSubclassInspection")
@@ -37,13 +34,7 @@ public class AspService {
     private final MrService mrService;
     private final ParamService paramService;
     private static final String docCode = "ASP1";
-    private Map<String, Parameter> mapParams = null;
     private final CalcService calcService;
-
-    @PostConstruct
-    public void init() {
-        mapParams = paramService.getValues();
-    }
 
     public boolean calc(Long headerId) {
         logger.info("Metering reading for header " + headerId + " started");
@@ -102,7 +93,7 @@ public class AspService {
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = line.getParam();
             if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param.getCode(), context);
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
                 Double value = result!=null ? result.getDoubleValue() : null;
                 value = round(value, param);
 

@@ -2,14 +2,13 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
+import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
-import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.MrExpression;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.*;
-import calc.repo.calc.BalanceSubstResultHeaderRepo;
 import calc.repo.calc.BalanceSubstResultLineRepo;
 import calc.repo.calc.BalanceSubstResultNoteRepo;
 import lombok.RequiredArgsConstructor;
@@ -62,16 +61,16 @@ public class BalanceSubstLineService {
                 MeteringPoint meteringPoint = line.getMeteringPoint();
                 if (meteringPoint == null) continue;
 
-                Map<String, String> sections = getSections(line);
+                Map<String, Parameter> sections = getSections(line);
                 for (String section : sections.keySet()) {
-                    String param = line.getParam() == null ? sections.get(section) : line.getParam().getCode();
+                    Parameter param = line.getParam() == null ? sections.get(section) : line.getParam();
                     param = inverseParam(param, line.getIsInverse());
                     Double val = getMrVal(line, param, context);
 
                     BalanceSubstResultLine resultLine = new BalanceSubstResultLine();
                     resultLine.setHeader(header);
                     resultLine.setMeteringPoint(meteringPoint);
-                    resultLine.setParam(mapParams.get(param));
+                    resultLine.setParam(param);
                     resultLine.setRate(Optional.ofNullable(line.getRate()).orElse(1d));
                     resultLine.setSection(section);
                     resultLine.setVal(val);
@@ -155,11 +154,11 @@ public class BalanceSubstLineService {
         }
     }
 
-    private Double getMrVal(BalanceSubstLine bsLine, String param, CalcContext context) {
-        if (bsLine.getMeteringPoint().getMeteringPointTypeId().equals(1l)) {
+    private Double getMrVal(BalanceSubstLine bsLine, Parameter param, CalcContext context) {
+        if (bsLine.getMeteringPoint().getPointType() == PointTypeEnum.PMP) {
             return MrExpression.builder()
                 .meteringPointCode(bsLine.getMeteringPoint().getCode())
-                .parameterCode(param)
+                .parameterCode(param.getCode())
                 .rate(bsLine.getRate())
                 .context(context)
                 .service(mrService)
@@ -169,7 +168,7 @@ public class BalanceSubstLineService {
 
         Double val = PeriodTimeValueExpression.builder()
             .meteringPointCode(bsLine.getMeteringPoint().getCode())
-            .parameterCode(param)
+            .parameterCode(param.getCode())
             .rate(1d)
             .startHour((byte) 0)
             .endHour((byte) 23)
@@ -194,21 +193,21 @@ public class BalanceSubstLineService {
         return val;
     }
 
-    private Map<String, String> getSections(BalanceSubstLine bLine) {
-        Map<String, String> map = new HashMap<>();
-        if (bLine.getIsSection1()) map.put("1", "A+");
-        if (bLine.getIsSection2()) map.put("2", "A-");
-        if (bLine.getIsSection3()) map.put("3", "A-");
-        if (bLine.getIsSection4()) map.put("4", "A-");
+    private Map<String, Parameter> getSections(BalanceSubstLine bLine) {
+        Map<String, Parameter> map = new HashMap<>();
+        if (bLine.getIsSection1()) map.put("1", mapParams.get("A+"));
+        if (bLine.getIsSection2()) map.put("2", mapParams.get("A-"));
+        if (bLine.getIsSection3()) map.put("3", mapParams.get("A-"));
+        if (bLine.getIsSection4()) map.put("4", mapParams.get("A-"));
         return map;
     }
 
-    private String inverseParam(String param, Boolean isInverse) {
+    private Parameter inverseParam(Parameter param, Boolean isInverse) {
         if (isInverse) {
-            if (param.equals("A+")) return "A-";
-            if (param.equals("A-")) return "A+";
-            if (param.equals("R+")) return "R-";
-            if (param.equals("R-")) return "R+";
+            if (param.equals(mapParams.get("A+"))) return mapParams.get("A-");
+            if (param.equals(mapParams.get("A-"))) return mapParams.get("A+");
+            if (param.equals(mapParams.get("R+"))) return mapParams.get("R-");
+            if (param.equals(mapParams.get("R-"))) return mapParams.get("R+");
         }
         return param;
     }

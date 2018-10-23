@@ -18,12 +18,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
 import java.util.*;
 
+import static calc.util.Util.round;
+
+@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstTransformerService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstTransformerService.class);
+    private static final String docCode = "LOSSES";
     private final WorkingHoursService workingHoursService;
     private final PowerTransformerService powerTransformerService;
     private final BalanceSubstResultUService resultUService;
@@ -32,7 +38,13 @@ public class BalanceSubstTransformerService {
     private final MessageService messageService;
     private final ParamService paramService;
     private final PowerTransformerValueRepo powerTransformerValueRepo;
-    private static final String docCode = "LOSSES";
+    private Map<String, Parameter> mapParams = null;
+
+    @PostConstruct
+    public void init() {
+        mapParams = paramService.getValues();
+    }
+
 
     public boolean calc(BalanceSubstResultHeader header)  {
         try {
@@ -69,7 +81,7 @@ public class BalanceSubstTransformerService {
     }
 
     private List<PowerTransformerValue> calcLines(BalanceSubstResultHeader header, CalcContext context) throws Exception  {
-        Parameter param = paramService.getValues().get("WL");
+        Parameter param = mapParams.get("WL");
         Unit unit = param.getUnit();
 
         List<PowerTransformerValue> transformerLines = new ArrayList<>();
@@ -173,10 +185,10 @@ public class BalanceSubstTransformerService {
                 Double rpH; Double rmH; Double apH; Double amH;
                 Map<String, String> msgParams = buildMsgParams(inputMpW2);
                 try {
-                    apH = getMrVal(inputMpW2, "A+", context);
-                    amH = getMrVal(inputMpW2, "A-", context);
-                    rpH = getMrVal(inputMpW2, "R+", context);
-                    rmH = getMrVal(inputMpW2, "R-", context);
+                    apH = getMrVal(inputMpW2, mapParams.get("A+"), context);
+                    amH = getMrVal(inputMpW2, mapParams.get("A-"), context);
+                    rpH = getMrVal(inputMpW2, mapParams.get("R+"), context);
+                    rmH = getMrVal(inputMpW2, mapParams.get("R-"), context);
                 }
                 catch (CycleDetectionException e) {
                     messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
@@ -211,10 +223,10 @@ public class BalanceSubstTransformerService {
                 Map<String, String> msgParams = buildMsgParams(inputMpL);
                 Double apL; Double amL; Double rpL; Double rmL;
                 try {
-                    amL = getMrVal(inputMpL, "A-", context);
-                    apL = getMrVal(inputMpL, "A+", context);
-                    rpL = getMrVal(inputMpL, "R+", context);
-                    rmL = getMrVal(inputMpL, "R-", context);
+                    amL = getMrVal(inputMpL, mapParams.get("A-"), context);
+                    apL = getMrVal(inputMpL, mapParams.get("A+"), context);
+                    rpL = getMrVal(inputMpL, mapParams.get("R+"), context);
+                    rmL = getMrVal(inputMpL, mapParams.get("R-"), context);
                 }
                 catch (CycleDetectionException e) {
                     messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
@@ -228,10 +240,10 @@ public class BalanceSubstTransformerService {
                 msgParams = buildMsgParams(inputMpM);
                 Double apM; Double amM; Double rpM; Double rmM;
                 try {
-                    apM = getMrVal(inputMpM, "A+", context);
-                    amM = getMrVal(inputMpM, "A-", context);
-                    rpM = getMrVal(inputMpM, "R+", context);
-                    rmM = getMrVal(inputMpM, "R-", context);
+                    apM = getMrVal(inputMpM, mapParams.get("A+"), context);
+                    amM = getMrVal(inputMpM, mapParams.get("A-"), context);
+                    rpM = getMrVal(inputMpM, mapParams.get("R+"), context);
+                    rmM = getMrVal(inputMpM, mapParams.get("R-"), context);
                 }
                 catch (CycleDetectionException e) {
                     messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
@@ -245,10 +257,10 @@ public class BalanceSubstTransformerService {
                 msgParams = buildMsgParams(inputMpH);
                 Double apH; Double amH; Double rpH; Double rmH;
                 try {
-                    apH = getMrVal(inputMpH, "A+", context);
-                    amH = getMrVal(inputMpH, "A-", context);
-                    rpH = getMrVal(inputMpH, "R+", context);
-                    rmH = getMrVal(inputMpH, "R-", context);
+                    apH = getMrVal(inputMpH, mapParams.get("A+"), context);
+                    amH = getMrVal(inputMpH, mapParams.get("A-"), context);
+                    rpH = getMrVal(inputMpH, mapParams.get("R+"), context);
+                    rmH = getMrVal(inputMpH, mapParams.get("R-"), context);
                 }
                 catch (CycleDetectionException e) {
                     messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
@@ -274,8 +286,8 @@ public class BalanceSubstTransformerService {
                 Double resistM = (pkzHM + pkzML - pkzHL) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
                 Double resistH = (pkzHM + pkzHL - pkzML) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
 
-                Double valXX = deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2);
-                Double valN = (totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * operatingTime * 1000d);
+                Double valXX = round(deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2), param);
+                Double valN  = round((totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * operatingTime * 1000d), param);
 
                 transformerLine.setApL(apL);
                 transformerLine.setAmL(amL);
@@ -304,12 +316,6 @@ public class BalanceSubstTransformerService {
                 transformerLine.setValXX(valXX);
                 transformerLine.setValN(valN);
             }
-
-            if (param != null) {
-                double rounding =  Math.pow(10, Optional.ofNullable(param.getDigitsRounding()).orElse(0));
-                if (transformerLine.getValXX() != null) transformerLine.setValXX(Math.round(transformerLine.getValXX() * rounding) / rounding);
-                if (transformerLine.getValN()  != null) transformerLine.setValN(Math.round(transformerLine.getValN() * rounding) / rounding);
-            }
             transformerLine.setVal(transformerLine.getValXX() + transformerLine.getValN());
 
             transformerLines.add(transformerLine);
@@ -330,7 +336,7 @@ public class BalanceSubstTransformerService {
             .doubleValue();
     }
 
-    private Double getMrVal(MeteringPoint meteringPoint, String param, CalcContext context) throws Exception {
+    private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) throws Exception {
         if (meteringPoint == null)
             return null;
 
@@ -342,7 +348,7 @@ public class BalanceSubstTransformerService {
         else {
             value = MrExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(param)
+                .parameterCode(param.getCode())
                 .rate(1d)
                 .context(context)
                 .service(resultMrService)

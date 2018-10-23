@@ -19,6 +19,8 @@ import org.jgrapht.graph.DefaultEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import java.util.*;
 import static java.util.stream.Collectors.toList;
@@ -34,25 +36,32 @@ public class CalcServiceImpl implements CalcService {
     private final TransformerValueService transformerValueService;
     private final AspResultService aspService;
     private final SegResultService segService;
+    private final ParamService paramService;
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
+    private Map<String, Parameter> mapParams = null;
 
-    @Override
-    public CalcResult calcMeteringPoint(MeteringPoint point, String param, CalcContext context) throws Exception {
-        Formula formula = point.getFormulas()
-            .stream()
-            .filter(t -> t.getParam().getCode().equals(param))
-            .findFirst()
-            .orElse(null);
-
-        return calcMeteringPoint(point, param, formula, context);
+    @PostConstruct
+    public void init() {
+        mapParams = paramService.getValues();
     }
 
     @Override
-    public CalcResult calcMeteringPoint(MeteringPoint point, String param, Formula formula, CalcContext context) throws Exception {
+    public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, CalcContext context) throws Exception {
+        Formula formula = point.getFormulas()
+            .stream()
+            .filter(t -> t.getParam().equals(param))
+            .findFirst()
+            .orElse(null);
+
+        return calcMeteringPoint(formula, context);
+    }
+
+    @Override
+    public CalcResult calcMeteringPoint(Formula formula, CalcContext context) throws Exception {
         logger.trace("---------------------------------------------");
-        logger.trace("point: " + point.getCode());
-        logger.trace("param: " + param);
+        logger.trace("point: " + formula.getMeteringPoint().getCode());
+        logger.trace("param: " + formula.getParam().getCode());
         logger.trace("periodType: " + context.getPeriodType());
 
         if (formula == null) {
@@ -138,15 +147,11 @@ public class CalcServiceImpl implements CalcService {
     }
 
     private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context) {
-        MeteringPoint meteringPoint = det.getMeteringPoint();
-        Parameter param = det.getParam();
-        ParamTypeEnum paramType = det.getParamType();
-
-        if (meteringPoint.getPointType() == PointTypeEnum.VMP) {
-            Formula formula = meteringPoint.getFormulas()
+        if (det.getMeteringPoint().getPointType() == PointTypeEnum.VMP) {
+            Formula formula = det.getMeteringPoint().getFormulas()
                 .stream()
-                .filter(t -> t.getParam().equals(param))
-                .filter(t -> t.getParamType() == paramType)
+                .filter(t -> t.getParam().equals(det.getParam()))
+                .filter(t -> t.getParamType() == det.getParamType())
                 .findFirst()
                 .orElse(null);
 
@@ -160,29 +165,53 @@ public class CalcServiceImpl implements CalcService {
             }
         }
 
-        if (context.getContextType() == ContextType.MR) {
-            logger.trace("context: mr");
-            Double sign = det.getSign().equals("-") ? -1d : 1d;
+        if (det.getParam().equals(mapParams.get("AB"))) {
+            DoubleExpression  expression1 = getExpression(det, mapParams.get("A+"), context);
+            DoubleExpression  expression2 = getExpression(det, mapParams.get("A-"), context);
+            return BinaryExpression.builder()
+                .operator(operatorFactory.binary("minus"))
+                .expressions(Arrays.asList(expression1, expression2))
+                .build();
+        }
 
-            if (param.getCode().equals("WL")) {
-                Map<String, Double> transformerValues = context.getTransformerValues();
-                if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {
-                    logger.trace("expression: DoubleValueExpression");
-                    return DoubleValueExpression.builder()
-                        .value(transformerValues.get(meteringPoint.getCode()))
-                        .build();
-                }
+        if (det.getParam().equals(mapParams.get("RB"))) {
+            DoubleExpression  expression1 = getExpression(det, mapParams.get("R+"), context);
+            DoubleExpression  expression2 = getExpression(det, mapParams.get("R-"), context);
+            return BinaryExpression.builder()
+                .operator(operatorFactory.binary("minus"))
+                .expressions(Arrays.asList(expression1, expression2))
+                .build();
+        }
 
-                logger.trace("expression: TransformerValueExpression");
-                return TransformerValueExpression.builder()
-                    .meteringPointCode(meteringPoint.getCode())
-                    .parameterCode(param.getCode())
-                    .rate(det.getRate() * sign)
-                    .context(context)
-                    .service(transformerValueService)
+        return getExpression(det, det.getParam(), context);
+    }
+
+    private DoubleExpression getExpression(FormulaVarDet det, Parameter param, CalcContext context) {
+        MeteringPoint meteringPoint = det.getMeteringPoint();
+        ParamTypeEnum paramType = det.getParamType();
+        Double sign = det.getSign().equals("-") ? -1d : 1d;
+
+        if (param.getCode().equals("WL") && context.getContextType() == ContextType.MR) {
+            Map<String, Double> transformerValues = context.getTransformerValues();
+            if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {
+                logger.trace("expression: CachedValueExpression");
+                return DoubleValueExpression.builder()
+                    .value(transformerValues.get(meteringPoint.getCode()))
                     .build();
             }
 
+            logger.trace("expression: TransformerValueExpression");
+            return TransformerValueExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(param.getCode())
+                .rate(det.getRate() * sign)
+                .context(context)
+                .service(transformerValueService)
+                .build();
+        }
+
+        if (context.getContextType() == ContextType.MR) {
+            logger.trace("context: mr");
             logger.trace("expression: MrExpression");
             return MrExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
@@ -195,8 +224,6 @@ public class CalcServiceImpl implements CalcService {
 
         if (context.getContextType() == ContextType.ASP) {
             logger.trace("context: asp");
-            Double sign = det.getSign().equals("-") ? -1d : 1d;
-
             logger.trace("expression: AspExpression");
             return AspExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
@@ -209,8 +236,6 @@ public class CalcServiceImpl implements CalcService {
 
         if (context.getContextType() == ContextType.SEG) {
             logger.trace("context: seg");
-            Double sign = det.getSign().equals("-") ? -1d : 1d;
-
             logger.trace("expression: SegExpression");
             return SegExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
@@ -263,9 +288,8 @@ public class CalcServiceImpl implements CalcService {
 
         CycleDetector<MeteringPoint, DefaultEdge> cycleDetector = new CycleDetector<>(graph);
         Set<MeteringPoint> detectedCycles = cycleDetector.findCycles();
-
         if (!detectedCycles.isEmpty())
-            throw new CycleDetectionException("Cycles detected", detectedCycles.iterator().next().getCode());
+            throw new CycleDetectionException("Cycles detected");
     }
 
     private void fillGraph(Formula rootFormula, DefaultDirectedGraph<MeteringPoint, DefaultEdge> graph) {
