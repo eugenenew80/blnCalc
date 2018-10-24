@@ -5,6 +5,7 @@ import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.pe.PowerTransformerValue;
 import calc.entity.calc.enums.EquipmentTypeEnum;
+import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
@@ -341,7 +342,7 @@ public class BalanceSubstTransformerService {
             return null;
 
         Double value;
-        if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
+        if (meteringPoint.getPointType() == PointTypeEnum.VMP ) {
             CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
             value = result!=null ? result.getDoubleValue() : null;
             if (context.getException() != null)
