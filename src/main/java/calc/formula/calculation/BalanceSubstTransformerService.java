@@ -348,6 +348,8 @@ public class BalanceSubstTransformerService {
         if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
             CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
             value = result!=null ? result.getDoubleValue() : null;
+            if (context.getException() != null)
+                throw context.getException();
         }
         else {
             value = MrExpression.builder()

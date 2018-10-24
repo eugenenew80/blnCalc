@@ -84,8 +84,9 @@ public class JsExpression implements DoubleExpression {
 
     private Double eval(String src, ScriptContext ctx) {
         try {
+            context.setException(null);
             Object eval = engine.eval(src, ctx);
-            return eval!=null ? Double.parseDouble(eval.toString()) : null;
+            return eval != null ? Double.parseDouble(eval.toString()) : null;
         }
         catch (ScriptException e) {
             context.setException(e);

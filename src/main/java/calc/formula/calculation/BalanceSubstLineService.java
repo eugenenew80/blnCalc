@@ -6,6 +6,7 @@ import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
+import calc.formula.exception.CycleDetectionException;
 import calc.formula.expression.impl.MrExpression;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.*;
@@ -25,12 +26,12 @@ import java.util.*;
 public class BalanceSubstLineService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstLineService.class);
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
-    private final ParamService paramService;
     private final BalanceSubstResultMrService mrService;
     private final PeriodTimeValueService periodTimeValueService;
     private final BalanceSubstResultNoteRepo balanceSubstResultNoteRepo;
     private final CalcService calcService;
     private final MessageService messageService;
+    private final ParamService paramService;
     private static final String docCode = "BALANCE";
     private Map<String, Parameter> mapParams = null;
 
@@ -38,6 +39,7 @@ public class BalanceSubstLineService {
     public void init() {
         mapParams = paramService.getValues();
     }
+
 
     public boolean calc(BalanceSubstResultHeader header) {
         try {
@@ -65,7 +67,21 @@ public class BalanceSubstLineService {
                 for (String section : sections.keySet()) {
                     Parameter param = line.getParam() == null ? sections.get(section) : line.getParam();
                     param = inverseParam(param, line.getIsInverse());
-                    Double val = getMrVal(line, param, context);
+
+                    Map<String, String> msgParams = buildMsgParams(meteringPoint);
+                    Double val;
+                    try {
+                        val = getMrVal(line, param, context);
+                    }
+                    catch (CycleDetectionException e) {
+                        messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                        continue;
+                    }
+                    catch (Exception e) {
+                        messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                        e.printStackTrace();
+                        continue;
+                    }
 
                     BalanceSubstResultLine resultLine = new BalanceSubstResultLine();
                     resultLine.setHeader(header);
@@ -154,7 +170,7 @@ public class BalanceSubstLineService {
         }
     }
 
-    private Double getMrVal(BalanceSubstLine bsLine, Parameter param, CalcContext context) {
+    private Double getMrVal(BalanceSubstLine bsLine, Parameter param, CalcContext context) throws Exception {
         if (bsLine.getMeteringPoint().getPointType() == PointTypeEnum.PMP) {
             return MrExpression.builder()
                 .meteringPointCode(bsLine.getMeteringPoint().getCode())
@@ -179,15 +195,10 @@ public class BalanceSubstLineService {
             .doubleValue();
 
         if (Optional.ofNullable(val).orElse(0d) == 0d) {
-            try {
-                CalcResult result = calcService.calcMeteringPoint(bsLine.getMeteringPoint(), param, context);
-                val = result!=null ? result.getDoubleValue() : null;
-                if (val != null)
-                    val = val * Optional.ofNullable(bsLine.getRate()).orElse(1d);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            CalcResult result = calcService.calcMeteringPoint(bsLine.getMeteringPoint(), param, context);
+            val = result!=null ? result.getDoubleValue() : null;
+            if (val != null)
+                val = val * Optional.ofNullable(bsLine.getRate()).orElse(1d);
         }
 
         return val;
@@ -210,5 +221,11 @@ public class BalanceSubstLineService {
             if (param.equals(mapParams.get("R-"))) return mapParams.get("R+");
         }
         return param;
+    }
+
+    private Map<String, String> buildMsgParams(MeteringPoint mp) {
+        Map<String, String> msgParams = new HashMap<>();
+        msgParams.put("point", mp.getCode());
+        return msgParams;
     }
 }
