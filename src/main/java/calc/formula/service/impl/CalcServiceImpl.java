@@ -36,6 +36,7 @@ public class CalcServiceImpl implements CalcService {
     private final TransformerValueService transformerValueService;
     private final AspResultService aspService;
     private final SegResultService segService;
+    private final InterResultMrService interMrService;
     private final ParamService paramService;
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
@@ -246,6 +247,18 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
+        if (context.getContextType() == ContextType.INTER) {
+            logger.trace("context: inter");
+            logger.trace("expression: InterExpression");
+            return InterMrExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(param.getCode())
+                .rate(det.getRate() * sign)
+                .context(context)
+                .service(interMrService)
+                .build();
+        }
+
         if (paramType == ParamTypeEnum.PT) {
             logger.trace("expression: PeriodTimeValueExpression");
             return PeriodTimeValueExpression.builder()
@@ -293,7 +306,8 @@ public class CalcServiceImpl implements CalcService {
     }
 
     private void fillGraph(Formula rootFormula, DefaultDirectedGraph<MeteringPoint, DefaultEdge> graph) {
-        if (rootFormula == null) return;
+        if (rootFormula == null)
+            return;
 
         if (!graph.containsVertex(rootFormula.getMeteringPoint()))
             graph.addVertex(rootFormula.getMeteringPoint());
@@ -313,15 +327,17 @@ public class CalcServiceImpl implements CalcService {
 
             graph.addEdge(rootFormula.getMeteringPoint(), det.getMeteringPoint());
 
-            Formula formula = det.getMeteringPoint()
-                .getFormulas()
-                .stream()
-                .filter(t -> t.getParam().equals(det.getParam()))
-                .findFirst()
-                .orElse(null);
+            if (det.getMeteringPoint().getPointType() == PointTypeEnum.VMP) {
+                Formula formula = det.getMeteringPoint()
+                    .getFormulas()
+                    .stream()
+                    .filter(t -> t.getParam().equals(det.getParam()))
+                    .findFirst()
+                    .orElse(null);
 
-            if (formula != null)
-                fillGraph(formula, graph);
+                if (formula != null)
+                    fillGraph(formula, graph);
+            }
         }
     }
 }
