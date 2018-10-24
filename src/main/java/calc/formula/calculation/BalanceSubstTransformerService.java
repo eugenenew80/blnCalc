@@ -376,7 +376,6 @@ public class BalanceSubstTransformerService {
         powerTransformerValueRepo.flush();
     }
 
-
     private Map<String, String> buildMsgParams(MeteringPoint mp) {
         Map<String, String> msgParams = new HashMap<>();
         msgParams.put("point", mp.getCode());
