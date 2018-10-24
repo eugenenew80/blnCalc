@@ -170,16 +170,7 @@ public class CalcServiceImpl implements CalcService {
             DoubleExpression  expression1 = getExpression(det, mapParams.get("A+"), context);
             DoubleExpression  expression2 = getExpression(det, mapParams.get("A-"), context);
             return BinaryExpression.builder()
-                .operator(operatorFactory.binary("minus"))
-                .expressions(Arrays.asList(expression1, expression2))
-                .build();
-        }
-
-        if (det.getParam().equals(mapParams.get("RB"))) {
-            DoubleExpression  expression1 = getExpression(det, mapParams.get("R+"), context);
-            DoubleExpression  expression2 = getExpression(det, mapParams.get("R-"), context);
-            return BinaryExpression.builder()
-                .operator(operatorFactory.binary("minus"))
+                .operator(operatorFactory.binary("min"))
                 .expressions(Arrays.asList(expression1, expression2))
                 .build();
         }
