@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import java.util.*;
+
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -47,41 +49,38 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-    public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, CalcContext context) throws Exception {
+    public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, ParamTypeEnum paramType, CalcContext context) throws Exception {
+        if (point == null || param == null || context == null)
+            return null;
+
         logger.trace("---------------------------------------------");
         logger.trace("point: " + point.getCode());
+        logger.trace("pointType: " + point.getPointType().name());
         logger.trace("param: " + param.getCode());
+        logger.trace("paramType: " + paramType.name());
         logger.trace("periodType: " + context.getPeriodType());
 
-        Formula formula = point.getFormulas()
-            .stream()
-            .filter(t -> t.getParam().equals(param))
-            .findFirst()
-            .orElse(null);
+        Formula formula = null;
+        if (point.getPointType() == PointTypeEnum.VMP) {
+            formula = point.getFormulas()
+                .stream()
+                .filter(t -> t.getParam().equals(param))
+                .filter(t -> t.getParamType() == paramType)
+                .findFirst()
+                .orElse(null);
 
-        if (formula == null)
-            logger.warn("Formula not found");
+            if (formula == null) logger.warn("Formula not found");
+        }
 
         if (formula == null) {
-            logger.trace("expression: PeriodTimeValueExpression");
-            PeriodTimeValueExpression expression = PeriodTimeValueExpression.builder()
-                .meteringPointCode(point.getCode())
-                .parameterCode(param.getCode())
-                .periodType(context.getPeriodType())
-                .rate(1d)
-                .startHour((byte) 0)
-                .endHour((byte) 23)
-                .service(periodTimeValueService)
-                .context(context)
-                .build();
+            DoubleExpression expression = getDefaultExpression(point, param, paramType, 1d, context);
 
             CalcResult result = new CalcResult();
-            result.setFormula(formula);
             result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
             result.setMeteringPoint(point);
             result.setParam(param);
             result.setUnit(param.getUnit());
-            result.setParamType(ParamTypeEnum.PT.name());
+            result.setParamType(paramType.name());
 
             if (context.getPeriodType() != PeriodTypeEnum.H) {
                 result.setDoubleValue(expression.doubleValue());
@@ -110,7 +109,7 @@ public class CalcServiceImpl implements CalcService {
             return null;
 
         CalcResult result = calcFormula(formula, context);
-        logger.trace("results:");
+        logger.trace("result:");
         logger.trace("formulaId: " + result.getFormula().getId());
         logger.trace("src: " + result.getFormula().getText());
         logger.trace("point: " + result.getMeteringPoint().getCode());
@@ -220,6 +219,7 @@ public class CalcServiceImpl implements CalcService {
         MeteringPoint meteringPoint = det.getMeteringPoint();
         ParamTypeEnum paramType = det.getParamType();
         Double sign = det.getSign().equals("-") ? -1d : 1d;
+        Double rate = ofNullable(det.getRate()).orElse(1d) * sign;
 
         if (param.getCode().equals("WL") && context.getContextType() == ContextType.MR) {
             Map<String, Double> transformerValues = context.getTransformerValues();
@@ -234,7 +234,7 @@ public class CalcServiceImpl implements CalcService {
             return TransformerValueExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
-                .rate(det.getRate() * sign)
+                .rate(rate)
                 .context(context)
                 .service(transformerValueService)
                 .build();
@@ -246,7 +246,7 @@ public class CalcServiceImpl implements CalcService {
             return MrExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
-                .rate(det.getRate() * sign)
+                .rate(rate)
                 .context(context)
                 .service(mrService)
                 .build();
@@ -258,7 +258,7 @@ public class CalcServiceImpl implements CalcService {
             return AspExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
-                .rate(det.getRate() * sign)
+                .rate(rate)
                 .context(context)
                 .service(aspService)
                 .build();
@@ -270,7 +270,7 @@ public class CalcServiceImpl implements CalcService {
             return SegExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
-                .rate(det.getRate() * sign)
+                .rate(rate)
                 .context(context)
                 .service(segService)
                 .build();
@@ -282,19 +282,23 @@ public class CalcServiceImpl implements CalcService {
             return InterMrExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
-                .rate(det.getRate() * sign)
+                .rate(rate)
                 .context(context)
                 .service(interMrService)
                 .build();
         }
 
+        return getDefaultExpression(meteringPoint, param, paramType, rate, context);
+    }
+
+    private DoubleExpression getDefaultExpression(MeteringPoint meteringPoint, Parameter param, ParamTypeEnum paramType, Double rate, CalcContext context) {
         if (paramType == ParamTypeEnum.PT) {
             logger.trace("expression: PeriodTimeValueExpression");
             return PeriodTimeValueExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
                 .periodType(context.getPeriodType())
-                .rate(det.getRate())
+                .rate(rate)
                 .startHour((byte) 0)
                 .endHour((byte) 23)
                 .service(periodTimeValueService)
@@ -315,7 +319,7 @@ public class CalcServiceImpl implements CalcService {
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
                 .per(per)
-                .rate(det.getRate())
+                .rate(rate)
                 .service(atTimeValueService)
                 .context(context)
                 .build();

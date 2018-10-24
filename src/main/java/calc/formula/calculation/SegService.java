@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -34,15 +33,8 @@ public class SegService {
     private final SegResultNoteRepo segResultNoteRepo;
     private final SegResultAppRepo segResultAppRepo;
     private final MessageService messageService;
-    private final ParamService paramService;
     private final PeriodTimeValueService periodTimeValueService;
     private final CalcService calcService;
-    private Map<String, Parameter> mapParams = null;
-
-    @PostConstruct
-    public void init() {
-        mapParams = paramService.getValues();
-    }
 
     public boolean calc(Long headerId) {
         logger.info("Metering reading for header " + headerId + " started");

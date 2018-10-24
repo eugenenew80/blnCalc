@@ -2,6 +2,7 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
+import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
@@ -195,7 +196,7 @@ public class BalanceSubstLineService {
             .doubleValue();
 
         if (Optional.ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcMeteringPoint(bsLine.getMeteringPoint(), param, context);
+            CalcResult result = calcService.calcMeteringPoint(bsLine.getMeteringPoint(), param, ParamTypeEnum.PT, context);
             val = result!=null ? result.getDoubleValue() : null;
             if (val != null)
                 val = val * Optional.ofNullable(bsLine.getRate()).orElse(1d);

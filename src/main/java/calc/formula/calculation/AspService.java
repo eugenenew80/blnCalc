@@ -2,9 +2,7 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.asp.*;
-import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.DataTypeEnum;
-import calc.entity.calc.enums.TreatmentTypeEnum;
+import calc.entity.calc.enums.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
@@ -92,8 +90,8 @@ public class AspService {
 
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = line.getParam();
-            if (meteringPoint.getMeteringPointTypeId().equals(2l)) {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+            if (meteringPoint.getPointType() == PointTypeEnum.VMP) {
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
                 Double value = result!=null ? result.getDoubleValue() : null;
                 value = round(value, param);
 
