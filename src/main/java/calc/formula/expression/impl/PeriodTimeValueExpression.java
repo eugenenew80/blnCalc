@@ -34,8 +34,14 @@ public class PeriodTimeValueExpression implements DoubleExpression {
     @Override
     public Double doubleValue() {
         Double[] values = doubleValues();
-        Double value = 0d;
-        for (Double v : values) if (v!=null) value+=v;
+
+        Double value = null;
+        for (Double v : values) {
+            if (v != null) {
+                if (value==null) value = 0d;
+                value+=v;
+            }
+        }
         return value;
     }
 

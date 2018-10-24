@@ -48,27 +48,66 @@ public class CalcServiceImpl implements CalcService {
 
     @Override
     public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, CalcContext context) throws Exception {
+        logger.trace("---------------------------------------------");
+        logger.trace("point: " + point.getCode());
+        logger.trace("param: " + param.getCode());
+        logger.trace("periodType: " + context.getPeriodType());
+
         Formula formula = point.getFormulas()
             .stream()
             .filter(t -> t.getParam().equals(param))
             .findFirst()
             .orElse(null);
 
-        return calcMeteringPoint(formula, context);
+        if (formula == null)
+            logger.warn("Formula not found");
+
+        if (formula == null) {
+            logger.trace("expression: PeriodTimeValueExpression");
+            PeriodTimeValueExpression expression = PeriodTimeValueExpression.builder()
+                .meteringPointCode(point.getCode())
+                .parameterCode(param.getCode())
+                .periodType(context.getPeriodType())
+                .rate(1d)
+                .startHour((byte) 0)
+                .endHour((byte) 23)
+                .service(periodTimeValueService)
+                .context(context)
+                .build();
+
+            CalcResult result = new CalcResult();
+            result.setFormula(formula);
+            result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
+            result.setMeteringPoint(point);
+            result.setParam(param);
+            result.setUnit(param.getUnit());
+            result.setParamType(ParamTypeEnum.PT.name());
+
+            if (context.getPeriodType() != PeriodTypeEnum.H) {
+                result.setDoubleValue(expression.doubleValue());
+                result.setPeriodType(context.getPeriodType());
+                logger.trace("val: " + expression.doubleValue());
+            }
+
+            if (context.getPeriodType() == PeriodTypeEnum.H) {
+                result.setDoubleValues(expression.doubleValues());
+                result.setPeriodType(context.getPeriodType());
+                logger.trace("val: " + Arrays.deepToString(expression.doubleValues()));
+            }
+            return result;
+        }
+
+        logger.trace("formulaId: " + formula.getId());
+        CalcResult result = calcMeteringPoint(formula, context);
+
+        logger.trace("---------------------------------------------");
+        return result;
     }
 
     @Override
     public CalcResult calcMeteringPoint(Formula formula, CalcContext context) throws Exception {
-        logger.trace("---------------------------------------------");
-        logger.trace("point: " + formula.getMeteringPoint().getCode());
-        logger.trace("param: " + formula.getParam().getCode());
-        logger.trace("periodType: " + context.getPeriodType());
-
-        if (formula == null) {
-            logger.trace("Formula not found");
+        if (formula == null)
             return null;
-        }
-        logger.trace("formulaId: " + formula.getId());
 
         CalcResult result = calcFormula(formula, context);
         logger.trace("results:");
@@ -85,7 +124,6 @@ public class CalcServiceImpl implements CalcService {
 
         if (result.getPeriodType() == PeriodTypeEnum.H)
             logger.trace("values: " + Arrays.deepToString(result.getDoubleValues()));
-        logger.trace("---------------------------------------------");
 
         return result;
     }

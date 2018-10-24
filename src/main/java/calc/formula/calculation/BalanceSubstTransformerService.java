@@ -196,6 +196,7 @@ public class BalanceSubstTransformerService {
                 }
                 catch (Exception e) {
                     messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    e.printStackTrace();
                     continue;
                 }
 
@@ -234,6 +235,7 @@ public class BalanceSubstTransformerService {
                 }
                 catch (Exception e) {
                     messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    e.printStackTrace();
                     continue;
                 }
 
@@ -251,6 +253,7 @@ public class BalanceSubstTransformerService {
                 }
                 catch (Exception e) {
                     messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    e.printStackTrace();
                     continue;
                 }
 
@@ -268,6 +271,7 @@ public class BalanceSubstTransformerService {
                 }
                 catch (Exception e) {
                     messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    e.printStackTrace();
                     continue;
                 }
 
