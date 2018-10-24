@@ -24,9 +24,6 @@ public class InterResultDetLine {
     @JoinColumn(name = "result_line_id")
     private InterResultLine line;
 
-    @Column(name = "line_num")
-    private Long lineNum;
-
     @Column(name = "direction")
     private Long direction;
 
