@@ -19,7 +19,6 @@ import org.jgrapht.graph.DefaultEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import java.util.*;
@@ -149,7 +148,8 @@ public class CalcServiceImpl implements CalcService {
 
     private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context) {
         if (det.getMeteringPoint().getPointType() == PointTypeEnum.VMP) {
-            Formula formula = det.getMeteringPoint().getFormulas()
+            Formula formula = det.getMeteringPoint()
+                .getFormulas()
                 .stream()
                 .filter(t -> t.getParam().equals(det.getParam()))
                 .filter(t -> t.getParamType() == det.getParamType())
@@ -323,6 +323,7 @@ public class CalcServiceImpl implements CalcService {
                     .getFormulas()
                     .stream()
                     .filter(t -> t.getParam().equals(det.getParam()))
+                    .filter(t -> t.getParamType() == det.getParamType())
                     .findFirst()
                     .orElse(null);
 
