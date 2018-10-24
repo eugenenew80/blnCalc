@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import java.util.*;
-
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -73,7 +72,17 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (formula == null) {
-            DoubleExpression expression = getDefaultExpression(point, param, paramType, 1d, context);
+            DoubleExpression expression;
+            if (!param.equals(mapParams.get("AB")))
+                expression = getDefaultExpression(point, param, paramType, 1d, context);
+            else {
+                DoubleExpression expression1 = getDefaultExpression(point, mapParams.get("A+"), paramType, 1d, context);
+                DoubleExpression expression2 = getDefaultExpression(point, mapParams.get("A-"), paramType, 1d, context);
+                expression = BinaryExpression.builder()
+                    .operator(operatorFactory.binary("min"))
+                    .expressions(Arrays.asList(expression1, expression2))
+                    .build();
+            }
 
             CalcResult result = new CalcResult();
             result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
