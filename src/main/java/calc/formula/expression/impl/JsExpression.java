@@ -80,7 +80,7 @@ public class JsExpression implements DoubleExpression {
             });
 
         Double eval = eval(src, ctx);
-        logger.trace(eval !=null ?  "  val: " + eval.toString() : null);
+        if (eval != null) logger.trace("  val: " + eval.toString());
         return eval;
     }
 
