@@ -68,7 +68,7 @@ public class JsExpression implements DoubleExpression {
         if (src.equals("a0") && attributes.size()==1) return attributes.get("a0").doubleValue();
 
         logger.trace("eval js expression:");
-        logger.trace("  src: " +src);
+        logger.trace("  src: " + src);
 
         final ScriptContext ctx = new SimpleScriptContext();
         attributes.keySet()
