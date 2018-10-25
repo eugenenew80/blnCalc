@@ -922,5 +922,14 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-rus-377" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add not null constraint mdfem_history</comment>
+        <addNotNullConstraint
+                columnDataType="number"
+                columnName="meter_factor"
+                schemaName="apps"
+                defaultNullValue="1"
+                tableName="mdfem_history"/>
+    </changeSet>
 </databaseChangeLog>
 
