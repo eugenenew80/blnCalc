@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static java.util.Optional.*;
+
 @SuppressWarnings("ALL")
 @Service
 @RequiredArgsConstructor
@@ -91,7 +93,7 @@ public class SvrService {
                     .context(context)
                     .build();
 
-                Double val = Math.abs(Optional.of(ap.doubleValue()).orElse(0d) - Optional.of(am.doubleValue()).orElse(0d));
+                Double val = Math.abs(ofNullable(ap.doubleValue()).orElse(0d) - ofNullable(am.doubleValue()).orElse(0d));
 
                 SvrLine resultLine = new SvrLine();
                 resultLine.setHeader(header);
@@ -144,7 +146,7 @@ public class SvrService {
             resultNote.setNoteNum(note.getNoteNum());
             resultNote.setOrg(note.getOrg());
 
-            resultNote.setTranslates(Optional.ofNullable(resultNote.getTranslates()).orElse(new ArrayList<>()));
+            resultNote.setTranslates(ofNullable(resultNote.getTranslates()).orElse(new ArrayList<>()));
             for (MeteringPointSettingNoteTranslate noteTranslate : note.getTranslates()) {
                 SvrNoteTranslate resultNoteTranslate = new SvrNoteTranslate();
                 resultNoteTranslate.setNote(resultNote);
