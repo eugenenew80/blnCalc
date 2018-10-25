@@ -26,6 +26,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class BalanceSubstLineService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstLineService.class);
+    private static final String docCode = "BALANCE";
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
     private final BalanceSubstResultMrService mrService;
     private final PeriodTimeValueService periodTimeValueService;
@@ -33,7 +34,6 @@ public class BalanceSubstLineService {
     private final CalcService calcService;
     private final MessageService messageService;
     private final ParamService paramService;
-    private static final String docCode = "BALANCE";
     private Map<String, Parameter> mapParams = null;
 
     @PostConstruct

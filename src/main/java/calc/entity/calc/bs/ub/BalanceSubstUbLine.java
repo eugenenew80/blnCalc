@@ -2,6 +2,7 @@ package calc.entity.calc.bs.ub;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Parameter;
 import calc.entity.calc.bs.BalanceSubstHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,4 +36,11 @@ public class BalanceSubstUbLine {
     @Column(name = "is_section_2")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isSection2;
+
+    @ManyToOne
+    @JoinColumn(name = "param_id")
+    private Parameter param;
+
+    @Column(name = "rate")
+    private Double rate;
 }

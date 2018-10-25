@@ -1887,4 +1887,40 @@
             <column name="metering_point_id_out_2" type="number"/>
         </createIndex>
     </changeSet>
+
+
+    <changeSet id="calc-eug-1257" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_ub_lines</comment>
+        <addColumn tableName="calc_balance_subst_ub_lines" schemaName="apps">
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1259" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_subst_ub_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_subst_ub_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_balance_subst_ub_lines_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1260" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_subst_ub_lines</comment>
+        <addColumn tableName="calc_balance_subst_ub_lines" schemaName="apps">
+            <column name="rate" type="number" remarks="Коэффициент">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
