@@ -203,13 +203,15 @@ public class CalcServiceImpl implements CalcService {
                 .orElse(null);
 
             if (formula != null) {
-                logger.trace("nested formula");
+                logger.trace("nested formula start");
                 logger.trace("  point: " + formula.getMeteringPoint().getCode());
                 logger.trace("  pointType: " + formula.getMeteringPoint().getPointType().name());
                 logger.trace("  param: " + formula.getParam().getCode());
                 logger.trace("  paramType: " + formula.getParamType());
                 logger.trace("  formulaId: " + formula.getId());
-                return buildExpression(formula, context);
+                DoubleExpression expression = buildExpression(formula, context);
+                logger.trace("nested formula end");
+                return expression;
             }
         }
 
