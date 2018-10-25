@@ -64,10 +64,11 @@ public class BalanceSubstUbService {
 
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
 
-            Double wSum1 = header.getHeader().getUbLines()
+            Double wSum1 = header.getHeader()
+                .getUbLines()
                 .stream()
                 .filter(t -> t.getIsSection1())
-                .flatMap(t -> mrLines.stream().filter(l -> !l.getIsIgnore() && l.getMeteringPoint().equals(t.getMeteringPoint())))
+                .flatMap(t -> mrLines.stream().filter(l -> !l.getIsIgnore() && l.getMeteringPoint().equals(t.getMeteringPoint()) && l.getBypassMeteringPoint() == null))
                 .filter(t -> t.getParam().getCode().equals("A+"))
                 .filter(t -> t.getVal() != null)
                 .map(t -> t.getVal())
@@ -77,7 +78,7 @@ public class BalanceSubstUbService {
             Double wSum2 = header.getHeader().getUbLines()
                 .stream()
                 .filter(t -> t.getIsSection2())
-                .flatMap(t -> mrLines.stream().filter(l -> !l.getIsIgnore() && l.getMeteringPoint().equals(t.getMeteringPoint())))
+                .flatMap(t -> mrLines.stream().filter(l -> !l.getIsIgnore() && l.getMeteringPoint().equals(t.getMeteringPoint()) && l.getBypassMeteringPoint() == null))
                 .filter(t -> t.getParam().getCode().equals("A-"))
                 .filter(t -> t.getVal() != null)
                 .map(t -> t.getVal())
@@ -203,6 +204,7 @@ public class BalanceSubstUbService {
                             String paramCode = direction.equals("1") ? "A+" : "A-";
                             Double w = mrLines.stream()
                                 .filter(t -> !t.getIsIgnore())
+                                .filter(t -> t.getBypassMeteringPoint() == null)
                                 .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                                 .filter(t -> t.getParam().getCode().equals(paramCode))
                                 .filter(t -> t.getMeterHistory() != null)
@@ -213,6 +215,7 @@ public class BalanceSubstUbService {
 
                             Double wa = mrLines.stream()
                                 .filter(t -> !t.getIsIgnore())
+                                .filter(t -> t.getBypassMeteringPoint() == null)
                                 .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                                 .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
                                 .filter(t -> t.getMeterHistory() != null)
@@ -223,6 +226,7 @@ public class BalanceSubstUbService {
 
                             Double wr = mrLines.stream()
                                 .filter(t -> !t.getIsIgnore())
+                                .filter(t -> t.getBypassMeteringPoint() == null)
                                 .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                                 .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
                                 .filter(t -> t.getMeterHistory() != null)
