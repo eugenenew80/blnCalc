@@ -149,144 +149,130 @@ public class BalanceSubstUbService {
                     if (direction.equals("1") && !ubLine.getIsSection1()) continue;
                     if (direction.equals("2") && !ubLine.getIsSection2()) continue;
 
-                    if (meteringPoint.getPointType() == PointTypeEnum.VMP) {
+                    for (MeterHistory meterHistory : meterHistories) {
+                        TtType ttType = meterHistory.getTtType();
+                        TnType tnType = meterHistory.getTnType();
+                        EemType eemType = meterHistory.getMeter().getEemType();
+
+                        if (eemType == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_EEM_TYPE_NOT_FOUND", info);
+                            continue;
+                        }
+
+                        if (eemType.getAccuracyClass() == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND", info);
+                            continue;
+                        }
+
+                        if (ttType == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TT_TYPE_NOT_FOUND", info);
+                            continue;
+                        }
+
+                        if (ttType.getRatedCurrent1() == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_RATED_CURRENT_NOT_FOUND", info);
+                            continue;
+                        }
+
+                        if (ttType.getAccuracyClass() == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND", info);
+                            continue;
+                        }
+
+                        if (tnType == null && !meterHistory.getIsTnDirectInclusion()) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_TN_TYPE_NOT_FOUND", info);
+                            continue;
+                        }
+
+                        if (tnType != null && tnType.getAccuracyClass() == null) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND", info);
+                            continue;
+                        }
+
+                        String paramCode = direction.equals("1") ? "A+" : "A-";
+                        Double w = mrLines.stream()
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getBypassMeteringPoint() == null)
+                            .filter(t -> t.getMeteringPoint().equals(meteringPoint))
+                            .filter(t -> t.getParam().getCode().equals(paramCode))
+                            .filter(t -> t.getMeterHistory() != null)
+                            .filter(t -> t.getMeterHistory().equals(meterHistory))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
+
+                        Double wa = mrLines.stream()
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getBypassMeteringPoint() == null)
+                            .filter(t -> t.getMeteringPoint().equals(meteringPoint))
+                            .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
+                            .filter(t -> t.getMeterHistory() != null)
+                            .filter(t -> t.getMeterHistory().equals(meterHistory))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
+
+                        Double wr = mrLines.stream()
+                            .filter(t -> !t.getIsIgnore())
+                            .filter(t -> t.getBypassMeteringPoint() == null)
+                            .filter(t -> t.getMeteringPoint().equals(meteringPoint))
+                            .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
+                            .filter(t -> t.getMeterHistory() != null)
+                            .filter(t -> t.getMeterHistory().equals(meterHistory))
+                            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
+                            .reduce((t1, t2) -> t1 + t2)
+                            .orElse(0d);
+
+                        Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / (1.73d * uAvg * workHours);
+                        Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
+                        Double ttAcProc = ttType.getAccuracyClass().getValue();
+
+                        Pair<Double, String> bttProcResult = getBttProc(ttType.getAccuracyClass(), i1avgProc);
+                        Double bttProc = bttProcResult.getFirst();
+
+                        if (!bttProcResult.getSecond().equals("OK")) {
+                            messageService.addMessage(header, ubLine.getId(), docCode, bttProcResult.getSecond(), params);
+                            bttProc = 0d;
+                        }
+
+                        Double buProc = 0d;
+                        if (tnType != null && tnType.getAccuracyClass() != null)
+                            buProc = Optional.ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
+
+                        Double biProc = Math.sqrt(2d) * bttProc;
+                        Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
+                        Double bsoProc = Optional.ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
+                        Double bProc = Math.sqrt(Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2)) * 1.1d;
+
+                        Double dol = 0d;
+                        if (direction.equals("1") && !wSum1.equals(0d)) dol = w / wSum1;
+                        if (direction.equals("2") && !wSum2.equals(0d)) dol = w / wSum2;
+                        Double b2dol2 = Math.pow(bProc / 100d, 2) * Math.pow(dol, 2);
+
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
                         line.setHeader(header);
                         line.setMeteringPoint(meteringPoint);
                         line.setDirection(direction);
-                        //line.setW(w);
-                        //line.setWa(wa);
-                        //line.setWr(wr);
+                        line.setW(w);
+                        line.setWa(wa);
+                        line.setWr(wr);
                         line.setTtStar(null);
+                        line.setTtacProc(ttAcProc);
+                        line.setI1Nom(ttType.getRatedCurrent1());
+                        line.setTRab(workHours);
+                        line.setUavg(uAvg);
+                        line.setI1avgVal(i1avgVal);
+                        line.setI1avgProc(i1avgProc);
+                        line.setBttFactor(null);
+                        line.setBttProc(bttProc);
+                        line.setBiProc(biProc);
+                        line.setBuProc(buProc);
+                        line.setBlProc(blProc);
+                        line.setBsoProc(bsoProc);
+                        line.setBProc(bProc);
+                        line.setDol(dol);
+                        line.setB2dol2(b2dol2);
                         lines.add(line);
-                    }
-
-                    if (meteringPoint.getPointType() == PointTypeEnum.PMP) {
-                        for (MeterHistory meterHistory : meterHistories) {
-                            TtType ttType = meterHistory.getTtType();
-                            TnType tnType = meterHistory.getTnType();
-                            EemType eemType = meterHistory.getMeter().getEemType();
-
-                            if (eemType == null) {
-                                messageService.addMessage(header, ubLine.getId(), docCode, "UB_EEM_TYPE_NOT_FOUND", info);
-                                continue;
-                            }
-
-                            if (eemType.getAccuracyClass() == null) {
-                                messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND", info);
-                                continue;
-                            }
-
-                            if (ttType == null) {
-                                messageService.addMessage(header, ubLine.getId(), docCode, "UB_TT_TYPE_NOT_FOUND", info);
-                                continue;
-                            }
-
-                            if (ttType.getRatedCurrent1() == null) {
-                                messageService.addMessage(header, ubLine.getId(), docCode, "UB_RATED_CURRENT_NOT_FOUND", info);
-                                continue;
-                            }
-
-                            if (ttType.getAccuracyClass() == null) {
-                                messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND", info);
-                                continue;
-                            }
-
-                            if (tnType == null && !meterHistory.getIsTnDirectInclusion()) {
-                                messageService.addMessage(header, ubLine.getId(), docCode, "UB_TN_TYPE_NOT_FOUND", info);
-                                continue;
-                            }
-
-                            if (tnType != null && tnType.getAccuracyClass() == null) {
-                                messageService.addMessage(header, ubLine.getId(), docCode, "UB_ACCURACY_CLASS_NOT_FOUND", info);
-                                continue;
-                            }
-
-                            String paramCode = direction.equals("1") ? "A+" : "A-";
-                            Double w = mrLines.stream()
-                                .filter(t -> !t.getIsIgnore())
-                                .filter(t -> t.getBypassMeteringPoint() == null)
-                                .filter(t -> t.getMeteringPoint().equals(meteringPoint))
-                                .filter(t -> t.getParam().getCode().equals(paramCode))
-                                .filter(t -> t.getMeterHistory() != null)
-                                .filter(t -> t.getMeterHistory().equals(meterHistory))
-                                .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                                .reduce((t1, t2) -> t1 + t2)
-                                .orElse(0d);
-
-                            Double wa = mrLines.stream()
-                                .filter(t -> !t.getIsIgnore())
-                                .filter(t -> t.getBypassMeteringPoint() == null)
-                                .filter(t -> t.getMeteringPoint().equals(meteringPoint))
-                                .filter(t -> t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-"))
-                                .filter(t -> t.getMeterHistory() != null)
-                                .filter(t -> t.getMeterHistory().equals(meterHistory))
-                                .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                                .reduce((t1, t2) -> t1 + t2)
-                                .orElse(0d);
-
-                            Double wr = mrLines.stream()
-                                .filter(t -> !t.getIsIgnore())
-                                .filter(t -> t.getBypassMeteringPoint() == null)
-                                .filter(t -> t.getMeteringPoint().equals(meteringPoint))
-                                .filter(t -> t.getParam().getCode().equals("R+") || t.getParam().getCode().equals("R-"))
-                                .filter(t -> t.getMeterHistory() != null)
-                                .filter(t -> t.getMeterHistory().equals(meterHistory))
-                                .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d))
-                                .reduce((t1, t2) -> t1 + t2)
-                                .orElse(0d);
-
-                            Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / (1.73d * uAvg * workHours);
-                            Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
-                            Double ttAcProc = ttType.getAccuracyClass().getValue();
-
-                            Pair<Double, String> bttProcResult = getBttProc(ttType.getAccuracyClass(), i1avgProc);
-                            Double bttProc = bttProcResult.getFirst();
-
-                            if (!bttProcResult.getSecond().equals("OK")) {
-                                messageService.addMessage(header, ubLine.getId(), docCode, bttProcResult.getSecond(), params);
-                                bttProc = 0d;
-                            }
-
-                            Double buProc = 0d;
-                            if (tnType != null && tnType.getAccuracyClass() != null)
-                                buProc = Optional.ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
-
-                            Double biProc = Math.sqrt(2d) * bttProc;
-                            Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
-                            Double bsoProc = Optional.ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
-                            Double bProc = Math.sqrt(Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2)) * 1.1d;
-
-                            Double dol = 0d;
-                            if (direction.equals("1") && !wSum1.equals(0d)) dol = w / wSum1;
-                            if (direction.equals("2") && !wSum2.equals(0d)) dol = w / wSum2;
-                            Double b2dol2 = Math.pow(bProc / 100d, 2) * Math.pow(dol, 2);
-
-                            BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
-                            line.setHeader(header);
-                            line.setMeteringPoint(meteringPoint);
-                            line.setDirection(direction);
-                            line.setW(w);
-                            line.setWa(wa);
-                            line.setWr(wr);
-                            line.setTtStar(null);
-                            line.setTtacProc(ttAcProc);
-                            line.setI1Nom(ttType.getRatedCurrent1());
-                            line.setTRab(workHours);
-                            line.setUavg(uAvg);
-                            line.setI1avgVal(i1avgVal);
-                            line.setI1avgProc(i1avgProc);
-                            line.setBttFactor(null);
-                            line.setBttProc(bttProc);
-                            line.setBiProc(biProc);
-                            line.setBuProc(buProc);
-                            line.setBlProc(blProc);
-                            line.setBsoProc(bsoProc);
-                            line.setBProc(bProc);
-                            line.setDol(dol);
-                            line.setB2dol2(b2dol2);
-                            lines.add(line);
-                        }
                     }
                 }
             }
