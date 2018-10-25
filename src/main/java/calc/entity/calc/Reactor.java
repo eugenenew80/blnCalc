@@ -13,9 +13,6 @@ public class Reactor {
     @Id
     private Long id;
 
-    @Column
-    private String name;
-
     @Column(name = "delta_pr")
     private Double deltaPr;
 

@@ -15,9 +15,6 @@ public class PowerTransformer {
     @Id
     private Long id;
 
-    @Column
-    private String name;
-
     @Column(name = "snom")
     private Double snom;
 

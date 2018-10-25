@@ -53,7 +53,7 @@ public class PowerTransformerServiceImpl implements PowerTransformerService {
 
         String value = null;
         if (attr.equals("name"))
-            value = powerTransformer.getName();
+            value = powerTransformer.getId().toString();
 
         return value;
     }

@@ -74,7 +74,7 @@ public class BalanceSubstReactorService {
             if (reactor == null)
                 continue;
 
-            String info = reactor.getName();
+            String info = reactor.getId().toString();
 
             MeteringPoint inputMp = reactor.getInputMp();
             if (inputMp == null) {

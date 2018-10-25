@@ -41,7 +41,7 @@ public class ReactorServiceImpl implements ReactorService {
 
         String value = null;
         if (attr.equals("name"))
-            value = reactor.getName();
+            value = reactor.getId().toString();
 
         return value;
     }

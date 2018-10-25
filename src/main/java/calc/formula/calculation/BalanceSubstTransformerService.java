@@ -92,7 +92,7 @@ public class BalanceSubstTransformerService {
             if (transformer == null)
                 continue;
 
-            String info = transformer.getName();
+            String info = transformer.getId().toString();
 
             if (transformer.getWindingsNumber() == null) {
                 messageService.addMessage(header, peLine.getId(), docCode, "PE_WN_NOT_FOUND", info);

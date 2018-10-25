@@ -137,6 +137,7 @@ public class BalanceSubstUbService {
                 }
 
                 List<MeterHistory> meterHistories = mrLines.stream()
+                    .filter(t -> t.getBypassMeteringPoint() == null)
                     .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                     .filter(t -> !t.getIsIgnore())
                     .filter(t -> t.getMeter() != null && t.getMeterHistory() != null)
