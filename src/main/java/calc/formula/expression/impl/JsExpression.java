@@ -65,9 +65,10 @@ public class JsExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
-        if (src.equals("a0") && attributes.size()==1) return
-            attributes.get("a0").doubleValue();
-        logger.trace("src: " +src);
+        if (src.equals("a0") && attributes.size()==1) return attributes.get("a0").doubleValue();
+
+        logger.trace("eval js expression:");
+        logger.trace("  src: " +src);
 
         final ScriptContext ctx = new SimpleScriptContext();
         attributes.keySet()
@@ -75,11 +76,11 @@ public class JsExpression implements DoubleExpression {
             .forEach(key ->  {
                 Double value = attributes.get(key).doubleValue();
                 ctx.setAttribute(key, value, ScriptContext.ENGINE_SCOPE);
-                logger.trace(key + " : " + value);
+                logger.trace("  " + key + " : " + value);
             });
 
         Double eval = eval(src, ctx);
-        logger.trace(eval !=null ? eval.toString() : null);
+        logger.trace(eval !=null ?  "  val: " + eval.toString() : null);
         return eval;
     }
 

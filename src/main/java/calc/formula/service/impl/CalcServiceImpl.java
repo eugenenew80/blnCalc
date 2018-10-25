@@ -204,10 +204,11 @@ public class CalcServiceImpl implements CalcService {
 
             if (formula != null) {
                 logger.trace("nested formula");
-                logger.trace("formulaId: " + formula.getId());
-                logger.trace("pointCode: " + formula.getMeteringPoint().getCode());
-                logger.trace("param: " + formula.getParam().getCode());
-                logger.trace("paramType: " + formula.getParamType());
+                logger.trace("  point: " + formula.getMeteringPoint().getCode());
+                logger.trace("  pointType: " + formula.getMeteringPoint().getPointType().name());
+                logger.trace("  param: " + formula.getParam().getCode());
+                logger.trace("  paramType: " + formula.getParamType());
+                logger.trace("  formulaId: " + formula.getId());
                 return buildExpression(formula, context);
             }
         }
@@ -230,16 +231,22 @@ public class CalcServiceImpl implements CalcService {
         Double sign = det.getSign().equals("-") ? -1d : 1d;
         Double rate = ofNullable(det.getRate()).orElse(1d) * sign;
 
+        logger.trace("end point: " + meteringPoint.getCode());
+        logger.trace("  param: " + param.getCode());
+        logger.trace("  pointType: " + meteringPoint.getPointType().name());
+        logger.trace("  paramType: " + paramType.name());
+        logger.trace("  rate: " + rate);
+
         if (param.getCode().equals("WL") && context.getContextType() == ContextType.MR) {
             Map<String, Double> transformerValues = context.getTransformerValues();
             if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {
-                logger.trace("expression: CachedValueExpression");
+                logger.trace("  expression: CachedValueExpression");
                 return DoubleValueExpression.builder()
                     .value(transformerValues.get(meteringPoint.getCode()))
                     .build();
             }
 
-            logger.trace("expression: TransformerValueExpression");
+            logger.trace("  expression: TransformerValueExpression");
             return TransformerValueExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
@@ -250,8 +257,8 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (context.getContextType() == ContextType.MR) {
-            logger.trace("context: mr");
-            logger.trace("expression: MrExpression");
+            logger.trace("  context: mr");
+            logger.trace("  expression: MrExpression");
             return MrExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
@@ -262,8 +269,8 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (context.getContextType() == ContextType.ASP) {
-            logger.trace("context: asp");
-            logger.trace("expression: AspExpression");
+            logger.trace("  context: asp");
+            logger.trace("  expression: AspExpression");
             return AspExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
@@ -274,8 +281,8 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (context.getContextType() == ContextType.SEG) {
-            logger.trace("context: seg");
-            logger.trace("expression: SegExpression");
+            logger.trace("  context: seg");
+            logger.trace("  expression: SegExpression");
             return SegExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
@@ -286,8 +293,8 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (context.getContextType() == ContextType.INTER) {
-            logger.trace("context: inter");
-            logger.trace("expression: InterExpression");
+            logger.trace("  context: inter");
+            logger.trace("  expression: InterExpression");
             return InterMrExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
@@ -302,7 +309,7 @@ public class CalcServiceImpl implements CalcService {
 
     private DoubleExpression getDefaultExpression(MeteringPoint meteringPoint, Parameter param, ParamTypeEnum paramType, Double rate, CalcContext context) {
         if (paramType == ParamTypeEnum.PT) {
-            logger.trace("expression: PeriodTimeValueExpression");
+            logger.trace("  expression: PeriodTimeValueExpression");
             return PeriodTimeValueExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
@@ -316,7 +323,7 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (paramType == ParamTypeEnum.AT || paramType == ParamTypeEnum.ATS || paramType == ParamTypeEnum.ATE) {
-            logger.trace("expression: AtTimeValueExpression");
+            logger.trace("  expression: AtTimeValueExpression");
             String per = "end";
             if (paramType == ParamTypeEnum.ATS)
                 per = "start";
