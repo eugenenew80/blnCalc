@@ -913,5 +913,14 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-376" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column mdfem_history</comment>
+        <addColumn schemaName="apps"
+                   tableName="mdfem_history">
+            <column name="meter_factor" type="number" remarks="Коэфициент в счетчике"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
