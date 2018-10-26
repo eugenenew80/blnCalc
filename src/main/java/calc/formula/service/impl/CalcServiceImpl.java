@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import java.util.*;
+import java.util.function.UnaryOperator;
+
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -67,11 +69,10 @@ public class CalcServiceImpl implements CalcService {
                 .filter(t -> t.getParamType() == paramType)
                 .findFirst()
                 .orElse(null);
-
-            if (formula == null) logger.warn("Formula not found");
         }
 
         if (formula == null) {
+            logger.warn("Formula not found");
             DoubleExpression expression;
             if (!param.equals(mapParams.get("AB")))
                 expression = getDefaultExpression(point, param, paramType, 1d, context);
@@ -79,7 +80,7 @@ public class CalcServiceImpl implements CalcService {
                 DoubleExpression expression1 = getDefaultExpression(point, mapParams.get("A+"), paramType, 1d, context);
                 DoubleExpression expression2 = getDefaultExpression(point, mapParams.get("A-"), paramType, 1d, context);
                 expression = BinaryExpression.builder()
-                    .operator(operatorFactory.binary("min"))
+                    .operator(operatorFactory.binary("subtract"))
                     .expressions(Arrays.asList(expression1, expression2))
                     .build();
             }
@@ -212,14 +213,8 @@ public class CalcServiceImpl implements CalcService {
                 DoubleExpression expression = buildExpression(formula, context);
                 logger.trace("nested formula end");
 
-                if (det.getSign().equals("-")) {
-                    return UnaryExpression.builder()
-                        .expression(expression)
-                        .operator(operatorFactory.unary("minus"))
-                        .build();
-                }
-
-                return expression;
+                UnaryOperator<DoubleExpression> operator = det.getSign().equals("-") ? operatorFactory.unary("minus") : operatorFactory.unary("nothing");
+                return expression.andThen(operator);
             }
         }
 
@@ -227,7 +222,7 @@ public class CalcServiceImpl implements CalcService {
             DoubleExpression  expression1 = getExpression(det, mapParams.get("A+"), context);
             DoubleExpression  expression2 = getExpression(det, mapParams.get("A-"), context);
             return BinaryExpression.builder()
-                .operator(operatorFactory.binary("min"))
+                .operator(operatorFactory.binary("subtract"))
                 .expressions(Arrays.asList(expression1, expression2))
                 .build();
         }

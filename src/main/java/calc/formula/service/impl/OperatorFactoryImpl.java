@@ -41,80 +41,56 @@ public class OperatorFactoryImpl implements OperatorFactory {
             if (doublePair.getLeft()!=null && doublePair.getLeft()!=0) n+=1;
             if (doublePair.getRight()!=null && doublePair.getRight()!=0) n+=1;
 
-            return DoubleValueExpression.builder()
-                .value(n)
-                .build();
+            return DoubleValueExpression.builder().value(n).build();
         };
-        count = arrOperator(count);
 
         BinaryOperator<DoubleExpression> add = (op1, op2) -> {
             Pair<Double, Double> doublePair = validate(op1, op2, 0d);
-            return DoubleValueExpression.builder()
-                .value(doublePair.getLeft() + doublePair.getRight())
-                .build();
+            return DoubleValueExpression.builder().value(doublePair.getLeft() + doublePair.getRight()).build();
         };
-        add = arrOperator(add);
 
         BinaryOperator<DoubleExpression> subtract = (op1, op2) -> {
             Pair<Double, Double> doublePair = validate(op1, op2, 0d);
-            return DoubleValueExpression.builder()
-                .value(doublePair.getLeft() - doublePair.getRight())
-                .build();
+            return DoubleValueExpression.builder().value(doublePair.getLeft() - doublePair.getRight()).build();
         };
-        subtract = arrOperator(subtract);
 
         BinaryOperator<DoubleExpression> divide = (op1, op2) -> {
             Pair<Double, Double> doublePair = validate(op1, op2, 0d);
-            return DoubleValueExpression.builder()
-                .value(doublePair.getLeft() / doublePair.getRight())
-                .build();
+            return DoubleValueExpression.builder().value(doublePair.getLeft() / doublePair.getRight()).build();
         };
-        divide = arrOperator(divide);
 
         BinaryOperator<DoubleExpression> multiply = (op1, op2) -> {
             Pair<Double, Double> doublePair = validate(op1, op2, 0d);
-            return DoubleValueExpression.builder()
-                .value(doublePair.getLeft() * doublePair.getRight())
-                .build();
+            return DoubleValueExpression.builder().value(doublePair.getLeft() * doublePair.getRight()).build();
         };
-        multiply = arrOperator(multiply);
 
         BinaryOperator<DoubleExpression> pow = (op1, op2) -> {
             Pair<Double, Double> doublePair = validate(op1, op2, 0d);
-            return DoubleValueExpression.builder()
-                .value(Math.pow(doublePair.getLeft(), doublePair.getRight()))
-                .build();
+            return DoubleValueExpression.builder().value(Math.pow(doublePair.getLeft(), doublePair.getRight())).build();
         };
-        pow = arrOperator(pow);
 
         BinaryOperator<DoubleExpression> max = (op1, op2) -> {
             Pair<Double, Double> doublePair = validate(op1, op2, Double.MIN_VALUE);
-            return DoubleValueExpression.builder()
-                .value(Math.max(doublePair.getLeft(), doublePair.getRight()))
-                .build();
+            return DoubleValueExpression.builder().value(Math.max(doublePair.getLeft(), doublePair.getRight())).build();
         };
-        max = arrOperator(max);
 
         BinaryOperator<DoubleExpression> min = (op1, op2) ->  {
             Pair<Double, Double> doublePair = validate(op1, op2, Double.MAX_VALUE);
-            return DoubleValueExpression.builder()
-                .value(Math.min(doublePair.getLeft(), doublePair.getRight()))
-                .build();
+            return DoubleValueExpression.builder().value(Math.min(doublePair.getLeft(), doublePair.getRight())).build();
         };
-        min = arrOperator(min);
 
-        binaryOperators.put("count", count);
-        binaryOperators.put("add", add);
-        binaryOperators.put("subtract", subtract);
-        binaryOperators.put("multiply", multiply);
-        binaryOperators.put("divide", divide);
-        binaryOperators.put("max", max);
-        binaryOperators.put("min", min);
-        binaryOperators.put("pow", pow);
+        binaryOperators.put("count",    arrOperator(count));
+        binaryOperators.put("add",      arrOperator(add));
+        binaryOperators.put("subtract", arrOperator(subtract));
+        binaryOperators.put("divide",   arrOperator(divide));
+        binaryOperators.put("multiply", arrOperator(multiply));
+        binaryOperators.put("pow",      arrOperator(pow));
+        binaryOperators.put("max",      arrOperator(max));
+        binaryOperators.put("min",      arrOperator(min));
     }
 
     private BinaryOperator<DoubleExpression> arrOperator(BinaryOperator<DoubleExpression> operator) {
-        return  (op1, op2) -> {
+        return (op1, op2) -> {
             Double[] values1 = op1.doubleValues();
             Double[] values2 = op2.doubleValues();
 
@@ -203,19 +179,29 @@ public class OperatorFactoryImpl implements OperatorFactory {
             .value(op == null ? null : Math.sin(op.doubleValue()))
             .build();
 
-        unaryOperators.put("nothing", nothing);
-        unaryOperators.put("minus", minus);
-        unaryOperators.put("abs", abs);
-        unaryOperators.put("ceil", ceil);
-        unaryOperators.put("floor", floor);
-        unaryOperators.put("sqrt", sqrt);
-        unaryOperators.put("pow-2", pow2);
-        unaryOperators.put("sign", sign);
-        unaryOperators.put("round", round);
-        unaryOperators.put("round-1", round1);
-        unaryOperators.put("round-2", round2);
-        unaryOperators.put("round-3", round3);
-        unaryOperators.put("round-4", round4);
-        unaryOperators.put("sin", sin);
+        UnaryOperator<DoubleExpression> cos = (op) -> DoubleValueExpression.builder()
+            .value(op == null ? null : Math.cos(op.doubleValue()))
+            .build();
+
+        UnaryOperator<DoubleExpression> tan = (op) -> DoubleValueExpression.builder()
+            .value(op == null ? null : Math.tan(op.doubleValue()))
+            .build();
+
+        unaryOperators.put("nothing",   nothing);
+        unaryOperators.put("minus",     minus);
+        unaryOperators.put("abs",       abs);
+        unaryOperators.put("ceil",      ceil);
+        unaryOperators.put("floor",     floor);
+        unaryOperators.put("sqrt",      sqrt);
+        unaryOperators.put("pow-2",     pow2);
+        unaryOperators.put("sign",      sign);
+        unaryOperators.put("round",     round);
+        unaryOperators.put("round-1",   round1);
+        unaryOperators.put("round-2",   round2);
+        unaryOperators.put("round-3",   round3);
+        unaryOperators.put("round-4",   round4);
+        unaryOperators.put("sin",       sin);
+        unaryOperators.put("cos",       cos);
+        unaryOperators.put("tan",       tan);
     }
 }
