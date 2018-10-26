@@ -318,8 +318,7 @@ public class BalanceSubstUbService {
             Double nbdProc = Math.sqrt(r1SumB2D2 + r2SumB2D2) * 100d;
             Double nbdVal = nbdProc * r1SumW / 100d;
 
-            Parameter param = paramService.getValues().get("A+");
-            nbdVal = round(nbdVal, param);
+            nbdVal = round(nbdVal, paramService.getValues().get("A+"));
 
             header.setNbdProc(nbdProc);
             header.setNbdVal(nbdVal);
@@ -435,7 +434,7 @@ public class BalanceSubstUbService {
 
     private Double getMrVal(List<BalanceSubstResultMrLine> mrLines, BalanceSubstUbLine ubLine, MeterHistory meterHistory, Parameter param, CalcContext context) throws Exception {
         if (ubLine.getMeteringPoint().getPointType() == PointTypeEnum.PMP) {
-            return mrLines.stream()
+            Double val = mrLines.stream()
                 .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
                 .filter(t -> t.getParam().equals(param))
                 .filter(t -> t.getMeterHistory() != null)
@@ -445,6 +444,8 @@ public class BalanceSubstUbService {
                 .map(t -> ofNullable(t.getVal()).orElse(0d) + ofNullable(t.getUnderCountVal()).orElse(0d))
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
+
+            return val * ofNullable(ubLine.getRate()).orElse(1d);
         }
 
         Double val = PeriodTimeValueExpression.builder()
