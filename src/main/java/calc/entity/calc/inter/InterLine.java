@@ -57,19 +57,19 @@ public class InterLine {
     @JoinColumn(name = "bound_metering_point_id")
     private MeteringPoint boundMeteringPoint;
 
-    @Column(name = "proportion1")
+    @Column(name = "proportion_1")
     private Double proportion1;
 
-    @Column(name = "proportion2")
+    @Column(name = "proportion_2")
     private Double proportion2;
 
-    @Column(name = "powerLineLength1")
+    @Column(name = "power_line_length_1")
     private Double powerLineLength1;
 
-    @Column(name = "powerLineLength2")
+    @Column(name = "power_line_length_2")
     private Double powerLineLength2;
 
-    @Column(name = "powerLineLength")
+    @Column(name = "power_line_length")
     private Double powerLineLength;
 
     @Column(name = "start_date")

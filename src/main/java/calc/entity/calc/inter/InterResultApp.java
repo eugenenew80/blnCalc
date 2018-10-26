@@ -16,7 +16,7 @@ public class InterResultApp {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "header_id")
+    @JoinColumn(name = "result_header_id")
     private InterResultHeader header;
 
     @Column(name = "app_num")

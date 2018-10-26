@@ -1,6 +1,7 @@
 package calc.formula.service.impl;
 
 import calc.entity.calc.*;
+import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.expression.impl.AtTimeValueExpression;
 import calc.formula.service.AtTimeValueService;
@@ -64,6 +65,12 @@ public class MrServiceImpl implements MrService {
     }
 
     private List<MeteringReading> calcMeteringPoint(MeteringPoint meteringPoint, BypassMode bypassMode, CalcContext context) {
+        if (meteringPoint == null)
+            return Collections.emptyList();
+
+        if (meteringPoint.getPointType() == PointTypeEnum.VMP)
+            return Collections.emptyList();
+
         LocalDateTime startDate = context.getStartDate().atStartOfDay();
         LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
 
