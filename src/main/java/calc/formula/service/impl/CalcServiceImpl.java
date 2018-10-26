@@ -211,6 +211,14 @@ public class CalcServiceImpl implements CalcService {
                 logger.trace("  formulaId: " + formula.getId());
                 DoubleExpression expression = buildExpression(formula, context);
                 logger.trace("nested formula end");
+
+                if (det.getSign().equals("-")) {
+                    return UnaryExpression.builder()
+                        .expression(expression)
+                        .operator(operatorFactory.unary("minus"))
+                        .build();
+                }
+
                 return expression;
             }
         }
