@@ -15,4 +15,7 @@ public interface MeterHistoryRepo extends JpaRepository<MeterHistory, Long> {
 
     @Query("select t from MeterHistory t where t.meteringPoint.id = ?1 and (t.startDate is null or t.startDate <= ?2) and (t.endDate is null or t.endDate>=?2) order by t.startDate, t.endDate")
     List<MeterHistory> findAllByMeteringPointIdAndDate(Long meteringPointId, LocalDateTime date);
+
+    @Query("select t from MeterHistory t where t.meteringPoint.code = ?1 and (t.startDate is null or t.startDate <= ?2) and (t.endDate is null or t.endDate>=?2) order by t.startDate, t.endDate")
+    MeterHistory findFirstByMeteringPoint(String mpCode, LocalDateTime date);
 }

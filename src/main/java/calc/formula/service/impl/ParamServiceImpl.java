@@ -6,7 +6,6 @@ import calc.repo.calc.ParameterRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,12 +18,9 @@ public class ParamServiceImpl implements ParamService {
     @Override
     public Map<String, Parameter> getValues() {
         Map<String, Parameter> mapParams = new HashMap<>();
-        mapParams.put("A-", parameterRepo.findByCode("A-"));
-        mapParams.put("A+", parameterRepo.findByCode("A+"));
-        mapParams.put("R-", parameterRepo.findByCode("R-"));
-        mapParams.put("R+", parameterRepo.findByCode("R+"));
-        mapParams.put("U",  parameterRepo.findByCode("U"));
-        mapParams.put("WL",  parameterRepo.findByCode("U"));
+        for (Parameter param : parameterRepo.findAll())
+            mapParams.put(param.getCode(), param);
+
         return mapParams;
     }
 }
