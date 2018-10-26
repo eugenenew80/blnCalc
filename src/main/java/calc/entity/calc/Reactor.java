@@ -1,8 +1,10 @@
 package calc.entity.calc;
 
+import calc.entity.calc.enums.LangEnum;
 import lombok.*;
 import javax.persistence.*;
 import org.hibernate.annotations.Immutable;
+import java.util.Map;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -22,4 +24,8 @@ public class Reactor {
     @ManyToOne
     @JoinColumn(name = "input_mp_id")
     private MeteringPoint inputMp;
+
+    @OneToMany(mappedBy = "reactor")
+    @MapKey(name = "lang")
+    private Map<LangEnum, ReactorTranslate> translates;
 }

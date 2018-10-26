@@ -1,5 +1,6 @@
 package calc.formula.service.impl;
 
+import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
 import calc.entity.calc.Reactor;
 import calc.formula.service.ReactorService;
@@ -40,8 +41,10 @@ public class ReactorServiceImpl implements ReactorService {
             return null;
 
         String value = null;
-        if (attr.equals("name"))
-            value = reactor.getId().toString();
+        if (attr.equals("name") && reactor.getTranslates().containsKey(context.getLang()))
+            value = reactor.getTranslates()
+                .get(context.getLang())
+                .getName();
 
         return value;
     }

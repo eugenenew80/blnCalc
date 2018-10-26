@@ -3,6 +3,7 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
+import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.svr.*;
 import calc.formula.CalcContext;
 import calc.formula.ContextType;
@@ -45,6 +46,7 @@ public class SvrService {
             deleteLines(header);
 
             CalcContext context = CalcContext.builder()
+                .lang(LangEnum.RU)
                 .docCode(docCode)
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())

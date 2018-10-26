@@ -1,10 +1,13 @@
 package calc.entity.calc;
 
 import calc.entity.calc.enums.EquipmentTypeEnum;
+import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.*;
 import javax.persistence.*;
 import org.hibernate.annotations.Immutable;
+
+import java.util.Map;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -61,4 +64,8 @@ public class PowerTransformer {
 
     @Column(name = "bn")
     private Double shNom;
+
+    @OneToMany(mappedBy = "powerTransformer")
+    @MapKey(name = "lang")
+    private Map<LangEnum, PowerTransformerTranslate> translates;
 }

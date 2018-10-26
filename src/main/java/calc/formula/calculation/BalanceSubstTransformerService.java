@@ -5,6 +5,7 @@ import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.pe.PowerTransformerValue;
 import calc.entity.calc.enums.EquipmentTypeEnum;
+import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
@@ -53,6 +54,7 @@ public class BalanceSubstTransformerService {
             logger.info("Power equipment losses for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
+                .lang(LangEnum.RU)
                 .docCode(docCode)
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
@@ -92,7 +94,11 @@ public class BalanceSubstTransformerService {
             if (transformer == null)
                 continue;
 
-            String info = transformer.getId().toString();
+            String info = "";
+            if (transformer.getTranslates().containsKey(context.getLang()))
+                info = transformer.getTranslates()
+                    .get(context.getLang())
+                    .getName();
 
             if (transformer.getWindingsNumber() == null) {
                 messageService.addMessage(header, peLine.getId(), docCode, "PE_WN_NOT_FOUND", info);
@@ -197,6 +203,7 @@ public class BalanceSubstTransformerService {
                     continue;
                 }
                 catch (Exception e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
                     messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
                     continue;
                 }
@@ -235,6 +242,7 @@ public class BalanceSubstTransformerService {
                     continue;
                 }
                 catch (Exception e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
                     messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
                     continue;
                 }
@@ -252,6 +260,7 @@ public class BalanceSubstTransformerService {
                     continue;
                 }
                 catch (Exception e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
                     messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
                     continue;
                 }
@@ -269,6 +278,7 @@ public class BalanceSubstTransformerService {
                     continue;
                 }
                 catch (Exception e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
                     messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
                     continue;
                 }

@@ -2,6 +2,7 @@ package calc.formula.calculation;
 
 import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
+import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
@@ -47,6 +48,7 @@ public class BalanceSubstLineService {
             logger.info("Lines for balance substation with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
+                .lang(LangEnum.RU)
                 .docCode(docCode)
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
@@ -79,8 +81,8 @@ public class BalanceSubstLineService {
                         continue;
                     }
                     catch (Exception e) {
+                        msgParams.putIfAbsent("err", e.getMessage());
                         messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                        e.printStackTrace();
                         continue;
                     }
 

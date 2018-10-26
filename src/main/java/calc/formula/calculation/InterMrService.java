@@ -1,6 +1,7 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.inter.InterLine;
 import calc.entity.calc.inter.InterResultHeader;
 import calc.entity.calc.inter.InterResultMrLine;
@@ -30,6 +31,7 @@ public class InterMrService {
             logger.info("Inter mr with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
+                .lang(LangEnum.RU)
                 .docCode(docCode)
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())

@@ -3,6 +3,7 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.bs.mr.*;
+import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
 import calc.formula.ContextType;
 import calc.formula.service.MessageService;
@@ -41,6 +42,7 @@ public class BalanceSubstMrService {
             logger.info("Act for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
+                .lang(LangEnum.RU)
                 .docCode(docCode)
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())

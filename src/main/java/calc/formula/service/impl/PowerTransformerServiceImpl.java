@@ -1,5 +1,6 @@
 package calc.formula.service.impl;
 
+import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
 import calc.entity.calc.PowerTransformer;
 import calc.formula.service.PowerTransformerService;
@@ -52,8 +53,10 @@ public class PowerTransformerServiceImpl implements PowerTransformerService {
             return null;
 
         String value = null;
-        if (attr.equals("name"))
-            value = powerTransformer.getId().toString();
+        if (attr.equals("name") && powerTransformer.getTranslates().containsKey(context.getLang()))
+            value = powerTransformer.getTranslates()
+                .get(context.getLang())
+                .getName();
 
         return value;
     }

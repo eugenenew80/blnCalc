@@ -6,6 +6,7 @@ import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.mr.BalanceSubstResultMrLine;
 import calc.entity.calc.bs.ub.BalanceSubstResultUbLine;
 import calc.entity.calc.bs.ub.BalanceSubstUbLine;
+import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
@@ -63,6 +64,7 @@ public class BalanceSubstUbService {
             logger.info("Unbalance for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
+                .lang(LangEnum.RU)
                 .docCode(docCode)
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
@@ -89,32 +91,6 @@ public class BalanceSubstUbService {
                     if (direction.equals("2")) wAmTotal += ofNullable(w).orElse(0d);
                 }
             }
-
-            /*
-            Double wApTotal;
-            wApTotal = header.getHeader()
-                .getUbLines()
-                .stream()
-                .filter(t -> t.getIsSection1())
-                .flatMap(t -> mrLines.stream().filter(l -> !l.getIsIgnore() && l.getMeteringPoint().equals(t.getMeteringPoint()) && l.getBypassMeteringPoint() == null))
-                .filter(t -> t.getParam().getCode().equals("A+"))
-                .filter(t -> t.getVal() != null)
-                .map(t -> t.getVal())
-                .reduce((t1, t2) -> t1 + t2)
-                .orElse(0d);
-
-            Double wAmTotal;
-            wAmTotal = header.getHeader()
-                .getUbLines()
-                .stream()
-                .filter(t -> t.getIsSection2())
-                .flatMap(t -> mrLines.stream().filter(l -> !l.getIsIgnore() && l.getMeteringPoint().equals(t.getMeteringPoint()) && l.getBypassMeteringPoint() == null))
-                .filter(t -> t.getParam().getCode().equals("A-"))
-                .filter(t -> t.getVal() != null)
-                .map(t -> t.getVal())
-                .reduce((t1, t2) -> t1 + t2)
-                .orElse(0d);
-            */
 
             List<BalanceSubstResultUbLine> lines = new ArrayList<>();
             for (BalanceSubstUbLine ubLine : header.getHeader().getUbLines()) {

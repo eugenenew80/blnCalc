@@ -4,6 +4,7 @@ import calc.entity.calc.*;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.u.BalanceSubstResultULine;
 import calc.entity.calc.bs.u.BalanceSubstULine;
+import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.ContextType;
@@ -38,6 +39,7 @@ public class BalanceSubstUService {
             logger.info("U avg for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
+                .lang(LangEnum.RU)
                 .docCode(docCode)
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())

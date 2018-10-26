@@ -4,6 +4,7 @@ import calc.entity.calc.*;
 import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.pe.ReactorValue;
+import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
 import calc.formula.ContextType;
 import calc.formula.expression.impl.*;
@@ -36,6 +37,7 @@ public class BalanceSubstReactorService {
             logger.info("Reactor losses for balance with headerId " + header.getId() + " started");
 
             CalcContext context = CalcContext.builder()
+                .lang(LangEnum.RU)
                 .docCode(docCode)
                 .headerId(header.getId())
                 .periodType(header.getPeriodType())
@@ -74,7 +76,11 @@ public class BalanceSubstReactorService {
             if (reactor == null)
                 continue;
 
-            String info = reactor.getId().toString();
+            String info = "";
+            if (reactor.getTranslates().containsKey(context.getLang()))
+                info = reactor.getTranslates()
+                    .get(context.getLang())
+                    .getName();
 
             MeteringPoint inputMp = reactor.getInputMp();
             if (inputMp == null) {
