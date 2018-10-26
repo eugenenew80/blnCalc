@@ -2,6 +2,7 @@ package calc.entity.calc;
 
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,13 +11,15 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "media_period_time_values")
+@Immutable
 @NamedEntityGraph(name="PeriodTimeValue.allJoins", attributeNodes = {
-	@NamedAttributeNode("sourceType")
+	@NamedAttributeNode("sourceType"),
+	@NamedAttributeNode("meteringPoint"),
+	@NamedAttributeNode("param"),
+	@NamedAttributeNode("unit"),
 })
 public class PeriodTimeValue  {
 	@Id
-	@SequenceGenerator(name="media_period_time_values_s", sequenceName = "media_period_time_values_s", allocationSize=1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "media_period_time_values_s")
 	private Long id;
 
 	@ManyToOne

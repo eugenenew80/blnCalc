@@ -4,6 +4,7 @@ import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.enums.DataLocationEnum;
 import calc.entity.calc.enums.RowTypeEnum;
 import calc.entity.calc.enums.TreatmentTypeEnum;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_balance_unit_lines")
+@Immutable
 public class BalanceUnitLine {
     @Id
     private Long id;

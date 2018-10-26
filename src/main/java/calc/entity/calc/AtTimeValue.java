@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "media_at_time_values")
 @NamedEntityGraph(name="AtTimeValue.allJoins", attributeNodes = {
 	@NamedAttributeNode("meteringPoint"),
+	@NamedAttributeNode("param"),
 	@NamedAttributeNode("unit"),
 	@NamedAttributeNode("sourceType")
 })
