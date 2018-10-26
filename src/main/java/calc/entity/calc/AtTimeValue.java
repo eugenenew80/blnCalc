@@ -3,20 +3,23 @@ package calc.entity.calc;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
 import lombok.*;
+import org.hibernate.annotations.Immutable;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
+@Immutable
 @Table(name = "media_at_time_values")
 @NamedEntityGraph(name="AtTimeValue.allJoins", attributeNodes = {
+	@NamedAttributeNode("meteringPoint"),
+	@NamedAttributeNode("unit"),
 	@NamedAttributeNode("sourceType")
 })
 public class AtTimeValue {
 	@Id
-	@SequenceGenerator(name="media_at_time_values_s", sequenceName = "media_at_time_values_s", allocationSize=1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "media_at_time_values_s")
 	private Long id;
 
 	@ManyToOne
