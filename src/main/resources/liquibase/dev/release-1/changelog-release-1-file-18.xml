@@ -24,7 +24,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_balance_unit_lines"
-                baseColumnNames="code"
+                baseColumnNames="section_code"
                 constraintName="fk_calc_balance_unit_lines_9"
                 deferrable="true"
                 onDelete="RESTRICT"
@@ -40,7 +40,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_balance_segment_result_lines"
-                baseColumnNames="code"
+                baseColumnNames="section_code"
                 constraintName="fk_calc_balance_segment_result_lines_10"
                 deferrable="true"
                 onDelete="RESTRICT"

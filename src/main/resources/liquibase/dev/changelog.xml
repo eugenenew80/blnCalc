@@ -23,4 +23,5 @@
     <include file="release-1/changelog-release-1-file-15.xml" relativeToChangelogFile="true"/>
     <include file="release-1/changelog-release-1-file-16.xml" relativeToChangelogFile="true"/>
     <include file="release-1/changelog-release-1-file-17.xml" relativeToChangelogFile="true"/>
+    <include file="release-1/changelog-release-1-file-18.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
