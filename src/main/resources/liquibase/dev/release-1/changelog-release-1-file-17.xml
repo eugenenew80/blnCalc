@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+
+    <changeSet id="calc-rus-378" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_balance_unit_sections</comment>
+        <createTable tableName="calc_balance_unit_sections" schemaName="apps" remarks="Справочник разделов балансов">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-379" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_balance_unit_sections</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_balance_unit_sections"
+                schemaName="apps"
+                tableName="calc_balance_unit_sections"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-380" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_balance_unit_sections_tl</comment>
+        <createTable tableName="calc_balance_unit_sections_tl" schemaName="apps" remarks="Перевод Справочник разделов балансов">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(200)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-381" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_balance_unit_sections_tl</comment>
+        <addPrimaryKey
+                columnNames="code,lang"
+                constraintName="pk_calc_balance_unit_sections_tl"
+                schemaName="apps"
+                tableName="calc_balance_unit_sections_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-382" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_sections_tl to calc_balance_unit_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_sections_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_balance_unit_sections_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_unit_sections"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-383" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_balance_unit_sections</comment>
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="ISV"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="IRV"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="PPSA"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="RCC"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="HEC"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="LSEN"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-384" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_balance_unit_sections_tl</comment>
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="ISV"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Межгосударственный переток"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="ISV"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Межгосударственный переток"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="IRV"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Межрегиональный переток"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="IRV"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Межрегиональный переток"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="PPSA"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Отпуск от шин энергоисточников"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="PPSA"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Отпуск от шин энергоисточников"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="RCC"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Потребление потребителей"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="RCC"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Потребление потребителей"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="HEC"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Хозяйственные нужды МЭС"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="HEC"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Хозяйственные нужды МЭС"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="LSEN"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Потери в сетях МЭС"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="LSEN"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Потери в сетях МЭС"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+</databaseChangeLog>
+
