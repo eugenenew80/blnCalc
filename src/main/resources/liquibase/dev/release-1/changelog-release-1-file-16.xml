@@ -1923,4 +1923,55 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-eug-1261" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_unit_lines</comment>
+        <addColumn tableName="calc_balance_unit_lines" schemaName="apps">
+            <column name="section_code" type="varchar2(30)" remarks="Код раздела баланса">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1262" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_segment_result_lines</comment>
+        <addColumn tableName="calc_balance_segment_result_lines" schemaName="apps">
+            <column name="section_code" type="varchar2(30)" remarks="Код раздела баланса">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1263" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines to dict_balance_unit_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines"
+                baseColumnNames="code"
+                constraintName="fk_calc_balance_unit_lines_9"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_balance_unit_sections"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1264" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_result_lines to dict_balance_unit_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_result_lines"
+                baseColumnNames="code"
+                constraintName="fk_calc_balance_segment_result_lines_10"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_balance_unit_sections"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
