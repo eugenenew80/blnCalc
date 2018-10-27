@@ -20,7 +20,7 @@
     </changeSet>
 
     <changeSet id="calc-eug-1263" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_balance_unit_lines to dict_balance_unit_sections</comment>
+        <comment>Creating foreign constraint: calc_balance_unit_lines to calc_balance_unit_sections</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_balance_unit_lines"
@@ -30,13 +30,13 @@
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="dict_balance_unit_sections"
+                referencedTableName="calc_balance_unit_sections"
                 referencedColumnNames="code"
         />
     </changeSet>
 
     <changeSet id="calc-eug-1264" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_balance_segment_result_lines to dict_balance_unit_sections</comment>
+        <comment>Creating foreign constraint: calc_balance_segment_result_lines to calc_balance_unit_sections</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_balance_segment_result_lines"
@@ -46,7 +46,7 @@
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="dict_balance_unit_sections"
+                referencedTableName="calc_balance_unit_sections"
                 referencedColumnNames="code"
         />
     </changeSet>
