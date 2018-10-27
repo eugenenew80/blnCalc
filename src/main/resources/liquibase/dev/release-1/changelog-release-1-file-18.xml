@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-1261" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_unit_lines</comment>
+        <addColumn tableName="calc_balance_unit_lines" schemaName="apps">
+            <column name="section_code" type="varchar2(30)" remarks="Код раздела баланса">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1262" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_segment_result_lines</comment>
+        <addColumn tableName="calc_balance_segment_result_lines" schemaName="apps">
+            <column name="section_code" type="varchar2(30)" remarks="Код раздела баланса">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1263" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_unit_lines to dict_balance_unit_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_unit_lines"
+                baseColumnNames="code"
+                constraintName="fk_calc_balance_unit_lines_9"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_balance_unit_sections"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1264" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_result_lines to dict_balance_unit_sections</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_result_lines"
+                baseColumnNames="code"
+                constraintName="fk_calc_balance_segment_result_lines_10"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_balance_unit_sections"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1265" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_equipment_types</comment>
+        <createTable tableName="calc_equipment_types" schemaName="apps" remarks="Виды оборудования для обработки формул">
+            <column name="code" type="varchar2(30)" remarks="Код раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1266" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_equipment_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_equipment_types"
+                schemaName="apps"
+                tableName="calc_equipment_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1267" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_equipment_types_tl</comment>
+        <createTable tableName="calc_equipment_types_tl" schemaName="apps" remarks="Виды оборудования для обработки формул - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование вида оборудования">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1268" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_equipment_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_equipment_types_tl"
+                schemaName="apps"
+                tableName="calc_equipment_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1269" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_equipment_types_tl to calc_equipment_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_equipment_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_equipment_types_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_equipment_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1270" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_equipment_types</comment>
+        <insert tableName="calc_equipment_types" schemaName="apps">
+            <column name="code" value="R" />
+        </insert>
+
+        <insert tableName="calc_equipment_types" schemaName="apps">
+            <column name="code" value="PT" />
+        </insert>
+
+        <insert tableName="calc_equipment_types" schemaName="apps">
+            <column name="code" value="PL" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1271" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_equipment_types_tl</comment>
+        <insert tableName="calc_equipment_types_tl" schemaName="apps">
+            <column name="code" value="R" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Реактор" />
+        </insert>
+
+        <insert tableName="calc_equipment_types_tl" schemaName="apps">
+            <column name="code" value="R" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Реактор" />
+        </insert>
+
+        <insert tableName="calc_equipment_types_tl" schemaName="apps">
+            <column name="code" value="PT" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Трансформатор" />
+        </insert>
+
+        <insert tableName="calc_equipment_types_tl" schemaName="apps">
+            <column name="code" value="PT" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Трансформатор" />
+        </insert>
+
+        <insert tableName="calc_equipment_types_tl" schemaName="apps">
+            <column name="code" value="PL" />
+            <column name="lang" value="RU" />
+            <column name="name" value="ЛЭП" />
+        </insert>
+
+        <insert tableName="calc_equipment_types_tl" schemaName="apps">
+            <column name="code" value="PL" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="ЛЭП" />
+        </insert>
+        <rollback/>
+    </changeSet>
+</databaseChangeLog>
