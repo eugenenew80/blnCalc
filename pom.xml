@@ -45,9 +45,9 @@
             <id>localDev</id>
             <properties>
                 <driver>org.postgresql.Driver</driver>
-                <url>jdbc:postgresql://localhost:5432/bln_dev</url>
+                <url>jdbc:postgresql://localhost:5432/postgres</url>
                 <username>postgres</username>
-                <password>1</password>
+                <password>password</password>
                 <scripts>dev</scripts>
                 <skipTests>true</skipTests>
             </properties>

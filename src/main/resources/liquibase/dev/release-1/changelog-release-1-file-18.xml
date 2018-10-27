@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
-
     <changeSet id="calc-eug-1261" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Adding column to table: calc_balance_unit_lines</comment>
         <addColumn tableName="calc_balance_unit_lines" schemaName="apps">
@@ -199,4 +198,579 @@
         </insert>
         <rollback/>
     </changeSet>
+
+    <changeSet id="calc-eug-1272" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_equipment_param_types</comment>
+        <createTable tableName="calc_equipment_param_types" schemaName="apps" remarks="Характеристики оборудования">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1273" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_equipment_param_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_equipment_param_types"
+                schemaName="apps"
+                tableName="calc_equipment_param_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1274" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_equipment_param_types_tl</comment>
+        <createTable tableName="calc_equipment_param_types_tl" schemaName="apps" remarks="Характеристики оборудования - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="short_name" type="varchar(30)" remarks="Краткое наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1275" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_equipment_param_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_equipment_param_types_tl"
+                schemaName="apps"
+                tableName="calc_equipment_param_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1276" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_equipment_param_types_tl to calc_equipment_param_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_equipment_param_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_equipment_param_types_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_equipment_param_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1277" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_equipment_param_types</comment>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="TW" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="WR" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="UNOM" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="UNOM_H" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="SNOM" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="SNOM_H" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="SNOM_M" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="SNOM_L" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="PKZ_HM" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="PKZ_HL" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="PKZ_ML" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="T3_RH" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="T3_RM" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="T3_RL" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="T2_R" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="PXX" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="WT_XX" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="WT_N" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="WT" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="L" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="R0" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types" schemaName="apps">
+            <column name="code" value="B0" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1278" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_equipment_param_types_tl</comment>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="TW" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Tраб" />
+            <column name="name"         value="Продолжительность работы" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="UNOM" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Uном" />
+            <column name="name"         value="Номинальнальное напряжение" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="UNOM_H" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Uном, вн" />
+            <column name="name"         value="Номинальное напряжение ввода высшего напряжения" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="SNOM" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Sном" />
+            <column name="name"         value="Полная мощность трансформатора" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="SNOM_H" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Sном, вн" />
+            <column name="name"         value="Полная мощность ввода высшего напряжения" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="SNOM_M" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Sном, сн" />
+            <column name="name"         value="Полная мощность ввода среднего напряжения" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="SNOM_L" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Sном, нн" />
+            <column name="name"         value="Полная мощность ввода низкого напряжения" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="PKZ_HM" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="DPкз, в-с" />
+            <column name="name"         value="Потери короткого замыкания для пары обмоток высшего и среднего напряжений" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="PKZ_HL" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="DPкз, в-н" />
+            <column name="name"         value="Потери короткого замыкания для пары обмоток высшего и низшего напряжений" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="PKZ_ML" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="DPкз, с-н" />
+            <column name="name"         value="Потери короткого замыкания для пары обмоток среднего и низшего напряжений" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="T3_RH" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Rв" />
+            <column name="name"         value="Активное сопротивление обмотки высшего напряжения 3-х обмоточного трансформатора" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="T3_RM" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Rс" />
+            <column name="name"         value="Акт. сопрот. обмотки среднего напряжения 3-х обмоточного трансформатора, прив. к высшему напряжению" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="T3_RL" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Rн" />
+            <column name="name"         value="Акт. сопрот. обмотки низшего напряжения 3-х обмоточного трансформатора, прив. к высшему напряжению" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="T2_R" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="Rтр" />
+            <column name="name"         value="Активное сопротивление 2-х обмоточного трансформатора" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="PXX" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="DPxx" />
+            <column name="name"         value="Потери холостого хода" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="WR" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="DWr" />
+            <column name="name"         value="Расчетные потери активной энергии в реакторе" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="WT_XX" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="DWтр.хх" />
+            <column name="name"         value="Расчетные потери холостого хода в трансформаторе" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="WT_N" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="DWтр.нагр" />
+            <column name="name"         value="Расчетные нагрузочные потери в обмотках трансформатора" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="WT" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="DWтр.всего" />
+            <column name="name"         value="Расчетные потери в обмотках трансформатора" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="L" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="L" />
+            <column name="name"         value="Протяженность ЛЭП" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="R0" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="R0" />
+            <column name="name"         value="Омическое сопротивление ЛЭП" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="B0" />
+            <column name="lang"         value="RU" />
+            <column name="short_name"   value="b0" />
+            <column name="name"         value="Удельная емкостная проводимость ЛЭП" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="TW" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Tраб" />
+            <column name="name"         value="Продолжительность работы" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="UNOM" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Uном" />
+            <column name="name"         value="Номинальнальное напряжение" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="UNOM_H" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Uном, вн" />
+            <column name="name"         value="Номинальное напряжение ввода высшего напряжения" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="SNOM" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Sном" />
+            <column name="name"         value="Полная мощность трансформатора" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="SNOM_H" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Sном, вн" />
+            <column name="name"         value="Полная мощность ввода высшего напряжения" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="SNOM_M" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Sном, сн" />
+            <column name="name"         value="Полная мощность ввода среднего напряжения" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="SNOM_L" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Sном, нн" />
+            <column name="name"         value="Полная мощность ввода низкого напряжения" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="PKZ_HM" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="DPкз, в-с" />
+            <column name="name"         value="Потери короткого замыкания для пары обмоток высшего и среднего напряжений" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="PKZ_HL" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="DPкз, в-н" />
+            <column name="name"         value="Потери короткого замыкания для пары обмоток высшего и низшего напряжений" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="PKZ_ML" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="DPкз, с-н" />
+            <column name="name"         value="Потери короткого замыкания для пары обмоток среднего и низшего напряжений" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="T3_RH" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Rв" />
+            <column name="name"         value="Активное сопротивление обмотки высшего напряжения 3-х обмоточного трансформатора" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="T3_RM" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Rс" />
+            <column name="name"         value="Акт. сопрот. обмотки среднего напряжения 3-х обмоточного трансформатора, прив. к высшему напряжению" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="T3_RL" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Rн" />
+            <column name="name"         value="Акт. сопрот. обмотки низшего напряжения 3-х обмоточного трансформатора, прив. к высшему напряжению" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="T2_R" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="Rтр" />
+            <column name="name"         value="Активное сопротивление 2-х обмоточного трансформатора" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="PXX" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="DPxx" />
+            <column name="name"         value="Потери холостого хода" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="WR" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="DWr" />
+            <column name="name"         value="Расчетные потери активной энергии в реакторе" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="WT_XX" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="DWтр.хх" />
+            <column name="name"         value="Расчетные потери холостого хода в трансформаторе" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="WT_N" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="DWтр.нагр" />
+            <column name="name"         value="Расчетные нагрузочные потери в обмотках трансформатора" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="WT" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="DWтр.всего" />
+            <column name="name"         value="Расчетные потери в обмотках трансформатора" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="L" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="L" />
+            <column name="name"         value="Протяженность ЛЭП" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="R0" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="R0" />
+            <column name="name"         value="Омическое сопротивление ЛЭП" />
+        </insert>
+
+        <insert tableName="calc_equipment_param_types_tl" schemaName="apps">
+            <column name="code"         value="B0" />
+            <column name="lang"         value="KZ" />
+            <column name="short_name"   value="b0" />
+            <column name="name"         value="Удельная емкостная проводимость ЛЭП" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+    
+    <changeSet id="calc-eug-1279" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_equipment_params</comment>
+        <createTable tableName="calc_equipment_params" schemaName="apps" remarks="Релевантные для оборудования характеристики">
+            <column name="equipment_type_code" type="varchar2(30)" remarks="Код типа оборудования">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_type_code" type="varchar2(30)" remarks="Код типа характеристики">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1280" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_equipment_params</comment>
+        <addPrimaryKey
+                columnNames="equipment_type_code, param_type_code"
+                constraintName="pk_calc_equipment_params"
+                schemaName="apps"
+                tableName="calc_equipment_params"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1281" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_equipment_params to calc_equipment_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_equipment_params"
+                baseColumnNames="equipment_type_code"
+                constraintName="fk_calc_equipment_params_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_equipment_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1282" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_equipment_params to calc_equipment_param_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_equipment_params"
+                baseColumnNames="param_type_code"
+                constraintName="fk_calc_equipment_params_2"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_equipment_param_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
