@@ -1,6 +1,6 @@
 package calc.entity.calc;
 
-import calc.entity.calc.enums.EquipmentTypeEnum;
+import calc.entity.calc.enums.TransformerTypeEnum;
 import calc.entity.calc.enums.LangEnum;
 import lombok.*;
 import javax.persistence.*;
@@ -55,7 +55,7 @@ public class PowerTransformer {
 
     @Column(name="equipment_type")
     @Enumerated(EnumType.STRING)
-    private EquipmentTypeEnum equipmentType;
+    private TransformerTypeEnum transformerType;
 
     @Column(name = "nn")
     private Double slNom;

@@ -4,7 +4,7 @@ import calc.entity.calc.*;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.pe.PowerTransformerValue;
-import calc.entity.calc.enums.EquipmentTypeEnum;
+import calc.entity.calc.enums.TransformerTypeEnum;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PointTypeEnum;
@@ -128,7 +128,7 @@ public class BalanceSubstTransformerService {
             Double pkzML    = getTransformerAttr(transformer, "pkz_ml",    context);
             Double pkzHL    = getTransformerAttr(transformer, "pkz_hl",    context);
 
-            if (transformer.getWindingsNumber().equals(3l) && transformer.getEquipmentType() == EquipmentTypeEnum.AT) {
+            if (transformer.getWindingsNumber().equals(3l) && transformer.getTransformerType() == TransformerTypeEnum.AT) {
                 Double alpha = 1d;
                 if (transformer.getSlNom() != null && transformer.getShNom() != null)
                     alpha = transformer.getSlNom() / transformer.getShNom();

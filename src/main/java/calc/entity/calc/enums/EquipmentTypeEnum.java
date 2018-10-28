@@ -1,6 +1,7 @@
 package calc.entity.calc.enums;
 
 public enum EquipmentTypeEnum {
-	AT,
-	T
+	PL,
+	PT,
+	R
 }

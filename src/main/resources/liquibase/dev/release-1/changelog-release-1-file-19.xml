@@ -1010,4 +1010,201 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1345" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_formula_var_eq</comment>
+        <createTable tableName="calc_formula_var_eq" schemaName="apps" remarks="Расшифровка для конкретного компонента формулы - характеристики оборудования">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="formula_id" type="number" remarks="Идентификатор формулы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="formula_var_id" type="number" remarks="Идентификатор компонента формулы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="equipment_type" type="varchar2(30)" remarks="Код типа оборудования">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="equipment_id" type="number" remarks="Идентификатор оборудвания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_type" type="varchar2(30)" remarks="Код характеристики оборудования">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="rate" type="number" remarks="Множитель">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sign" type="varchar2(1)" remarks="Знак">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1346" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_formula_var_eq</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_formula_var_eq"
+                schemaName="apps"
+                tableName="calc_formula_var_eq"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1347" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_formula_var_eq</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_formula_var_eq_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1348" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index for table: calc_formula_var_eq</comment>
+        <createIndex indexName="idx_calc_formula_var_eq_1"
+                     schemaName="apps"
+                     tableName="calc_formula_var_eq"
+                     unique="false">
+            <column name="formula_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1349" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index for table: calc_formula_var_eq</comment>
+        <createIndex indexName="idx_calc_formula_var_eq_2"
+                     schemaName="apps"
+                     tableName="calc_formula_var_eq"
+                     unique="false">
+            <column name="formula_var_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1350" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index for table: calc_formula_var_eq</comment>
+        <createIndex indexName="idx_calc_formula_var_eq_3"
+                     schemaName="apps"
+                     tableName="calc_formula_var_eq"
+                     unique="false">
+            <column name="equipment_type" type="varchar2(30)"/>
+            <column name="equipment_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1351" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_formula_var_eq</comment>
+        <createIndex indexName="idx_calc_formula_var_eq_4"
+                     schemaName="apps"
+                     tableName="calc_formula_var_eq"
+                     unique="false">
+            <column name="param_type" type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1352" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_var_eq to calc_formulas</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_var_eq"
+                baseColumnNames="formula_id"
+                constraintName="fk_calc_formula_var_eq_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formulas"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1353" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_var_eq to calc_formula_vars</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_var_eq"
+                baseColumnNames="formula_var_id"
+                constraintName="fk_calc_formula_var_eq_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formula_vars"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1354" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_var_eq to calc_equipment_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_var_eq"
+                baseColumnNames="equipment_type"
+                constraintName="fk_calc_formula_var_eq_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_equipment_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1355" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_var_eq to calc_equipment_param_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_var_eq"
+                baseColumnNames="param_type"
+                constraintName="fk_calc_formula_var_eq_4"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_equipment_param_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1356" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_var_eq to calc_formula_signs</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_var_eq"
+                baseColumnNames="sign"
+                constraintName="fk_calc_formula_var_eq_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_formula_signs"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>
