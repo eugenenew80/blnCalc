@@ -1209,8 +1209,8 @@
     </changeSet>
 
     <changeSet id="calc-eug-1357" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating table: calc_var_types</comment>
-        <createTable tableName="calc_var_types" schemaName="apps" remarks="Типы кмпонентов формул">
+        <comment>Creating table: calc_formula_var_types</comment>
+        <createTable tableName="calc_formula_var_types" schemaName="apps" remarks="Типы кмпонентов формул">
             <column name="code" type="varchar2(30)" remarks="Код">
                 <constraints nullable="false"/>
             </column>
@@ -1234,17 +1234,17 @@
     </changeSet>
 
     <changeSet id="calc-eug-1358" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating primary key for table: calc_var_types</comment>
+        <comment>Creating primary key for table: calc_formula_var_types</comment>
         <addPrimaryKey
                 columnNames="code"
-                constraintName="pk_calc_var_types"
+                constraintName="pk_calc_formula_var_types"
                 schemaName="apps"
-                tableName="calc_var_types"/>
+                tableName="calc_formula_var_types"/>
     </changeSet>
 
     <changeSet id="calc-eug-1359" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating table: calc_var_types_tl</comment>
-        <createTable tableName="calc_var_types_tl" schemaName="apps" remarks="Типы компонентов формул - перевод">
+        <comment>Creating table: calc_formula_var_types_tl</comment>
+        <createTable tableName="calc_formula_var_types_tl" schemaName="apps" remarks="Типы компонентов формул - перевод">
             <column name="code" type="varchar2(30)" remarks="Код раздела">
                 <constraints nullable="false"/>
             </column>
@@ -1276,37 +1276,37 @@
     </changeSet>
 
     <changeSet id="calc-eug-1360" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating primary key for table: calc_var_types_tl</comment>
+        <comment>Creating primary key for table: calc_formula_var_types_tl</comment>
         <addPrimaryKey
                 columnNames="code, lang"
-                constraintName="pk_calc_var_types_tl"
+                constraintName="pk_calc_formula_var_types_tl"
                 schemaName="apps"
-                tableName="calc_var_types_tl"/>
+                tableName="calc_formula_var_types_tl"/>
     </changeSet>
 
     <changeSet id="calc-eug-1361" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_var_types_tl to calc_var_types</comment>
+        <comment>Creating foreign constraint: calc_formula_var_types_tl to calc_formula_var_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_var_types_tl"
+                baseTableName="calc_formula_var_types_tl"
                 baseColumnNames="code"
-                constraintName="fk_calc_var_types_tl_1"
+                constraintName="fk_calc_formula_var_types_tl_1"
                 deferrable="true"
                 onDelete="CASCADE"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="calc_var_types"
+                referencedTableName="calc_formula_var_types"
                 referencedColumnNames="code"
         />
     </changeSet>
 
     <changeSet id="calc-eug-1362" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Adding data to table: calc_var_types</comment>
-        <insert tableName="calc_var_types" schemaName="apps">
+        <comment>Adding data to table: calc_formula_var_types</comment>
+        <insert tableName="calc_formula_var_types" schemaName="apps">
             <column name="code" value="MP" />
         </insert>
 
-        <insert tableName="calc_var_types" schemaName="apps">
+        <insert tableName="calc_formula_var_types" schemaName="apps">
             <column name="code" value="EQ" />
         </insert>
 
@@ -1314,26 +1314,26 @@
     </changeSet>
 
     <changeSet id="calc-eug-1363" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Adding data to table: calc_var_types_tl</comment>
-        <insert tableName="calc_var_types_tl" schemaName="apps">
+        <comment>Adding data to table: calc_formula_var_types_tl</comment>
+        <insert tableName="calc_formula_var_types_tl" schemaName="apps">
             <column name="code" value="MP" />
             <column name="lang" value="RU" />
             <column name="name" value="Группа точек учёта" />
         </insert>
 
-        <insert tableName="calc_var_types_tl" schemaName="apps">
+        <insert tableName="calc_formula_var_types_tl" schemaName="apps">
             <column name="code" value="MP" />
             <column name="lang" value="KZ" />
             <column name="name" value="Группа точек учёта" />
         </insert>
 
-        <insert tableName="calc_var_types_tl" schemaName="apps">
+        <insert tableName="calc_formula_var_types_tl" schemaName="apps">
             <column name="code" value="EQ" />
             <column name="lang" value="RU" />
             <column name="name" value="Характеристика оборудования" />
         </insert>
 
-        <insert tableName="calc_var_types_tl" schemaName="apps">
+        <insert tableName="calc_formula_var_types_tl" schemaName="apps">
             <column name="code" value="EQ" />
             <column name="lang" value="KZ" />
             <column name="name" value="Характеристика оборудования" />
@@ -1351,7 +1351,7 @@
     </changeSet>
 
     <changeSet id="calc-eug-1365" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_formula_vars to calc_var_types</comment>
+        <comment>Creating foreign constraint: calc_formula_vars to calc_formula_var_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_formula_vars"
@@ -1361,7 +1361,7 @@
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="calc_var_types"
+                referencedTableName="calc_formula_var_types"
                 referencedColumnNames="code"
         />
     </changeSet>
