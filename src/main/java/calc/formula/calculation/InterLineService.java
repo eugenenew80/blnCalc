@@ -64,15 +64,8 @@ public class InterLineService {
                     resultDetLine.setHeader(header);
                     resultDetLine.setLine(resultLine);
                     resultDetLine.setDirection(1l);
-                    resultDetLine.setLossProc1(null);
-                    resultDetLine.setLossProc2(null);
-                    resultDetLine.setLossVal(null);
-                    resultDetLine.setLossVal1(null);
-                    resultDetLine.setLossVal2(null);
                     resultDetLine.setMeteringPoint1(line.getMeteringPoint1());
                     resultDetLine.setMeteringPoint2(line.getMeteringPoint2());
-                    resultDetLine.setVal1(null);
-                    resultDetLine.setVal2(null);
                     resultDetLine.setCreateDate(LocalDateTime.now());
                     resultDetLine.setCreateBy(header.getCreateBy());
                     resultLine.getDetails().add(resultDetLine);

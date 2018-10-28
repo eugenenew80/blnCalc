@@ -1,8 +1,8 @@
 package calc.formula.calculation;
 
+import static java.util.stream.Collectors.toList;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.inter.InterLine;
 import calc.entity.calc.inter.InterResultHeader;
 import calc.entity.calc.inter.InterResultMrLine;
 import calc.formula.CalcContext;
@@ -18,15 +18,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 @RequiredArgsConstructor
 public class InterMrService {
     private static final Logger logger = LoggerFactory.getLogger(InterMrService.class);
+    private static final String docCode = "INTER_MR";
     private final InterResultMrLineRepo interResultMrLineRepo;
     private final MrService mrService;
-    private static final String docCode = "INTER_MR";
 
     public boolean calc(InterResultHeader header) {
         try {
@@ -42,7 +40,6 @@ public class InterMrService {
                 .values(new HashMap<>())
                 .build();
 
-
             List<MeteringPoint> points = header.getHeader().getLines()
                 .stream()
                 .flatMap(t -> Arrays.asList(t.getMeteringPoint1(), t.getMeteringPoint2(), t.getBoundMeteringPoint()).stream())
@@ -52,9 +49,6 @@ public class InterMrService {
 
             List<InterResultMrLine> resultLines = new ArrayList<>();
             for (MeteringPoint meteringPoint : points) {
-                if (meteringPoint == null)
-                    continue;
-
                 List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context);
                 for (MeteringReading t : meteringReadings) {
                     InterResultMrLine resultLine = new InterResultMrLine();
