@@ -42,7 +42,7 @@ public class InterMrService {
 
             List<InterResultMrLine> resultLines = new ArrayList<>();
             for (InterLine line : header.getHeader().getLines()) {
-                for (MeteringPoint meteringPoint : Arrays.asList(line.getMeteringPoint1(), line.getMeteringPoint1(), line.getBoundMeteringPoint())) {
+                for (MeteringPoint meteringPoint : Arrays.asList(line.getMeteringPoint1(), line.getMeteringPoint2(), line.getBoundMeteringPoint())) {
                     if (meteringPoint == null)
                         continue;
 

@@ -77,29 +77,33 @@ public class InterLineService {
                     resultDetLine.setCreateBy(header.getCreateBy());
                     resultLine.getDetails().add(resultDetLine);
 
-                    InterMrExpression expression1 = InterMrExpression.builder()
-                        .context(context)
-                        .meteringPointCode(line.getBoundMeteringPoint().getCode())
-                        .parameterCode("A+")
-                        .rate(1d)
-                        .service(interMrService)
-                        .build();
+                    if (line.getBoundMeteringPoint() == null)
+                        logger.error("Не указана точка учёта на границе раздела");
 
-                    InterMrExpression expression2 = InterMrExpression.builder()
-                        .context(context)
-                        .meteringPointCode(line.getBoundMeteringPoint().getCode())
-                        .parameterCode("A-")
-                        .rate(1d)
-                        .service(interMrService)
-                        .build();
+                    if (line.getBoundMeteringPoint() != null) {
+                        InterMrExpression expression1 = InterMrExpression.builder()
+                            .context(context)
+                            .meteringPointCode(line.getBoundMeteringPoint().getCode())
+                            .parameterCode("A+")
+                            .rate(1d)
+                            .service(interMrService)
+                            .build();
 
-                    Double val = BinaryExpression.builder()
-                        .operator(operatorFactory.binary("min"))
-                        .expressions(Arrays.asList(expression1, expression2))
-                        .build()
-                        .doubleValue();
+                        InterMrExpression expression2 = InterMrExpression.builder()
+                            .context(context)
+                            .meteringPointCode(line.getBoundMeteringPoint().getCode())
+                            .parameterCode("A-")
+                            .rate(1d)
+                            .service(interMrService)
+                            .build();
 
-                    resultLine.setBoundaryVal(val);
+                        Double val = BinaryExpression.builder()
+                            .operator(operatorFactory.binary("min"))
+                            .expressions(Arrays.asList(expression1, expression2))
+                            .build()
+                            .doubleValue();
+                        resultLine.setBoundaryVal(val);
+                    }
                 }
 
                 if (!line.getIsBoundMeterInst()) {
