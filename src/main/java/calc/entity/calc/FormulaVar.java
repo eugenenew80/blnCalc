@@ -1,9 +1,9 @@
 package calc.entity.calc;
 
+import calc.entity.calc.enums.VarTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -26,6 +26,13 @@ public class FormulaVar {
     @Column
     private String description;
 
+    @Column(name="var_type")
+    @Enumerated(EnumType.STRING)
+    private VarTypeEnum varType;
+
     @OneToMany(mappedBy = "formulaVar", fetch = FetchType.LAZY)
     private List<FormulaVarDet> details;
+
+    @OneToMany(mappedBy = "formulaVar", fetch = FetchType.LAZY)
+    private List<FormulaVarEq> equipments;
 }

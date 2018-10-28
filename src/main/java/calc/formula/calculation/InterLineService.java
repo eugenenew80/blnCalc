@@ -29,6 +29,7 @@ public class InterLineService {
     private final InterResultNoteRepo interResultNoteRepo;
     private final InterResultAppRepo interResultAppRepo;
     private final OperatorFactory operatorFactory;
+    private final MessageService messageService;
 
     public boolean calc(InterResultHeader header) {
         try {
@@ -48,6 +49,8 @@ public class InterLineService {
 
             List<InterResultLine> resultLines = new ArrayList<>();
             for (InterLine line : header.getHeader().getLines()) {
+                Map<String, String> params = buildMsgParams(line);
+
                 InterResultLine resultLine = new InterResultLine();
                 resultLine.setHeader(header);
                 resultLine.setLineNum(line.getLineNum());
@@ -71,7 +74,7 @@ public class InterLineService {
                     resultLine.getDetails().add(resultDetLine);
 
                     if (line.getBoundMeteringPoint() == null)
-                        logger.error("Не указана точка учёта на границе раздела");
+                        messageService.addMessage(header, line.getLineNum(), docCode, "INTER_BOUND_MP_NOT_FOUND", params);
 
                     if (line.getBoundMeteringPoint() != null) {
                         InterMrExpression expression1 = InterMrExpression.builder()
@@ -112,6 +115,12 @@ public class InterLineService {
                         resultDetLine.setMeteringPoint2(meteringPoint2);
                         resultDetLine.setCreateDate(LocalDateTime.now());
                         resultDetLine.setCreateBy(header.getCreateBy());
+
+                        if (meteringPoint1 == null)
+                            messageService.addMessage(header, line.getLineNum(), docCode, "INTER_SRC_MP_NOT_FOUND", params);
+
+                        if (meteringPoint2 == null)
+                            messageService.addMessage(header, line.getLineNum(), docCode, "INTER_TRG_MP_NOT_FOUND", params);
 
                         Double val1 = null;
                         if (meteringPoint1 != null ) {
@@ -261,5 +270,12 @@ public class InterLineService {
         }
         interResultAppRepo.save(resultApps);
         interResultAppRepo.flush();
+    }
+
+
+    private Map<String, String> buildMsgParams(InterLine line) {
+        Map<String, String> msgParams = new HashMap<>();
+        msgParams.put("line", line.getLineNum().toString());
+        return msgParams;
     }
 }

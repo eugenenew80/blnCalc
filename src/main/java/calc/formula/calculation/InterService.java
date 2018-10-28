@@ -2,6 +2,7 @@ package calc.formula.calculation;
 
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.inter.InterResultHeader;
+import calc.formula.service.MessageService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ public class InterService {
     private final InterMrService interMrService;
     private final InterLineService interLineService;
     private final InterResultHeaderRepo interResultHeaderRepo;
+    private final MessageService messageService;
 
     public void calc(Long headerId) {
         logger.info("Act inter with headerId " + headerId + " started");
@@ -27,6 +29,8 @@ public class InterService {
 
         try {
             updateStatus(header, BatchStatusEnum.P);
+            deleteMessages(header);
+
             if (!interMrService.calc(header)) {
                 updateStatus(header, BatchStatusEnum.E);
                 return;
@@ -51,5 +55,10 @@ public class InterService {
         header.setStatus(status);
         interResultHeaderRepo.save(header);
         interResultHeaderRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteMessages(InterResultHeader header) {
+        messageService.deleteMessages(header);
     }
 }

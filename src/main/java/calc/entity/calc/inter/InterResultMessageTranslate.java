@@ -3,7 +3,6 @@ package calc.entity.calc.inter;
 import calc.entity.calc.enums.LangEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
 
 @Data

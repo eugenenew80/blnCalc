@@ -25,6 +25,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
+@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class CalcServiceImpl implements CalcService {
@@ -38,6 +39,9 @@ public class CalcServiceImpl implements CalcService {
     private final InterResultMrService interMrService;
     private final ParamService paramService;
     private final WorkingHoursService workingHoursService;
+    private final ReactorService reactorService;
+    private final PowerTransformerService powerTransformerService;
+    private final PowerLineService powerLineService;
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
     private Map<String, Parameter> mapParams = null;
@@ -176,19 +180,33 @@ public class CalcServiceImpl implements CalcService {
     }
 
     private DoubleExpression mapVar(FormulaVar var, CalcContext context) {
-        List<DoubleExpression> expressions = var.getDetails()
-            .stream()
-            .map(t -> mapDetail(t, context))
-            .filter(t -> t != null)
-            .collect(toList());
+        List<DoubleExpression> expressions = null;
+        if (var.getVarType() == VarTypeEnum.MP) {
+            expressions = var.getDetails()
+                .stream()
+                .map(t -> mapDetail(t, context))
+                .filter(t -> t != null)
+                .collect(toList());
+        }
 
-        if (expressions.size()==0) return DoubleValueExpression.builder().build();
-        if (expressions.size()==1) return expressions.get(0);
+        if (var.getVarType() == VarTypeEnum.EQ) {
+            expressions = var.getEquipments()
+                .stream()
+                .map(t -> mapEquipment(t, context))
+                .filter(t -> t != null)
+                .collect(toList());
+        }
 
-        return BinaryExpression.builder()
-            .operator(operatorFactory.binary("add"))
-            .expressions(expressions)
-            .build();
+        if (expressions != null) {
+            if (expressions.size() == 0) return DoubleValueExpression.builder().build();
+            if (expressions.size() == 1) return expressions.get(0);
+            return BinaryExpression.builder()
+                .operator(operatorFactory.binary("add"))
+                .expressions(expressions)
+                .build();
+        }
+
+        return DoubleValueExpression.builder().build();
     }
 
     private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context) {
@@ -228,7 +246,7 @@ public class CalcServiceImpl implements CalcService {
         return getExpression(det, det.getParam(), context);
     }
 
-    private DoubleExpression mapEq(FormulaVarEq eq, CalcContext context) {
+    private DoubleExpression mapEquipment(FormulaVarEq eq, CalcContext context) {
         if (eq.getEquipmentType() == EquipmentTypeEnum.R) {
             if (eq.getParam().getCode().equals("TW")) {
                 return WorkingHoursExpression.builder()
@@ -238,15 +256,100 @@ public class CalcServiceImpl implements CalcService {
                     .service(workingHoursService)
                     .build();
             }
+
+            String attr;
+            switch (eq.getParam().getCode()) {
+                case "UNOM":
+                    attr = "unom";
+                    break;
+                case "PXX":
+                    attr = "delta_pr";
+                    break;
+                default:
+                    attr = null;
+            }
+
+            if (attr != null) {
+                return ReactorExpression.builder()
+                    .id(eq.getEquipmentId())
+                    .attr(attr)
+                    .context(context)
+                    .service(reactorService)
+                    .build();
+            }
+            return DoubleValueExpression.builder().build();
         }
 
         if (eq.getEquipmentType() == EquipmentTypeEnum.PT) {
-            return WorkingHoursExpression.builder()
-                .objectType("tr")
-                .objectId(eq.getEquipmentId())
-                .context(context)
-                .service(workingHoursService)
-                .build();
+            if (eq.getParam().getCode().equals("TW")) {
+                return WorkingHoursExpression.builder()
+                    .objectType("tr")
+                    .objectId(eq.getEquipmentId())
+                    .context(context)
+                    .service(workingHoursService)
+                    .build();
+            }
+
+            String attr;
+            switch (eq.getParam().getCode()) {
+                case "SNOM":
+                    attr = "snom";
+                    break;
+                case "PXX":
+                    attr = "delta_pxx";
+                    break;
+                case "UNOM_H":
+                    attr = "unom_h";
+                    break;
+                case "PKZ_HL":
+                    attr = "pkz_hl";
+                    break;
+                case "PKZ_HM":
+                    attr = "pkz_hm";
+                    break;
+                case "PKZ_ML":
+                    attr = "pkz_ml";
+                    break;
+                default:
+                    attr = null;
+            }
+
+            if (attr != null) {
+                return PowerTransformerExpression.builder()
+                    .id(eq.getEquipmentId())
+                    .attr(attr)
+                    .context(context)
+                    .service(powerTransformerService)
+                    .build();
+            }
+            return DoubleValueExpression.builder().build();
+        }
+
+        if (eq.getEquipmentType() == EquipmentTypeEnum.PL) {
+            String attr;
+            switch (eq.getParam().getCode()) {
+                case "L":
+                    attr = "snom";
+                    break;
+                case "B0":
+                    attr = "po";
+                    break;
+                case "R0":
+                    attr = "r";
+                    break;
+                default:
+                    attr = null;
+            }
+
+            if (attr != null) {
+                return PowerLineExpression.builder()
+                    .id(eq.getEquipmentId())
+                    .attr(attr)
+                    .context(context)
+                    .service(powerLineService)
+                    .build();
+            }
+            return DoubleValueExpression.builder().build();
         }
 
         return DoubleValueExpression.builder().build();

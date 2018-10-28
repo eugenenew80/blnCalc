@@ -1,6 +1,7 @@
 package calc.formula.calculation;
 
 import static java.util.stream.Collectors.toList;
+
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.inter.InterResultHeader;

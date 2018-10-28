@@ -1207,4 +1207,162 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1357" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_var_types</comment>
+        <createTable tableName="calc_var_types" schemaName="apps" remarks="Типы кмпонентов формул">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1358" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_var_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_var_types"
+                schemaName="apps"
+                tableName="calc_var_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1359" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_var_types_tl</comment>
+        <createTable tableName="calc_var_types_tl" schemaName="apps" remarks="Типы компонентов формул - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1360" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_var_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_var_types_tl"
+                schemaName="apps"
+                tableName="calc_var_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1361" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_var_types_tl to calc_var_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_var_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_var_types_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_var_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1362" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_var_types</comment>
+        <insert tableName="calc_var_types" schemaName="apps">
+            <column name="code" value="MP" />
+        </insert>
+
+        <insert tableName="calc_var_types" schemaName="apps">
+            <column name="code" value="EQ" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1363" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_var_types_tl</comment>
+        <insert tableName="calc_var_types_tl" schemaName="apps">
+            <column name="code" value="MP" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Группа точек учёта" />
+        </insert>
+
+        <insert tableName="calc_var_types_tl" schemaName="apps">
+            <column name="code" value="MP" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Группа точек учёта" />
+        </insert>
+
+        <insert tableName="calc_var_types_tl" schemaName="apps">
+            <column name="code" value="EQ" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Характеристика оборудования" />
+        </insert>
+
+        <insert tableName="calc_var_types_tl" schemaName="apps">
+            <column name="code" value="EQ" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Характеристика оборудования" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1364" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_formula_vars</comment>
+        <addColumn tableName="calc_formula_vars" schemaName="apps">
+            <column name="var_type" type="varchar2(30)" remarks="Тип компонента формулы">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1365" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_formula_vars to calc_var_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_formula_vars"
+                baseColumnNames="var_type"
+                constraintName="fk_calc_formula_vars_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_var_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>

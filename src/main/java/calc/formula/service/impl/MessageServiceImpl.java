@@ -10,15 +10,15 @@ import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.BalanceSubstResultMessage;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.MessageTypeEnum;
+import calc.entity.calc.inter.InterResultHeader;
+import calc.entity.calc.inter.InterResultMessage;
+import calc.entity.calc.inter.InterResultMessageTranslate;
 import calc.entity.calc.seg.SegResultHeader;
 import calc.entity.calc.seg.SegResultMessage;
 import calc.entity.calc.seg.SegResultMessageTranslate;
 import calc.formula.service.MessageError;
 import calc.formula.service.MessageService;
-import calc.repo.calc.AspResultMessageRepo;
-import calc.repo.calc.BsResultMessageRepo;
-import calc.repo.calc.MessageRepo;
-import calc.repo.calc.SegResultMessageRepo;
+import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.springframework.stereotype.Service;
@@ -35,6 +35,7 @@ public class MessageServiceImpl implements MessageService {
     private final BsResultMessageRepo bsResultMessageRepo;
     private final AspResultMessageRepo aspResultMessageRepo;
     private final SegResultMessageRepo segResultMessageRepo;
+    private final InterResultMessageRepo interResultMessageRepo;
     private final MessageRepo messageRepo;
     private Map<String, MessageError> mapErrors = new HashMap<>();
 
@@ -186,6 +187,43 @@ public class MessageServiceImpl implements MessageService {
             messageTranslate.setMsg(msg);
             message.getTranslates().add(messageTranslate);
             segResultMessageRepo.save(message);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteMessages(InterResultHeader header) {
+        List<InterResultMessage> lines = interResultMessageRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<lines.size(); i++)
+            interResultMessageRepo.delete(lines.get(i));
+        interResultMessageRepo.flush();
+    }
+
+    @Override
+    public void addMessage(InterResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
+        MessageError err = mapErrors.getOrDefault(errCode, null);
+        try {
+            LangEnum defLang = LangEnum.RU;
+            String defTExt = "Описание не найдено";
+            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
+            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
+            msg = StrSubstitutor.replace(msg, params);
+
+            InterResultMessage message = new InterResultMessage();
+            message.setHeader(header);
+            message.setLineNum(lineNum);
+            message.setMessageType(messageType);
+            message.setErrorCode(errCode);
+            message.setTranslates(new ArrayList<>());
+
+            InterResultMessageTranslate messageTranslate = new InterResultMessageTranslate();
+            messageTranslate.setMessage(message);
+            messageTranslate.setLang(defLang);
+            messageTranslate.setMsg(msg);
+            message.getTranslates().add(messageTranslate);
+            interResultMessageRepo.save(message);
         }
         catch (Exception e) {
             e.printStackTrace();
