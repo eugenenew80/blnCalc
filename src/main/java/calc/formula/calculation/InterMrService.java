@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @RequiredArgsConstructor
 public class InterMrService {
@@ -40,35 +42,40 @@ public class InterMrService {
                 .values(new HashMap<>())
                 .build();
 
-            List<InterResultMrLine> resultLines = new ArrayList<>();
-            for (InterLine line : header.getHeader().getLines()) {
-                for (MeteringPoint meteringPoint : Arrays.asList(line.getMeteringPoint1(), line.getMeteringPoint2(), line.getBoundMeteringPoint())) {
-                    if (meteringPoint == null)
-                        continue;
 
-                    List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context);
-                    for (MeteringReading t : meteringReadings) {
-                        InterResultMrLine resultLine = new InterResultMrLine();
-                        resultLine.setHeader(header);
-                        resultLine.setMeteringPoint(meteringPoint);
-                        resultLine.setBypassMeteringPoint(t.getBypassMeteringPoint());
-                        resultLine.setBypassMode(t.getBypassMode());
-                        resultLine.setIsBypassSection(t.getIsBypassSection());
-                        resultLine.setParam(t.getParam());
-                        resultLine.setUnit(t.getUnit());
-                        resultLine.setMeter(t.getMeter());
-                        resultLine.setMeterHistory(t.getMeterHistory());
-                        resultLine.setStartMeteringDate(t.getStartMeteringDate());
-                        resultLine.setEndMeteringDate(t.getEndMeteringDate());
-                        resultLine.setStartVal(t.getStartVal());
-                        resultLine.setEndVal(t.getEndVal());
-                        resultLine.setDelta(t.getDelta());
-                        resultLine.setMeterRate(t.getMeterRate());
-                        resultLine.setVal(t.getVal());
-                        resultLine.setUnderCountVal(t.getUnderCountVal());
-                        resultLine.setUndercount(t.getUnderCount());
-                        resultLines.add(resultLine);
-                    }
+            List<MeteringPoint> points = header.getHeader().getLines()
+                .stream()
+                .flatMap(t -> Arrays.asList(t.getMeteringPoint1(), t.getMeteringPoint2(), t.getBoundMeteringPoint()).stream())
+                .distinct()
+                .collect(toList());
+
+            List<InterResultMrLine> resultLines = new ArrayList<>();
+            for (MeteringPoint meteringPoint : points) {
+                if (meteringPoint == null)
+                    continue;
+
+                List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context);
+                for (MeteringReading t : meteringReadings) {
+                    InterResultMrLine resultLine = new InterResultMrLine();
+                    resultLine.setHeader(header);
+                    resultLine.setMeteringPoint(meteringPoint);
+                    resultLine.setBypassMeteringPoint(t.getBypassMeteringPoint());
+                    resultLine.setBypassMode(t.getBypassMode());
+                    resultLine.setIsBypassSection(t.getIsBypassSection());
+                    resultLine.setParam(t.getParam());
+                    resultLine.setUnit(t.getUnit());
+                    resultLine.setMeter(t.getMeter());
+                    resultLine.setMeterHistory(t.getMeterHistory());
+                    resultLine.setStartMeteringDate(t.getStartMeteringDate());
+                    resultLine.setEndMeteringDate(t.getEndMeteringDate());
+                    resultLine.setStartVal(t.getStartVal());
+                    resultLine.setEndVal(t.getEndVal());
+                    resultLine.setDelta(t.getDelta());
+                    resultLine.setMeterRate(t.getMeterRate());
+                    resultLine.setVal(t.getVal());
+                    resultLine.setUnderCountVal(t.getUnderCountVal());
+                    resultLine.setUndercount(t.getUnderCount());
+                    resultLines.add(resultLine);
                 }
             }
 

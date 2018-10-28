@@ -1,10 +1,7 @@
 package calc.formula.service.impl;
 
 import calc.entity.calc.*;
-import calc.entity.calc.enums.FormulaTypeEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
-import calc.entity.calc.enums.PeriodTypeEnum;
-import calc.entity.calc.enums.PointTypeEnum;
+import calc.entity.calc.enums.*;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.formula.ContextType;
@@ -40,6 +37,7 @@ public class CalcServiceImpl implements CalcService {
     private final SegResultService segService;
     private final InterResultMrService interMrService;
     private final ParamService paramService;
+    private final WorkingHoursService workingHoursService;
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
     private Map<String, Parameter> mapParams = null;
@@ -228,6 +226,30 @@ public class CalcServiceImpl implements CalcService {
         }
 
         return getExpression(det, det.getParam(), context);
+    }
+
+    private DoubleExpression mapEq(FormulaVarEq eq, CalcContext context) {
+        if (eq.getEquipmentType() == EquipmentTypeEnum.R) {
+            if (eq.getParam().getCode().equals("TW")) {
+                return WorkingHoursExpression.builder()
+                    .objectType("re")
+                    .objectId(eq.getEquipmentId())
+                    .context(context)
+                    .service(workingHoursService)
+                    .build();
+            }
+        }
+
+        if (eq.getEquipmentType() == EquipmentTypeEnum.PT) {
+            return WorkingHoursExpression.builder()
+                .objectType("tr")
+                .objectId(eq.getEquipmentId())
+                .context(context)
+                .service(workingHoursService)
+                .build();
+        }
+
+        return DoubleValueExpression.builder().build();
     }
 
     private DoubleExpression getExpression(FormulaVarDet det, Parameter param, CalcContext context) {
