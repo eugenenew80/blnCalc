@@ -46,6 +46,7 @@ public class InterMrService {
             List<MeteringPoint> points = header.getHeader().getLines()
                 .stream()
                 .flatMap(t -> Arrays.asList(t.getMeteringPoint1(), t.getMeteringPoint2(), t.getBoundMeteringPoint()).stream())
+                .filter(t -> t != null)
                 .distinct()
                 .collect(toList());
 
