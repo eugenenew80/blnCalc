@@ -11,6 +11,6 @@ import javax.persistence.*;
 @Table(name = "calc_equipment_param_types")
 @Immutable
 public class EqParameter {
-    @Column
+    @Id
     private String code;
 }
