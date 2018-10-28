@@ -32,7 +32,7 @@ public class InterLineService {
 
     public boolean calc(InterResultHeader header) {
         try {
-            logger.info("Lines for inter with headerId " + header.getId() + " started");
+            logger.info("started, headerId: " + header.getId());
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
@@ -189,11 +189,13 @@ public class InterLineService {
             saveLines(resultLines);
             copyNotes(header);
             copyApps(header);
+
+            logger.info("completed, headerId: " + header.getId());
             return true;
         }
 
         catch (Exception e) {
-            logger.error(e.toString() + ": " + e.getMessage());
+            logger.error("terminated, headerId " + header.getId() + " , exception: " + e.toString() + ", " + e.getMessage());
             e.printStackTrace();
             return false;
         }

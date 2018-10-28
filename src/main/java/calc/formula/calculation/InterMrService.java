@@ -28,7 +28,7 @@ public class InterMrService {
 
     public boolean calc(InterResultHeader header) {
         try {
-            logger.info("Inter mr with headerId " + header.getId() + " started");
+            logger.info("started, headerId: " + header.getId());
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
@@ -75,12 +75,12 @@ public class InterMrService {
             deleteLines(header);
             saveLines(resultLines);
 
-            logger.info("Inter mr with headerId " + header.getId() + " completed");
+            logger.info("completed, headerId: " + header.getId());
             return true;
         }
 
         catch (Exception e) {
-            logger.error("Inter mr with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
+            logger.error("terminated, headerId " + header.getId() + " , exception: " + e.toString() + ", " + e.getMessage());
             e.printStackTrace();
             return false;
         }

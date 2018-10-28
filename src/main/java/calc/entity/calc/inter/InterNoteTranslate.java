@@ -19,7 +19,7 @@ public class InterNoteTranslate {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "asp1_note_id")
+    @JoinColumn(name = "note_id")
     private InterNote note;
 
     @Column(name="lang")
