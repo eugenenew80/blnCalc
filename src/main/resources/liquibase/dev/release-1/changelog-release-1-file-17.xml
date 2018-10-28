@@ -204,5 +204,172 @@
         </insert>
         <rollback/>
     </changeSet>
+
+    <changeSet id="calc-rus-385" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Adding column to table: calc_daily_sheet_headers</comment>
+        <addColumn tableName="calc_daily_sheet_headers" schemaName="apps">
+            <column name="data_unit_code" type="varchar2(20)" remarks="Ограничить по">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-386" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_headers to calc_data_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_headers"
+                baseColumnNames="data_unit_code"
+                constraintName="fk_calc_daily_sheet_headers_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_units"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-387" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Adding column to table: calc_daily_sheet_headers</comment>
+        <addColumn tableName="calc_daily_sheet_headers" schemaName="apps">
+            <column name="sheet_id" type="number" remarks="Идентификатор ведомости">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-388" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_headers to calc_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_headers"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_daily_sheet_headers_6"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-389" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Adding column to table: calc_daily_sheet_headers</comment>
+        <addColumn tableName="calc_daily_sheet_headers" schemaName="apps">
+            <column name="balance_unit_id" type="number" remarks="Идентификатор единицы баланса">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-390" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_daily_sheet_headers to calc_balance_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_daily_sheet_headers"
+                baseColumnNames="balance_unit_id"
+                constraintName="fk_calc_daily_sheet_headers_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="сalc-rus-391" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_loss_fact_signings</comment>
+        <createTable tableName="calc_loss_fact_signings" schemaName="apps" remarks="Подписанты">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="user1_id" type="number" remarks="Ид утверждающего">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="user2_id" type="number" remarks="Ид согласующий">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="user3_id" type="number" remarks="Ид исполнителя">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="post1" type="number" remarks="должность исполнитель">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="post2" type="number" remarks="должность утверждающенго">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="post3" type="number" remarks="должность исполнителя">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-392" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_loss_fact_signings</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_loss_fact_signings"
+                schemaName="apps"
+                tableName="calc_loss_fact_signings"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-393" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_loss_fact_signings</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_loss_fact_signings_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-394" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_signings to calc_loss_fact_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_signings"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_loss_fact_signings_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_loss_fact_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
