@@ -20,11 +20,15 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
+
+@SuppressWarnings("ImplicitSubclassInspection")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstMrService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstMrService.class);
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
+    private final BalanceSubstResultBpLineRepo balanceSubstResultBpLineRepo;
     private final MrService mrService;
     private final ParamService paramService;
     private final BalanceSubstResultMrNoteRepo balanceSubstResultMrNoteRepo;
@@ -106,6 +110,7 @@ public class BalanceSubstMrService {
 
             deleteLines(header);
             saveLines(resultLines);
+            saveBpLines(resultLines);
             copyNotes(header);
 
             logger.info("Act for balance with headerId " + header.getId() + " completed");
@@ -122,13 +127,45 @@ public class BalanceSubstMrService {
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveLines(List<BalanceSubstResultMrLine> resultLines) {
+    private void saveLines(List<BalanceSubstResultMrLine> resultLines) {
         balanceSubstResultMrLineRepo.save(resultLines);
         balanceSubstResultMrLineRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteLines(BalanceSubstResultHeader header) {
+    private void saveBpLines(List<BalanceSubstResultMrLine> resultLines) {
+        List<BalanceSubstResultBpLine> bpLines = resultLines.stream()
+            .filter(t -> t.getBypassMeteringPoint() != null)
+            .filter(t -> t.getBypassMode() != null)
+            .map(t -> {
+                BalanceSubstResultBpLine line = new BalanceSubstResultBpLine();
+                line.setHeader(t.getHeader());
+                line.setMeteringPoint(t.getMeteringPoint());
+                line.setBypassMeteringPoint(t.getBypassMeteringPoint());
+                line.setBypassMode(t.getBypassMode());
+                line.setMeter(t.getMeter());
+                line.setMeterHistory(t.getMeterHistory());
+                line.setStartMeteringDate(t.getStartMeteringDate());
+                line.setEndMeteringDate(t.getEndMeteringDate());
+                line.setStartVal(t.getStartVal());
+                line.setEndVal(t.getEndVal());
+                line.setDelta(t.getDelta());
+                line.setMeterRate(t.getMeterRate());
+                line.setVal(t.getVal());
+                line.setParam(t.getParam());
+                line.setUnit(t.getUnit());
+                line.setBypassStartDate(line.getBypassMode().getStartDate());
+                line.setBypassEndDate(line.getBypassMode().getEndDate());
+                return line;
+            })
+            .collect(toList());
+
+        balanceSubstResultBpLineRepo.save(bpLines);
+        balanceSubstResultBpLineRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultMrLine> lines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultMrLineRepo.delete(lines.get(i));
@@ -141,7 +178,7 @@ public class BalanceSubstMrService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void copyNotes(BalanceSubstResultHeader header) {
+    private void copyNotes(BalanceSubstResultHeader header) {
         List<BalanceSubstResultMrNote> resultNotes = new ArrayList<>();
         for (BalanceSubstMrNote note : header.getHeader().getMrNotes()) {
             BalanceSubstResultMrNote resultNote = new BalanceSubstResultMrNote();

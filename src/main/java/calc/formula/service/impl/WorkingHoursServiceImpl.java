@@ -31,17 +31,17 @@ public class WorkingHoursServiceImpl implements WorkingHoursService {
         LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
 
         if (objectType.equals("mp")) {
-            List<MeteringPointMode> modes = meteringPointModeRepo.findAllByMeteringPointIdAndDate(objectId, startDate, endDate);
+            List<MeteringPointMode> modes = meteringPointModeRepo.findAllByMeteringPoint(objectId, startDate, endDate);
             return getWorkingHours(modes, startDate, endDate);
         }
 
         if (objectType.equals("re")) {
-            List<ReactorMode> modes = reactorModeRepo.findAllByReactorIdAndDate(objectId, startDate, endDate);
+            List<ReactorMode> modes = reactorModeRepo.findAllByReactor(objectId, startDate, endDate);
             return getWorkingHours(modes, startDate, endDate);
         }
 
         if (objectType.equals("tr")) {
-            List<PowerTransformerMode> modes = transformerModeRepo.findAllByTransformerIdAndDate(objectId, startDate, endDate);
+            List<PowerTransformerMode> modes = transformerModeRepo.findAllByTransformer(objectId, startDate, endDate);
             return getWorkingHours(modes, startDate, endDate);
         }
 

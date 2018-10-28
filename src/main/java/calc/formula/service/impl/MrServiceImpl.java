@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("Duplicates")
@@ -46,7 +48,7 @@ public class MrServiceImpl implements MrService {
         LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
 
         List<MeteringReading> resultLines = calcMeteringPoint(meteringPoint, null, context);
-        for (BypassMode bypassMode : bypassModeRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate)) {
+        for (BypassMode bypassMode : bypassModeRepo.findAllByMeteringPoint(meteringPoint.getId(), startDate, endDate)) {
             List<MeteringReading> bypassLines = calcMeteringPoint(bypassMode.getBypassMeteringPoint(), bypassMode, context);
             for (MeteringReading byPassLine : bypassLines) {
                 byPassLine.setBypassMeteringPoint(bypassMode.getBypassMeteringPoint());
@@ -57,7 +59,7 @@ public class MrServiceImpl implements MrService {
 
         for (MeteringReading line : resultLines) {
             if (line.getStartVal() != null || line.getEndVal() != null) {
-                Double delta = Optional.ofNullable(line.getEndVal()).orElse(0d) - Optional.ofNullable(line.getStartVal()).orElse(0d);
+                Double delta = ofNullable(line.getEndVal()).orElse(0d) - ofNullable(line.getStartVal()).orElse(0d);
                 line.setDelta(Math.round(delta * 1000000d) / 1000000d);
             }
 
@@ -80,7 +82,7 @@ public class MrServiceImpl implements MrService {
             .filter(t -> t.getId() <= 4l)
             .collect(toList());
 
-        List<MeterHistory> meterHistories = meterHistoryRepo.findAllByMeteringPointIdAndDate(meteringPoint.getId(), startDate, endDate);
+        List<MeterHistory> meterHistories = meterHistoryRepo.findAllByMeteringPoint(meteringPoint.getId(), startDate, endDate);
         List<MeteringReading> resultLines = new ArrayList<>();
         for (Parameter param : parameters) {
             if (meterHistories.size() == 0) {
@@ -96,8 +98,8 @@ public class MrServiceImpl implements MrService {
             }
 
             for (MeterHistory meterHistory : meterHistories) {
-                LocalDateTime meterStartDate = Optional.ofNullable(meterHistory.getStartDate()).orElse(LocalDateTime.MIN);
-                LocalDateTime meterEndDate = Optional.ofNullable(meterHistory.getEndDate()).orElse(LocalDateTime.MAX);
+                LocalDateTime meterStartDate = ofNullable(meterHistory.getStartDate()).orElse(LocalDateTime.MIN);
+                LocalDateTime meterEndDate = ofNullable(meterHistory.getEndDate()).orElse(LocalDateTime.MAX);
 
                 MeteringReading line = new MeteringReading();
                 line.setParam(param);
@@ -131,8 +133,8 @@ public class MrServiceImpl implements MrService {
                 }
 
                 if (bypassMode!=null) {
-                    LocalDateTime bypassStartDate = Optional.ofNullable(bypassMode.getStartDate()).orElse(LocalDateTime.MIN);
-                    LocalDateTime bypassEndDate = Optional.ofNullable(bypassMode.getEndDate()).orElse(LocalDateTime.MAX);
+                    LocalDateTime bypassStartDate = ofNullable(bypassMode.getStartDate()).orElse(LocalDateTime.MIN);
+                    LocalDateTime bypassEndDate = ofNullable(bypassMode.getEndDate()).orElse(LocalDateTime.MAX);
 
                     if (meterStartDate.isBefore(startDate)) {
                         if (bypassStartDate.isBefore(startDate)) {
