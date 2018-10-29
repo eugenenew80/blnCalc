@@ -43,6 +43,14 @@ public class PowerTransformerServiceImpl implements PowerTransformerService {
         if (attr.equals("pkz_ml"))
             value = powerTransformer.getPkzML();
 
+
+        if (attr.equals("resist") && powerTransformer.getWindingsNumber() != null && powerTransformer.getWindingsNumber().equals(3l) ) {
+            Double pkzHL = powerTransformer.getPkzHL();
+            Double uNomH = powerTransformer.getUnomH();
+            Double sNom = powerTransformer.getSnom();
+            value = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2));
+        }
+
         return value;
     }
 

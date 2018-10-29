@@ -310,6 +310,9 @@ public class CalcServiceImpl implements CalcService {
                 case "PKZ_ML":
                     attr = "pkz_ml";
                     break;
+                case "T2_R":
+                    attr = "resist";
+                    break;
                 default:
                     attr = null;
             }
