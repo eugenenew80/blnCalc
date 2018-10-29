@@ -413,5 +413,119 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-rus-400" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_balance_unit_sections</comment>
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="MGLEP"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="MRLEP"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="OSE"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="PSM"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="PP"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections">
+            <column name="code" type="varchar2" value="HNM"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-401" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into calc_balance_unit_sections_tl</comment>
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="MGLEP"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Межгосударственный переток"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="MGLEP"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Межгосударственный переток"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="MRLEP"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Межрегиональный переток"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="MRLEP"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Межрегиональный переток"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="OSE"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Отпуск от шин энергоисточников"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="OSE"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Отпуск от шин энергоисточников"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="PP"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Потребление потребителей"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="PP"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Потребление потребителей"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="HNM"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Хозяйственные нужды МЭС"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="HNM"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Хозяйственные нужды МЭС"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="PSM"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="Потери в сетях МЭС"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="calc_balance_unit_sections_tl">
+            <column name="code" type="varchar2" value="PSM"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="Потери в сетях МЭС"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-402" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Add comments to the columns: calc_balance_unit_sections</comment>
+        <sql dbms="postgres, oracle" endDelimiter=";" splitStatements="true" stripComments="true">
+            update apps.CALC_BALANCE_UNIT_LINES
+            set section_code = 'PP'
+            where section_code = 'RCC';
+        </sql>
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
 
