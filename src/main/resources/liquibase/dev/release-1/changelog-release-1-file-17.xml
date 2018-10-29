@@ -408,11 +408,10 @@
     <changeSet id="calc-rus-399" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Adding column to table: calc_daily_sheet_lines</comment>
         <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
-            <column name="is_null" type="number" remarks="Установлен новый прибор">
+            <column name="is_new" type="number" remarks="Установлен новый прибор">
                 <constraints nullable="true"/>
             </column>
         </addColumn>
     </changeSet>
-
 </databaseChangeLog>
 
