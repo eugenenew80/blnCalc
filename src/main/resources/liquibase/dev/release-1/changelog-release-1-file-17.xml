@@ -388,5 +388,31 @@
                         tableName="calc_equipment_param_types_tl"/>
     </changeSet>
 
+    <changeSet id="calc-rus-397" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: calc_daily_sheet_lines</comment>
+        <dropColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="is_installed" />
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-398" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Adding column to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="is_old" type="number" remarks="Прибор снят">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-399" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Adding column to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="is_null" type="number" remarks="Установлен новый прибор">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
