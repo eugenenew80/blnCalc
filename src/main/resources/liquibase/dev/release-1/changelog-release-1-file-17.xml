@@ -371,5 +371,22 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-395" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Adding column to table: calc_daily_sheet_lines</comment>
+        <addColumn tableName="calc_daily_sheet_lines" schemaName="apps">
+            <column name="is_installed" type="number" remarks="Снят/Установлен">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-396" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>modify datatype column calc_equipment_param_types_tl</comment>
+        <modifyDataType columnName="short_name"
+                        newDataType="varchar2(100)"
+                        schemaName="apps"
+                        tableName="calc_equipment_param_types_tl"/>
+    </changeSet>
+
 </databaseChangeLog>
 
