@@ -1661,4 +1661,319 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1383" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_loss_fact_result_headers</comment>
+        <addColumn tableName="calc_loss_fact_result_headers" schemaName="apps">
+            <column name="r32" type="number" remarks="Полезный отпуск из сети МЭС всего, кВт.ч">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="r321" type="number" remarks="Полезный отпуск прямым потребителям">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="r322" type="number" remarks="Полезный отпуск соседним государствам">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="r323" type="number" remarks="Полезный отпуск другим филиалам">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="r324" type="number" remarks="Отпуск на хозяйственные нужды">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="r325" type="number" remarks="Сальдированный прием в сеть филиала">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="r326" type="number" remarks="Потери электроэнергии, в % от сальдиро-ванного приема">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1384" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_loss_fact_result_sec1_lines</comment>
+        <createTable tableName="calc_loss_fact_result_sec1_lines" schemaName="apps" remarks="Расчет фактических потерь, раздел 1 - строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="section_code" type="varchar2(30)" remarks="Код раздела">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_inverse" type="number" remarks="Флаг - изменить направление">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="ap" type="number" remarks="Несальдированный приём">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="am" type="number" remarks="Несальдированная выдача">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1385" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_loss_fact_result_sec1_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_loss_fact_result_sec1_lines"
+                schemaName="apps"
+                tableName="calc_loss_fact_result_sec1_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1386" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_loss_fact_result_sec1_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_loss_fact_result_sec1_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1387" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_result_sec1_lines</comment>
+        <createIndex indexName="idx_calc_loss_fact_result_sec1_lines_1" schemaName="apps" tableName="calc_loss_fact_result_sec1_lines">
+            <column name="result_header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1388" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_result_sec1_lines</comment>
+        <createIndex indexName="idx_calc_loss_fact_result_sec1_lines_2" schemaName="apps" tableName="calc_loss_fact_result_sec1_lines">
+            <column name="section_code"  type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1389" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_result_sec1_lines</comment>
+        <createIndex indexName="idx_calc_loss_fact_result_sec1_lines_3" schemaName="apps" tableName="calc_loss_fact_result_sec1_lines">
+            <column name="metering_point_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1390" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_sec1_lines to calc_loss_fact_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_sec1_lines"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_loss_fact_result_sec1_lines_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_loss_fact_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1391" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_sec1_lines to calc_loss_fact_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_sec1_lines"
+                baseColumnNames="section_code"
+                constraintName="fk_calc_loss_fact_result_sec1_lines_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_loss_fact_sections"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1392" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_sec1_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_sec1_lines"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_loss_fact_result_sec1_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-1393" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_loss_fact_result_sec2_lines</comment>
+        <createTable tableName="calc_loss_fact_result_sec2_lines" schemaName="apps" remarks="Расчет фактических потерь, раздел 2 - строки">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_inverse" type="number" remarks="Флаг - изменить направление">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="ap" type="number" remarks="Несальдированный приём">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="am" type="number" remarks="Несальдированная выдача">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1394" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_loss_fact_result_sec2_lines</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_loss_fact_result_sec2_lines"
+                schemaName="apps"
+                tableName="calc_loss_fact_result_sec2_lines"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1395" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_loss_fact_result_sec2_lines</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_loss_fact_result_sec2_lines_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1396" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_result_sec2_lines</comment>
+        <createIndex indexName="idx_calc_loss_fact_result_sec2_lines_1" schemaName="apps" tableName="calc_loss_fact_result_sec2_lines">
+            <column name="result_header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1397" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_result_sec2_lines</comment>
+        <createIndex indexName="idx_calc_loss_fact_result_sec2_lines_2" schemaName="apps" tableName="calc_loss_fact_result_sec2_lines">
+            <column name="org_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1398" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_result_sec2_lines</comment>
+        <createIndex indexName="idx_calc_loss_fact_result_sec2_lines_3" schemaName="apps" tableName="calc_loss_fact_result_sec2_lines">
+            <column name="metering_point_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1399" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_sec2_lines to calc_loss_fact_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_sec2_lines"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_loss_fact_result_sec2_lines_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_loss_fact_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1400" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_sec2_lines to calc_loss_fact_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_sec2_lines"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_loss_fact_result_sec1_lines_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1401" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_sec2_lines to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_sec2_lines"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_loss_fact_result_sec2_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
