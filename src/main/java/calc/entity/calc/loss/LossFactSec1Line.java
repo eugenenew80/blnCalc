@@ -2,19 +2,21 @@ package calc.entity.calc.loss;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
-import calc.entity.calc.Organization;
+import calc.entity.calc.PowerLine;
+import calc.entity.calc.inter.InterHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_loss_fact_sec2_lines")
+@Table(name = "calc_loss_fact_sec1_lines")
 @Immutable
-public class LossFactSecLine2 {
+public class LossFactSec1Line {
     @Id
     private Long id;
 
@@ -29,9 +31,8 @@ public class LossFactSecLine2 {
     @JoinColumn(name = "metering_point_id")
     private MeteringPoint meteringPoint;
 
-    @ManyToOne
-    @JoinColumn(name = "org_id")
-    private Organization org;
+    @Column(name = "section_code")
+    private String sectionCode;
 
     @Column(name = "is_inverse")
     @Convert(converter = BooleanToIntConverter.class)

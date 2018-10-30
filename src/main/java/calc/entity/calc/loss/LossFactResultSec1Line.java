@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_loss_fact_result_sec1_lines")
-public class LossFactResultSecLine1 {
+public class LossFactResultSec1Line {
 
     @Id
     @SequenceGenerator(name="calc_loss_fact_result_sec1_lines_s", sequenceName = "calc_loss_fact_result_sec1_lines_s", allocationSize=1)

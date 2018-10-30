@@ -41,8 +41,8 @@ public class LossFactHeader {
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
-    private List<LossFactSecLine1> lines1;
+    private List<LossFactSec1Line> lines1;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
-    private List<LossFactSecLine2> lines2;
+    private List<LossFactSec2Line> lines2;
 }
