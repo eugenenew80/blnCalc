@@ -1,0 +1,73 @@
+package calc.entity.calc.loss;
+
+import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.calc.Organization;
+import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
+import calc.entity.calc.inter.InterHeader;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Data
+@EqualsAndHashCode(of= {"id"})
+@Entity
+@Table(name = "calc_loss_fact_result_headers")
+public class LossFactResultHeader {
+
+    @Id
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "loss_fact_header_id")
+    private LossFactHeader header;
+
+    @ManyToOne
+    @JoinColumn(name = "org_id")
+    private Organization organization;
+
+    @Column(name="period_type")
+    @Enumerated(EnumType.STRING)
+    private PeriodTypeEnum periodType;
+
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
+
+    @Column(name="status")
+    @Enumerated(EnumType.STRING)
+    private BatchStatusEnum status;
+
+    @Column(name = "state_code")
+    private String state;
+
+    @Column(name = "is_active")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isActive;
+
+    @Column(name = "ap")
+    private Double ap;
+
+    @Column(name = "am")
+    private Double am;
+
+    @Column(name = "loss")
+    private Double loss;
+
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @Column(name = "last_update_date")
+    private LocalDateTime lastUpdateDate;
+
+    @Column(name = "create_by")
+    private Long createBy;
+
+    @Column(name = "last_update_by")
+    private Long lastUpdateBy;
+}

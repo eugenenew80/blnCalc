@@ -6,6 +6,7 @@ import calc.entity.calc.enums.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
+import calc.formula.exception.CycleDetectionException;
 import calc.formula.service.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import static calc.util.Util.round;
 
-@SuppressWarnings("ImplicitSubclassInspection")
+@SuppressWarnings({"ImplicitSubclassInspection", "Duplicates"})
 @Service
 @RequiredArgsConstructor
 public class AspService {
@@ -30,7 +31,6 @@ public class AspService {
     private final AspResultAppRepo aspResultAppRepo;
     private final MessageService messageService;
     private final MrService mrService;
-    private final ParamService paramService;
     private static final String docCode = "ASP1";
     private final CalcService calcService;
 
@@ -83,7 +83,7 @@ public class AspService {
         }
     }
 
-    private void calcOutRows(AspResultHeader header, CalcContext context) throws Exception {
+    private void calcOutRows(AspResultHeader header, CalcContext context)  {
         List<AspResultLine> resultLines = new ArrayList<>();
         for (AspLine line : header.getHeader().getLines()) {
             if (line.getTreatmentType() != TreatmentTypeEnum.OUT && line.getTreatmentType() != TreatmentTypeEnum.EMPTY)
@@ -91,10 +91,24 @@ public class AspService {
 
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = line.getParam();
+            Map<String, String> msgParams = buildMsgParams(meteringPoint);
+
             if (meteringPoint.getPointType() == PointTypeEnum.VMP) {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
-                Double value = result!=null ? result.getDoubleValue() : null;
-                value = round(value, param);
+                Double value = null;
+                try {
+                    CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
+                    value = result != null ? result.getDoubleValue() : null;
+                    value = round(value, param);
+                }
+                catch (CycleDetectionException e) {
+                    messageService.addMessage(header, line.getLineNum(), docCode, "CYCLED_FORMULA", msgParams);
+                    e.printStackTrace();
+                }
+                catch (Exception e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
+                    messageService.addMessage(header, line.getLineNum(), docCode, "ERROR_FORMULA", msgParams);
+                    e.printStackTrace();
+                }
 
                 AspResultLine resultLine = new AspResultLine();
                 resultLine.setHeader(header);
@@ -119,22 +133,44 @@ public class AspService {
             if (line.getTreatmentType() != TreatmentTypeEnum.IN)
                 continue;
 
-            List<MeteringReading> meteringReadings = mrService.calc(line.getMeteringPoint(), context)
+            MeteringPoint meteringPoint = line.getMeteringPoint();
+            Parameter param = line.getParam();
+            Map<String, String> msgParams = buildMsgParams(meteringPoint);
+
+            List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context)
                 .stream()
-                .filter(t -> t.getParam().equals(line.getParam()))
+                .filter(t -> t.getParam().equals(param))
                 .collect(Collectors.toList());
 
             if (meteringReadings.size() == 0) {
                 AspResultLine resultLine = new AspResultLine();
                 resultLine.setHeader(header);
                 resultLine.setLineNum(line.getLineNum());
-                resultLine.setMeteringPoint(line.getMeteringPoint());
-                if (line.getParam() != null) {
-                    resultLine.setParam(line.getParam());
-                    resultLine.setUnit(line.getParam().getUnit());
+                resultLine.setMeteringPoint(meteringPoint);
+                if (param != null) {
+                    resultLine.setParam(param);
+                    resultLine.setUnit(param.getUnit());
                 }
                 resultLine.setFormula(line.getFormula());
                 resultLine.setTreatmentType(line.getTreatmentType());
+
+                Double value = null;
+                try {
+                    CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
+                    value = result != null ? result.getDoubleValue() : null;
+                    value = round(value, param);
+                }
+                catch (CycleDetectionException e) {
+                    messageService.addMessage(header, line.getLineNum(), docCode, "CYCLED_FORMULA", msgParams);
+                    e.printStackTrace();
+                }
+                catch (Exception e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
+                    messageService.addMessage(header, line.getLineNum(), docCode, "ERROR_FORMULA", msgParams);
+                    e.printStackTrace();
+                }
+
+                resultLine.setVal(value);
                 copyTranslates(line, resultLine);
                 resultLines.add(resultLine);
             }
@@ -143,7 +179,7 @@ public class AspService {
                 AspResultLine resultLine = new AspResultLine();
                 resultLine.setHeader(header);
                 resultLine.setLineNum(line.getLineNum());
-                resultLine.setMeteringPoint(line.getMeteringPoint());
+                resultLine.setMeteringPoint(meteringPoint);
                 resultLine.setParam(t.getParam());
                 resultLine.setUnit(t.getUnit());
                 resultLine.setMeter(t.getMeter());
@@ -278,5 +314,11 @@ public class AspService {
         header.setStatus(status);
         aspResultHeaderRepo.save(header);
         aspResultHeaderRepo.flush();
+    }
+
+    private Map<String, String> buildMsgParams(MeteringPoint mp) {
+        Map<String, String> msgParams = new HashMap<>();
+        msgParams.put("point", mp.getCode());
+        return msgParams;
     }
 }

@@ -157,6 +157,35 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    public void addMessage(AspResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
+        MessageError err = mapErrors.getOrDefault(errCode, null);
+        try {
+            LangEnum defLang = LangEnum.RU;
+            String defTExt = "Описание не найдено";
+            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
+            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
+            msg = StrSubstitutor.replace(msg, params);
+
+            AspResultMessage message = new AspResultMessage();
+            message.setHeader(header);
+            message.setLineNum(lineNum);
+            message.setMessageType(messageType);
+            message.setErrorCode(errCode);
+            message.setTranslates(new ArrayList<>());
+
+            AspResultMessageTranslate messageTranslate = new AspResultMessageTranslate();
+            messageTranslate.setMessage(message);
+            messageTranslate.setLang(defLang);
+            messageTranslate.setMsg(msg);
+            message.getTranslates().add(messageTranslate);
+            aspResultMessageRepo.save(message);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void deleteMessages(SegResultHeader header) {
         List<SegResultMessage> lines = segResultMessageRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
