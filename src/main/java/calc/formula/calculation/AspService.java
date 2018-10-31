@@ -92,6 +92,13 @@ public class AspService {
 
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = line.getParam();
+
+            if (meteringPoint == null)
+                continue;
+
+            if (param == null)
+                continue;
+
             Map<String, String> msgParams = buildMsgParams(meteringPoint);
 
             if (meteringPoint.getPointType() == PointTypeEnum.VMP) {
@@ -136,6 +143,9 @@ public class AspService {
 
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = line.getParam();
+
+            if (param == null)
+                continue;
 
             if (param.getCode().equals("AB"))
                 continue;
@@ -197,6 +207,9 @@ public class AspService {
 
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = line.getParam();
+
+            if (param == null)
+                continue;
 
             if (!param.getCode().equals("AB"))
                 continue;
@@ -352,7 +365,7 @@ public class AspService {
 
     private Map<String, String> buildMsgParams(MeteringPoint mp) {
         Map<String, String> msgParams = new HashMap<>();
-        msgParams.put("point", mp.getCode());
+        if (mp != null) msgParams.put("point", mp.getCode());
         return msgParams;
     }
 }
