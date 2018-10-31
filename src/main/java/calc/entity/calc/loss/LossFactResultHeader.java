@@ -75,8 +75,8 @@ public class LossFactResultHeader {
     @Column(name = "r326")
     private Double r326;
 
-    @Column(name = "loss")
-    private Double loss;
+    @Column(name = "loss_fact")
+    private Double lossFact;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;

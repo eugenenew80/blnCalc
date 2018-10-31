@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstLineService {
@@ -30,8 +31,8 @@ public class BalanceSubstLineService {
     private static final String docCode = "BALANCE";
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
     private final BalanceSubstResultMrService mrService;
-    private final PeriodTimeValueService periodTimeValueService;
     private final BalanceSubstResultNoteRepo balanceSubstResultNoteRepo;
+    private final PeriodTimeValueService periodTimeValueService;
     private final CalcService calcService;
     private final MessageService messageService;
     private final ParamService paramService;

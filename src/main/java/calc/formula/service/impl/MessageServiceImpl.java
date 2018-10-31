@@ -13,6 +13,7 @@ import calc.entity.calc.enums.MessageTypeEnum;
 import calc.entity.calc.inter.InterResultHeader;
 import calc.entity.calc.inter.InterResultMessage;
 import calc.entity.calc.inter.InterResultMessageTranslate;
+import calc.entity.calc.loss.LossFactResultHeader;
 import calc.entity.calc.seg.SegResultHeader;
 import calc.entity.calc.seg.SegResultMessage;
 import calc.entity.calc.seg.SegResultMessageTranslate;
@@ -257,5 +258,13 @@ public class MessageServiceImpl implements MessageService {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void deleteMessages(LossFactResultHeader header) {
+    }
+
+    @Override
+    public void addMessage(LossFactResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
     }
 }
