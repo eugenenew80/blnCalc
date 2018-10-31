@@ -1835,7 +1835,6 @@
         />
     </changeSet>
 
-
     <changeSet id="calc-eug-1393" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_loss_fact_result_sec2_lines</comment>
         <createTable tableName="calc_loss_fact_result_sec2_lines" schemaName="apps" remarks="Расчет фактических потерь, раздел 2 - строки">
@@ -1976,4 +1975,39 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-1402" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_bs_result_bp_lines</comment>
+        <addColumn schemaName="apps"  tableName="calc_bs_result_bp_lines">
+            <column name="meter_history_id" type="number" remarks="Идентификатор акта замены прибора учёта">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1403" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_bp_lines</comment>
+        <createIndex indexName="idx_calc_bs_result_bp_lines_8"
+                     schemaName="apps"
+                     tableName="calc_bs_result_bp_lines"
+                     unique="false">
+            <column name="meter_history_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1404" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to mdfem_history</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_bp_lines"
+                baseColumnNames="meter_history_id"
+                constraintName="fk_calc_bs_result_bp_lines_8"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_history"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>

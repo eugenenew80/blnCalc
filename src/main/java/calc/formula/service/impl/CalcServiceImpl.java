@@ -79,8 +79,8 @@ public class CalcServiceImpl implements CalcService {
             if (!param.equals(mapParams.get("AB")))
                 expression = getDefaultExpression(point, param, paramType, 1d, context);
             else {
-                DoubleExpression expression1 = getDefaultExpression(point, mapParams.get("A+"), paramType, 1d, context);
-                DoubleExpression expression2 = getDefaultExpression(point, mapParams.get("A-"), paramType, 1d, context);
+                DoubleExpression expression1 = getExpression(point, mapParams.get("A+"), paramType, 1d, context);
+                DoubleExpression expression2 = getExpression(point, mapParams.get("A-"), paramType, 1d, context);
                 expression = BinaryExpression.builder()
                     .operator(operatorFactory.binary("subtract"))
                     .expressions(Arrays.asList(expression1, expression2))
@@ -370,6 +370,78 @@ public class CalcServiceImpl implements CalcService {
         logger.trace("  paramType: " + paramType.name());
         logger.trace("  rate: " + rate);
 
+        if (param.getCode().equals("WL") && context.getContextType() == ContextType.MR) {
+            Map<String, Double> transformerValues = context.getTransformerValues();
+            if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {
+                logger.trace("  expression: CachedValueExpression");
+                return DoubleValueExpression.builder()
+                    .value(transformerValues.get(meteringPoint.getCode()))
+                    .build();
+            }
+
+            logger.trace("  expression: TransformerValueExpression");
+            return TransformerValueExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(param.getCode())
+                .rate(rate)
+                .context(context)
+                .service(transformerValueService)
+                .build();
+        }
+
+        if (context.getContextType() == ContextType.MR) {
+            logger.trace("  context: mr");
+            logger.trace("  expression: MrExpression");
+            return MrExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(param.getCode())
+                .rate(rate)
+                .context(context)
+                .service(mrService)
+                .build();
+        }
+
+        if (context.getContextType() == ContextType.ASP) {
+            logger.trace("  context: asp");
+            logger.trace("  expression: AspExpression");
+            return AspExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(param.getCode())
+                .rate(rate)
+                .context(context)
+                .service(aspService)
+                .build();
+        }
+
+        if (context.getContextType() == ContextType.SEG) {
+            logger.trace("  context: seg");
+            logger.trace("  expression: SegExpression");
+            return SegExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(param.getCode())
+                .rate(rate)
+                .context(context)
+                .service(segService)
+                .build();
+        }
+
+        if (context.getContextType() == ContextType.INTER) {
+            logger.trace("  context: inter");
+            logger.trace("  expression: InterExpression");
+            return InterMrExpression.builder()
+                .meteringPointCode(meteringPoint.getCode())
+                .parameterCode(param.getCode())
+                .rate(rate)
+                .context(context)
+                .service(interMrService)
+                .build();
+        }
+
+        return getDefaultExpression(meteringPoint, param, paramType, rate, context);
+    }
+
+
+    private DoubleExpression getExpression(MeteringPoint meteringPoint, Parameter param, ParamTypeEnum paramType, Double rate, CalcContext context) {
         if (param.getCode().equals("WL") && context.getContextType() == ContextType.MR) {
             Map<String, Double> transformerValues = context.getTransformerValues();
             if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {

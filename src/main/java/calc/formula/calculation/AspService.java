@@ -59,6 +59,7 @@ public class AspService {
 
             copyInfoRows(header);
             calcInRows(header, context);
+            calcIn2Rows(header, context);
             calcOutRows(header, context);
             copyNotes(header);
             copyApps(header);
@@ -135,7 +136,9 @@ public class AspService {
 
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = line.getParam();
-            Map<String, String> msgParams = buildMsgParams(meteringPoint);
+
+            if (param.getCode().equals("AB"))
+                continue;
 
             List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context)
                 .stream()
@@ -153,24 +156,6 @@ public class AspService {
                 }
                 resultLine.setFormula(line.getFormula());
                 resultLine.setTreatmentType(line.getTreatmentType());
-
-                Double value = null;
-                try {
-                    CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
-                    value = result != null ? result.getDoubleValue() : null;
-                    value = round(value, param);
-                }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, line.getLineNum(), docCode, "CYCLED_FORMULA", msgParams);
-                    e.printStackTrace();
-                }
-                catch (Exception e) {
-                    msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, line.getLineNum(), docCode, "ERROR_FORMULA", msgParams);
-                    e.printStackTrace();
-                }
-
-                resultLine.setVal(value);
                 copyTranslates(line, resultLine);
                 resultLines.add(resultLine);
             }
@@ -201,6 +186,55 @@ public class AspService {
                 resultLines.add(resultLine);
             }
         }
+        saveLines(resultLines);
+    }
+
+    private void calcIn2Rows(AspResultHeader header, CalcContext context) {
+        List<AspResultLine> resultLines = new ArrayList<>();
+        for (AspLine line : header.getHeader().getLines()) {
+            if (line.getTreatmentType() != TreatmentTypeEnum.IN)
+                continue;
+
+            MeteringPoint meteringPoint = line.getMeteringPoint();
+            Parameter param = line.getParam();
+
+            if (!param.getCode().equals("AB"))
+                continue;
+
+            Map<String, String> msgParams = buildMsgParams(meteringPoint);
+
+            AspResultLine resultLine = new AspResultLine();
+            resultLine.setHeader(header);
+            resultLine.setLineNum(line.getLineNum());
+            resultLine.setMeteringPoint(meteringPoint);
+            if (param != null) {
+                resultLine.setParam(param);
+                resultLine.setUnit(param.getUnit());
+            }
+            resultLine.setFormula(line.getFormula());
+            resultLine.setTreatmentType(line.getTreatmentType());
+
+            Double value = null;
+            try {
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
+                value = result != null ? result.getDoubleValue() : null;
+                value = round(value, param);
+            }
+            catch (CycleDetectionException e) {
+                messageService.addMessage(header, line.getLineNum(), docCode, "CYCLED_FORMULA", msgParams);
+                e.printStackTrace();
+            }
+            catch (Exception e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, line.getLineNum(), docCode, "ERROR_FORMULA", msgParams);
+                e.printStackTrace();
+            }
+
+            resultLine.setVal(value);
+            copyTranslates(line, resultLine);
+            resultLines.add(resultLine);
+        }
+
         saveLines(resultLines);
     }
 

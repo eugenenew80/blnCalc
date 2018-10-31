@@ -4,10 +4,8 @@ import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
-import calc.entity.calc.inter.InterHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,6 +53,27 @@ public class LossFactResultHeader {
 
     @Column(name = "am")
     private Double am;
+
+    @Column(name = "r32")
+    private Double r32;
+
+    @Column(name = "r321")
+    private Double r321;
+
+    @Column(name = "r322")
+    private Double r322;
+
+    @Column(name = "r323")
+    private Double r323;
+
+    @Column(name = "r324")
+    private Double r324;
+
+    @Column(name = "r325")
+    private Double r325;
+
+    @Column(name = "r326")
+    private Double r326;
 
     @Column(name = "loss")
     private Double loss;
