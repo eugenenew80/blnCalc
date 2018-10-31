@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
+import static calc.util.Util.buildMsgParams;
 import static java.util.Optional.*;
 
 @SuppressWarnings("Duplicates")
@@ -137,11 +138,5 @@ public class BalanceSubstUService {
         }
 
         return val;
-    }
-
-    private Map<String, String> buildMsgParams(MeteringPoint mp) {
-        Map<String, String> msgParams = new HashMap<>();
-        msgParams.put("point", mp.getCode());
-        return msgParams;
     }
 }

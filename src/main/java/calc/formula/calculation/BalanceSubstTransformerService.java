@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+import static calc.util.Util.buildMsgParams;
 import static calc.util.Util.round;
 
 @SuppressWarnings("Duplicates")
@@ -385,11 +386,5 @@ public class BalanceSubstTransformerService {
         for (int i=0; i<transformerValues.size(); i++)
             powerTransformerValueRepo.delete(transformerValues.get(i));
         powerTransformerValueRepo.flush();
-    }
-
-    private Map<String, String> buildMsgParams(MeteringPoint mp) {
-        Map<String, String> msgParams = new HashMap<>();
-        msgParams.put("point", mp.getCode());
-        return msgParams;
     }
 }

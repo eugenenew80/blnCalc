@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+import static calc.util.Util.buildMsgParams;
+
 @SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
@@ -225,11 +227,5 @@ public class BalanceSubstLineService {
             if (param.equals(mapParams.get("R-"))) return mapParams.get("R+");
         }
         return param;
-    }
-
-    private Map<String, String> buildMsgParams(MeteringPoint mp) {
-        Map<String, String> msgParams = new HashMap<>();
-        msgParams.put("point", mp.getCode());
-        return msgParams;
     }
 }

@@ -2,17 +2,14 @@ package calc.formula.calculation;
 
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
-import calc.entity.calc.bs.BalanceSubstLine;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
-import calc.entity.calc.enums.PointTypeEnum;
 import calc.entity.calc.loss.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
 import calc.formula.exception.CycleDetectionException;
-import calc.formula.expression.impl.MrExpression;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
@@ -26,12 +23,11 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
-
+import static calc.util.Util.buildMsgParams;
 import static java.util.Optional.*;
 
 @SuppressWarnings({"Duplicates", "ImplicitSubclassInspection"})
@@ -308,11 +304,5 @@ public class LossFactService {
         }
 
         return val;
-    }
-
-    private Map<String, String> buildMsgParams(MeteringPoint mp) {
-        Map<String, String> msgParams = new HashMap<>();
-        msgParams.put("point", mp.getCode());
-        return msgParams;
     }
 }

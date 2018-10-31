@@ -1,7 +1,10 @@
 package calc.util;
 
+import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -21,4 +24,12 @@ public class Util {
         double rounding =  Math.pow(10, digits);
         return Math.round(value * rounding) / rounding;
     }
+
+
+    public static Map<String, String> buildMsgParams(MeteringPoint mp) {
+        Map<String, String> msgParams = new HashMap<>();
+        msgParams.put("point", mp.getCode());
+        return msgParams;
+    }
+
 }
