@@ -1950,7 +1950,7 @@
                 baseTableSchemaName="apps"
                 baseTableName="calc_loss_fact_result_sec2_lines"
                 baseColumnNames="org_id"
-                constraintName="fk_calc_loss_fact_result_sec1_lines_2"
+                constraintName="fk_calc_loss_fact_result_sec2_lines_2"
                 deferrable="true"
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
