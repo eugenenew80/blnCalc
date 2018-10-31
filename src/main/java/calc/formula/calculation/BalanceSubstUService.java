@@ -5,11 +5,13 @@ import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.u.BalanceSubstResultULine;
 import calc.entity.calc.bs.u.BalanceSubstULine;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.PeriodTypeEnum;
+import calc.entity.calc.enums.ParamTypeEnum;
 import calc.formula.CalcContext;
+import calc.formula.CalcResult;
 import calc.formula.ContextType;
-import calc.formula.expression.DoubleExpression;
+import calc.formula.exception.CycleDetectionException;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
+import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
 import calc.formula.service.ParamService;
 import calc.formula.service.PeriodTimeValueService;
@@ -24,6 +26,7 @@ import java.util.*;
 
 import static java.util.Optional.*;
 
+@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstUService {
@@ -31,6 +34,8 @@ public class BalanceSubstUService {
     private final ParamService paramService;
     private final PeriodTimeValueService periodTimeValueService;
     private final MessageService messageService;
+    private final CalcService calcService;
+
     private final BalanceSubstResultULineRepo balanceSubstResultULineRepo;
     private static final String docCode = "U_AVG";
 
@@ -57,10 +62,24 @@ public class BalanceSubstUService {
             List<BalanceSubstResultULine> resultLines = new ArrayList<>();
             List<BalanceSubstULine> uLines = header.getHeader().getULines();
             for (BalanceSubstULine uLine : uLines) {
-                Double val = getVal(uLine.getMeteringPoint(), parU, context);
+                MeteringPoint meteringPoint = uLine.getMeteringPoint();
+                Map<String, String> msgParams = buildMsgParams(meteringPoint);
+
+                Double val = null;
+                try {
+                    val = getVal(meteringPoint, parU, context);
+                }
+                catch (CycleDetectionException e) {
+                    messageService.addMessage(header, uLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                }
+                catch (Exception e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
+                    messageService.addMessage(header, uLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                }
+
                 BalanceSubstResultULine resultLine = new BalanceSubstResultULine();
                 resultLine.setHeader(header);
-                resultLine.setMeteringPoint(uLine.getMeteringPoint());
+                resultLine.setMeteringPoint(meteringPoint);
                 resultLine.setTiNum(uLine.getTiNum());
                 resultLine.setTiName(ofNullable(uLine.getTiName()).orElse("-"));
                 resultLine.setVal(val);
@@ -96,31 +115,33 @@ public class BalanceSubstUService {
         balanceSubstResultULineRepo.flush();
     }
 
-    private Double getVal(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
-        DoubleExpression expression = PeriodTimeValueExpression.builder()
+    private Double getVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) throws Exception {
+        if (meteringPoint == null || param == null)
+            return null;
+
+        Double val = PeriodTimeValueExpression.builder()
             .meteringPointCode(meteringPoint.getCode())
-            .parameterCode(parameter.getCode())
+            .parameterCode(param.getCode())
             .rate(1d)
             .startHour((byte) 0)
             .endHour((byte) 23)
             .periodType(context.getPeriodType())
             .context(context)
             .service(periodTimeValueService)
-            .build();
+            .build()
+            .doubleValue();
 
-        Double[] values = expression.doubleValues();
-        Double sum = 0d;
-        Double count = 0d;
-        for (Double d : values) {
-            if (d != null) {
-                sum+=d;
-                count++;
-            }
+        if (Optional.ofNullable(val).orElse(0d) == 0d) {
+            CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
+            val = result!=null ? result.getDoubleValue() : null;
         }
 
-        if (count != 0)
-            return  sum / count;
-        else
-            return 0d;
+        return val;
+    }
+
+    private Map<String, String> buildMsgParams(MeteringPoint mp) {
+        Map<String, String> msgParams = new HashMap<>();
+        msgParams.put("point", mp.getCode());
+        return msgParams;
     }
 }
