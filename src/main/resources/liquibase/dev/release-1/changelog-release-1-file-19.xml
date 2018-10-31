@@ -2010,4 +2010,30 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1405" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping foreign constraint: calc_bs_result_bp_lines to calc_bypass_modes</comment>
+        <dropForeignKeyConstraint
+            baseTableSchemaName="apps"
+            baseTableName="calc_bs_result_bp_lines"
+            constraintName="fk_calc_bs_result_bp_lines_7"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1406" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to calc_bypass_modes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_bp_lines"
+                baseColumnNames="bypass_mode_id"
+                constraintName="fk_calc_bs_result_bp_lines_7"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_bypass_modes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
