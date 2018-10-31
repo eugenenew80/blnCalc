@@ -20,7 +20,6 @@ import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import java.util.*;
 import java.util.function.UnaryOperator;
-
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -77,7 +76,7 @@ public class CalcServiceImpl implements CalcService {
             logger.warn("Formula not found");
             DoubleExpression expression;
             if (!param.equals(mapParams.get("AB")))
-                expression = getDefaultExpression(point, param, paramType, 1d, context);
+                expression = getExpression(point, param, paramType, 1d, context);
             else {
                 DoubleExpression expression1 = getExpression(point, mapParams.get("A+"), paramType, 1d, context);
                 DoubleExpression expression2 = getExpression(point, mapParams.get("A-"), paramType, 1d, context);
@@ -363,7 +362,10 @@ public class CalcServiceImpl implements CalcService {
         ParamTypeEnum paramType = det.getParamType();
         Double sign = det.getSign().equals("-") ? -1d : 1d;
         Double rate = ofNullable(det.getRate()).orElse(1d) * sign;
+        return getExpression(meteringPoint, param, paramType, rate, context);
+    }
 
+    private DoubleExpression getExpression(MeteringPoint meteringPoint, Parameter param, ParamTypeEnum paramType, Double rate, CalcContext context) {
         logger.trace("end point: " + meteringPoint.getCode());
         logger.trace("  param: " + param.getCode());
         logger.trace("  pointType: " + meteringPoint.getPointType().name());
@@ -437,82 +439,6 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        return getDefaultExpression(meteringPoint, param, paramType, rate, context);
-    }
-
-
-    private DoubleExpression getExpression(MeteringPoint meteringPoint, Parameter param, ParamTypeEnum paramType, Double rate, CalcContext context) {
-        if (param.getCode().equals("WL") && context.getContextType() == ContextType.MR) {
-            Map<String, Double> transformerValues = context.getTransformerValues();
-            if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {
-                logger.trace("  expression: CachedValueExpression");
-                return DoubleValueExpression.builder()
-                    .value(transformerValues.get(meteringPoint.getCode()))
-                    .build();
-            }
-
-            logger.trace("  expression: TransformerValueExpression");
-            return TransformerValueExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(param.getCode())
-                .rate(rate)
-                .context(context)
-                .service(transformerValueService)
-                .build();
-        }
-
-        if (context.getContextType() == ContextType.MR) {
-            logger.trace("  context: mr");
-            logger.trace("  expression: MrExpression");
-            return MrExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(param.getCode())
-                .rate(rate)
-                .context(context)
-                .service(mrService)
-                .build();
-        }
-
-        if (context.getContextType() == ContextType.ASP) {
-            logger.trace("  context: asp");
-            logger.trace("  expression: AspExpression");
-            return AspExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(param.getCode())
-                .rate(rate)
-                .context(context)
-                .service(aspService)
-                .build();
-        }
-
-        if (context.getContextType() == ContextType.SEG) {
-            logger.trace("  context: seg");
-            logger.trace("  expression: SegExpression");
-            return SegExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(param.getCode())
-                .rate(rate)
-                .context(context)
-                .service(segService)
-                .build();
-        }
-
-        if (context.getContextType() == ContextType.INTER) {
-            logger.trace("  context: inter");
-            logger.trace("  expression: InterExpression");
-            return InterMrExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(param.getCode())
-                .rate(rate)
-                .context(context)
-                .service(interMrService)
-                .build();
-        }
-
-        return getDefaultExpression(meteringPoint, param, paramType, rate, context);
-    }
-
-    private DoubleExpression getDefaultExpression(MeteringPoint meteringPoint, Parameter param, ParamTypeEnum paramType, Double rate, CalcContext context) {
         if (paramType == ParamTypeEnum.PT) {
             logger.trace("  expression: PeriodTimeValueExpression");
             return PeriodTimeValueExpression.builder()
