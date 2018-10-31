@@ -330,8 +330,7 @@ public class CalcServiceImpl implements CalcService {
         if (eq.getEquipmentType() == EquipmentTypeEnum.PL) {
             String attr;
             switch (eq.getParam().getCode()) {
-                case "L":
-                    attr = "snom";
+                case "L": attr = "snom";
                     break;
                 case "B0":
                     attr = "po";
