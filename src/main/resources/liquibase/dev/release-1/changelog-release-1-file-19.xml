@@ -2036,4 +2036,176 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1407" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_loss_fact_result_messages</comment>
+        <createTable tableName="calc_loss_fact_result_messages" schemaName="apps" remarks="Сообщения к акту расчёта фактических потерь">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки документа, к которой относится сообщение">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="message_type_code" type="varchar2(10)" remarks="Тип ошибки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="error_code" type="varchar2(10)" remarks="Код ошибки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1408" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_loss_fact_result_messages</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_loss_fact_result_messages"
+                schemaName="apps"
+                tableName="calc_loss_fact_result_messages"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1409" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_loss_fact_result_messages</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_loss_fact_result_messages_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1410" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_loss_fact_result_messages</comment>
+        <createIndex indexName="idx_calc_loss_fact_result_messages_1"
+                     schemaName="apps"
+                     tableName="calc_loss_fact_result_messages"
+                     unique="false">
+            <column name="result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1411" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_messages to calc_loss_fact_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_messages"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_loss_fact_result_messages_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_loss_fact_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1412" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_loss_fact_result_messages_tl</comment>
+        <createTable tableName="calc_loss_fact_result_messages_tl" schemaName="apps" remarks="Сообщения к акту расчёта фактических потерь - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_message_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="msg" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1413" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_loss_fact_result_messages_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_loss_fact_result_messages_tl"
+                schemaName="apps"
+                tableName="calc_loss_fact_result_messages_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1414" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_loss_fact_result_messages_tl</comment>
+        <addUniqueConstraint
+                columnNames="result_message_id, lang"
+                constraintName="uk_calc_loss_fact_result_messages_tl_1"
+                schemaName="apps"
+                tableName="calc_loss_fact_result_messages_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1415" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_loss_fact_result_messages_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_loss_fact_result_messages_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1416" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_result_messages_tl</comment>
+        <createIndex indexName="idx_calc_loss_fact_result_messages_tl_1" schemaName="apps" tableName="calc_loss_fact_result_messages_tl">
+            <column name="result_message_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1417" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_messages_tl to calc_loss_fact_result_messages</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_messages_tl"
+                baseColumnNames="result_message_id"
+                constraintName="fk_calc_loss_fact_result_messages_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_loss_fact_result_messages"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>

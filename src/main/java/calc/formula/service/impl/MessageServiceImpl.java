@@ -14,6 +14,8 @@ import calc.entity.calc.inter.InterResultHeader;
 import calc.entity.calc.inter.InterResultMessage;
 import calc.entity.calc.inter.InterResultMessageTranslate;
 import calc.entity.calc.loss.LossFactResultHeader;
+import calc.entity.calc.loss.LossFactResultMessage;
+import calc.entity.calc.loss.LossFactResultMessageTranslate;
 import calc.entity.calc.seg.SegResultHeader;
 import calc.entity.calc.seg.SegResultMessage;
 import calc.entity.calc.seg.SegResultMessageTranslate;
@@ -37,6 +39,7 @@ public class MessageServiceImpl implements MessageService {
     private final AspResultMessageRepo aspResultMessageRepo;
     private final SegResultMessageRepo segResultMessageRepo;
     private final InterResultMessageRepo interResultMessageRepo;
+    private final LossFactResultMessageRepo lossFactResultMessageRepo;
     private final MessageRepo messageRepo;
     private Map<String, MessageError> mapErrors = new HashMap<>();
 
@@ -262,9 +265,38 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void deleteMessages(LossFactResultHeader header) {
+        List<LossFactResultMessage> lines = lossFactResultMessageRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<lines.size(); i++)
+            lossFactResultMessageRepo.delete(lines.get(i));
+        lossFactResultMessageRepo.flush();
     }
 
     @Override
     public void addMessage(LossFactResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
+        MessageError err = mapErrors.getOrDefault(errCode, null);
+        try {
+            LangEnum defLang = LangEnum.RU;
+            String defTExt = "Описание не найдено";
+            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
+            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
+            msg = StrSubstitutor.replace(msg, params);
+
+            LossFactResultMessage message = new LossFactResultMessage();
+            message.setHeader(header);
+            message.setLineNum(lineNum);
+            message.setMessageType(messageType);
+            message.setErrorCode(errCode);
+            message.setTranslates(new ArrayList<>());
+
+            LossFactResultMessageTranslate messageTranslate = new LossFactResultMessageTranslate();
+            messageTranslate.setMessage(message);
+            messageTranslate.setLang(defLang);
+            messageTranslate.setMsg(msg);
+            message.getTranslates().add(messageTranslate);
+            lossFactResultMessageRepo.save(message);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
