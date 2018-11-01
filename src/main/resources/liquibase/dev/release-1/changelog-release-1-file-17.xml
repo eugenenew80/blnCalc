@@ -527,5 +527,39 @@
         </sql>
         <rollback/>
     </changeSet>
+
+    <changeSet id="calc-rus-404" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>modify datatype column calc_equipment_param_types_tl</comment>
+        <modifyDataType columnName="name"
+                        newDataType="varchar2(300)"
+                        schemaName="apps"
+                        tableName="calc_equipment_param_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-405" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Adding column to table: calc_consumption_lines</comment>
+        <addColumn tableName="calc_consumption_lines" schemaName="apps">
+            <column name="metering_data_source_line_id" type="number" remarks="Идентификатор строки источника">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-406" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_consumption_lines to calc_metering_data_source_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_consumption_lines"
+                baseColumnNames="metering_data_source_line_id"
+                constraintName="fk_calc_consumption_lines_5"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_source_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
 
