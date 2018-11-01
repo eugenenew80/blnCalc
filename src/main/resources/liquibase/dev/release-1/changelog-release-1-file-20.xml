@@ -1,0 +1,777 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-1418" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_distribution_rules</comment>
+        <createTable tableName="calc_distribution_rules" schemaName="apps" remarks="Правила распределения эл.энергии по энергоисточникам">
+            <column name="code" type="varchar2(30)" remarks="Код правила">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1419" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_distribution_rules</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_distribution_rules"
+                schemaName="apps"
+                tableName="calc_distribution_rules"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1420" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_distribution_rules_tl</comment>
+        <createTable tableName="calc_distribution_rules_tl" schemaName="apps" remarks="Правила распределения эл.энергии по энергоисточникам - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код прввила">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование правила">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1421" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_distribution_rules_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_distribution_rules_tl"
+                schemaName="apps"
+                tableName="calc_distribution_rules_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1422" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_rules_tl to calc_distribution_rules</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_rules_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_distribution_rules_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_distribution_rules"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1433" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_distribution_rules</comment>
+        <insert tableName="calc_distribution_rules" schemaName="apps">
+            <column name="code" value="REQ" />
+        </insert>
+
+        <insert tableName="calc_distribution_rules" schemaName="apps">
+            <column name="code" value="PRO" />
+        </insert>
+
+        <insert tableName="calc_distribution_rules" schemaName="apps">
+            <column name="code" value="FOS" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1434" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_distribution_rules_tl</comment>
+        <insert tableName="calc_distribution_rules_tl" schemaName="apps">
+            <column name="code" value="REQ" />
+            <column name="lang" value="RU" />
+            <column name="name" value="по заявке" />
+        </insert>
+
+        <insert tableName="calc_distribution_rules_tl" schemaName="apps">
+            <column name="code" value="REQ" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="по заявке" />
+        </insert>
+
+        <insert tableName="calc_distribution_rules_tl" schemaName="apps">
+            <column name="code" value="PRO" />
+            <column name="lang" value="RU" />
+            <column name="name" value="пропорционально заявке" />
+        </insert>
+
+        <insert tableName="calc_distribution_rules_tl" schemaName="apps">
+            <column name="code" value="PRO" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="пропорционально заявке" />
+        </insert>
+
+        <insert tableName="calc_distribution_rules_tl" schemaName="apps">
+            <column name="code" value="FOS" />
+            <column name="lang" value="RU" />
+            <column name="name" value="от одного источника" />
+        </insert>
+
+        <insert tableName="calc_distribution_rules_tl" schemaName="apps">
+            <column name="code" value="FOS" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="от одного источника" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1435" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_grid_types</comment>
+        <createTable tableName="calc_grid_types" schemaName="apps" remarks="Типы эл. эсетей">
+            <column name="code" type="varchar2(30)" remarks="Код типа сетей">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1436" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_grid_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_grid_types"
+                schemaName="apps"
+                tableName="calc_grid_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1437" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_grid_types_tl</comment>
+        <createTable tableName="calc_grid_types_tl" schemaName="apps" remarks="Типы эл. эсетей - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код типа сетей">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование типа сетей">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1438" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_grid_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_grid_types_tl"
+                schemaName="apps"
+                tableName="calc_grid_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1439" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_grid_types_tl to calc_grid_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_grid_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_grid_types_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_grid_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1440" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_grid_types</comment>
+        <insert tableName="calc_grid_types" schemaName="apps">
+            <column name="code" value="K" />
+        </insert>
+
+        <insert tableName="calc_grid_types" schemaName="apps">
+            <column name="code" value="O" />
+        </insert>
+
+        <insert tableName="calc_grid_types" schemaName="apps">
+            <column name="code" value="B" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1441" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_grid_types_tl</comment>
+        <insert tableName="calc_grid_types_tl" schemaName="apps">
+            <column name="code" value="K" />
+            <column name="lang" value="RU" />
+            <column name="name" value="сети KEGOC" />
+        </insert>
+
+        <insert tableName="calc_grid_types_tl" schemaName="apps">
+            <column name="code" value="K" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="сети KEGOC" />
+        </insert>
+
+        <insert tableName="calc_grid_types_tl" schemaName="apps">
+            <column name="code" value="O" />
+            <column name="lang" value="RU" />
+            <column name="name" value="сети РЭК" />
+        </insert>
+
+        <insert tableName="calc_grid_types_tl" schemaName="apps">
+            <column name="code" value="O" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="сети РЭК" />
+        </insert>
+
+        <insert tableName="calc_grid_types_tl" schemaName="apps">
+            <column name="code" value="B" />
+            <column name="lang" value="RU" />
+            <column name="name" value="сети KEGOC и РЭК" />
+        </insert>
+
+        <insert tableName="calc_grid_types_tl" schemaName="apps">
+            <column name="code" value="B" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="сети KEGOC и РЭК" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1442" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_freezing_reasons</comment>
+        <createTable tableName="calc_freezing_reasons" schemaName="apps" remarks="Причины фиксации значения">
+            <column name="code" type="varchar2(30)" remarks="Код причины">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1443" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_freezing_reasons</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_freezing_reasons"
+                schemaName="apps"
+                tableName="calc_freezing_reasons"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1444" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_freezing_reasons_tl</comment>
+        <createTable tableName="calc_freezing_reasons_tl" schemaName="apps" remarks="Причины фиксации значения - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код причины">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование причины">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1445" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_freezing_reasons_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_freezing_reasons_tl"
+                schemaName="apps"
+                tableName="calc_freezing_reasons_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1446" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_freezing_reasons_tl to calc_freezing_reasons</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_freezing_reasons_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_freezing_reasons_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_freezing_reasons"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1447" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_freezing_reasons</comment>
+        <insert tableName="calc_freezing_reasons" schemaName="apps">
+            <column name="code" value="F" />
+        </insert>
+
+        <insert tableName="calc_freezing_reasons" schemaName="apps">
+            <column name="code" value="M" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1448" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_freezing_reasons_tl</comment>
+        <insert tableName="calc_freezing_reasons_tl" schemaName="apps">
+            <column name="code" value="F" />
+            <column name="lang" value="RU" />
+            <column name="name" value="значение расчитано по формуле" />
+        </insert>
+
+        <insert tableName="calc_freezing_reasons_tl" schemaName="apps">
+            <column name="code" value="F" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="значение расчитано по формуле" />
+        </insert>
+
+        <insert tableName="calc_freezing_reasons_tl" schemaName="apps">
+            <column name="code" value="M" />
+            <column name="lang" value="RU" />
+            <column name="name" value="зафиксировано пользователем" />
+        </insert>
+
+        <insert tableName="calc_freezing_reasons_tl" schemaName="apps">
+            <column name="code" value="M" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="зафиксировано пользователем" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1449" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_manual_input_methods</comment>
+        <createTable tableName="calc_manual_input_methods" schemaName="apps" remarks="Методы ручного ввода распределений">
+            <column name="code" type="varchar2(30)" remarks="Код метода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1450" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_manual_input_methods</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_manual_input_methods"
+                schemaName="apps"
+                tableName="calc_manual_input_methods"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1451" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_manual_input_methods_tl</comment>
+        <createTable tableName="calc_manual_input_methods_tl" schemaName="apps" remarks="Методы ручного ввода распределений - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код метода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование метода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1452" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_manual_input_methods_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_manual_input_methods_tl"
+                schemaName="apps"
+                tableName="calc_manual_input_methods_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1453" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_manual_input_methods_tl to calc_manual_input_methods</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_manual_input_methods_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_manual_input_methods_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_manual_input_methods"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1454" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_manual_input_methods</comment>
+        <insert tableName="calc_manual_input_methods" schemaName="apps">
+            <column name="code" value="K1" />
+        </insert>
+
+        <insert tableName="calc_manual_input_methods" schemaName="apps">
+            <column name="code" value="K2" />
+        </insert>
+
+        <insert tableName="calc_manual_input_methods" schemaName="apps">
+            <column name="code" value="O1" />
+        </insert>
+
+        <insert tableName="calc_manual_input_methods" schemaName="apps">
+            <column name="code" value="O2" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1455" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_manual_input_methods_tl</comment>
+        <insert tableName="calc_manual_input_methods_tl" schemaName="apps">
+            <column name="code" value="K1" />
+            <column name="lang" value="RU" />
+            <column name="name" value="KEGOC = Всего" />
+        </insert>
+
+        <insert tableName="calc_manual_input_methods_tl" schemaName="apps">
+            <column name="code" value="K1" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="KEGOC = Всего" />
+        </insert>
+
+        <insert tableName="calc_manual_input_methods_tl" schemaName="apps">
+            <column name="code" value="K2" />
+            <column name="lang" value="RU" />
+            <column name="name" value="KEGOC = Всего - РЭК" />
+        </insert>
+
+        <insert tableName="calc_manual_input_methods_tl" schemaName="apps">
+            <column name="code" value="K2" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="KEGOC = Всего - РЭК" />
+        </insert>
+
+        <insert tableName="calc_manual_input_methods_tl" schemaName="apps">
+            <column name="code" value="O1" />
+            <column name="lang" value="RU" />
+            <column name="name" value="РЭК = Всего" />
+        </insert>
+
+        <insert tableName="calc_manual_input_methods_tl" schemaName="apps">
+            <column name="code" value="O1" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="РЭК = Всего" />
+        </insert>
+
+        <insert tableName="calc_manual_input_methods_tl" schemaName="apps">
+            <column name="code" value="O2" />
+            <column name="lang" value="RU" />
+            <column name="name" value="РЭК = Всего - KEGOC" />
+        </insert>
+
+        <insert tableName="calc_manual_input_methods_tl" schemaName="apps">
+            <column name="code" value="O2" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="РЭК = Всего - KEGOC" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-1456" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_mp_distribution_rules</comment>
+        <createTable tableName="calc_mp_distribution_rules" schemaName="apps" remarks="Правила распределения эл.энергии по энергоисточникам">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="energy_source_id" type="number" remarks="Идентификатор энергоисточника">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="grid_type" type="varchar2(30)" remarks="Маршрут доставки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="distribution_rule" type="varchar2(30)" remarks="Правило распределения при вводе значения вручную">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="processing_order" type="number" remarks="Порядок обработки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1457" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_mp_distribution_rules</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_mp_distribution_rules"
+                schemaName="apps"
+                tableName="calc_mp_distribution_rules"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1458" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_mp_distribution_rules</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_mp_distribution_rules_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1459" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_mp_distribution_rules</comment>
+        <createIndex indexName="idx_calc_mp_distribution_rules_1"
+                     schemaName="apps"
+                     tableName="calc_mp_distribution_rules"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1460" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_mp_distribution_rules</comment>
+        <createIndex indexName="idx_calc_mp_distribution_rules_2"
+                     schemaName="apps"
+                     tableName="calc_mp_distribution_rules"
+                     unique="false">
+            <column name="energy_source_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1461" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_mp_distribution_rules</comment>
+        <createIndex indexName="idx_calc_mp_distribution_rules_3"
+                     schemaName="apps"
+                     tableName="calc_mp_distribution_rules"
+                     unique="false">
+            <column name="grid_type" type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1462" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_mp_distribution_rules</comment>
+        <createIndex indexName="idx_calc_mp_distribution_rules_4"
+                     schemaName="apps"
+                     tableName="calc_mp_distribution_rules"
+                     unique="false">
+            <column name="distribution_rule" type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1463" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_mp_distribution_rules to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mp_distribution_rules"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_mp_distribution_rules_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1464" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_mp_distribution_rules to dict_energy_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mp_distribution_rules"
+                baseColumnNames="energy_source_id"
+                constraintName="fk_calc_mp_distribution_rules_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_energy_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1465" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_mp_distribution_rules to calc_grid_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mp_distribution_rules"
+                baseColumnNames="grid_type"
+                constraintName="fk_calc_mp_distribution_rules_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_grid_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1466" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_mp_distribution_rules to calc_distribution_rules</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mp_distribution_rules"
+                baseColumnNames="distribution_rule"
+                constraintName="fk_calc_mp_distribution_rules_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_distribution_rules"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+
+
+</databaseChangeLog>
