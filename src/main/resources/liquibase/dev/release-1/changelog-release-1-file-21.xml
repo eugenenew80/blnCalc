@@ -213,4 +213,16 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+
+    <changeSet id="calc-eug-1480" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_loss_fact_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_loss_fact_result_headers">
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+    </changeSet>
+
 </databaseChangeLog>

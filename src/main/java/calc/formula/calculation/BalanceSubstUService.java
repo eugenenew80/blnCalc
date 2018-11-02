@@ -137,6 +137,6 @@ public class BalanceSubstUService {
             val = result!=null ? result.getDoubleValue() : null;
         }
 
-        return val;
+        return ofNullable(val).orElse(0d);
     }
 }

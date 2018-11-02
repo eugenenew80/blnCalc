@@ -30,6 +30,7 @@ public class TaskExecutor {
     private final AspService aspService;
     private final InterService interService;
     private final SvrService svrService;
+    private final LossFactService lossFactService;
 
     @Scheduled(cron = "*/5 * * * * *")
     public void run() {
@@ -96,7 +97,7 @@ public class TaskExecutor {
         logger.info("Расчет фактических потерь, количество документов: " + headers.size());
         for (LossFactResultHeaderW header : headers) {
             logger.info("Header " + header.getId() + " started");
-            interService.calc(header.getId());
+            lossFactService.calc(header.getId());
             logger.info("Header " + header.getId() + " completed");
         }
     }
