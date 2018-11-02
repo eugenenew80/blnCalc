@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-1467" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_distribution_result_h</comment>
+        <createTable tableName="calc_distribution_result_h" schemaName="apps" remarks="Заголовок результатов распределения электрической энергии ">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="period_type" type="varchar2(20)" remarks="Тип периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Дата начала расчётного периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Дата окончания расчётного периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="calc_type" type="varchar2(20)" remarks="Тип расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="version" type="number" remarks="Версия">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_active" type="number" defaultValue="0" remarks="Флаг - документ активирован">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="varchar2(30)" remarks="Статус формирования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="state_code" type="varchar2(30)" remarks="Статус согласования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="balance_unit_id" type="number" remarks="Идентификатор единицы баланса">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1468" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_distribution_result_h</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_distribution_result_h"
+                schemaName="apps"
+                tableName="calc_distribution_result_h"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1469" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_distribution_result_h</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_distribution_result_h_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1470" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_distribution_result_h</comment>
+        <createIndex indexName="idx_calc_distribution_result_h_1"
+                     schemaName="apps"
+                     tableName="calc_distribution_result_h"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1471" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_distribution_result_h</comment>
+        <createIndex indexName="idx_calc_distribution_result_h_2"
+                     schemaName="apps"
+                     tableName="calc_distribution_result_h"
+                     unique="false">
+            <column name="balance_unit_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1472" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_distribution_result_h</comment>
+        <createIndex indexName="idx_calc_distribution_result_h_3"
+                     schemaName="apps"
+                     tableName="calc_distribution_result_h"
+                     unique="false">
+            <column name="period_type" type="varchar2(20)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1473" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_distribution_result_h_4"
+                     schemaName="apps"
+                     tableName="calc_distribution_result_h"
+                     unique="false">
+            <column name="status" type="varchar2(30)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1474" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bs_result_headers</comment>
+        <createIndex indexName="idx_calc_distribution_result_h_5"
+                     schemaName="apps"
+                     tableName="calc_distribution_result_h"
+                     unique="false">
+            <column name="state_code" type="varchar2(30)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1475" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_h to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_h"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_distribution_result_h_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1476" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_h to calc_balance_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_h"
+                baseColumnNames="balance_unit_id"
+                constraintName="fk_calc_distribution_result_h_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1477" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_h to calc_period_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_h"
+                baseColumnNames="period_type"
+                constraintName="fk_calc_distribution_result_h_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1478" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_h to media_batch_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_h"
+                baseColumnNames="status"
+                constraintName="fk_calc_distribution_result_h_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batch_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1479" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_h to wf_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_h"
+                baseColumnNames="state_code"
+                constraintName="fk_calc_distribution_result_h_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+</databaseChangeLog>
