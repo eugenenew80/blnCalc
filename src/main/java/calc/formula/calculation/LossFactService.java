@@ -62,7 +62,7 @@ public class LossFactService {
             .periodType(header.getPeriodType())
             .startDate(header.getStartDate())
             .endDate(header.getEndDate())
-            .orgId(header.getOrganization().getId())
+            .orgId( header.getOrganization()!=null ? header.getOrganization().getId() : null)
             .contextType(ContextType.DEFAULT)
             .values(new HashMap<>())
             .build();
@@ -99,9 +99,14 @@ public class LossFactService {
                 sec1Lines.stream().map(t -> Pair.of(ofNullable(t.getAp()).orElse(0d), ofNullable(t.getAm()).orElse(0d))),
                 sec2Lines.stream().map(t -> Pair.of(ofNullable(t.getAp()).orElse(0d), ofNullable(t.getAm()).orElse(0d)))
             );
-
             Double totalAp = aStream.map(t -> t.getFirst()).reduce((t1, t2) -> t1 + t2).orElse(0d);
+
+            aStream = Stream.concat(
+                sec1Lines.stream().map(t -> Pair.of(ofNullable(t.getAp()).orElse(0d), ofNullable(t.getAm()).orElse(0d))),
+                sec2Lines.stream().map(t -> Pair.of(ofNullable(t.getAp()).orElse(0d), ofNullable(t.getAm()).orElse(0d)))
+            );
             Double totalAm = aStream.map(t -> t.getSecond()).reduce((t1, t2) -> t1 + t2).orElse(0d);
+
             Double lossFact = totalAp - totalAm;
 
             Double r322 = sec1Lines.stream()
