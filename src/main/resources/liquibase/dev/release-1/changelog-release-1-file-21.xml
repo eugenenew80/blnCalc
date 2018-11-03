@@ -214,7 +214,6 @@
         />
     </changeSet>
 
-
     <changeSet id="calc-eug-1480" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Adding column to table: calc_loss_fact_result_headers</comment>
         <addColumn schemaName="apps" tableName="calc_loss_fact_result_headers">
@@ -222,7 +221,342 @@
                 <constraints nullable="false"/>
             </column>
         </addColumn>
-
     </changeSet>
+
+    <changeSet id="calc-eug-1481" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_distribution_result_l</comment>
+        <createTable tableName="calc_distribution_result_l" schemaName="apps" remarks="Строки результатов распределения электрической энергии">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="distribution_rule_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="energy_source_id" type="number" remarks="Идентификатор энергоисточника">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="plan_val" type="number" remarks="Плановый объем">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="own_val" type="number" remarks="Фактический объем по собственной сети оператора">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="other_val" type="number" remarks="Фактический объем по другим сетям">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="total_val" type="number" remarks="Фактический объем, всего">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="is_manual" type="number" defaultValue="0" remarks="Флаг - добавлена вручную">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_frozen" type="number" defaultValue="0" remarks="Флаг - защищено от изменений">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="freezing_reason" type="varchar2(30)" remarks="Причина защиты от изменений">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1482" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_distribution_result_l</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_distribution_result_l"
+                schemaName="apps"
+                tableName="calc_distribution_result_l"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1483" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_distribution_result_l</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_distribution_result_l_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1484" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_distribution_result_l</comment>
+        <createIndex indexName="idx_calc_distribution_result_l_1" schemaName="apps" tableName="calc_distribution_result_l">
+            <column name="result_header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1485" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_distribution_result_l</comment>
+        <createIndex indexName="idx_calc_distribution_result_l_2" schemaName="apps" tableName="calc_distribution_result_l">
+            <column name="energy_source_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1486" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_distribution_result_l</comment>
+        <createIndex indexName="idx_calc_distribution_result_l_3" schemaName="apps" tableName="calc_distribution_result_l">
+            <column name="metering_point_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1487" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_distribution_result_l</comment>
+        <createIndex indexName="idx_calc_distribution_result_l_4" schemaName="apps" tableName="calc_distribution_result_l">
+            <column name="param_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1488" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_distribution_result_l</comment>
+        <createIndex indexName="idx_calc_distribution_result_l_5" schemaName="apps" tableName="calc_distribution_result_l">
+            <column name="freezing_reason"  type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1489" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l to calc_distribution_result_h</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_distribution_result_l_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_distribution_result_h"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1490" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l to dict_energy_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l"
+                baseColumnNames="energy_source_id"
+                constraintName="fk_calc_distribution_result_l_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_energy_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1491" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_distribution_result_l_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1492" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_distribution_result_l_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1493" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l to calc_freezing_reasons</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l"
+                baseColumnNames="freezing_reason"
+                constraintName="fk_calc_distribution_result_l_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_freezing_reasons"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-1494" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_distribution_result_t</comment>
+        <createTable tableName="calc_distribution_result_t" schemaName="apps" remarks="Трейдеры для результатов распределения электрической энергии">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_line_id" type="number" remarks="Идентификатор строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="trader_id" type="number" remarks="Идентификатор трейдера">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_num" type="number" remarks="Порядок перечисления в документе">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1495" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_distribution_result_t</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_distribution_result_t_l"
+                schemaName="apps"
+                tableName="calc_distribution_result_t"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1496" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_distribution_result_t</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_distribution_result_t_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1497" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_distribution_result_t</comment>
+        <createIndex indexName="idx_calc_distribution_result_t_1" schemaName="apps" tableName="calc_distribution_result_t">
+            <column name="result_header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1498" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_distribution_result_t</comment>
+        <createIndex indexName="idx_calc_distribution_result_t_2" schemaName="apps" tableName="calc_distribution_result_t">
+            <column name="result_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1499" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_distribution_result_t</comment>
+        <createIndex indexName="idx_calc_distribution_result_t_3" schemaName="apps" tableName="calc_distribution_result_t">
+            <column name="trader_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1500" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_t to calc_distribution_result_h</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_t"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_distribution_result_t_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_distribution_result_h"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1501" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_t to calc_distribution_result_l</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_t"
+                baseColumnNames="result_line_id"
+                constraintName="fk_calc_distribution_result_t_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_distribution_result_l"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1502" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_t to dict_business_partners</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_t"
+                baseColumnNames="trader_id"
+                constraintName="fk_calc_distribution_result_t_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_business_partners"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 
 </databaseChangeLog>
