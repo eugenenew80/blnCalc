@@ -558,5 +558,44 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-1503" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_mp_distribution_rules</comment>
+        <addColumn schemaName="apps" tableName="calc_mp_distribution_rules">
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
+    <changeSet id="calc-eug-1504" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_mp_distribution_rules</comment>
+        <createIndex indexName="idx_calc_mp_distribution_rules_5" schemaName="apps" tableName="calc_mp_distribution_rules">
+            <column name="param_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1505" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_mp_distribution_rules to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mp_distribution_rules"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_mp_distribution_rules_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1506" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_distribution_result_h</comment>
+        <addColumn schemaName="apps" tableName="calc_distribution_result_h">
+            <column name="comment_text" type="varchar2(300)" remarks="Комментарий">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
