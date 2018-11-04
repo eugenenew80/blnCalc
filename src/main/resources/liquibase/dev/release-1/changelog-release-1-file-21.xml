@@ -598,4 +598,68 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-eug-1507" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: dict_power_lines</comment>
+        <addColumn schemaName="apps" tableName="dict_power_lines">
+            <column name="voltage_class_id" type="number" remarks="Класс напряжения">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1508" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: dict_power_lines</comment>
+        <createIndex indexName="idx_dict_power_lines_1" schemaName="apps" tableName="dict_power_lines">
+            <column name="voltage_class_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1509" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dict_power_lines to dict_voltage_classes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dict_power_lines"
+                baseColumnNames="voltage_class_id"
+                constraintName="fk_dict_power_lines_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_voltage_classes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1510" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_mp_distribution_rules</comment>
+        <addColumn schemaName="apps" tableName="calc_mp_distribution_rules">
+            <column name="input_method" type="varchar2(30)" remarks="Метод распределения при вводе значения вручную">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1511" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_mp_distribution_rules</comment>
+        <createIndex indexName="idx_calc_mp_distribution_rules_6" schemaName="apps" tableName="calc_mp_distribution_rules">
+            <column name="input_method" type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1512" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_mp_distribution_rules to calc_manual_input_methods</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mp_distribution_rules"
+                baseColumnNames="input_method"
+                constraintName="fk_calc_mp_distribution_rules_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_manual_input_methods"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>
