@@ -94,7 +94,7 @@ public class InterLineService {
                             .build();
 
                         Double val = BinaryExpression.builder()
-                            .operator(operatorFactory.binary("min"))
+                            .operator(operatorFactory.binary("subtract"))
                             .expressions(Arrays.asList(expression1, expression2))
                             .build()
                             .doubleValue();
@@ -111,8 +111,16 @@ public class InterLineService {
                         resultDetLine.setHeader(header);
                         resultDetLine.setLine(resultLine);
                         resultDetLine.setDirection(direction);
-                        resultDetLine.setMeteringPoint1(meteringPoint1);
-                        resultDetLine.setMeteringPoint2(meteringPoint2);
+
+                        if (direction == 1l) {
+                            resultDetLine.setMeteringPoint1(meteringPoint1);
+                            resultDetLine.setMeteringPoint2(meteringPoint2);
+                        }
+                        else {
+                            resultDetLine.setMeteringPoint1(meteringPoint2);
+                            resultDetLine.setMeteringPoint2(meteringPoint1);
+                        }
+
                         resultDetLine.setCreateDate(LocalDateTime.now());
                         resultDetLine.setCreateBy(header.getCreateBy());
 

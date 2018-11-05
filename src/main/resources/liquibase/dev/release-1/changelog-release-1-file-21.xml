@@ -621,7 +621,7 @@
                 baseTableSchemaName="apps"
                 baseTableName="dict_power_lines"
                 baseColumnNames="voltage_class_id"
-                constraintName="fk_dict_power_lines_1"
+                constraintName="fk_dict_power_lines_2"
                 deferrable="true"
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
@@ -662,4 +662,28 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1513" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_distribution_result_l</comment>
+        <createIndex indexName="idx_calc_distribution_result_l_6" schemaName="apps" tableName="calc_distribution_result_l">
+            <column name="distribution_rule_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1514" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l to calc_mp_distribution_rules</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l"
+                baseColumnNames="distribution_rule_id"
+                constraintName="fk_calc_distribution_result_l_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_mp_distribution_rules"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
