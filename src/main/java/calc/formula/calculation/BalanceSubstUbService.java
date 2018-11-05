@@ -232,7 +232,8 @@ public class BalanceSubstUbService {
                         if (tnType != null && tnType.getAccuracyClass() != null)
                             buProc = ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
 
-                        Double biProc = Math.sqrt(2d) * bttProc;
+                        //Double biProc = Math.sqrt(2d) * bttProc;
+                        Double biProc = bttProc;
                         Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
                         Double bsoProc = ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
                         Double bProc = Math.sqrt(Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2)) * 1.1d;
