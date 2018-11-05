@@ -990,4 +990,61 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1578" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_manual_input_methods</comment>
+        <addColumn schemaName="apps" tableName="calc_manual_input_methods">
+            <column name="grid_type" type="varchar2(30)" remarks="Маршрут доставки">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1579" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_manual_input_methods to calc_grid_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_manual_input_methods"
+                baseColumnNames="grid_type"
+                constraintName="fk_calc_manual_input_methods_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_grid_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1580" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Update column grid_type in table: calc_manual_input_methods</comment>
+        <update schemaName="apps" tableName="calc_manual_input_methods">
+            <column name="grid_type" type="varchar2(30)" value="K" />
+            <where>code = 'K1'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="calc-eug-1581" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Update column grid_type in table: calc_manual_input_methods</comment>
+        <update schemaName="apps" tableName="calc_manual_input_methods">
+            <column name="grid_type" type="varchar2(30)" value="O" />
+            <where>code = 'K1'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="calc-eug-1582" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Update column grid_type in table: calc_manual_input_methods</comment>
+        <update schemaName="apps" tableName="calc_manual_input_methods">
+            <column name="grid_type" type="varchar2(30)" value="B" />
+            <where>code = 'K2'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="calc-eug-1583" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Update column grid_type in table: calc_manual_input_methods</comment>
+        <update schemaName="apps" tableName="calc_manual_input_methods">
+            <column name="grid_type" type="varchar2(30)" value="B" />
+            <where>code = 'O2'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
