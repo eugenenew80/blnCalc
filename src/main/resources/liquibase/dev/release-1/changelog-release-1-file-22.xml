@@ -1022,14 +1022,16 @@
             <column name="grid_type" type="varchar2(30)" value="K" />
             <where>code = 'K1'</where>
         </update>
+        <rollback/>
     </changeSet>
 
     <changeSet id="calc-eug-1581" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Update column grid_type in table: calc_manual_input_methods</comment>
         <update schemaName="apps" tableName="calc_manual_input_methods">
             <column name="grid_type" type="varchar2(30)" value="O" />
-            <where>code = 'K1'</where>
+            <where>code = 'O1'</where>
         </update>
+        <rollback/>
     </changeSet>
 
     <changeSet id="calc-eug-1582" logicalFilePath="path-independent" author="eugene" context="dev">
@@ -1038,6 +1040,7 @@
             <column name="grid_type" type="varchar2(30)" value="B" />
             <where>code = 'K2'</where>
         </update>
+        <rollback/>
     </changeSet>
 
     <changeSet id="calc-eug-1583" logicalFilePath="path-independent" author="eugene" context="dev">
@@ -1046,5 +1049,6 @@
             <column name="grid_type" type="varchar2(30)" value="B" />
             <where>code = 'O2'</where>
         </update>
+        <rollback/>
     </changeSet>
 </databaseChangeLog>
