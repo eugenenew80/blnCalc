@@ -989,5 +989,19 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-431" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop table rfc</comment>
+        <dropTable cascadeConstraints="true"
+                   schemaName="apps"
+                   tableName="cm_doc_rfc"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-432" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop table rfc_tl</comment>
+        <dropTable cascadeConstraints="true"
+                   schemaName="apps"
+                   tableName="cm_doc_rfc_tl"/>
+    </changeSet>
 </databaseChangeLog>
 
