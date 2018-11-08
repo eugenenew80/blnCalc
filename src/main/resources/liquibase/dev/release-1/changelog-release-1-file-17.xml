@@ -1003,5 +1003,28 @@
                    schemaName="apps"
                    tableName="cm_doc_rfc_tl"/>
     </changeSet>
+
+    <changeSet id="calc-rus-433" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop foreign key in table: calc_bs_result_bp_lines</comment>
+        <dropForeignKeyConstraint baseTableName="calc_bs_result_bp_lines" constraintName="fk_calc_bs_result_bp_lines_3" baseTableSchemaName="apps"/>
+        <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-434" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to mdfem_eem_base</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_bp_lines"
+                baseColumnNames="meter_id"
+                constraintName="fk_calc_bs_result_bp_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_eem_base"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
 
