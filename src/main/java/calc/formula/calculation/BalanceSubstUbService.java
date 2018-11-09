@@ -380,7 +380,7 @@ public class BalanceSubstUbService {
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
-        else if (accuracyClass.getDesignation().equals("5") || accuracyClass.getDesignation().equals("10")) {
+        else if (accuracyClass.getDesignation().equals("3") || accuracyClass.getDesignation().equals("5") || accuracyClass.getDesignation().equals("10")) {
             if (i1avgProc > 120)        msgCode = "UB_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();

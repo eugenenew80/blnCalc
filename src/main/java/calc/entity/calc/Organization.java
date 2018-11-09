@@ -17,7 +17,4 @@ import javax.persistence.Table;
 public class Organization {
     @Id
     private Long id;
-
-    @Column
-    private String name;
 }
