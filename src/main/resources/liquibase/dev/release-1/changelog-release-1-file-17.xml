@@ -561,5 +561,470 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-407" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: dm_doc_signer_role</comment>
+        <createTable tableName="dm_doc_signer_role" schemaName="apps" remarks="Справочник Роль подписчика">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-408" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: dm_doc_signer_role</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_dm_doc_signer_role"
+                schemaName="apps"
+                tableName="dm_doc_signer_role"/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-409" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: dm_doc_signer_role_tl</comment>
+        <createTable tableName="dm_doc_signer_role_tl" schemaName="apps" remarks="Перевод Справочник Роль подписчика">
+            <column name="code" type="varchar2(30)" remarks="Код">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar2(10)" remarks="Язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar2(200)" remarks="Наименование">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор обновления">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата обновления">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-410" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: dm_doc_signer_role_tl</comment>
+        <addPrimaryKey
+                columnNames="code,lang"
+                constraintName="pk_dm_doc_signer_role_tl"
+                schemaName="apps"
+                tableName="dm_doc_signer_role_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-411" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: dm_doc_signer_role_tl to dm_doc_signer_role</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_signer_role_tl"
+                baseColumnNames="code"
+                constraintName="fk_dm_doc_signer_role_tl_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_signer_role"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-412" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into dm_doc_signer_role</comment>
+        <insert schemaName="apps" tableName="dm_doc_signer_role">
+            <column name="code" type="varchar2" value="U"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="dm_doc_signer_role">
+            <column name="code" type="varchar2" value="S"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="dm_doc_signer_role">
+            <column name="code" type="varchar2" value="I"/>
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-413" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>insert into dm_doc_signer_role_tl</comment>
+        <insert schemaName="apps" tableName="dm_doc_signer_role_tl">
+            <column name="code" type="varchar2" value="U"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="утверждающий"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="dm_doc_signer_role_tl">
+            <column name="code" type="varchar2" value="U"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="утверждающий"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="dm_doc_signer_role_tl">
+            <column name="code" type="varchar2" value="S"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="согласующий"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="dm_doc_signer_role_tl">
+            <column name="code" type="varchar2" value="S"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="согласующий"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="dm_doc_signer_role_tl">
+            <column name="code" type="varchar2" value="I"/>
+            <column name="lang" type="varchar2" value="RU"/>
+            <column name="name" type="varchar2" value="исполнитель"/>
+        </insert>
+
+        <insert schemaName="apps" tableName="dm_doc_signer_role_tl">
+            <column name="code" type="varchar2" value="I"/>
+            <column name="lang" type="varchar2" value="KZ"/>
+            <column name="name" type="varchar2" value="исполнитель"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="calc-rus-414" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: dm_doc_signers</comment>
+        <createTable tableName="dm_doc_signers" schemaName="apps" remarks="Подписанты">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_type_code" type="varchar2(30)" remarks="Тип документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="doc_id" type="number" remarks="ID документа">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="signer_group" type="varchar2(30)" remarks="Группа подписантов в документе">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="signer_role" type="varchar2(30)" remarks="Роль подписчика: утверждающий, согласующий, исполнитель">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="bp_id" type="number" remarks="ID компании подписанта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="display_order" type="number" remarks="Порядок отображения в документе">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_user_bis" type="number" remarks="Является пользователем БиС">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="number" remarks="ID пользователя">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-415" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: dm_doc_signers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_dm_doc_signers"
+                schemaName="apps"
+                tableName="dm_doc_signers"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-416" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: dm_doc_signers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="dm_doc_signers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-417" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: dm_doc_signers</comment>
+        <createIndex indexName="idx_dm_doc_signers_1"
+                     schemaName="apps"
+                     tableName="dm_doc_signers"
+                     unique="false">
+            <column name="doc_type_code" type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-418" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_calc_balance_segment_result_headers</comment>
+        <createIndex indexName="idx_dm_doc_signers_3"
+                     schemaName="apps"
+                     tableName="dm_doc_signers"
+                     unique="false">
+            <column name="signer_group" type="varchar2(30)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-419" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: dm_doc_signers</comment>
+        <createIndex indexName="idx_dm_doc_signers_4"
+                     schemaName="apps"
+                     tableName="dm_doc_signers"
+                     unique="false">
+            <column name="signer_role" type="varchar2(30)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-420" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: dm_doc_signers</comment>
+        <createIndex indexName="idx_dm_doc_signers_5"
+                     schemaName="apps"
+                     tableName="dm_doc_signers"
+                     unique="false">
+            <column name="bp_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-421" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_signers to dm_doc_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_signers"
+                baseColumnNames="doc_type_code"
+                constraintName="fk_dm_doc_signers_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-422" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_signers to cm_doc_signatories_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_signers"
+                baseColumnNames="signer_group"
+                constraintName="fk_dm_doc_signers_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_signatories_groups"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-423" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_signers to dm_doc_signer_role</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_signers"
+                baseColumnNames="signer_role"
+                constraintName="fk_dm_doc_signers_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_signer_role"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-424" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: dm_doc_signers to dict_business_partners</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_signers"
+                baseColumnNames="bp_id"
+                constraintName="fk_dm_doc_signers_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_business_partners"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-rus-425" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: dm_doc_signers_tl</comment>
+        <createTable tableName="dm_doc_signers_tl" schemaName="apps" remarks="Перевод для Подписантов">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="signer_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="post_name" type="varchar(100)" remarks="Должность">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_name" type="varchar(100)" remarks="Фамилия">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="first_name" type="varchar(100)" remarks="Имя">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="middle_name" type="varchar(100)" remarks="Отчество">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-426" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: dm_doc_signers_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_dm_doc_signers_tl"
+                schemaName="apps"
+                tableName="dm_doc_signers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-427" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating unique key for table: dm_doc_signers_tl</comment>
+        <addUniqueConstraint
+                columnNames="signer_id, lang"
+                constraintName="uk_dm_doc_signers_tl_1"
+                schemaName="apps"
+                tableName="dm_doc_signers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-428" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: dm_doc_signers_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="dm_doc_signers_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-429" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: dm_doc_signers_tl</comment>
+        <createIndex indexName="idx_dm_doc_signers_tl_1" schemaName="apps" tableName="dm_doc_signers_tl">
+            <column name="signer_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-430" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: dm_doc_signers_tl to dm_doc_signers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dm_doc_signers_tl"
+                baseColumnNames="signer_id"
+                constraintName="fk_dm_doc_signers_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_signers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-431" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop table rfc</comment>
+        <dropTable cascadeConstraints="true"
+                   schemaName="apps"
+                   tableName="cm_doc_rfc"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-432" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop table rfc_tl</comment>
+        <dropTable cascadeConstraints="true"
+                   schemaName="apps"
+                   tableName="cm_doc_rfc_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-433" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop foreign key in table: calc_bs_result_bp_lines</comment>
+        <dropForeignKeyConstraint baseTableName="calc_bs_result_bp_lines" constraintName="fk_calc_bs_result_bp_lines_3" baseTableSchemaName="apps"/>
+        <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-434" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_bp_lines to mdfem_eem_base</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_bp_lines"
+                baseColumnNames="meter_id"
+                constraintName="fk_calc_bs_result_bp_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_eem_base"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
 
