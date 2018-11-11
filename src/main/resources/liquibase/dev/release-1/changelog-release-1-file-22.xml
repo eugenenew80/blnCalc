@@ -1051,4 +1051,613 @@
         </update>
         <rollback/>
     </changeSet>
+
+    <changeSet id="calc-eug-1584" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_reg_lines_3_det</comment>
+        <createTable tableName="calc_balance_reg_lines_3_det" schemaName="apps" remarks="Шаблон для баланса производства, поступления, и потребления электроэнергии по региону - разбивка по энергоисточникам">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_id" type="number" remarks="Идентификатор строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="energy_source_id" type="number" remarks="Идентификатор энергоисточника">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1585" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_reg_lines_3_det</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_reg_lines_3_det"
+                schemaName="apps"
+                tableName="calc_balance_reg_lines_3_det"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1586" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_reg_lines_3_det</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_reg_lines_3_det_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1587" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_lines_3_det</comment>
+        <createIndex indexName="idx_calc_balance_reg_lines_3_det_1"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_lines_3_det"
+                     unique="false">
+            <column name="header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1588" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_lines_3_det</comment>
+        <createIndex indexName="idx_calc_balance_reg_lines_3_det_2"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_lines_3_det"
+                     unique="false">
+            <column name="line_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1589" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_lines_3_det</comment>
+        <createIndex indexName="idx_calc_balance_reg_lines_3_det_3"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_lines_3_det"
+                     unique="false">
+            <column name="energy_source_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1590" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_lines_3_det to calc_balance_reg_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_lines_3_det"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_balance_reg_lines_3_det_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_reg_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1591" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_lines_3_det to calc_balance_reg_lines_3</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_lines_3_det"
+                baseColumnNames="line_id"
+                constraintName="fk_calc_balance_reg_lines_3_det_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_reg_lines_3"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1592" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_lines_3_det to dict_energy_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_lines_3_det"
+                baseColumnNames="energy_source_id"
+                constraintName="fk_calc_balance_reg_lines_3_det_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_energy_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1593" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_reg_lines_3</comment>
+        <addColumn schemaName="apps" tableName="calc_balance_reg_lines_3">
+            <column name="parent_id" type="number" remarks="Идентификатор родительской строки">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1594" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_lines_3</comment>
+        <createIndex indexName="idx_calc_balance_reg_lines_3_4"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_lines_3"
+                     unique="false">
+            <column name="parent_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1595" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_lines_3 to calc_balance_reg_lines_3</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_lines_3"
+                baseColumnNames="parent_id"
+                constraintName="fk_calc_balance_reg_lines_3_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_reg_lines_3"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1596" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_deal_types</comment>
+        <createTable tableName="calc_deal_types" schemaName="apps" remarks="Виды сделок">
+            <column name="code" type="varchar2(30)" remarks="Код вида сделки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1597" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_deal_types</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_deal_types"
+                schemaName="apps"
+                tableName="calc_deal_types"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1598" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_deal_types_tl</comment>
+        <createTable tableName="calc_deal_types_tl" schemaName="apps" remarks="Виды сделок - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код прввила">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование правила">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1599" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_deal_types_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_deal_types_tl"
+                schemaName="apps"
+                tableName="calc_deal_types_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1600" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_deal_types_tl to calc_deal_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_deal_types_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_deal_types_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_deal_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1601" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_deal_types</comment>
+        <insert tableName="calc_deal_types" schemaName="apps">
+            <column name="code" value="PURCHASE" />
+        </insert>
+
+        <insert tableName="calc_deal_types" schemaName="apps">
+            <column name="code" value="SALE" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1602" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_deal_types_tl</comment>
+        <insert tableName="calc_deal_types_tl" schemaName="apps">
+            <column name="code" value="PURCHASE" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Покупка" />
+        </insert>
+
+        <insert tableName="calc_deal_types_tl" schemaName="apps">
+            <column name="code" value="PURCHASE" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Покупка" />
+        </insert>
+
+        <insert tableName="calc_deal_types_tl" schemaName="apps">
+            <column name="code" value="SALE" />
+            <column name="lang" value="RU" />
+            <column name="name" value="Продажа" />
+        </insert>
+
+        <insert tableName="calc_deal_types_tl" schemaName="apps">
+            <column name="code" value="SALE" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="Продажа" />
+        </insert>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1603" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_dealers</comment>
+        <createTable tableName="calc_dealers" schemaName="apps" remarks="Организации посредники">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1604" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_dealers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_dealers"
+                schemaName="apps"
+                tableName="calc_dealers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1605" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_dealers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_dealers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1606" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_dealers_tl</comment>
+        <createTable tableName="calc_dealers_tl" schemaName="apps" remarks="Организации посредники - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="dealer_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование организации-посредника">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1607" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_dealers_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_dealers_tl"
+                schemaName="apps"
+                tableName="calc_dealers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1608" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_dealers_tl</comment>
+        <addUniqueConstraint
+                columnNames="dealer_id, lang"
+                constraintName="uk_calc_dealers_tl_1"
+                schemaName="apps"
+                tableName="calc_dealers_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1609" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_dealers_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_dealers_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1610" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_dealers_tl</comment>
+        <createIndex indexName="idx_calc_dealers_tl_1" schemaName="apps" tableName="calc_dealers_tl">
+            <column name="dealer_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1611" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_dealers_tl to calc_dealers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_dealers_tl"
+                baseColumnNames="dealer_id"
+                constraintName="fk_calc_dealers_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_dealers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1612" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_reg_lines_4</comment>
+        <createTable tableName="calc_balance_reg_lines_4" schemaName="apps" remarks="Шаблон для баланса производства, поступления, и потребления электроэнергии по региону - строки раздела 4">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="deal_type" type="varchar2(30)" remarks="Код типа сделки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="dealer_id" type="number" remarks="Идентификатор организации-посредника">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1613" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_reg_lines_4</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_reg_lines_4"
+                schemaName="apps"
+                tableName="calc_balance_reg_lines_4"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1614" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_reg_lines_4</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_reg_lines_4_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1615" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_lines_4</comment>
+        <createIndex indexName="idx_calc_balance_reg_lines_4_1"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_lines_4"
+                     unique="false">
+            <column name="header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1616" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_lines_4</comment>
+        <createIndex indexName="idx_calc_balance_reg_lines_4_2"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_lines_4"
+                     unique="false">
+            <column name="metering_point_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1617" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_lines_4</comment>
+        <createIndex indexName="idx_calc_balance_reg_lines_4_3"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_lines_4"
+                     unique="false">
+            <column name="deal_type" type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1618" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_lines_4</comment>
+        <createIndex indexName="idx_calc_balance_reg_lines_4_4"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_lines_4"
+                     unique="false">
+            <column name="dealer_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1619" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_lines_4 to calc_balance_reg_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_lines_4"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_balance_reg_lines_4_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_reg_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1620" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_lines_4 to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_lines_4"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_balance_reg_lines_4_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1621" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_lines_4 to calc_deal_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_lines_4"
+                baseColumnNames="deal_type"
+                constraintName="fk_calc_balance_reg_lines_4_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_deal_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1622" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_lines_4 to calc_dealers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_lines_4"
+                baseColumnNames="dealer_id"
+                constraintName="fk_calc_balance_reg_lines_4_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_dealers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
