@@ -1925,4 +1925,18 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1641" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_electricity_producer_groups_tl</comment>
+        <addColumn schemaName="apps" tableName="calc_electricity_producer_groups_tl">
+            <column name="short_name" type="varchar(30)" remarks="Краткое наименование группы">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1642" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Modifying table: calc_electricity_producer_groups_tl</comment>
+        <modifyDataType schemaName="apps" tableName="calc_electricity_producer_groups_tl" columnName="name" newDataType="varchar2(100)" />
+    </changeSet>
 </databaseChangeLog>
