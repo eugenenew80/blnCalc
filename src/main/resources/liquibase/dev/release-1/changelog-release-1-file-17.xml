@@ -1026,5 +1026,146 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-435" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: dict_energy_sources</comment>
+        <dropColumn tableName="dict_energy_sources" schemaName="apps">
+            <column name="name" />
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-436" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: dict_energy_sources</comment>
+        <dropColumn tableName="dict_energy_sources" schemaName="apps">
+            <column name="short_name" />
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-437" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: dict_energy_sources</comment>
+        <dropColumn tableName="dict_energy_sources" schemaName="apps">
+            <column name="address" />
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-438" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: dict_organizations</comment>
+        <dropColumn tableName="dict_organizations" schemaName="apps">
+            <column name="name" />
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-439" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: dict_organizations</comment>
+        <dropColumn tableName="dict_organizations" schemaName="apps">
+            <column name="short_name" />
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-440" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: dm_doc_types</comment>
+        <dropColumn tableName="dm_doc_types" schemaName="apps">
+            <column name="short_name"/>
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-441" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: dm_doc_types</comment>
+        <dropColumn tableName="dm_doc_types" schemaName="apps">
+            <column name="name"/>
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-442" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: dm_doc_types</comment>
+        <dropColumn tableName="dm_doc_types" schemaName="apps">
+            <column name="prefix_for_number"/>
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-443" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: dict_units</comment>
+        <dropColumn tableName="dict_units" schemaName="apps">
+            <column name="short_name"/>
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-444" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: dict_units</comment>
+        <dropColumn tableName="dict_units" schemaName="apps">
+            <column name="name"/>
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-445" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Adding column to table: dict_organizations</comment>
+        <addColumn tableName="dict_organizations" schemaName="apps">
+            <column name="zone_id" type="number" remarks="Идентификатор зонэ НЭС РК">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-446" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: dict_organizations to dict_energy_zones</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dict_organizations"
+                baseColumnNames="zone_id"
+                constraintName="fk_dict_organizations_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_energy_zones"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-447" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Adding column to table: dict_regions</comment>
+        <addColumn tableName="dict_regions" schemaName="apps">
+            <column name="org_id" type="number" remarks="Идентификатор ответсвенного филиала">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-448" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: dict_regions to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="dict_regions"
+                baseColumnNames="org_id"
+                constraintName="fk_dict_regions_2"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-449" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: DICT_REGIONS</comment>
+        <dropColumn tableName="dict_regions" schemaName="apps">
+            <column name="name"/>
+        </dropColumn>
+        <rollback />
+    </changeSet>
+
 </databaseChangeLog>
 
