@@ -1660,4 +1660,269 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1623" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_electricity_producer_groups</comment>
+        <createTable tableName="calc_electricity_producer_groups" schemaName="apps" remarks="Группы производителей электрической энергии">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="business_partner_id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1624" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_electricity_producer_groups</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_electricity_producer_groups"
+                schemaName="apps"
+                tableName="calc_electricity_producer_groups"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1625" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_electricity_producer_groups</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_electricity_producer_groups_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1626" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_electricity_producer_groups</comment>
+        <createIndex indexName="idx_calc_electricity_producer_groups_1"
+                     schemaName="apps"
+                     tableName="calc_electricity_producer_groups"
+                     unique="false">
+            <column name="business_partner_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1627" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_electricity_producer_groups to dict_business_partners</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_electricity_producer_groups"
+                baseColumnNames="business_partner_id"
+                constraintName="fk_calc_electricity_producer_groups_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_business_partners"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1628" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_electricity_producer_groups_tl</comment>
+        <createTable tableName="calc_electricity_producer_groups_tl" schemaName="apps" remarks="Группы производителей электрической энергии - переводы">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="group_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(500)" remarks="Наименование группы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1629" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_electricity_producer_groups_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_electricity_producer_groups_tl"
+                schemaName="apps"
+                tableName="calc_electricity_producer_groups_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1630" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_electricity_producer_groups_tl</comment>
+        <addUniqueConstraint
+                columnNames="group_id, lang"
+                constraintName="uk_calc_electricity_producer_groups_tl_1"
+                schemaName="apps"
+                tableName="calc_electricity_producer_groups_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1631" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_electricity_producer_groups_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_electricity_producer_groups_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1632" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_electricity_producer_groups_tl</comment>
+        <createIndex indexName="idx_calc_electricity_producer_groups_tl_1" schemaName="apps" tableName="calc_electricity_producer_groups_tl">
+            <column name="group_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1633" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_electricity_producer_groups_tl to calc_electricity_producer_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_electricity_producer_groups_tl"
+                baseColumnNames="group_id"
+                constraintName="fk_calc_electricity_producer_groups_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_electricity_producer_groups"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1634" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_electricity_producer_sources</comment>
+        <createTable tableName="calc_electricity_producer_sources" schemaName="apps" remarks="Электростанции производитедей эл. энергии в привязке к группам">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="group_id" type="number" remarks="Идентификатор группы">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="energy_source_id" type="number" remarks="Идентификатор электростанции">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Действует с">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Действует по">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1635" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_electricity_producer_sources</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_electricity_producer_sources"
+                schemaName="apps"
+                tableName="calc_electricity_producer_sources"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1636" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_electricity_producer_sources</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_electricity_producer_sources_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1637" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_electricity_producer_sources</comment>
+        <createIndex indexName="idx_calc_electricity_producer_sources_1" schemaName="apps" tableName="calc_electricity_producer_sources">
+            <column name="group_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1638" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_electricity_producer_sources</comment>
+        <createIndex indexName="idx_calc_electricity_producer_sources_2" schemaName="apps" tableName="calc_electricity_producer_sources">
+            <column name="energy_source_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1639" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_electricity_producer_sources to calc_electricity_producer_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_electricity_producer_sources"
+                baseColumnNames="group_id"
+                constraintName="fk_calc_electricity_producer_sources_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_electricity_producer_groups"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1640" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_electricity_producer_sources to dict_energy_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_electricity_producer_sources"
+                baseColumnNames="energy_source_id"
+                constraintName="fk_calc_electricity_producer_sources_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_energy_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
