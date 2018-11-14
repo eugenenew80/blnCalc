@@ -1,5 +1,6 @@
 package calc.entity.calc.asp;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.Formula;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
@@ -43,6 +44,10 @@ public class AspLine {
     @Column(name="treatment_type_code")
     @Enumerated(EnumType.STRING)
     private TreatmentTypeEnum treatmentType;
+
+    @Column(name = "is_bold")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isBold;
 
     @Column(name = "start_date")
     private LocalDate startDate;

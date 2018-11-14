@@ -126,6 +126,7 @@ public class AspService {
                 resultLine.setUnit(line.getParam().getUnit());
                 resultLine.setFormula(line.getFormula());
                 resultLine.setTreatmentType(line.getTreatmentType());
+                resultLine.setIsBold(line.getIsBold());
                 resultLine.setVal(value);
 
                 copyTranslates(line, resultLine);
@@ -192,6 +193,8 @@ public class AspService {
                 resultLine.setUnderCountVal(t.getUnderCountVal());
                 resultLine.setUndercount(t.getUnderCount());
                 resultLine.setTreatmentType(line.getTreatmentType());
+                resultLine.setIsBold(line.getIsBold());
+
                 copyTranslates(line, resultLine);
                 resultLines.add(resultLine);
             }
@@ -244,6 +247,8 @@ public class AspService {
             }
 
             resultLine.setVal(value);
+            resultLine.setIsBold(line.getIsBold());
+
             copyTranslates(line, resultLine);
             resultLines.add(resultLine);
         }
@@ -261,6 +266,8 @@ public class AspService {
             resultLine.setHeader(header);
             resultLine.setLineNum(line.getLineNum());
             resultLine.setTreatmentType(line.getTreatmentType());
+            resultLine.setIsBold(line.getIsBold());
+
             copyTranslates(line, resultLine);
             resultLines.add(resultLine);
         }

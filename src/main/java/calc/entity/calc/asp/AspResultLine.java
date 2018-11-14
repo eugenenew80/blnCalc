@@ -1,5 +1,6 @@
 package calc.entity.calc.asp;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.*;
 import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.TreatmentTypeEnum;
@@ -89,6 +90,10 @@ public class AspResultLine {
     @Column(name="treatment_type_code")
     @Enumerated(EnumType.STRING)
     private TreatmentTypeEnum treatmentType;
+
+    @Column(name = "is_bold")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isBold;
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<AspResultLineTranslate> translates;
