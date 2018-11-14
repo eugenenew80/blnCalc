@@ -1110,4 +1110,398 @@
         />
     </changeSet>
 
+
+    <changeSet id="calc-eug-1715" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_reg_result_headers</comment>
+        <createTable tableName="calc_balance_reg_result_headers" schemaName="apps" remarks="Баланс ППиП по региону - заголовок">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="template_id" type="number" remarks="Идентификатор шаблона">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="balance_unit_id" type="number" remarks="Идентификатор единицы баланса">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_active" type="number" defaultValue="0" remarks="Флаг - документ активирован">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="period_type" type="varchar2(20)" remarks="Тип периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="date" remarks="Дата начала расчётного периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="date" remarks="Дата окончания расчётного периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="varchar2(30)" remarks="Статус формирования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="state_code" type="varchar2(30)" remarks="Статус согласования">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="receive_val" type="number"  remarks="Поступило всего">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="release_val" type="number"  remarks="Отпущено всего">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="ub_val" type="number"  remarks="Небаланс">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1716" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_reg_result_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_reg_result_headers"
+                schemaName="apps"
+                tableName="calc_balance_reg_result_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1717" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_reg_result_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_reg_result_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1718" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_result_headers</comment>
+        <createIndex indexName="idx_calc_balance_reg_result_headers_1"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_result_headers"
+                     unique="false">
+            <column name="template_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1719" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_result_headers</comment>
+        <createIndex indexName="idx_calc_balance_reg_result_headers_2"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_result_headers"
+                     unique="false">
+            <column name="period_type" type="varchar2(20)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1720" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_calc_balance_reg_result_headers</comment>
+        <createIndex indexName="idx_calc_balance_reg_result_headers_3"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_result_headers"
+                     unique="false">
+            <column name="status" type="varchar2(30)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1721" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_calc_balance_reg_result_headers</comment>
+        <createIndex indexName="idx_calc_balance_reg_result_headers_4"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_result_headers"
+                     unique="false">
+            <column name="state_code" type="varchar2(30)" />
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1722" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_result_headers</comment>
+        <createIndex indexName="idx_calc_balance_reg_result_headers_5"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_result_headers"
+                     unique="false">
+            <column name="org_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1723" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_headers to calc_period_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_headers"
+                baseColumnNames="period_type"
+                constraintName="fk_calc_balance_reg_result_headers_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1724" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_headers to media_batch_statuses</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_headers"
+                baseColumnNames="status"
+                constraintName="fk_calc_balance_reg_result_headers_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_batch_statuses"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1725" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_headers to wf_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_headers"
+                baseColumnNames="state_code"
+                constraintName="fk_calc_balance_reg_result_headers_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1726" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_balance_reg_result_headers_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1727" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_headers to calc_balance_units</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_headers"
+                baseColumnNames="balance_unit_id"
+                constraintName="fk_calc_balance_reg_result_headers_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_units"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1728" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_reg_result_messages</comment>
+        <createTable tableName="calc_balance_reg_result_messages" schemaName="apps" remarks="Сообщения к балансу ППиП по региону">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка расчёта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки документа, к которой относится сообщение">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="message_type_code" type="varchar2(10)" remarks="Тип ошибки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="error_code" type="varchar2(10)" remarks="Код ошибки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1729" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_reg_result_messages</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_reg_result_messages"
+                schemaName="apps"
+                tableName="calc_balance_reg_result_messages"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1730" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_reg_result_messages</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_reg_result_messages_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1731" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_balance_reg_result_messages</comment>
+        <createIndex indexName="idx_calc_balance_reg_result_messages_1"
+                     schemaName="apps"
+                     tableName="calc_balance_reg_result_messages"
+                     unique="false">
+            <column name="result_header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1732" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_messages to calc_balance_reg_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_messages"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_balance_reg_result_messages_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_reg_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-1733" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_reg_result_messages_tl</comment>
+        <createTable tableName="calc_balance_reg_result_messages_tl" schemaName="apps" remarks="Сообщения к балансу ППиП по региону - перевод">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_message_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="msg" type="varchar(500)" remarks="Текст примечания">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1734" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_reg_result_messages_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_reg_result_messages_tl"
+                schemaName="apps"
+                tableName="calc_balance_reg_result_messages_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1735" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_balance_reg_result_messages_tl</comment>
+        <addUniqueConstraint
+                columnNames="result_message_id, lang"
+                constraintName="uk_calc_balance_reg_result_messages_tl_1"
+                schemaName="apps"
+                tableName="calc_balance_reg_result_messages_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1736" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_reg_result_messages_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_reg_result_messages_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1737" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_reg_result_messages_tl</comment>
+        <createIndex indexName="idx_calc_balance_reg_result_messages_tl_1" schemaName="apps" tableName="calc_balance_reg_result_messages_tl">
+            <column name="result_message_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1738" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_messages_tl to calc_balance_reg_result_messages</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_messages_tl"
+                baseColumnNames="result_message_id"
+                constraintName="fk_calc_balance_reg_result_messages_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_reg_result_messages"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
