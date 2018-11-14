@@ -1939,4 +1939,29 @@
         <comment>Modifying table: calc_electricity_producer_groups_tl</comment>
         <modifyDataType schemaName="apps" tableName="calc_electricity_producer_groups_tl" columnName="name" newDataType="varchar2(100)" />
     </changeSet>
+
+    <changeSet id="calc-eug-1643" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_metering_data_sources </comment>
+        <addColumn schemaName="apps" tableName="calc_metering_data_sources">
+            <column name="bp_id" type="number" remarks="Идентификатор бизнес-партнера">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1644" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_sources to dict_business_partners</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_sources"
+                baseColumnNames="bp_id"
+                constraintName="fk_calc_metering_data_sources_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_business_partners"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
