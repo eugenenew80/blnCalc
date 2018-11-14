@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-rus-450" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_sheet_users</comment>
+        <createTable tableName="calc_sheet_users" schemaName="apps" remarks="Список пользователей для уведомлений">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="number" remarks="Идентификатор пользователя">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sheet_id" type="number" remarks="Идентификатор заголовка ведомасти">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-451" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_sheet_users</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_sheet_users"
+                schemaName="apps"
+                tableName="calc_sheet_users"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-452" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_sheet_users</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_sheet_users_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-453" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_sheet_users</comment>
+        <createIndex indexName="idx_calc_sheet_users_1" schemaName="apps" tableName="calc_sheet_users">
+            <column name="sheet_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-454" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_sheet_users to calc_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_sheet_users"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_sheet_users_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-455" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Adding column to table: calc_metering_data_sources</comment>
+        <addColumn tableName="calc_metering_data_sources" schemaName="apps">
+            <column name="sheet_id" type="number" remarks="Идентификатор заголовка ведомасти">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-456" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_sources to calc_sheets</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_sources"
+                baseColumnNames="sheet_id"
+                constraintName="fk_calc_metering_data_sources_3"
+                deferrable="true"
+                initiallyDeferred="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_sheets"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+</databaseChangeLog>
+
