@@ -1529,4 +1529,58 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1741" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping foreign constraint: calc_balance_reg_result_headers to calc_calculations_types</comment>
+        <dropForeignKeyConstraint baseTableSchemaName="apps" baseTableName="calc_balance_reg_result_headers" constraintName="fk_calc_balance_reg_result_headers_6" />
+    </changeSet>
+
+    <changeSet id="calc-eug-1742" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_headers"
+                baseColumnNames="calculation_type"
+                constraintName="fk_calc_balance_reg_result_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1743" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_metering_data_sources</comment>
+        <addColumn schemaName="apps" tableName="calc_metering_data_sources">
+            <column name="data_type" type="varchar2(30)" remarks="Код типа расчёта">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1744" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_metering_data_sources</comment>
+        <createIndex indexName="idx_calc_metering_data_sources_3" schemaName="apps" tableName="calc_metering_data_sources">
+            <column name="data_type"  type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1745" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_sources to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_sources"
+                baseColumnNames="data_type"
+                constraintName="fk_calc_metering_data_sources_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
