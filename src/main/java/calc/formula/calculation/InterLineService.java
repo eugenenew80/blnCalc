@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static calc.util.Util.round;
 import static java.util.Optional.ofNullable;
 
 @Service
@@ -69,6 +71,11 @@ public class InterLineService {
                     resultDetLine.setDirection(1l);
                     resultDetLine.setMeteringPoint1(line.getMeteringPoint1());
                     resultDetLine.setMeteringPoint2(line.getMeteringPoint2());
+                    resultDetLine.setLossVal(0d);
+                    resultDetLine.setLossVal1(0d);
+                    resultDetLine.setLossVal2(0d);
+                    resultDetLine.setLossProc1(0d);
+                    resultDetLine.setLossProc2(0d);
                     resultDetLine.setCreateDate(LocalDateTime.now());
                     resultDetLine.setCreateBy(header.getCreateBy());
                     resultLine.getDetails().add(resultDetLine);
@@ -80,7 +87,7 @@ public class InterLineService {
                         InterMrExpression expression1 = InterMrExpression.builder()
                             .context(context)
                             .meteringPointCode(line.getBoundMeteringPoint().getCode())
-                            .parameterCode("A+")
+                            .parameterCode("A-")
                             .rate(1d)
                             .service(interMrService)
                             .build();
@@ -88,7 +95,7 @@ public class InterLineService {
                         InterMrExpression expression2 = InterMrExpression.builder()
                             .context(context)
                             .meteringPointCode(line.getBoundMeteringPoint().getCode())
-                            .parameterCode("A-")
+                            .parameterCode("A+")
                             .rate(1d)
                             .service(interMrService)
                             .build();
@@ -156,7 +163,7 @@ public class InterLineService {
 
                         val1 = ofNullable(val1).orElse(0d);
                         val2 = ofNullable(val2).orElse(0d);
-                        Double lossVal = val1 - val2;
+                        Double lossVal = round(val1 - val2,0);
 
                         Double lossProc1 = ofNullable(line.getProportion1()).orElse(0d);
                         Double lossProc2 = ofNullable(line.getProportion2()).orElse(0d);
@@ -169,8 +176,8 @@ public class InterLineService {
                             lossProc2 = 100d * powerLength2 / powerLength;
                         }
 
-                        Double lossVal1 = lossProc1 / 100d * lossVal;
-                        Double lossVal2 = lossProc2 / 100d * lossVal;
+                        Double lossVal1 = round(lossProc1 / 100d * lossVal,0);
+                        Double lossVal2 = lossVal - lossVal1;
                         Double boundaryVal = val1 - lossVal1;
 
                         resultDetLine.setVal1(val1);
