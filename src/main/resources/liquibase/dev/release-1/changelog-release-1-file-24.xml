@@ -191,5 +191,17 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-465" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop table: calc_calculation_types</comment>
+        <dropTable tableName="calc_calculation_types" schemaName="apps" />
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-466" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop table: calc_calculation_types_types</comment>
+        <dropTable tableName="calc_calculation_types_types" schemaName="apps" />
+        <rollback />
+    </changeSet>
 </databaseChangeLog>
 
