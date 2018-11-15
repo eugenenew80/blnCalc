@@ -79,5 +79,70 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1750" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_metering_data_sources</comment>
+        <addColumn schemaName="apps" tableName="calc_metering_data_sources">
+            <column name="period_type" type="varchar2(30)" remarks="Код периода">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1751" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_metering_data_sources</comment>
+        <createIndex indexName="idx_calc_metering_data_sources_4" schemaName="apps" tableName="calc_metering_data_sources">
+            <column name="period_type"  type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1752" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_sources to calc_period_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_sources"
+                baseColumnNames="period_type"
+                constraintName="fk_calc_metering_data_sources_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_period_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1753" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_metering_data_source_lines</comment>
+        <addColumn schemaName="apps" tableName="calc_metering_data_source_lines">
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1754" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_metering_data_source_lines</comment>
+        <createIndex indexName="idx_calc_metering_data_source_lines_3" schemaName="apps" tableName="calc_metering_data_source_lines">
+            <column name="param_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1755" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_source_lines to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_source_lines"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_metering_data_source_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
