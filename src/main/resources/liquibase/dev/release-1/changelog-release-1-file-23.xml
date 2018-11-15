@@ -1504,4 +1504,29 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1739" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_reg_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_balance_reg_result_headers">
+            <column name="calculation_type" type="varchar2(30)" remarks="Код типа расчёта">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1740" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_messages_tl to calc_calculations_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_headers"
+                baseColumnNames="calculation_type"
+                constraintName="fk_calc_balance_reg_result_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_calculations_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>
