@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-1745" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_metering_data_source_users</comment>
+        <createTable tableName="calc_metering_data_source_users" schemaName="apps" remarks="Список пользователей для уведомлений к источнику данных">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="number" remarks="Идентификатор пользователя">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_data_source_id" type="number" remarks="Идентификатор источника данных">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1746" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_metering_data_source_users</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_metering_data_source_users"
+                schemaName="apps"
+                tableName="calc_metering_data_source_users"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1747" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_metering_data_source_users</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_metering_data_source_users_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1748" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_metering_data_source_users</comment>
+        <createIndex indexName="idx_calc_metering_data_source_users_1" schemaName="apps" tableName="calc_metering_data_source_users">
+            <column name="metering_data_source_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1749" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_data_source_users to calc_metering_data_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_source_users"
+                baseColumnNames="metering_data_source_id"
+                constraintName="fk_calc_metering_data_source_users_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_data_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+</databaseChangeLog>
+
