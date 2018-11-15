@@ -89,23 +89,6 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="calc-rus-456" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating foreign constraint: calc_metering_data_sources to calc_sheets</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="calc_metering_data_sources"
-                baseColumnNames="sheet_id"
-                constraintName="fk_calc_metering_data_sources_3"
-                deferrable="true"
-                initiallyDeferred="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="calc_sheets"
-                referencedColumnNames="id"
-        />
-    </changeSet>
-
     <changeSet id="calc-rus-457" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Drop column from table: calc_metering_data_sources</comment>
         <dropColumn schemaName="apps"  tableName="calc_metering_data_sources" columnName="sheet_id" />
@@ -170,14 +153,14 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-rus-461" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-462" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>creating index for table: calc_sheets_and_sources</comment>
         <createIndex indexName="idx_calc_sheets_and_sources_2" schemaName="apps" tableName="calc_sheets_and_sources">
             <column name="data_id"  type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-rus-462" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-463" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_sheets_and_sources to calc_sheets</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -193,7 +176,7 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-463" logicalFilePath="path-independent" author="ruslan" context="dev">
+    <changeSet id="calc-rus-464" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>Creating foreign constraint: calc_sheets_and_sources to calc_sheets</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
