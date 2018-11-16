@@ -6,7 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
 
-    <changeSet id="calc-eug-1745" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1746" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_metering_data_source_users</comment>
         <createTable tableName="calc_metering_data_source_users" schemaName="apps" remarks="Список пользователей для уведомлений к источнику данных">
             <column name="id" type="number" remarks="Идентификатор">
@@ -39,7 +39,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="calc-eug-1746" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1747" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating primary key for table: calc_metering_data_source_users</comment>
         <addPrimaryKey
                 columnNames="id"
@@ -48,7 +48,7 @@
                 tableName="calc_metering_data_source_users"/>
     </changeSet>
 
-    <changeSet id="calc-eug-1747" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1748" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating sequence for table: calc_metering_data_source_users</comment>
         <createSequence
                 incrementBy="1"
@@ -57,14 +57,14 @@
                 startValue="1"/>
     </changeSet>
 
-    <changeSet id="calc-eug-1748" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1749" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>creating index for table: calc_metering_data_source_users</comment>
         <createIndex indexName="idx_calc_metering_data_source_users_1" schemaName="apps" tableName="calc_metering_data_source_users">
             <column name="metering_data_source_id"  type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-1749" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1750" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: calc_metering_data_source_users to calc_metering_data_sources</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -77,6 +77,33 @@
                 referencedTableSchemaName="apps"
                 referencedTableName="calc_metering_data_sources"
                 referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1751" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping foreign constraint  from table: calc_metering_data_sources</comment>
+        <dropForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_data_sources"
+                constraintName="fk_calc_metering_data_sources_4"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1752" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: calc_metering_data_sources</comment>
+        <dropIndex
+                schemaName="apps"
+                tableName="calc_metering_data_sources"
+                indexName="idx_calc_metering_data_sources_3"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1753" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Dropping column from table: calc_metering_data_sources</comment>
+        <dropColumn
+                schemaName="apps"
+                tableName="calc_metering_data_sources"
+                columnName="data_type"
         />
     </changeSet>
 </databaseChangeLog>
