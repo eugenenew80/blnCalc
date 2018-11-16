@@ -106,7 +106,5 @@
                 columnName="data_type"
         />
     </changeSet>
-
-
 </databaseChangeLog>
 
