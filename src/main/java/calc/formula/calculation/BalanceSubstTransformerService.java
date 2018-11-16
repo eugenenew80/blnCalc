@@ -213,7 +213,7 @@ public class BalanceSubstTransformerService {
                 Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);
 
                 Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
-                Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2));
+                Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2)) * 1000d;
                 Double valXX = round(deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2), param);
                 Double valN  = round(totalEH * resistH / (Math.pow(uAvg, 2) * operatingTime), param);
 
