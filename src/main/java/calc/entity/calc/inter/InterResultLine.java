@@ -47,6 +47,10 @@ public class InterResultLine {
     @Column(name = "boundary_val")
     private Double boundaryVal;
 
+    @Column(name = "is_inverse")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isInverse;
+
     @Column(name = "create_date")
     private LocalDateTime createDate;
 

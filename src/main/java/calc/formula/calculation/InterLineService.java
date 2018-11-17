@@ -71,11 +71,6 @@ public class InterLineService {
                     resultDetLine.setDirection(1l);
                     resultDetLine.setMeteringPoint1(line.getMeteringPoint1());
                     resultDetLine.setMeteringPoint2(line.getMeteringPoint2());
-                    resultDetLine.setLossVal(0d);
-                    resultDetLine.setLossVal1(0d);
-                    resultDetLine.setLossVal2(0d);
-                    resultDetLine.setLossProc1(0d);
-                    resultDetLine.setLossProc2(0d);
                     resultDetLine.setCreateDate(LocalDateTime.now());
                     resultDetLine.setCreateBy(header.getCreateBy());
                     resultLine.getDetails().add(resultDetLine);
@@ -83,11 +78,14 @@ public class InterLineService {
                     if (line.getBoundMeteringPoint() == null)
                         messageService.addMessage(header, line.getLineNum(), docCode, "INTER_BOUND_MP_NOT_FOUND", params);
 
+                    String param1 = line.getIsInverse() ? "A+" : "A-";
+                    String param2 = line.getIsInverse() ? "A-" : "A+";
+
                     if (line.getBoundMeteringPoint() != null) {
                         InterMrExpression expression1 = InterMrExpression.builder()
                             .context(context)
                             .meteringPointCode(line.getBoundMeteringPoint().getCode())
-                            .parameterCode("A-")
+                            .parameterCode(param1)
                             .rate(1d)
                             .service(interMrService)
                             .build();
@@ -95,7 +93,7 @@ public class InterLineService {
                         InterMrExpression expression2 = InterMrExpression.builder()
                             .context(context)
                             .meteringPointCode(line.getBoundMeteringPoint().getCode())
-                            .parameterCode("A+")
+                            .parameterCode(param2)
                             .rate(1d)
                             .service(interMrService)
                             .build();

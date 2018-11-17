@@ -106,5 +106,72 @@
                 columnName="data_type"
         />
     </changeSet>
-</databaseChangeLog>
 
+    <changeSet id="calc-eug-1754" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_daily_sheet_headers</comment>
+        <addColumn  schemaName="apps" tableName="calc_daily_sheet_headers">
+            <column name="is_ready" type="number" remarks="Флаг - внешний пользователь закончил ввод данных, данные переданы">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1755" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_consumption_headers</comment>
+        <addColumn  schemaName="apps" tableName="calc_consumption_headers">
+            <column name="is_ready" type="number" remarks="Флаг - внешний пользователь закончил ввод данных, данные переданы">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1756" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: media_period_time_values</comment>
+        <addColumn  schemaName="apps" tableName="media_period_time_values">
+            <column name="data_type" type="varchar2(30)" remarks="Статус данных">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1757" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: media_period_time_values</comment>
+        <createIndex indexName="idx_media_period_time_values_5" schemaName="apps" tableName="media_period_time_values">
+            <column name="data_type"  type="varchar2(30)"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1758" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: media_period_time_values to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="media_period_time_values"
+                baseColumnNames="data_type"
+                constraintName="fk_media_period_time_values_14"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1759" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_act_inter_pl_lines</comment>
+        <addColumn  schemaName="apps" tableName="calc_act_inter_pl_lines">
+            <column name="is_inverse" type="number" remarks="Флаг - инвертировать направление">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1760" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_act_inter_pl_result_lines</comment>
+        <addColumn  schemaName="apps" tableName="calc_act_inter_pl_result_lines">
+            <column name="is_inverse" type="number" remarks="Флаг - инвертировать направление">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
