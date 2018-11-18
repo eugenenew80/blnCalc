@@ -72,6 +72,10 @@ public class InterLine {
     @Column(name = "power_line_length")
     private Double powerLineLength;
 
+    @Column(name = "is_inverse")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isInverse;
+
     @Column(name = "start_date")
     private LocalDate startDate;
 
