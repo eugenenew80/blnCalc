@@ -9,6 +9,7 @@ import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -43,4 +44,7 @@ public class RegLine2 {
 
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
+    private List<RegLine2Translate> translates;
 }
