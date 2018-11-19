@@ -45,9 +45,9 @@
             <id>localDev</id>
             <properties>
                 <driver>org.postgresql.Driver</driver>
-                <url>jdbc:postgresql://localhost:5432/postgres</url>
+                <url>jdbc:postgresql://localhost:5432/bln_dev</url>
                 <username>postgres</username>
-                <password>password</password>
+                <password>postgres</password>
                 <scripts>dev</scripts>
                 <skipTests>true</skipTests>
             </properties>
@@ -59,7 +59,7 @@
                 <driver>org.postgresql.Driver</driver>
                 <url>jdbc:postgresql://localhost:5432/bln_dev</url>
                 <username>postgres</username>
-                <password>1</password>
+                <password>postgres</password>
                 <scripts>dev</scripts>
                 <skipTests>false</skipTests>
             </properties>
@@ -110,11 +110,6 @@
             <version>42.2.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>12.2.0.1</version>
-        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
