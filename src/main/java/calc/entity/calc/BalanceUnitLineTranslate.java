@@ -1,12 +1,9 @@
 package calc.entity.calc;
 
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.seg.SegResultLine;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -18,7 +15,7 @@ public class BalanceUnitLineTranslate {
 
     @ManyToOne
     @JoinColumn(name = "balance_unit_line_id")
-    private SegResultLine line;
+    private BalanceUnitLine line;
 
     @Column(name="lang")
     @Enumerated(EnumType.STRING)

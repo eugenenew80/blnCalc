@@ -65,10 +65,6 @@ public class BalanceUnitLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isBold;
 
-    @ManyToOne
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
-
     @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
     private List<BalanceUnitLineTranslate> translates;
 }

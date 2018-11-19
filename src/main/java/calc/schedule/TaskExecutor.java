@@ -30,6 +30,7 @@ public class TaskExecutor {
     private final LossFactResultHeaderWRepo lossFactResultHeaderWRepo;
     private final SvrHeaderRepo svrHeaderRepo;
     private final AspService aspService;
+    private final SegService segService;
     private final InterService interService;
     private final SvrService svrService;
     private final LossFactService lossFactService;
@@ -76,7 +77,7 @@ public class TaskExecutor {
         logger.info("Расчет баланса по сегменту сети, количество документов: " + headers.size());
         for (SegResultHeaderW header : headers) {
             logger.info("Header " + header.getId() + " started");
-            aspService.calc(header.getId());
+            segService.calc(header.getId());
             logger.info("Header " + header.getId() + " completed");
         }
     }
