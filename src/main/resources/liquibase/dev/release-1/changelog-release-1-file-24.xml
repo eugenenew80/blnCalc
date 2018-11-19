@@ -192,16 +192,34 @@
         />
     </changeSet>
 
-    <changeSet id="calc-rus-465" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
-        <comment>Drop table: calc_calculation_types</comment>
-        <dropTable tableName="calc_calculation_types" schemaName="apps" />
+    <changeSet id="calc-rus-465" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Drop table: calc_calculations_types_tl</comment>
+        <dropTable tableName="calc_calculations_types_tl" schemaName="apps" />
         <rollback />
     </changeSet>
 
-    <changeSet id="calc-rus-466" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
-        <comment>Drop table: calc_calculation_types_types</comment>
-        <dropTable tableName="calc_calculation_types_types" schemaName="apps" />
+    <changeSet id="calc-rus-466" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Drop table: calc_calculations_types</comment>
+        <dropTable tableName="calc_calculations_types" schemaName="apps" />
         <rollback />
     </changeSet>
+
+    <changeSet id="calc-rus-467" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Drop uk: un_calc_metering_data_source_lines_1</comment>
+        <dropUniqueConstraint constraintName="un_calc_metering_data_source_lines_1"
+                              schemaName="apps"
+                              tableName="calc_metering_data_source_lines"
+                              uniqueColumns="metering_data_source_id, metering_point_id"/>
+        <rollback />
+    </changeSet>
+
+    <changeSet id="calc-rus-468" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addUniqueConstraint
+                columnNames="metering_data_source_id, metering_point_id"
+                constraintName="un_calc_metering_data_source_lines_1"
+                schemaName="apps"
+                tableName="calc_metering_data_source_lines"/>
+    </changeSet>
+
 </databaseChangeLog>
 
