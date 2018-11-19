@@ -1,27 +1,22 @@
 package calc.entity.calc.reg;
 
-import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.calc.Dealer;
 import calc.entity.calc.MeteringPoint;
-import calc.entity.calc.Parameter;
+import calc.entity.calc.enums.DealTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_balance_reg_lines_3")
+@Table(name = "calc_balance_reg_lines_4")
 @Immutable
-public class RegLine3 {
+public class RegLine4 {
     @Id
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private RegLine3 parent;
 
     @Column(name = "line_num")
     private Long lineNum;
@@ -35,22 +30,16 @@ public class RegLine3 {
     private MeteringPoint meteringPoint;
 
     @ManyToOne
-    @JoinColumn(name = "param_id")
-    private Parameter param;
+    @JoinColumn(name = "dealer_id")
+    private Dealer dealer;
 
-    @Column(name = "is_inverse")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isInverse;
+    @Column(name="deal_type")
+    @Enumerated(EnumType.STRING)
+    private DealTypeEnum dealType;
 
     @Column(name = "start_date")
     private LocalDate startDate;
 
     @Column(name = "end_date")
     private LocalDate endDate;
-
-    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
-    private List<RegLine3Translate> translates;
-
-    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
-    private List<RegLine3Det> details;
 }

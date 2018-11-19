@@ -48,4 +48,7 @@ public class RegHeader {
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<RegLine3> lines3;
+
+    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
+    private List<RegLine4> lines4;
 }

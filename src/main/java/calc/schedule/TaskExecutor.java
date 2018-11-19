@@ -5,6 +5,7 @@ import calc.entity.calc.bs.BalanceSubstResultHeaderW;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.inter.InterResultHeaderW;
 import calc.entity.calc.loss.LossFactResultHeaderW;
+import calc.entity.calc.reg.RegResultHeaderW;
 import calc.entity.calc.seg.SegResultHeaderW;
 import calc.entity.calc.svr.SvrHeader;
 import calc.formula.calculation.*;
@@ -25,6 +26,7 @@ public class TaskExecutor {
     private final BalanceSubstService balanceSubstService;
     private final AspResultHeaderWRepo aspResultHeaderWRepo;
     private final SegResultHeaderWRepo segResultHeaderWRepo;
+    private final RegResultHeaderWRepo regResultHeaderWRepo;
     private final LossFactResultHeaderWRepo lossFactResultHeaderWRepo;
     private final SvrHeaderRepo svrHeaderRepo;
     private final AspService aspService;
@@ -40,6 +42,7 @@ public class TaskExecutor {
         calcSeg();
         calcInter();
         calcLossFact();
+        calcReg();
     }
 
     private void calcBs() {
@@ -72,6 +75,18 @@ public class TaskExecutor {
 
         logger.info("Расчет баланса по сегменту сети, количество документов: " + headers.size());
         for (SegResultHeaderW header : headers) {
+            logger.info("Header " + header.getId() + " started");
+            aspService.calc(header.getId());
+            logger.info("Header " + header.getId() + " completed");
+        }
+    }
+
+    private void calcReg() {
+        List<RegResultHeaderW> headers = regResultHeaderWRepo.findAllByStatus(BatchStatusEnum.W);
+        if (headers.size()==0) return;
+
+        logger.info("Расчет баланса ППиП по региону, количество документов: " + headers.size());
+        for (RegResultHeaderW header : headers) {
             logger.info("Header " + header.getId() + " started");
             aspService.calc(header.getId());
             logger.info("Header " + header.getId() + " completed");

@@ -71,6 +71,7 @@ public class LossFactService {
         try {
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
+            deleteMessages(header);
 
             List<LossFactResultSec1Line> sec1Lines = calcSec1Lines(header, context);
             List<LossFactResultSec2Line> sec2Lines = calcSec2Lines(header, context);
@@ -271,6 +272,11 @@ public class LossFactService {
         lossFactResultSec2LineRepo.flush();
     }
 
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteMessages(LossFactResultHeader header) {
+        messageService.deleteMessages(header);
+    }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void updateStatus(LossFactResultHeader header, BatchStatusEnum status) {
