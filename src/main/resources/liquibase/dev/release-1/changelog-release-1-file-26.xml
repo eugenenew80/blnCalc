@@ -708,7 +708,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Идентификатор электростанции">
+            <column name="energy_source_id" type="number" remarks="Идентификатор электростанции">
                 <constraints nullable="true"/>
             </column>
 
@@ -914,7 +914,7 @@
     <changeSet id="calc-eug-1820" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>creating index for table: calc_balance_reg_result_lines_4</comment>
         <createIndex indexName="idx_calc_balance_reg_result_lines_4_3" schemaName="apps" tableName="calc_balance_reg_result_lines_4">
-            <column name="energy_source_id"  type="number"/>
+            <column name="dealer_id"  type="number"/>
         </createIndex>
     </changeSet>
 
@@ -962,13 +962,13 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_balance_reg_result_lines_4"
-                baseColumnNames="energy_source_id"
+                baseColumnNames="dealer_id"
                 constraintName="fk_calc_balance_reg_result_lines_4_3"
                 deferrable="true"
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
                 referencedTableSchemaName="apps"
-                referencedTableName="dict_energy_sources"
+                referencedTableName="calc_dealers"
                 referencedColumnNames="id"
         />
     </changeSet>
