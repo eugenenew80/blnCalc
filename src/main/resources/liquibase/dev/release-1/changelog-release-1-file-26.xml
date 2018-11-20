@@ -832,7 +832,7 @@
 
     <changeSet id="calc-eug-1815" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_balance_reg_result_lines_4</comment>
-        <createTable tableName="calc_balance_reg_result_lines_4" schemaName="apps" remarks="Баланса производства, поступления, и потребления электроэнергии по региону - строки раздела 4">
+        <createTable tableName="calc_balance_reg_result_lines_4" schemaName="apps" remarks="Баланс производства, поступления, и потребления электроэнергии по региону - строки раздела 4">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
@@ -857,11 +857,7 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="ap" type="number" remarks="Приём">
-                <constraints nullable="true"/>
-            </column>
-
-            <column name="am" type="number" remarks="Отдача">
+            <column name="val" type="number" remarks="Объём">
                 <constraints nullable="true"/>
             </column>
 
