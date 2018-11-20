@@ -27,6 +27,8 @@ public class Util {
 
 
     public static Map<String, String> buildMsgParams(MeteringPoint mp) {
+        if (mp == null) return new HashMap<>();
+
         Map<String, String> msgParams = new HashMap<>();
         msgParams.put("point", mp.getCode());
         return msgParams;

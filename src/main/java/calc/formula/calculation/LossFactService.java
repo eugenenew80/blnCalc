@@ -127,7 +127,7 @@ public class LossFactService {
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
-            Double r32 = r321 +  r322 + r323 + r324;
+            Double r32 = ofNullable(r321).orElse(0d) +  r322 + r323 + r324;
             Double r325 = r32 + totalAp;
 
             header.setAp(totalAp);

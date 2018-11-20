@@ -2,10 +2,12 @@ package calc.entity.calc.es;
 
 import calc.entity.calc.*;
 import calc.entity.calc.Parameter;
+import calc.entity.calc.reg.RegLine1;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Data
@@ -51,4 +53,7 @@ public class SourceHeader {
 
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
+    private List<SourceLine> lines;
 }
