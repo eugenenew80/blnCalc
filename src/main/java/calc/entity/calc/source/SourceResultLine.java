@@ -6,6 +6,7 @@ import calc.entity.calc.Parameter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -49,6 +50,12 @@ public class SourceResultLine {
 
     @Column(name = "total_val")
     private Double totalVal;
+
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @Column(name = "create_by")
+    private Long createBy;
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<SourceResultLineTranslate> translates;

@@ -8,5 +8,5 @@ public enum ContextType {
     INTER,
     SEG,
     REG,
-    ES
+    SOURCE
 }
