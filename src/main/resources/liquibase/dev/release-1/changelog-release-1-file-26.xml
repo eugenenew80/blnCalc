@@ -122,7 +122,7 @@
 
     <changeSet id="calc-eug-1768" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_balance_reg_result_lines_1_tl</comment>
-        <createTable tableName="calc_balance_reg_result_lines_1_tl" schemaName="apps" remarks="Баланса производства, поступления, и потребления электроэнергии по региону - строки раздела 1, перевод">
+        <createTable tableName="calc_balance_reg_result_lines_1_tl" schemaName="apps" remarks="Баланс производства, поступления, и потребления электроэнергии по региону - строки раздела 1, перевод">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
@@ -210,7 +210,7 @@
 
     <changeSet id="calc-eug-1774" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_balance_reg_result_lines_2</comment>
-        <createTable tableName="calc_balance_reg_result_lines_2" schemaName="apps" remarks="Баланса производства, поступления, и потребления электроэнергии по региону - строки раздела 2">
+        <createTable tableName="calc_balance_reg_result_lines_2" schemaName="apps" remarks="Баланс производства, поступления, и потребления электроэнергии по региону - строки раздела 2">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
@@ -347,7 +347,7 @@
 
     <changeSet id="calc-eug-1783" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_balance_reg_result_lines_2_tl</comment>
-        <createTable tableName="calc_balance_reg_result_lines_2_tl" schemaName="apps" remarks="Баланса производства, поступления, и потребления электроэнергии по региону - строки раздела 2, перевод">
+        <createTable tableName="calc_balance_reg_result_lines_2_tl" schemaName="apps" remarks="Баланс производства, поступления, и потребления электроэнергии по региону - строки раздела 2, перевод">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
@@ -435,7 +435,7 @@
 
     <changeSet id="calc-eug-1789" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_balance_reg_result_lines_3</comment>
-        <createTable tableName="calc_balance_reg_result_lines_3" schemaName="apps" remarks="Баланса производства, поступления, и потребления электроэнергии по региону - строки раздела 3">
+        <createTable tableName="calc_balance_reg_result_lines_3" schemaName="apps" remarks="Баланс производства, поступления, и потребления электроэнергии по региону - строки раздела 3">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
@@ -607,7 +607,7 @@
 
     <changeSet id="calc-eug-1800" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_balance_reg_result_lines_3_tl</comment>
-        <createTable tableName="calc_balance_reg_result_lines_3_tl" schemaName="apps" remarks="Баланса производства, поступления, и потребления электроэнергии по региону - строки раздела 3, перевод">
+        <createTable tableName="calc_balance_reg_result_lines_3_tl" schemaName="apps" remarks="Баланс производства, поступления, и потребления электроэнергии по региону - строки раздела 3, перевод">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
@@ -695,7 +695,7 @@
 
     <changeSet id="calc-eug-1806" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: calc_balance_reg_result_lines_3_det</comment>
-        <createTable tableName="calc_balance_reg_result_lines_3_det" schemaName="apps" remarks="Баланса производства, поступления, и потребления электроэнергии по региону - строки раздела 3, энергоисточники">
+        <createTable tableName="calc_balance_reg_result_lines_3_det" schemaName="apps" remarks="Баланс производства, поступления, и потребления электроэнергии по региону - строки раздела 3, энергоисточники">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
