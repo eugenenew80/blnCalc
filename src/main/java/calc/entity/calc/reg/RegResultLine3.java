@@ -1,21 +1,23 @@
-package calc.entity.calc.source;
+package calc.entity.calc.reg;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_balance_source_result_lines")
-public class SourceResultLine {
+@Table(name = "calc_balance_reg_result_lines_3")
+public class RegResultLine3 {
     @Id
-    @SequenceGenerator(name="calc_balance_source_result_lines_s", sequenceName = "calc_balance_source_result_lines_s", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_balance_source_result_lines_s")
+    @SequenceGenerator(name="calc_balance_reg_result_lines_3_s", sequenceName = "calc_balance_reg_result_lines_3_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_balance_reg_result_lines_3_s")
     private Long id;
 
     @Column(name = "line_num")
@@ -23,11 +25,11 @@ public class SourceResultLine {
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    private SourceResultLine parent;
+    private RegResultLine3 parent;
 
     @ManyToOne
     @JoinColumn(name = "result_header_id")
-    private SourceResultHeader header;
+    private RegResultHeader header;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id")
@@ -50,6 +52,15 @@ public class SourceResultLine {
     @Column(name = "total_val")
     private Double totalVal;
 
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @Column(name = "create_by")
+    private Long createBy;
+
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<SourceResultLineTranslate> translates;
+    private List<RegResultLine3Det> details;
+
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<RegResultLine3Translate> translates;
 }
