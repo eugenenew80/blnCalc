@@ -52,7 +52,7 @@ public class InterMrService {
             for (MeteringPoint meteringPoint : points) {
                 List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context);
                 for (MeteringReading t : meteringReadings) {
-                    if (!(t.getParam().equals("A+") || t.getParam().equals("A-")))
+                    if (!(t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-")))
                         continue;
 
                     InterResultMrLine resultLine = new InterResultMrLine();
