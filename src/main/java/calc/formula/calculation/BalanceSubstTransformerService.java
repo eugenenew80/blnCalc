@@ -371,6 +371,9 @@ public class BalanceSubstTransformerService {
                 .doubleValue();
         }
 
+        if (value !=null && Double.isNaN(value))
+            return null;
+
         return value;
     }
 

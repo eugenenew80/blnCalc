@@ -7,11 +7,13 @@ import calc.entity.calc.Unit;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
+@ToString(exclude = {"header", "transformer", "meteringPointOut", "inputMp", "inputMpH", "inputMpM", "inputMpL"})
 @Entity
 @Table(name = "calc_power_transformer_values")
 public class PowerTransformerValue {
