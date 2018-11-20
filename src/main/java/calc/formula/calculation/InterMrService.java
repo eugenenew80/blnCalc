@@ -1,5 +1,6 @@
 package calc.formula.calculation;
 
+import static calc.util.Util.round;
 import static java.util.stream.Collectors.toList;
 
 import calc.entity.calc.MeteringPoint;
@@ -71,7 +72,7 @@ public class InterMrService {
                     resultLine.setEndVal(t.getEndVal());
                     resultLine.setDelta(t.getDelta());
                     resultLine.setMeterRate(t.getMeterRate());
-                    resultLine.setVal(t.getVal());
+                    resultLine.setVal(round(t.getVal(),0));
                     resultLine.setUnderCountVal(t.getUnderCountVal());
                     resultLine.setUndercount(t.getUnderCount());
                     resultLines.add(resultLine);
