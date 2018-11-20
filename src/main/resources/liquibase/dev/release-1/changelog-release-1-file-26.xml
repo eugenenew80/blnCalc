@@ -1246,4 +1246,30 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1843" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_source_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_balance_source_result_headers">
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта для определения поставки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра измерения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="formula_id" type="number" remarks="Идентификатор формулы для определения поставки">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1844" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_reg_result_lines_1</comment>
+        <addColumn schemaName="apps" tableName="calc_balance_reg_result_lines_1">
+            <column name="balance" type="number" remarks="Сальдо">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
