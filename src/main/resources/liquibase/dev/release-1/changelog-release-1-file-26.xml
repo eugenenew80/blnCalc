@@ -691,4 +691,141 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+
+    <changeSet id="calc-eug-1806" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_balance_reg_result_lines_3_det</comment>
+        <createTable tableName="calc_balance_reg_result_lines_3_det" schemaName="apps" remarks="Баланса производства, поступления, и потребления электроэнергии по региону - строки раздела 3, энергоисточники">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_line_id" type="number" remarks="Идентификатор строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="metering_point_id" type="number" remarks="Идентификатор электростанции">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="own_val" type="number" remarks="Сети КЕГОК">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="other_val" type="number" remarks="Сети РЭК">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="total_val" type="number" remarks="Всего">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1807" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_balance_reg_result_lines_3_det</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_balance_reg_result_lines_3_det"
+                schemaName="apps"
+                tableName="calc_balance_reg_result_lines_3_det"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1808" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_balance_reg_result_lines_3_det</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_balance_reg_result_lines_3_det_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1809" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_reg_result_lines_3_det</comment>
+        <createIndex indexName="idx_calc_balance_reg_result_lines_3_det_1" schemaName="apps" tableName="calc_balance_reg_result_lines_3_det">
+            <column name="result_header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1810" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_reg_result_lines_3_det</comment>
+        <createIndex indexName="idx_calc_balance_reg_result_lines_3_det_2" schemaName="apps" tableName="calc_balance_reg_result_lines_3_det">
+            <column name="result_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1811" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_balance_reg_result_lines_3</comment>
+        <createIndex indexName="idx_calc_balance_reg_result_lines_3_det_3" schemaName="apps" tableName="calc_balance_reg_result_lines_3_det">
+            <column name="energy_source_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-1812" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_lines_3_det to calc_balance_reg_result_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_lines_3_det"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_balance_reg_result_lines_3_det_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_reg_result_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1813" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_lines_3_det to calc_balance_reg_result_lines_3</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_lines_3_det"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_balance_reg_result_lines_3_det_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_reg_result_lines_3"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1814" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_lines_3_det to dict_energy_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_lines_3_det"
+                baseColumnNames="energy_source_id"
+                constraintName="fk_calc_balance_reg_result_lines_3_det_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_energy_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
