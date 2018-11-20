@@ -138,13 +138,15 @@ public class BalanceSubstTransformerService {
                 pkzML = pkzML / Math.pow(alpha, 2);
             }
 
-            Double operatingTime = WorkingHoursExpression.builder()
+            Double hours = WorkingHoursExpression.builder()
                 .objectType("tr")
                 .objectId(transformer.getId())
                 .context(context)
                 .service(workingHoursService)
                 .build()
                 .doubleValue();
+
+            hours = round(hours, 1);
 
             Double uAvg = UavgExpression.builder()
                 .meteringPointCode(inputMp.getCode())
@@ -153,6 +155,8 @@ public class BalanceSubstTransformerService {
                 .service(resultUService)
                 .build()
                 .doubleValue();
+
+            uAvg = round(uAvg, 1);
 
             if (sNom  == 0) {
                 messageService.addMessage(header, peLine.getId(), docCode, "PE_SNOM_NOT_FOUND", info);
@@ -183,7 +187,7 @@ public class BalanceSubstTransformerService {
             transformerLine.setPkzML(pkzML);
             transformerLine.setPkzHL(pkzHL);
             transformerLine.setUnit(unit);
-            transformerLine.setOperatingTime(operatingTime);
+            transformerLine.setOperatingTime(hours);
             transformerLine.setUavg(uAvg);
             transformerLine.setWindingsNumber(transformer.getWindingsNumber());
             transformerLine.setIsBalance(peLine.getIsBalance());
@@ -214,8 +218,8 @@ public class BalanceSubstTransformerService {
 
                 Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
                 Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2)) * 1000d;
-                Double valXX = round(deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2), param);
-                Double valN  = round(totalEH * resistH / (Math.pow(uAvg, 2) * operatingTime), param);
+                Double valXX = round(deltaPxx * hours * Math.pow(uAvg / uNomH, 2), param);
+                Double valN  = round(totalEH * resistH / (Math.pow(uAvg, 2) * hours), param);
 
                 transformerLine.setApH(apH);
                 transformerLine.setAmH(amH);
@@ -299,8 +303,8 @@ public class BalanceSubstTransformerService {
                 Double resistM = (pkzHM + pkzML - pkzHL) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
                 Double resistH = (pkzHM + pkzHL - pkzML) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
 
-                Double valXX = round(deltaPxx * operatingTime * Math.pow(uAvg / uNomH, 2), param);
-                Double valN  = round((totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * operatingTime * 1000d), param);
+                Double valXX = round(deltaPxx * hours * Math.pow(uAvg / uNomH, 2), param);
+                Double valN  = round((totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * hours * 1000d), param);
 
                 transformerLine.setApL(apL);
                 transformerLine.setAmL(amL);

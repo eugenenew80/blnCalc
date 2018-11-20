@@ -66,6 +66,15 @@ public class SourceResultHeader {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isActive;
 
+    @Column(name = "delivery_val")
+    private Double deliveryVal;
+
+    @Column(name = "distribution_val")
+    private Double distributionVal;
+
+    @Column(name = "ub_val")
+    private Double ubVal;
+
     @Column(name = "create_date")
     private LocalDateTime createDate;
 

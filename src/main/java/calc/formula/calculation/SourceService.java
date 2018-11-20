@@ -4,8 +4,10 @@ import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.LangEnum;
+import calc.entity.calc.enums.RowTypeEnum;
 import calc.entity.calc.source.*;
 import calc.formula.CalcContext;
+import calc.formula.CalcResult;
 import calc.formula.ContextType;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.CalcService;
@@ -59,6 +61,12 @@ public class SourceService {
             deleteLines(header);
             deleteMessages(header);
 
+            CalcResult result = calcService.calcMeteringPoint(header.getFormula(), context);
+            Double value = result !=null ? result.getDoubleValue() : null;
+            value = round(value, 0);
+            header.setDeliveryVal(value);
+
+            copyGroups(header);
             calcRows(header, context);
             setParents(header);
 
@@ -81,38 +89,11 @@ public class SourceService {
         }
     }
 
-
-    private void calcRows(SourceResultHeader header, CalcContext context) {
+    private void copyGroups(SourceResultHeader header) {
         List<SourceResultLine> resultLines = new ArrayList<>();
         for (SourceLine line : header.getHeader().getLines()) {
-
-            Map<String, String> msgParams = buildMsgParams(line);
-            MeteringPoint meteringPoint = line.getMeteringPoint();
-            Parameter param = line.getParam();
-
-            if (meteringPoint == null) {
-                messageService.addMessage(header, line.getLineNum(), docCode, "SEG_MP_NOT_FOUND", msgParams);
+            if (line.getRowType() != RowTypeEnum.GROUP)
                 continue;
-            }
-
-            if (param == null) {
-                messageService.addMessage(header, line.getLineNum(), docCode, "SEG_PARAM_NOT_FOUND", msgParams);
-                continue;
-            }
-
-            PeriodTimeValueExpression expression = PeriodTimeValueExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(param.getCode())
-                .periodType(context.getPeriodType())
-                .rate(1d)
-                .startHour((byte) 0)
-                .endHour((byte) 23)
-                .service(periodTimeValueService)
-                .context(context)
-                .build();
-
-            Double value = expression.doubleValue();
-            value = round(value, param);
 
             SourceResultLine resultLine = new SourceResultLine();
             resultLine.setHeader(header);
@@ -120,6 +101,42 @@ public class SourceService {
             resultLine.setMeteringPoint(line.getMeteringPoint());
             resultLine.setParam(line.getParam());
             resultLine.setIsInverse(line.getIsInverse());
+            resultLine.setRowType(line.getRowType());
+            resultLine.setCreateBy(header.getCreateBy());
+            resultLine.setCreateDate(LocalDateTime.now());
+            copyTranslates(line, resultLine);
+            resultLines.add(resultLine);
+        }
+        saveLines(resultLines);
+    }
+
+    private void calcRows(SourceResultHeader header, CalcContext context) {
+        List<SourceResultLine> resultLines = new ArrayList<>();
+        for (SourceLine line : header.getHeader().getLines()) {
+            if (line.getRowType() != RowTypeEnum.ROW)
+                continue;
+
+            Map<String, String> msgParams = buildMsgParams(line);
+            MeteringPoint meteringPoint = line.getMeteringPoint();
+            Parameter param = line.getParam();
+
+            if (meteringPoint == null) {
+                messageService.addMessage(header, line.getLineNum(), docCode, "ES_MP_NOT_FOUND", msgParams);
+                continue;
+            }
+
+            if (param == null) {
+                messageService.addMessage(header, line.getLineNum(), docCode, "ES_PARAM_NOT_FOUND", msgParams);
+                continue;
+            }
+
+            SourceResultLine resultLine = new SourceResultLine();
+            resultLine.setHeader(header);
+            resultLine.setLineNum(line.getLineNum());
+            resultLine.setMeteringPoint(line.getMeteringPoint());
+            resultLine.setParam(line.getParam());
+            resultLine.setIsInverse(line.getIsInverse());
+            resultLine.setRowType(line.getRowType());
             resultLine.setCreateBy(header.getCreateBy());
             resultLine.setCreateDate(LocalDateTime.now());
             copyTranslates(line, resultLine);

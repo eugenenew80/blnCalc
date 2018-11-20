@@ -99,6 +99,8 @@ public class BalanceSubstReactorService {
                 .build()
                 .doubleValue();
 
+            hours = round(hours, 1);
+
             Double uAvg = UavgExpression.builder()
                 .meteringPointCode(inputMp.getCode())
                 .def(inputMp.getVoltageClass()!=null ? inputMp.getVoltageClass().getValue() / 1000d : 0d)
@@ -106,6 +108,8 @@ public class BalanceSubstReactorService {
                 .service(resultUService)
                 .build()
                 .doubleValue();
+
+            uAvg = round(uAvg, 1);
 
             if (uNom == 0) {
                 messageService.addMessage(header, peLine.getId(), docCode, "PE_UNOM_NOT_FOUND", info);

@@ -3,6 +3,7 @@ package calc.entity.calc.source;
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
+import calc.entity.calc.enums.RowTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
@@ -41,6 +42,10 @@ public class SourceResultLine {
     @Column(name = "is_inverse")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isInverse;
+
+    @Column(name = "row_type_code")
+    @Enumerated(EnumType.STRING)
+    private RowTypeEnum rowType;
 
     @Column(name = "own_val")
     private Double ownVal;
