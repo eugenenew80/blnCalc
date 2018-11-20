@@ -2,6 +2,7 @@ package calc.formula.service;
 
 import calc.entity.calc.asp.AspResultHeader;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
+import calc.entity.calc.source.SourceResultHeader;
 import calc.entity.calc.inter.InterResultHeader;
 import calc.entity.calc.loss.LossFactResultHeader;
 import calc.entity.calc.reg.RegResultHeader;
@@ -28,4 +29,7 @@ public interface MessageService {
 
     void deleteMessages(RegResultHeader header);
     void addMessage(RegResultHeader header, Long lineNum, String docCode, String  errCode, Map<String, String> params);
+
+    void deleteMessages(SourceResultHeader header);
+    void addMessage(SourceResultHeader header, Long lineNum, String docCode, String  errCode, Map<String, String> params);
 }

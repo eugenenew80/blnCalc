@@ -1,33 +1,35 @@
-package calc.entity.calc.es;
+package calc.entity.calc.source;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
+import calc.entity.calc.enums.RowTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Immutable;
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_balance_source_result_lines")
-public class SourceResultLine {
+@Table(name = "calc_balance_source_lines")
+@Immutable
+public class SourceLine {
     @Id
-    @SequenceGenerator(name="calc_balance_source_result_lines_s", sequenceName = "calc_balance_source_result_lines_s", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_balance_source_result_lines_s")
     private Long id;
 
     @Column(name = "line_num")
     private Long lineNum;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private SourceResultLine parent;
+    @JoinColumn(name = "header_id")
+    private SourceHeader header;
 
     @ManyToOne
-    @JoinColumn(name = "result_header_id")
-    private SourceResultHeader header;
+    @JoinColumn(name = "parent_id")
+    private SourceLine parent;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id")
@@ -41,15 +43,16 @@ public class SourceResultLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isInverse;
 
-    @Column(name = "own_val")
-    private Double ownVal;
+    @Column(name = "row_type_code")
+    @Enumerated(EnumType.STRING)
+    private RowTypeEnum rowType;
 
-    @Column(name = "other_val")
-    private Double otherVal;
+    @Column(name = "start_date")
+    private LocalDate startDate;
 
-    @Column(name = "total_val")
-    private Double totalVal;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
-    private List<SourceResultLineTranslate> translates;
+    private List<SourceLineTranslate> translates;
 }

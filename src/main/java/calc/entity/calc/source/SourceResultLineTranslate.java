@@ -1,7 +1,6 @@
-package calc.entity.calc.es;
+package calc.entity.calc.source;
 
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.seg.SegResultLine;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -7,5 +7,6 @@ public enum ContextType {
     SVR,
     INTER,
     SEG,
-    REG
+    REG,
+    ES
 }

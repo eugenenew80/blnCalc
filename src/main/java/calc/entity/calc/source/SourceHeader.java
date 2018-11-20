@@ -1,8 +1,7 @@
-package calc.entity.calc.es;
+package calc.entity.calc.source;
 
 import calc.entity.calc.*;
 import calc.entity.calc.Parameter;
-import calc.entity.calc.reg.RegLine1;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;

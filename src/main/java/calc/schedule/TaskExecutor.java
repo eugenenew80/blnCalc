@@ -3,6 +3,7 @@ package calc.schedule;
 import calc.entity.calc.asp.AspResultHeaderW;
 import calc.entity.calc.bs.BalanceSubstResultHeaderW;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.source.SourceResultHeaderW;
 import calc.entity.calc.inter.InterResultHeaderW;
 import calc.entity.calc.loss.LossFactResultHeaderW;
 import calc.entity.calc.reg.RegResultHeaderW;
@@ -27,6 +28,7 @@ public class TaskExecutor {
     private final AspResultHeaderWRepo aspResultHeaderWRepo;
     private final SegResultHeaderWRepo segResultHeaderWRepo;
     private final RegResultHeaderWRepo regResultHeaderWRepo;
+    private final SourceResultHeaderWRepo sourceResultHeaderWRepo;
     private final LossFactResultHeaderWRepo lossFactResultHeaderWRepo;
     private final SvrHeaderRepo svrHeaderRepo;
     private final AspService aspService;
@@ -34,6 +36,8 @@ public class TaskExecutor {
     private final InterService interService;
     private final SvrService svrService;
     private final LossFactService lossFactService;
+    private final RegService regService;
+    private final SourceService sourceService;
 
     @Scheduled(cron = "*/5 * * * * *")
     public void run() {
@@ -44,6 +48,7 @@ public class TaskExecutor {
         calcInter();
         calcLossFact();
         calcReg();
+        calcSource();
     }
 
     private void calcBs() {
@@ -89,7 +94,19 @@ public class TaskExecutor {
         logger.info("Расчет баланса ППиП по региону, количество документов: " + headers.size());
         for (RegResultHeaderW header : headers) {
             logger.info("Header " + header.getId() + " started");
-            aspService.calc(header.getId());
+            regService.calc(header.getId());
+            logger.info("Header " + header.getId() + " completed");
+        }
+    }
+
+    private void calcSource() {
+        List<SourceResultHeaderW> headers = sourceResultHeaderWRepo.findAllByStatus(BatchStatusEnum.W);
+        if (headers.size()==0) return;
+
+        logger.info("Расчет баланса энергоисточника, количество документов: " + headers.size());
+        for (SourceResultHeaderW header : headers) {
+            logger.info("Header " + header.getId() + " started");
+            sourceService.calc(header.getId());
             logger.info("Header " + header.getId() + " completed");
         }
     }

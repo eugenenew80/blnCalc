@@ -22,6 +22,9 @@ import calc.entity.calc.reg.RegResultMessageTranslate;
 import calc.entity.calc.seg.SegResultHeader;
 import calc.entity.calc.seg.SegResultMessage;
 import calc.entity.calc.seg.SegResultMessageTranslate;
+import calc.entity.calc.source.SourceResultHeader;
+import calc.entity.calc.source.SourceResultMessage;
+import calc.entity.calc.source.SourceResultMessageTranslate;
 import calc.formula.service.MessageError;
 import calc.formula.service.MessageService;
 import calc.repo.calc.*;
@@ -42,6 +45,7 @@ public class MessageServiceImpl implements MessageService {
     private final AspResultMessageRepo aspResultMessageRepo;
     private final SegResultMessageRepo segResultMessageRepo;
     private final RegResultMessageRepo regResultMessageRepo;
+    private final SourceResultMessageRepo sourceResultMessageRepo;
     private final InterResultMessageRepo interResultMessageRepo;
     private final LossFactResultMessageRepo lossFactResultMessageRepo;
     private final MessageRepo messageRepo;
@@ -335,6 +339,43 @@ public class MessageServiceImpl implements MessageService {
             messageTranslate.setMsg(msg);
             message.getTranslates().add(messageTranslate);
             regResultMessageRepo.save(message);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteMessages(SourceResultHeader header) {
+        List<SourceResultMessage> lines = sourceResultMessageRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<lines.size(); i++)
+            sourceResultMessageRepo.delete(lines.get(i));
+        sourceResultMessageRepo.flush();
+    }
+
+    @Override
+    public void addMessage(SourceResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
+        MessageError err = mapErrors.getOrDefault(errCode, null);
+        try {
+            LangEnum defLang = LangEnum.RU;
+            String defTExt = "Описание не найдено";
+            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
+            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
+            msg = StrSubstitutor.replace(msg, params);
+
+            SourceResultMessage message = new SourceResultMessage();
+            message.setHeader(header);
+            message.setLineNum(lineNum);
+            message.setMessageType(messageType);
+            message.setErrorCode(errCode);
+            message.setTranslates(new ArrayList<>());
+
+            SourceResultMessageTranslate messageTranslate = new SourceResultMessageTranslate();
+            messageTranslate.setMessage(message);
+            messageTranslate.setLang(defLang);
+            messageTranslate.setMsg(msg);
+            message.getTranslates().add(messageTranslate);
+            sourceResultMessageRepo.save(message);
         }
         catch (Exception e) {
             e.printStackTrace();
