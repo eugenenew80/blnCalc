@@ -10,6 +10,6 @@ import java.util.List;
 public interface RegResultLine4Repo extends JpaRepository<RegResultLine4, Long> {
     List<RegResultLine4> findAllByHeaderId(Long headerId);
 
-    @Query("select t from RegResultLine4 t where t.header.id = ?1 and t.meteringPoint.code = ?2 and t.val is not null")
-    List<RegResultLine4> findByMeteringPoint(Long headerId, String mpCode);
+    @Query("select t from RegResultLine4 t where t.header.id = ?1 and t.dealer.id = ?2")
+    List<RegResultLine4> findByDealer(Long headerId, Long dealerId);
 }

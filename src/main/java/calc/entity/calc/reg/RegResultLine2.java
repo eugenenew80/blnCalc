@@ -2,6 +2,7 @@ package calc.entity.calc.reg;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Parameter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
