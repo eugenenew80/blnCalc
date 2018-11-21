@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 import static calc.util.Util.buildMsgParams;
+import static calc.util.Util.round;
 import static java.util.Optional.*;
 
 @SuppressWarnings("Duplicates")
@@ -69,6 +70,7 @@ public class BalanceSubstUService {
                 Double val = null;
                 try {
                     val = getVal(meteringPoint, parU, context);
+                    val = round(val, 1);
                 }
                 catch (CycleDetectionException e) {
                     messageService.addMessage(header, uLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
