@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_balance_source_result_lines_tl")
-public class SourceResultLineTranslate {
+public class SourceResultLine1Translate {
     @Id
     @SequenceGenerator(name="calc_balance_source_result_lines_tl_s", sequenceName = "calc_balance_source_result_lines_tl_s", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_balance_source_result_lines_tl_s")
@@ -19,7 +19,7 @@ public class SourceResultLineTranslate {
 
     @ManyToOne
     @JoinColumn(name = "result_line_id")
-    private SourceResultLine line;
+    private SourceResultLine2 line;
 
     @Column(name="lang")
     @Enumerated(EnumType.STRING)

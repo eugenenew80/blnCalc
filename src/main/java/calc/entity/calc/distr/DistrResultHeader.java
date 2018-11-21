@@ -4,6 +4,7 @@ import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.BalanceUnit;
 import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -52,6 +53,10 @@ public class DistrResultHeader {
 
     @Column(name = "version")
     private Long version;
+
+    @Column(name="calc_type")
+    @Enumerated(EnumType.STRING)
+    private DataTypeEnum dataType;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<DistrResultLine> lines;
