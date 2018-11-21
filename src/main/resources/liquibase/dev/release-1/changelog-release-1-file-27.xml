@@ -265,5 +265,25 @@
                 referencedColumnNames="id"
         />
     </changeSet>
-    
+
+    <changeSet id="calc-rus-486" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop foreign constraint: FK_CALC_BALANCE_SOURCE_LINES_1</comment>
+        <dropForeignKeyConstraint baseTableName="CALC_BALANCE_SOURCE_LINES" constraintName="FK_CALC_BALANCE_SOURCE_LINES_1" baseTableSchemaName="apps"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-487" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: CALC_BALANCE_SOURCE_LINES to calc_balance_source_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="CALC_BALANCE_SOURCE_LINES"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_balance_source_lines_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_source_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
