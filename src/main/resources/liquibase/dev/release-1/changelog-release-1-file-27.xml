@@ -286,4 +286,20 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-488" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: dm_doc_signatures</comment>
+        <dropColumn tableName="dm_doc_signatures" schemaName="apps">
+            <column name="signature"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-489" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_signatories</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_signatories">
+            <column name="signature" type="BLOB"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
