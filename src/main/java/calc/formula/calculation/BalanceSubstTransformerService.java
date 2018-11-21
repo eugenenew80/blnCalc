@@ -219,7 +219,7 @@ public class BalanceSubstTransformerService {
                 Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
                 Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2)) * 1000d;
                 Double valXX = round(deltaPxx * hours * Math.pow(uAvg / uNomH, 2), param);
-                Double valN  = round(totalEH * resistH / (Math.pow(uAvg, 2) * hours), param);
+                Double valN  = round(totalEH * resistH / (Math.pow(uAvg, 2) * 1000d * hours), param);
 
                 transformerLine.setApH(apH);
                 transformerLine.setAmH(amH);
