@@ -1,6 +1,7 @@
 package calc.entity.calc.source;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.TemplateLine;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.RowTypeEnum;
@@ -16,7 +17,7 @@ import java.util.List;
 @Entity
 @Table(name = "calc_balance_source_lines")
 @Immutable
-public class SourceLine2 {
+public class SourceLine2 implements TemplateLine {
     @Id
     private Long id;
 

@@ -111,6 +111,8 @@ public class BalanceSubstUbService {
                     .doubleValue();
 
                 workHours = ofNullable(workHours).orElse(0d);
+                workHours = round(workHours,1);
+
                 if (workHours.equals(0d)) {
                     messageService.addMessage(header, ubLine.getId(), docCode, "UB_WORK_HOURS_NOT_FOUND", info);
                     continue;
@@ -137,7 +139,10 @@ public class BalanceSubstUbService {
                     .build()
                     .doubleValue();
 
+                Parameter parU = paramService.getValues().get("U");
+                uAvg = round(uAvg, parU);
                 uAvg = Optional.of(uAvg).orElse(0d);
+
                 if (uAvg.equals(0d)) {
                     messageService.addMessage(header, ubLine.getId(), docCode, "UB_UAVG_NOT_FOUND", info);
                     continue;
@@ -232,7 +237,6 @@ public class BalanceSubstUbService {
                         if (tnType != null && tnType.getAccuracyClass() != null)
                             buProc = ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
 
-                        //Double biProc = Math.sqrt(2d) * bttProc;
                         Double biProc = bttProc;
                         Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
                         Double bsoProc = ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
@@ -319,8 +323,9 @@ public class BalanceSubstUbService {
     private Pair<Double, String> getBttProc(AccuracyClass accuracyClass, Double i1avgProc) {
         Double bttProc = Double.MIN_VALUE;
         String msgCode = "OK";
+        String designation = accuracyClass.getDesignation();
 
-        if (accuracyClass.getDesignation().equals("0.1")) {
+        if (designation.equals("0.1")) {
             if (i1avgProc > 120)        msgCode = "UB_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = 0.225d - 0.00125d * i1avgProc;
@@ -330,7 +335,7 @@ public class BalanceSubstUbService {
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
-        else if (accuracyClass.getDesignation().equals("0.2S")) {
+        else if (designation.equals("0.2S")) {
             if (i1avgProc > 120)        msgCode = "UB_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
@@ -340,7 +345,7 @@ public class BalanceSubstUbService {
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
-        else if (accuracyClass.getDesignation().equals("0.2")) {
+        else if (designation.equals("0.2")) {
             if (i1avgProc > 120)        msgCode = "UB_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = 0.3875d - 0.001875d * i1avgProc;
@@ -350,7 +355,7 @@ public class BalanceSubstUbService {
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
-        else if (accuracyClass.getDesignation().equals("0.5S")) {
+        else if (designation.equals("0.5S")) {
             if (i1avgProc > 120)        msgCode = "UB_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();
@@ -360,7 +365,7 @@ public class BalanceSubstUbService {
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
-        else if (accuracyClass.getDesignation().equals("0.5")) {
+        else if (designation.equals("0.5")) {
             if (i1avgProc > 120)        msgCode = "UB_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = 0.8125d - 0.003125d * i1avgProc;
@@ -370,7 +375,7 @@ public class BalanceSubstUbService {
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
-        else if (accuracyClass.getDesignation().equals("1")) {
+        else if (designation.equals("1")) {
             if (i1avgProc > 120)        msgCode = "UB_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = 1.625d - 0.00625d * i1avgProc;
@@ -380,7 +385,7 @@ public class BalanceSubstUbService {
             else                        msgCode = "UB_I1_AVG_PROC_NEGATIVE";
         }
 
-        else if (accuracyClass.getDesignation().equals("3") || accuracyClass.getDesignation().equals("5") || accuracyClass.getDesignation().equals("10")) {
+        else if (designation.equals("3") || designation.equals("5") || designation.equals("10")) {
             if (i1avgProc > 120)        msgCode = "UB_I1_AVG_PROC_MORE_THAN_120";
             else if (i1avgProc >= 100)  bttProc = accuracyClass.getValue();
             else if (i1avgProc >= 20)   bttProc = accuracyClass.getValue();

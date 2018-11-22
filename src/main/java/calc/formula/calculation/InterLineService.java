@@ -1,6 +1,7 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.inter.*;
 import calc.formula.CalcContext;
@@ -32,6 +33,7 @@ public class InterLineService {
     private final InterResultAppRepo interResultAppRepo;
     private final OperatorFactory operatorFactory;
     private final MessageService messageService;
+    private final ParamService paramService;
 
     public boolean calc(InterResultHeader header) {
         try {
@@ -49,6 +51,8 @@ public class InterLineService {
                 .values(new HashMap<>())
                 .build();
 
+
+            Parameter paramWL = paramService.getValues().get("WL");
             List<InterResultLine> resultLines = new ArrayList<>();
             for (InterLine line : header.getHeader().getLines()) {
                 Map<String, String> params = buildMsgParams(line);
@@ -161,20 +165,20 @@ public class InterLineService {
 
                         val1 = ofNullable(val1).orElse(0d);
                         val2 = ofNullable(val2).orElse(0d);
-                        Double lossVal = round(val1 - val2,0);
+                        Double lossVal = val1 - val2;
 
                         Double lossProc1 = ofNullable(line.getProportion1()).orElse(0d);
                         Double lossProc2 = ofNullable(line.getProportion2()).orElse(0d);
 
                         Double powerLength = ofNullable(line.getPowerLineLength()).orElse(0d);
                         Double powerLength1 = ofNullable(line.getPowerLineLength1()).orElse(0d);
-                        Double powerLength2 = ofNullable(line.getPowerLineLength2()).orElse(0d);
+
                         if (line.getIsProportionLength() && powerLength != 0d) {
-                            lossProc1 = 100d * powerLength1 / powerLength;
-                            lossProc2 = 100d * powerLength2 / powerLength;
+                            lossProc1 = round(100d * powerLength1 / powerLength, 2);
+                            lossProc2 = 100d - lossProc1;
                         }
 
-                        Double lossVal1 = round(lossProc1 / 100d * lossVal,0);
+                        Double lossVal1 = round(lossProc1 / 100d * lossVal,paramWL);
                         Double lossVal2 = lossVal - lossVal1;
                         Double boundaryVal = val1 - lossVal1;
 

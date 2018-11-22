@@ -63,5 +63,5 @@ public class SourceResultLine2 {
     private Long createBy;
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<SourceResultLine1Translate> translates;
+    private List<SourceResultLine2Translate> translates;
 }

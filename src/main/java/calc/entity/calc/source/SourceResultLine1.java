@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -46,4 +47,7 @@ public class SourceResultLine1 {
 
     @Column(name = "create_by")
     private Long createBy;
+
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<SourceResultLine1Translate> translates;
 }

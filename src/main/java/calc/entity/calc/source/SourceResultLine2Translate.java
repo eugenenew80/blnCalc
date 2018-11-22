@@ -10,16 +10,16 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_balance_source_result_lines_f_tl")
-public class SourceResultLine1Translate {
+@Table(name = "calc_balance_source_result_lines_tl")
+public class SourceResultLine2Translate {
     @Id
-    @SequenceGenerator(name="calc_balance_source_result_lines_f_tl_s", sequenceName = "calc_balance_source_result_lines_f_tl_s", allocationSize=1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_balance_source_result_lines_f_tl_s")
+    @SequenceGenerator(name="calc_balance_source_result_lines_tl_s", sequenceName = "calc_balance_source_result_lines_tl_s", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_balance_source_result_lines_tl_s")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "result_line_id")
-    private SourceResultLine1 line;
+    private SourceResultLine2 line;
 
     @Column(name="lang")
     @Enumerated(EnumType.STRING)

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+import static calc.util.Util.round;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("ImplicitSubclassInspection")
@@ -81,6 +82,9 @@ public class BalanceSubstMrService {
                         continue;
                     }
 
+                    Parameter param = inverseParam(t.getParam(), mrLine.getIsInverse());
+                    Double val = round(t.getVal(), param);
+
                     line.setHeader(header);
                     line.setMeteringPoint(meteringPoint);
                     line.setSection(section);
@@ -88,7 +92,7 @@ public class BalanceSubstMrService {
                     line.setBypassMode(t.getBypassMode());
                     line.setIsBypassSection(t.getIsBypassSection());
                     line.setIsIgnore(false);
-                    line.setParam(inverseParam(t.getParam(), mrLine.getIsInverse()));
+                    line.setParam(param);
                     line.setUnit(t.getUnit());
                     line.setMeter(t.getMeter());
                     line.setMeterHistory(t.getMeterHistory());
@@ -98,7 +102,7 @@ public class BalanceSubstMrService {
                     line.setEndVal(t.getEndVal());
                     line.setDelta(t.getDelta());
                     line.setMeterRate(t.getMeterRate());
-                    line.setVal(t.getVal());
+                    line.setVal(val);
                     line.setUnderCountVal(t.getUnderCountVal());
                     line.setUndercount(t.getUnderCount());
                     if (meteringPoint.getVoltageClass()!=null)

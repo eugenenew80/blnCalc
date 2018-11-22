@@ -20,6 +20,8 @@ import javax.annotation.PostConstruct;
 import javax.script.ScriptEngine;
 import java.util.*;
 import java.util.function.UnaryOperator;
+
+import static calc.util.Util.round;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -51,7 +53,7 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-    public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, ParamTypeEnum paramType, CalcContext context) throws Exception {
+     public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, ParamTypeEnum paramType, CalcContext context) throws Exception {
         if (point == null || param == null || context == null)
             return null;
 
@@ -70,47 +72,52 @@ public class CalcServiceImpl implements CalcService {
                 .filter(t -> t.getParamType() == paramType)
                 .findFirst()
                 .orElse(null);
+
+            if (formula == null)
+                logger.warn("Formula not found");
         }
 
-        if (formula == null) {
-            logger.warn("Formula not found");
-            DoubleExpression expression;
-            if (!param.equals(mapParams.get("AB")))
-                expression = getExpression(point, param, paramType, 1d, context);
-            else {
-                DoubleExpression expression1 = getExpression(point, mapParams.get("A+"), paramType, 1d, context);
-                DoubleExpression expression2 = getExpression(point, mapParams.get("A-"), paramType, 1d, context);
-                expression = BinaryExpression.builder()
-                    .operator(operatorFactory.binary("subtract"))
-                    .expressions(Arrays.asList(expression1, expression2))
-                    .build();
-            }
-
-            CalcResult result = new CalcResult();
-            result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
-            result.setMeteringPoint(point);
-            result.setParam(param);
-            result.setUnit(param.getUnit());
-            result.setParamType(paramType.name());
-
-            if (context.getPeriodType() != PeriodTypeEnum.H) {
-                result.setDoubleValue(expression.doubleValue());
-                result.setPeriodType(context.getPeriodType());
-                logger.trace("val: " + expression.doubleValue());
-            }
-
-            if (context.getPeriodType() == PeriodTypeEnum.H) {
-                result.setDoubleValues(expression.doubleValues());
-                result.setPeriodType(context.getPeriodType());
-                logger.trace("val: " + Arrays.deepToString(expression.doubleValues()));
-            }
-            return result;
-        }
+        if (formula == null)
+            return getCalcResult(point, param, paramType, context);
 
         logger.trace("formulaId: " + formula.getId());
         CalcResult result = calcMeteringPoint(formula, context);
 
         logger.trace("---------------------------------------------");
+        return result;
+    }
+
+    private CalcResult getCalcResult(MeteringPoint point, Parameter param, ParamTypeEnum paramType, CalcContext context) {
+        DoubleExpression expression;
+        if (!param.equals(mapParams.get("AB")))
+            expression = getExpression(point, param, paramType, 1d, context);
+        else {
+            DoubleExpression expression1 = getExpression(point, mapParams.get("A+"), paramType, 1d, context);
+            DoubleExpression expression2 = getExpression(point, mapParams.get("A-"), paramType, 1d, context);
+            expression = BinaryExpression.builder()
+                .operator(operatorFactory.binary("subtract"))
+                .expressions(Arrays.asList(expression1, expression2))
+                .build();
+        }
+
+        CalcResult result = new CalcResult();
+        result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
+        result.setMeteringPoint(point);
+        result.setParam(param);
+        result.setUnit(param.getUnit());
+        result.setParamType(paramType.name());
+
+        if (context.getPeriodType() != PeriodTypeEnum.H) {
+            result.setDoubleValue(expression.doubleValue());
+            result.setPeriodType(context.getPeriodType());
+            logger.trace("val: " + expression.doubleValue());
+        }
+
+        if (context.getPeriodType() == PeriodTypeEnum.H) {
+            result.setDoubleValues(expression.doubleValues());
+            result.setPeriodType(context.getPeriodType());
+            logger.trace("val: " + Arrays.deepToString(expression.doubleValues()));
+        }
         return result;
     }
 
@@ -151,7 +158,10 @@ public class CalcServiceImpl implements CalcService {
         result.setParamType(formula.getParamType().name());
 
         if (context.getPeriodType() != PeriodTypeEnum.H) {
-            result.setDoubleValue(expression.doubleValue());
+            Double doubleValue = expression.doubleValue();
+            doubleValue = round(doubleValue, formula.getParam());
+
+            result.setDoubleValue(doubleValue);
             result.setPeriodType(context.getPeriodType());
         }
 

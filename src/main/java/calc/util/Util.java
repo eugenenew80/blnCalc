@@ -1,5 +1,6 @@
 package calc.util;
 
+import calc.entity.TemplateLine;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
 
@@ -31,6 +32,12 @@ public class Util {
 
         Map<String, String> msgParams = new HashMap<>();
         msgParams.put("point", mp.getCode());
+        return msgParams;
+    }
+
+    public static Map<String, String> buildMsgParams(TemplateLine line) {
+        Map<String, String> msgParams = new HashMap<>();
+        msgParams.put("line", line.getLineNum().toString());
         return msgParams;
     }
 

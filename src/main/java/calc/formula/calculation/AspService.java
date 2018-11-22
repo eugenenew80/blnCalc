@@ -172,6 +172,8 @@ public class AspService {
             }
 
             for (MeteringReading t : meteringReadings) {
+                Double val = round(t.getVal(), t.getParam());
+
                 AspResultLine resultLine = new AspResultLine();
                 resultLine.setHeader(header);
                 resultLine.setLineNum(line.getLineNum());
@@ -187,7 +189,7 @@ public class AspService {
                 resultLine.setEndVal(t.getEndVal());
                 resultLine.setDelta(t.getDelta());
                 resultLine.setMeterRate(t.getMeterRate());
-                resultLine.setVal(t.getVal());
+                resultLine.setVal(val);
                 resultLine.setBypassMeteringPoint(t.getBypassMeteringPoint());
                 resultLine.setBypassMode(t.getBypassMode());
                 resultLine.setUnderCountVal(t.getUnderCountVal());

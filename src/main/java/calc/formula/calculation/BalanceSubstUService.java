@@ -70,7 +70,6 @@ public class BalanceSubstUService {
                 Double val = null;
                 try {
                     val = getVal(meteringPoint, parU, context);
-                    val = round(val, 1);
                 }
                 catch (CycleDetectionException e) {
                     messageService.addMessage(header, uLine.getId(), docCode, "CYCLED_FORMULA", msgParams);

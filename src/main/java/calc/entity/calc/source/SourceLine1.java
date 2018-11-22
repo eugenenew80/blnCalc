@@ -1,5 +1,6 @@
 package calc.entity.calc.source;
 
+import calc.entity.TemplateLine;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "calc_balance_source_lines_f")
 @Immutable
-public class SourceLine1 {
+public class SourceLine1 implements TemplateLine {
     @Id
     private Long id;
 

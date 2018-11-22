@@ -56,6 +56,8 @@ public class InterMrService {
                     if (!(t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-")))
                         continue;
 
+                    Double val = round(t.getVal(), t.getParam());
+
                     InterResultMrLine resultLine = new InterResultMrLine();
                     resultLine.setHeader(header);
                     resultLine.setMeteringPoint(meteringPoint);
@@ -72,7 +74,7 @@ public class InterMrService {
                     resultLine.setEndVal(t.getEndVal());
                     resultLine.setDelta(t.getDelta());
                     resultLine.setMeterRate(t.getMeterRate());
-                    resultLine.setVal(round(t.getVal(),0));
+                    resultLine.setVal(val);
                     resultLine.setUnderCountVal(t.getUnderCountVal());
                     resultLine.setUndercount(t.getUnderCount());
                     resultLines.add(resultLine);

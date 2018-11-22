@@ -67,8 +67,8 @@ public class BalanceSubstReactorService {
     }
 
     private List<ReactorValue> calcLines(BalanceSubstResultHeader header, CalcContext context) {
-        Parameter param = paramService.getValues().get("WL");
-        Unit unit = param.getUnit();
+        Parameter paramWL = paramService.getValues().get("WL");
+        Unit unitWL = paramWL.getUnit();
 
         List<ReactorValue> reactorLines = new ArrayList<>();
         for (BalanceSubstPeLine peLine : header.getHeader().getPeLines()) {
@@ -109,14 +109,15 @@ public class BalanceSubstReactorService {
                 .build()
                 .doubleValue();
 
-            uAvg = round(uAvg, 1);
+            Parameter parU = paramService.getValues().get("U");
+            uAvg = round(uAvg, parU);
 
             if (uNom == 0) {
                 messageService.addMessage(header, peLine.getId(), docCode, "PE_UNOM_NOT_FOUND", info);
                 continue;
             }
 
-            Double val = round(deltaPr * hours * Math.pow(uAvg / uNom, 2), param);
+            Double val = round(deltaPr * hours * Math.pow(uAvg / uNom, 2), paramWL);
 
             ReactorValue reactorLine = new ReactorValue();
             reactorLine.setHeader(header);
@@ -125,7 +126,7 @@ public class BalanceSubstReactorService {
             reactorLine.setOperatingTime(hours);
             reactorLine.setUavg(uAvg);
             reactorLine.setUnom(uNom);
-            reactorLine.setUnit(unit);
+            reactorLine.setUnit(unitWL);
             reactorLine.setVal(val);
             reactorLine.setInputMp(inputMp);
             reactorLine.setIsBalance(peLine.getIsBalance());
