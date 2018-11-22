@@ -288,11 +288,11 @@
     </changeSet>
 
     <changeSet id="calc-eug-1863" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: calc_distribution_result to calc_data_types</comment>
+        <comment>Creating foreign constraint: calc_distribution_result_h to calc_data_types</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
-                baseTableName="calc_distribution_result"
-                baseColumnNames="data_type"
+                baseTableName="calc_distribution_result_h"
+                baseColumnNames="calc_type"
                 constraintName="fk_calc_distribution_result_h_6"
                 deferrable="true"
                 onDelete="RESTRICT"
