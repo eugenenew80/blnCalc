@@ -75,7 +75,10 @@ public class AspService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION");
+            HashMap<String, String> msgParams = new HashMap<>();
+            msgParams.putIfAbsent("err", e.getMessage());
+            messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", msgParams);
+
             updateStatus(header, BatchStatusEnum.E);
             logger.error("Metering reading for header " + header.getId() + " terminated with exception");
             logger.error(e.toString() + ": " + e.getMessage());
