@@ -302,4 +302,21 @@
             <column name="signature" type="BLOB"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-rus-490" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_signatories</comment>
+        <dropColumn tableName="calc_signatories" schemaName="apps">
+            <column name="signature"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-491" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column dm_doc_signatures</comment>
+        <addColumn schemaName="apps"
+                   tableName="dm_doc_signatures">
+            <column name="signature" type="BLOB"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
