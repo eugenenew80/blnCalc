@@ -14,7 +14,6 @@ import calc.formula.CalcResult;
 import calc.formula.ContextType;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
-import calc.formula.service.PeriodTimeValueService;
 import calc.repo.calc.DistrResultHeaderRepo;
 import calc.repo.calc.SourceResultHeaderRepo;
 import calc.repo.calc.SourceResultLine1Repo;
@@ -98,7 +97,7 @@ public class SourceService {
 
     private void copyGroups(SourceResultHeader header) {
         List<SourceResultLine2> resultLines = new ArrayList<>();
-        for (SourceLine line : header.getHeader().getLines()) {
+        for (SourceLine2 line : header.getHeader().getLines2()) {
             if (line.getRowType() != RowTypeEnum.GROUP)
                 continue;
 
@@ -168,7 +167,7 @@ public class SourceService {
 
     private void calcLines2(SourceResultHeader header, CalcContext context) {
         List<SourceResultLine2> resultLines = new ArrayList<>();
-        for (SourceLine line : header.getHeader().getLines()) {
+        for (SourceLine2 line : header.getHeader().getLines2()) {
             if (line.getRowType() != RowTypeEnum.ROW)
                 continue;
 
@@ -218,9 +217,9 @@ public class SourceService {
         saveLines2(resultLines);
     }
 
-    private void copyTranslates(SourceLine line, SourceResultLine2 resultLine) {
+    private void copyTranslates(SourceLine2 line, SourceResultLine2 resultLine) {
         resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
-        for (SourceLineTranslate lineTranslate : line.getTranslates()) {
+        for (SourceLine2Translate lineTranslate : line.getTranslates()) {
             SourceResultLine1Translate resultLineTranslate = new SourceResultLine1Translate();
             resultLineTranslate.setLang(lineTranslate.getLang());
             resultLineTranslate.setLine(resultLine);
@@ -262,9 +261,9 @@ public class SourceService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void setParents(SourceResultHeader header) {
         List<SourceResultLine2> resultLines = sourceResultLine2Repo.findAllByHeaderId(header.getId());
-        List<SourceLine> sourceLines = header.getHeader().getLines();
+        List<SourceLine2> sourceLines = header.getHeader().getLines2();
 
-        for (SourceLine sourceLine : sourceLines) {
+        for (SourceLine2 sourceLine : sourceLines) {
             if (sourceLine.getParent() == null)
                 continue;
 
@@ -293,7 +292,7 @@ public class SourceService {
         sourceResultHeaderRepo.flush();
     }
 
-    private Map<String, String> buildMsgParams(SourceLine line) {
+    private Map<String, String> buildMsgParams(SourceLine2 line) {
         Map<String, String> msgParams = new HashMap<>();
         msgParams.put("line", line.getLineNum().toString());
         return msgParams;

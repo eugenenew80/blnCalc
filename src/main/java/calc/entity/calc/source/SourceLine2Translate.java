@@ -11,13 +11,13 @@ import javax.persistence.*;
 @Entity
 @Table(name = "calc_balance_source_lines_tl")
 @Immutable
-public class SourceLineTranslate {
+public class SourceLine2Translate {
     @Id
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "line_id")
-    private SourceLine line;
+    private SourceLine2 line;
 
     @Column(name="lang")
     @Enumerated(EnumType.STRING)
