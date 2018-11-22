@@ -1,7 +1,10 @@
 package calc.formula.calculation;
 
+import calc.entity.calc.Formula;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
+import calc.entity.calc.distr.DistrResultHeader;
+import calc.entity.calc.distr.DistrResultLine;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.RowTypeEnum;
@@ -9,12 +12,12 @@ import calc.entity.calc.source.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
-import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
-import calc.formula.service.PeriodTimeValueService;
+import calc.repo.calc.DistrResultHeaderRepo;
 import calc.repo.calc.SourceResultHeaderRepo;
-import calc.repo.calc.SourceResultLineRepo;
+import calc.repo.calc.SourceResultLine1Repo;
+import calc.repo.calc.SourceResultLine2Repo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static calc.util.Util.round;
+import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings({"Duplicates", "ImplicitSubclassInspection"})
 @Service
@@ -33,9 +37,10 @@ public class SourceService {
     private static final Logger logger = LoggerFactory.getLogger(SourceService.class);
     private static final String docCode = "SOURCE";
     private final SourceResultHeaderRepo sourceResultHeaderRepo;
-    private final SourceResultLineRepo sourceResultLineRepo;
+    private final SourceResultLine1Repo sourceResultLine1Repo;
+    private final SourceResultLine2Repo sourceResultLine2Repo;
+    private final DistrResultHeaderRepo distrResultHeaderRepo;
     private final MessageService messageService;
-    private final PeriodTimeValueService periodTimeValueService;
     private final CalcService calcService;
 
 
@@ -66,8 +71,9 @@ public class SourceService {
             value = round(value, 0);
             header.setDeliveryVal(value);
 
+            calcLines1(header, context);
             copyGroups(header);
-            calcRows(header, context);
+            calcLines2(header, context);
             setParents(header);
 
             header.setLastUpdateDate(LocalDateTime.now());
@@ -90,12 +96,12 @@ public class SourceService {
     }
 
     private void copyGroups(SourceResultHeader header) {
-        List<SourceResultLine> resultLines = new ArrayList<>();
-        for (SourceLine line : header.getHeader().getLines()) {
+        List<SourceResultLine2> resultLines = new ArrayList<>();
+        for (SourceLine2 line : header.getHeader().getLines2()) {
             if (line.getRowType() != RowTypeEnum.GROUP)
                 continue;
 
-            SourceResultLine resultLine = new SourceResultLine();
+            SourceResultLine2 resultLine = new SourceResultLine2();
             resultLine.setHeader(header);
             resultLine.setLineNum(line.getLineNum());
             resultLine.setMeteringPoint(line.getMeteringPoint());
@@ -107,12 +113,61 @@ public class SourceService {
             copyTranslates(line, resultLine);
             resultLines.add(resultLine);
         }
-        saveLines(resultLines);
+        saveLines2(resultLines);
     }
 
-    private void calcRows(SourceResultHeader header, CalcContext context) {
-        List<SourceResultLine> resultLines = new ArrayList<>();
-        for (SourceLine line : header.getHeader().getLines()) {
+    private void calcLines1(SourceResultHeader header, CalcContext context) {
+        Formula formula = header.getFormula();
+        if (formula == null)
+            return;
+
+        if (header.getMeteringPoint() == null)
+            return;
+
+        if (header.getParam() == null)
+            return;
+
+        List<MeteringPoint> lines = formula.getVars()
+            .stream()
+            .flatMap(t -> t.getDetails().stream())
+            .map(t -> t.getMeteringPoint())
+            .distinct()
+            .filter(t -> t != null)
+            .collect(toList());
+
+        lines.add(header.getMeteringPoint());
+
+        List<SourceResultLine1> resultLines = new ArrayList<>();
+        Long lineNum = 0l;
+        for (MeteringPoint line : lines) {
+            lineNum++;
+
+            Double val = null;
+            try {
+                CalcResult result = calcService.calcMeteringPoint(line, formula.getParam(), formula.getParamType(), context);
+                val = result != null ? result.getDoubleValue() : null;
+                val = round(val, 0);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            SourceResultLine1 resultLine = new SourceResultLine1();
+            resultLine.setHeader(header);
+            resultLine.setLineNum(lineNum);
+            resultLine.setMeteringPoint(line);
+            resultLine.setParam(formula.getParam());
+            resultLine.setTotalVal(val);
+            resultLine.setCreateBy(header.getCreateBy());
+            resultLine.setCreateDate(LocalDateTime.now());
+            resultLines.add(resultLine);
+        }
+        saveLines1(resultLines);
+    }
+
+    private void calcLines2(SourceResultHeader header, CalcContext context) {
+        List<SourceResultLine2> resultLines = new ArrayList<>();
+        for (SourceLine2 line : header.getHeader().getLines2()) {
             if (line.getRowType() != RowTypeEnum.ROW)
                 continue;
 
@@ -130,25 +185,42 @@ public class SourceService {
                 continue;
             }
 
-            SourceResultLine resultLine = new SourceResultLine();
+            List<DistrResultHeader> distrList = distrResultHeaderRepo.findByOrg(header.getOrganization().getId(), header.getDataType().name(), header.getStartDate(), header.getEndDate());
+            DistrResultLine distrLine = distrList.stream()
+                .flatMap(t -> t.getLines().stream())
+                .filter(t -> t.getMeteringPoint() != null)
+                .filter(t -> t.getParam() != null)
+                .filter(t -> t.getMeteringPoint().equals(meteringPoint))
+                .filter(t -> t.getParam().equals(param))
+                .findFirst()
+                .orElse(null);
+
+            SourceResultLine2 resultLine = new SourceResultLine2();
             resultLine.setHeader(header);
             resultLine.setLineNum(line.getLineNum());
             resultLine.setMeteringPoint(line.getMeteringPoint());
             resultLine.setParam(line.getParam());
             resultLine.setIsInverse(line.getIsInverse());
             resultLine.setRowType(line.getRowType());
+
+            if (distrLine != null) {
+                resultLine.setOwnVal(distrLine.getOwnVal());
+                resultLine.setOtherVal(distrLine.getOtherVal());
+                resultLine.setTotalVal(distrLine.getTotalVal());
+            }
+
             resultLine.setCreateBy(header.getCreateBy());
             resultLine.setCreateDate(LocalDateTime.now());
             copyTranslates(line, resultLine);
             resultLines.add(resultLine);
         }
-        saveLines(resultLines);
+        saveLines2(resultLines);
     }
 
-    private void copyTranslates(SourceLine line, SourceResultLine resultLine) {
+    private void copyTranslates(SourceLine2 line, SourceResultLine2 resultLine) {
         resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
-        for (SourceLineTranslate lineTranslate : line.getTranslates()) {
-            SourceResultLineTranslate resultLineTranslate = new SourceResultLineTranslate();
+        for (SourceLine2Translate lineTranslate : line.getTranslates()) {
+            SourceResultLine1Translate resultLineTranslate = new SourceResultLine1Translate();
             resultLineTranslate.setLang(lineTranslate.getLang());
             resultLineTranslate.setLine(resultLine);
 
@@ -161,16 +233,24 @@ public class SourceService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void saveLines(List<SourceResultLine> lines) {
-        sourceResultLineRepo.save(lines);
-        sourceResultLineRepo.flush();
+    private void saveLines1(List<SourceResultLine1> lines) {
+        sourceResultLine1Repo.save(lines);
+        sourceResultLine1Repo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void saveLines2(List<SourceResultLine2> lines) {
+        sourceResultLine2Repo.save(lines);
+        sourceResultLine2Repo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void deleteLines(SourceResultHeader header) {
-        List<SourceResultLine> lines = sourceResultLineRepo.findAllByHeaderId(header.getId());
-        sourceResultLineRepo.delete(lines);
-        sourceResultLineRepo.flush();
+        List<SourceResultLine2> lines = sourceResultLine2Repo.findAllByHeaderId(header.getId());
+        sourceResultLine2Repo.delete(lines);
+        sourceResultLine2Repo.flush();
+
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -180,19 +260,19 @@ public class SourceService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void setParents(SourceResultHeader header) {
-        List<SourceResultLine> resultLines = sourceResultLineRepo.findAllByHeaderId(header.getId());
-        List<SourceLine> sourceLines = header.getHeader().getLines();
+        List<SourceResultLine2> resultLines = sourceResultLine2Repo.findAllByHeaderId(header.getId());
+        List<SourceLine2> sourceLines = header.getHeader().getLines2();
 
-        for (SourceLine sourceLine : sourceLines) {
+        for (SourceLine2 sourceLine : sourceLines) {
             if (sourceLine.getParent() == null)
                 continue;
 
-            SourceResultLine line = resultLines.stream()
+            SourceResultLine2 line = resultLines.stream()
                 .filter(t -> t.getLineNum().equals(sourceLine.getLineNum()))
                 .findFirst()
                 .orElse(null);
 
-            SourceResultLine parentLine = resultLines.stream()
+            SourceResultLine2 parentLine = resultLines.stream()
                 .filter(t -> t.getLineNum().equals(sourceLine.getParent().getLineNum()))
                 .findFirst()
                 .orElse(null);
@@ -201,8 +281,8 @@ public class SourceService {
                 line.setParent(parentLine);
         }
 
-        sourceResultLineRepo.save(resultLines);
-        sourceResultLineRepo.flush();
+        sourceResultLine2Repo.save(resultLines);
+        sourceResultLine2Repo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -212,7 +292,7 @@ public class SourceService {
         sourceResultHeaderRepo.flush();
     }
 
-    private Map<String, String> buildMsgParams(SourceLine line) {
+    private Map<String, String> buildMsgParams(SourceLine2 line) {
         Map<String, String> msgParams = new HashMap<>();
         msgParams.put("line", line.getLineNum().toString());
         return msgParams;

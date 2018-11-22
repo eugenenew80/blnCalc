@@ -54,5 +54,8 @@ public class SourceHeader {
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
-    private List<SourceLine> lines;
+    private List<SourceLine1> lines1;
+
+    @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
+    private List<SourceLine2> lines2;
 }

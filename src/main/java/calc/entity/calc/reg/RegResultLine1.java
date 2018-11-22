@@ -2,9 +2,6 @@ package calc.entity.calc.reg;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
-import calc.entity.calc.Parameter;
-import calc.entity.calc.source.SourceResultHeader;
-import calc.entity.calc.source.SourceResultLineTranslate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

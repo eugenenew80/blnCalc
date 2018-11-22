@@ -1,9 +1,7 @@
 package calc.entity.calc.source;
 
-import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
-import calc.entity.calc.enums.RowTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
@@ -14,9 +12,9 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_balance_source_lines")
+@Table(name = "calc_balance_source_lines_f")
 @Immutable
-public class SourceLine {
+public class SourceLine1 {
     @Id
     private Long id;
 
@@ -28,10 +26,6 @@ public class SourceLine {
     private SourceHeader header;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private SourceLine parent;
-
-    @ManyToOne
     @JoinColumn(name = "metering_point_id")
     private MeteringPoint meteringPoint;
 
@@ -39,13 +33,11 @@ public class SourceLine {
     @JoinColumn(name = "param_id")
     private Parameter param;
 
-    @Column(name = "is_inverse")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isInverse;
+    @Column(name = "rate")
+    private Double rate;
 
-    @Column(name = "row_type_code")
-    @Enumerated(EnumType.STRING)
-    private RowTypeEnum rowType;
+    @Column(name = "sign")
+    private String sign;
 
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -54,5 +46,5 @@ public class SourceLine {
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
-    private List<SourceLineTranslate> translates;
+    private List<SourceLine1Translate> translates;
 }

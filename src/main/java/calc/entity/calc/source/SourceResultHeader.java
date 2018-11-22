@@ -4,6 +4,7 @@ import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.*;
 import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -74,6 +75,10 @@ public class SourceResultHeader {
 
     @Column(name = "ub_val")
     private Double ubVal;
+
+    @Column(name="calc_type")
+    @Enumerated(EnumType.STRING)
+    private DataTypeEnum dataType;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
