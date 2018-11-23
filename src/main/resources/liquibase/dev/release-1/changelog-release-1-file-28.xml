@@ -303,4 +303,78 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-1864" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_act_inter_pl_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_act_inter_pl_result_headers">
+            <column name="data_type" type="varchar2(30)" remarks="Статус данных">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1865" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_headers"
+                baseColumnNames="data_type"
+                constraintName="fk_calc_act_inter_pl_result_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1866" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_balance_segment_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_balance_segment_result_headers">
+            <column name="data_type" type="varchar2(30)" remarks="Статус данных">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1867" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_result_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_result_headers"
+                baseColumnNames="data_type"
+                constraintName="fk_calc_balance_segment_result_headers_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1868" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_loss_fact_result_headers</comment>
+        <addColumn schemaName="apps" tableName="calc_loss_fact_result_headers">
+            <column name="data_type" type="varchar2(30)" remarks="Статус данных">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1869" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_headers"
+                baseColumnNames="data_type"
+                constraintName="fk_calc_loss_fact_result_headers_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>
