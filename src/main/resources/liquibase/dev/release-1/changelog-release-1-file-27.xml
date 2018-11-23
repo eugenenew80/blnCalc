@@ -356,4 +356,25 @@
                                schemaName="apps"
                                tableName="calc_balance_source_lines_f"/>
     </changeSet>
+
+    <changeSet id="calc-rus-497" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop foreign constraint: FK_CALC_BALANCE_SOURCE_HEADERS_9</comment>
+        <dropForeignKeyConstraint baseTableName="CALC_BALANCE_REG_RESULT_HEADERS" constraintName="FK_CALC_BALANCE_SOURCE_HEADERS_9" baseTableSchemaName="apps"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-498" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_headers"
+                baseColumnNames="data_type"
+                constraintName="fk_calc_balance_reg_result_headers_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>
