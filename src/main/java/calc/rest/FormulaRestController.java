@@ -43,7 +43,7 @@ public class FormulaRestController {
         ResultDto resultDto = new ResultDto();
         resultDto.setFormulaId(formulaDto.getFormulaId());
         try {
-            CalcResult result = calcService.calcMeteringPoint(formula, context);
+            CalcResult result = calcService.calcMeteringPoint(formula, context, context.getDefContextType());
             if (context.getException()!=null)
                 throw context.getException();
 

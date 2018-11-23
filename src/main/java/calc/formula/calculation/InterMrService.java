@@ -38,7 +38,7 @@ public class InterMrService {
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
-                .contextType(ContextType.DEFAULT)
+                .defContextType(ContextType.DEFAULT)
                 .values(new HashMap<>())
                 .build();
 

@@ -47,7 +47,7 @@ public class InterLineService {
                 .startDate(header.getStartDate())
                 .endDate(header.getEndDate())
                 .orgId(header.getOrganization().getId())
-                .contextType(ContextType.INTER)
+                .defContextType(ContextType.INTER)
                 .values(new HashMap<>())
                 .build();
 

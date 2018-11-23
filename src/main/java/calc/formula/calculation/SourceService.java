@@ -61,7 +61,7 @@ public class SourceService {
             deleteLines(header);
             deleteMessages(header);
 
-            CalcResult result = calcService.calcMeteringPoint(header.getFormula(), context);
+            CalcResult result = calcService.calcMeteringPoint(header.getFormula(), context, context.getDefContextType());
             Double value = result !=null ? result.getDoubleValue() : null;
             value = round(value, 0);
             header.setDeliveryVal(value);

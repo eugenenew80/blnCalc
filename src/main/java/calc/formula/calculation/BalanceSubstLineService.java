@@ -60,7 +60,7 @@ public class BalanceSubstLineService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
-                .contextType(ContextType.MR)
+                .defContextType(ContextType.MR)
                 .values(new HashMap<>())
                 .build();
 

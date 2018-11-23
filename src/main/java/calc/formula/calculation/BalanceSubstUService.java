@@ -55,7 +55,7 @@ public class BalanceSubstUService {
                 .orgId(header.getOrganization().getId())
                 .energyObjectType("SUBSTATION")
                 .energyObjectId(header.getSubstation().getId())
-                .contextType(ContextType.DEFAULT)
+                .defContextType(ContextType.DEFAULT)
                 .values(new HashMap<>())
                 .build();
 

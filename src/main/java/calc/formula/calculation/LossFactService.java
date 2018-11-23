@@ -63,7 +63,7 @@ public class LossFactService {
             .startDate(header.getStartDate())
             .endDate(header.getEndDate())
             .orgId( header.getOrganization()!=null ? header.getOrganization().getId() : null)
-            .contextType(ContextType.DEFAULT)
+            .defContextType(ContextType.DEFAULT)
             .values(new HashMap<>())
             .build();
 

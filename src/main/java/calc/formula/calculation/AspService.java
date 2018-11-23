@@ -48,7 +48,7 @@ public class AspService {
             .startDate(header.getStartDate())
             .endDate(header.getEndDate())
             .orgId(header.getOrganization().getId())
-            .contextType(ContextType.ASP)
+            .defContextType(ContextType.ASP)
             .values(new HashMap<>())
             .build();
 
@@ -170,6 +170,21 @@ public class AspService {
             }
 
             if (meteringReadings.size() == 0) {
+
+                CalcResult result = null;
+                try {
+                    result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context, ContextType.DEFAULT);
+                }
+                catch (CycleDetectionException e) {
+                    messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                }
+                catch (Exception e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
+                    messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                }
+                Double val = result!=null ? result.getDoubleValue() : null;
+
+
                 AspResultLine resultLine = new AspResultLine();
                 resultLine.setHeader(header);
                 resultLine.setLineNum(line.getLineNum());
@@ -180,6 +195,7 @@ public class AspService {
                 }
                 resultLine.setFormula(line.getFormula());
                 resultLine.setTreatmentType(line.getTreatmentType());
+                resultLine.setVal(val);
                 copyTranslates(line, resultLine);
                 resultLines.add(resultLine);
             }

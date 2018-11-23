@@ -23,7 +23,7 @@ public class CalcContext {
     private Exception exception;
 
     @Builder.Default
-    private ContextType contextType = ContextType.DEFAULT;
+    private ContextType defContextType = ContextType.DEFAULT;
 
     @Builder.Default
     private Map<String, Double> transformerValues = new HashMap<>();

@@ -53,7 +53,12 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-     public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, ParamTypeEnum paramType, CalcContext context) throws Exception {
+    public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, ParamTypeEnum paramType, CalcContext context) throws Exception {
+        return calcMeteringPoint(point, param, paramType, context, context.getDefContextType());
+    }
+
+    @Override
+     public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, ParamTypeEnum paramType, CalcContext context, ContextType contextType) throws Exception {
         if (point == null || param == null || context == null)
             return null;
 
@@ -78,22 +83,23 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (formula == null)
-            return getCalcResult(point, param, paramType, context);
+            return getCalcResult(point, param, paramType, context, contextType);
 
         logger.trace("formulaId: " + formula.getId());
-        CalcResult result = calcMeteringPoint(formula, context);
+        CalcResult result = calcMeteringPoint(formula, context, contextType);
 
         logger.trace("---------------------------------------------");
         return result;
     }
 
-    private CalcResult getCalcResult(MeteringPoint point, Parameter param, ParamTypeEnum paramType, CalcContext context) {
+
+    private CalcResult getCalcResult(MeteringPoint point, Parameter param, ParamTypeEnum paramType, CalcContext context, ContextType contextType) {
         DoubleExpression expression;
         if (!param.equals(mapParams.get("AB")))
-            expression = getExpression(point, param, paramType, 1d, context);
+            expression = getExpression(point, param, paramType, 1d, context, contextType);
         else {
-            DoubleExpression expression1 = getExpression(point, mapParams.get("A+"), paramType, 1d, context);
-            DoubleExpression expression2 = getExpression(point, mapParams.get("A-"), paramType, 1d, context);
+            DoubleExpression expression1 = getExpression(point, mapParams.get("A+"), paramType, 1d, context, contextType);
+            DoubleExpression expression2 = getExpression(point, mapParams.get("A-"), paramType, 1d, context, contextType);
             expression = BinaryExpression.builder()
                 .operator(operatorFactory.binary("subtract"))
                 .expressions(Arrays.asList(expression1, expression2))
@@ -122,11 +128,11 @@ public class CalcServiceImpl implements CalcService {
     }
 
     @Override
-    public CalcResult calcMeteringPoint(Formula formula, CalcContext context) throws Exception {
+    public CalcResult calcMeteringPoint(Formula formula, CalcContext context, ContextType contextType) throws Exception {
         if (formula == null)
             return null;
 
-        CalcResult result = calcFormula(formula, context);
+        CalcResult result = calcFormula(formula, context, contextType);
         logger.trace("result:");
         logger.trace("formulaId: " + result.getFormula().getId());
         logger.trace("src: " + result.getFormula().getText());
@@ -145,10 +151,10 @@ public class CalcServiceImpl implements CalcService {
         return result;
     }
 
-    private CalcResult calcFormula(Formula formula, CalcContext context) throws Exception {
+    private CalcResult calcFormula(Formula formula, CalcContext context, ContextType contextType) throws Exception {
         detectCycles(formula);
 
-        DoubleExpression expression = buildExpression(formula, context);
+        DoubleExpression expression = buildExpression(formula, context, contextType);
         CalcResult result = new CalcResult();
         result.setFormula(formula);
         result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
@@ -172,13 +178,13 @@ public class CalcServiceImpl implements CalcService {
         return result;
     }
 
-    private DoubleExpression buildExpression(Formula formula, CalcContext context) {
+    private DoubleExpression buildExpression(Formula formula, CalcContext context, ContextType contextType) {
         if (formula.getFormulaType() != FormulaTypeEnum.DIALOG || formula.getText() == null)
             return DoubleValueExpression.builder().build();
 
         Map<String, DoubleExpression> attrs = new HashMap<>();
         for (FormulaVar var : formula.getVars())
-            attrs.putIfAbsent(var.getVarName(), mapVar(var, context));
+            attrs.putIfAbsent(var.getVarName(), mapVar(var, context, contextType));
 
         return JsExpression.builder()
             .src(formula.getText())
@@ -188,12 +194,12 @@ public class CalcServiceImpl implements CalcService {
             .build();
     }
 
-    private DoubleExpression mapVar(FormulaVar var, CalcContext context) {
+    private DoubleExpression mapVar(FormulaVar var, CalcContext context, ContextType contextType) {
         List<DoubleExpression> expressions = null;
         if (var.getVarType() == VarTypeEnum.MP) {
             expressions = var.getDetails()
                 .stream()
-                .map(t -> mapDetail(t, context))
+                .map(t -> mapDetail(t, context, contextType))
                 .filter(t -> t != null)
                 .collect(toList());
         }
@@ -218,7 +224,7 @@ public class CalcServiceImpl implements CalcService {
         return DoubleValueExpression.builder().build();
     }
 
-    private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context) {
+    private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context, ContextType contextType) {
         if (det.getMeteringPoint().getPointType() == PointTypeEnum.VMP) {
             Formula formula = det.getMeteringPoint()
                 .getFormulas()
@@ -235,7 +241,7 @@ public class CalcServiceImpl implements CalcService {
                 logger.trace("  param: " + formula.getParam().getCode());
                 logger.trace("  paramType: " + formula.getParamType());
                 logger.trace("  formulaId: " + formula.getId());
-                DoubleExpression expression = buildExpression(formula, context);
+                DoubleExpression expression = buildExpression(formula, context, contextType);
                 logger.trace("nested formula end");
 
                 UnaryOperator<DoubleExpression> operator = det.getSign().equals("-") ? operatorFactory.unary("minus") : operatorFactory.unary("nothing");
@@ -244,15 +250,15 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (det.getParam().equals(mapParams.get("AB"))) {
-            DoubleExpression  expression1 = getExpression(det, mapParams.get("A+"), context);
-            DoubleExpression  expression2 = getExpression(det, mapParams.get("A-"), context);
+            DoubleExpression  expression1 = getExpression(det, mapParams.get("A+"), context, contextType);
+            DoubleExpression  expression2 = getExpression(det, mapParams.get("A-"), context, contextType);
             return BinaryExpression.builder()
                 .operator(operatorFactory.binary("subtract"))
                 .expressions(Arrays.asList(expression1, expression2))
                 .build();
         }
 
-        return getExpression(det, det.getParam(), context);
+        return getExpression(det, det.getParam(), context, contextType);
     }
 
     private DoubleExpression mapEquipment(FormulaVarEq eq, CalcContext context) {
@@ -366,22 +372,22 @@ public class CalcServiceImpl implements CalcService {
         return DoubleValueExpression.builder().build();
     }
 
-    private DoubleExpression getExpression(FormulaVarDet det, Parameter param, CalcContext context) {
+    private DoubleExpression getExpression(FormulaVarDet det, Parameter param, CalcContext context, ContextType contextType) {
         MeteringPoint meteringPoint = det.getMeteringPoint();
         ParamTypeEnum paramType = det.getParamType();
         Double sign = det.getSign().equals("-") ? -1d : 1d;
         Double rate = ofNullable(det.getRate()).orElse(1d) * sign;
-        return getExpression(meteringPoint, param, paramType, rate, context);
+        return getExpression(meteringPoint, param, paramType, rate, context, contextType);
     }
 
-    private DoubleExpression getExpression(MeteringPoint meteringPoint, Parameter param, ParamTypeEnum paramType, Double rate, CalcContext context) {
+    private DoubleExpression getExpression(MeteringPoint meteringPoint, Parameter param, ParamTypeEnum paramType, Double rate, CalcContext context, ContextType contextType) {
         logger.trace("end point: " + meteringPoint.getCode());
         logger.trace("  param: " + param.getCode());
         logger.trace("  pointType: " + meteringPoint.getPointType().name());
         logger.trace("  paramType: " + paramType.name());
         logger.trace("  rate: " + rate);
 
-        if (param.getCode().equals("WL") && context.getContextType() == ContextType.MR) {
+        if (param.getCode().equals("WL") && contextType == ContextType.MR) {
             Map<String, Double> transformerValues = context.getTransformerValues();
             if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {
                 logger.trace("  expression: CachedValueExpression");
@@ -400,7 +406,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (context.getContextType() == ContextType.MR) {
+        if (contextType == ContextType.MR) {
             logger.trace("  context: mr");
             logger.trace("  expression: MrExpression");
             return MrExpression.builder()
@@ -412,7 +418,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (context.getContextType() == ContextType.ASP) {
+        if (contextType == ContextType.ASP) {
             logger.trace("  context: asp");
             logger.trace("  expression: AspExpression");
             return AspExpression.builder()
@@ -424,7 +430,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (context.getContextType() == ContextType.SEG) {
+        if (contextType == ContextType.SEG) {
             logger.trace("  context: seg");
             logger.trace("  expression: SegExpression");
             return SegExpression.builder()
@@ -436,7 +442,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (context.getContextType() == ContextType.INTER) {
+        if (contextType == ContextType.INTER) {
             logger.trace("  context: inter");
             logger.trace("  expression: InterExpression");
             return InterMrExpression.builder()
