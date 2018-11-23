@@ -154,10 +154,20 @@ public class AspService {
             if (param.getCode().equals("AB"))
                 continue;
 
-            List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context)
-                .stream()
-                .filter(t -> t.getParam().equals(param))
-                .collect(Collectors.toList());
+            Map<String, String> msgParams = buildMsgParams(meteringPoint);
+            List<MeteringReading> meteringReadings;
+            try {
+                meteringReadings = mrService.calc(meteringPoint, context)
+                    .stream()
+                    .filter(t -> t.getParam().equals(param))
+                    .collect(Collectors.toList());
+            }
+            catch (Exception e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, line.getLineNum(), docCode, "MDFEM_ERROR", msgParams);
+                e.printStackTrace();
+                continue;
+            }
 
             if (meteringReadings.size() == 0) {
                 AspResultLine resultLine = new AspResultLine();
