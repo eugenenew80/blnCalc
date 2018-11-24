@@ -377,4 +377,20 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-499" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_headers to wf_states</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_headers"
+                baseColumnNames="state"
+                constraintName="fk_calc_bs_result_headers_12"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="wf_states"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>
