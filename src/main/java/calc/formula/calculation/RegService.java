@@ -80,21 +80,82 @@ public class RegService {
 
     private void calcLines1(RegResultHeader header, CalcContext context) {
         List<RegResultLine1> resultLines = new ArrayList<>();
+        for (RegLine1 line : header.getHeader().getLines1()) {
+            RegResultLine1 resultLine = new RegResultLine1();
+
+            resultLine.setHeader(header);
+            resultLine.setLineNum(line.getLineNum());
+            resultLine.setMeteringPoint(line.getMeteringPoint());
+            resultLine.setIsInverse(line.getIsInverse());
+            resultLine.setAm(null);
+            resultLine.setAp(null);
+            resultLine.setBalance(null);
+            resultLine.setCreateBy(header.getCreateBy());
+            resultLine.setCreateDate(header.getCreateDate());
+
+            copyTranslates1(line, resultLine);
+            resultLines.add(resultLine);
+        }
         saveLines1(resultLines);
     }
 
     private void calcLines2(RegResultHeader header, CalcContext context) {
         List<RegResultLine2> resultLines = new ArrayList<>();
+        for (RegLine2 line : header.getHeader().getLines2()) {
+            RegResultLine2 resultLine = new RegResultLine2();
+
+            resultLine.setHeader(header);
+            resultLine.setLineNum(line.getLineNum());
+            resultLine.setMeteringPoint(line.getMeteringPoint());
+            resultLine.setParam(line.getParam());
+            resultLine.setIsInverse(line.getIsInverse());
+            resultLine.setVal(null);
+            resultLine.setCreateBy(header.getCreateBy());
+            resultLine.setCreateDate(header.getCreateDate());
+
+            copyTranslates2(line, resultLine);
+            resultLines.add(resultLine);
+        }
         saveLines2(resultLines);
     }
 
     private void calcLines3(RegResultHeader header, CalcContext context) {
         List<RegResultLine3> resultLines = new ArrayList<>();
+        for (RegLine3 line : header.getHeader().getLines3()) {
+            RegResultLine3 resultLine = new RegResultLine3();
+
+            resultLine.setHeader(header);
+            resultLine.setLineNum(line.getLineNum());
+            resultLine.setMeteringPoint(line.getMeteringPoint());
+            resultLine.setParam(line.getParam());
+            resultLine.setIsInverse(line.getIsInverse());
+            resultLine.setOwnVal(null);
+            resultLine.setOtherVal(null);
+            resultLine.setTotalVal(null);
+            resultLine.setCreateBy(header.getCreateBy());
+            resultLine.setCreateDate(header.getCreateDate());
+
+            copyTranslates3(line, resultLine);
+            resultLines.add(resultLine);
+        }
         saveLines3(resultLines);
     }
 
     private void calcLines4(RegResultHeader header, CalcContext context) {
         List<RegResultLine4> resultLines = new ArrayList<>();
+        for (RegLine4 line : header.getHeader().getLines4()) {
+            RegResultLine4 resultLine = new RegResultLine4();
+
+            resultLine.setHeader(header);
+            resultLine.setLineNum(line.getLineNum());
+            resultLine.setDealType(line.getDealType());
+            resultLine.setDealer(line.getDealer());
+            resultLine.setVal(null);
+            resultLine.setCreateBy(header.getCreateBy());
+            resultLine.setCreateDate(header.getCreateDate());
+
+            resultLines.add(resultLine);
+        }
         saveLines4(resultLines);
     }
 
