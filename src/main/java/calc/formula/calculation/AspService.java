@@ -80,8 +80,7 @@ public class AspService {
             messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", msgParams);
 
             updateStatus(header, BatchStatusEnum.E);
-            logger.error("Metering reading for header " + header.getId() + " terminated with exception");
-            logger.error(e.toString() + ": " + e.getMessage());
+            logger.error("Metering reading for header " + header.getId() + " terminated with exception: " + e.getMessage());
             e.printStackTrace();
             return false;
         }

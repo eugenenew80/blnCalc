@@ -67,9 +67,9 @@ public class SourceService {
             header.setDeliveryVal(value);
 
             calcLines1(header, context);
-            copyGroups(header);
+            copyGroups2(header);
             calcLines2(header, context);
-            setParents(header);
+            setParents2(header);
 
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
@@ -81,16 +81,18 @@ public class SourceService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", new HashMap<>());
+            HashMap<String, String> msgParams = new HashMap<>();
+            msgParams.putIfAbsent("err", e.getMessage());
+            messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", msgParams);
+
             updateStatus(header, BatchStatusEnum.E);
-            logger.error("Energy source balance for header " + header.getId() + " terminated with exception");
-            logger.error(e.toString() + ": " + e.getMessage());
+            logger.error("Energy source balance for header " + header.getId() + " terminated with exception: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    private void copyGroups(SourceResultHeader header) {
+    private void copyGroups2(SourceResultHeader header) {
         List<SourceResultLine2> resultLines = new ArrayList<>();
         for (SourceLine2 line : header.getHeader().getLines2()) {
             if (line.getRowType() != RowTypeEnum.GROUP)
@@ -260,7 +262,7 @@ public class SourceService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void setParents(SourceResultHeader header) {
+    private void setParents2(SourceResultHeader header) {
         List<SourceResultLine2> resultLines = sourceResultLine2Repo.findAllByHeaderId(header.getId());
         List<SourceLine2> sourceLines = header.getHeader().getLines2();
 
