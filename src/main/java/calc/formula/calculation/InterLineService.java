@@ -174,13 +174,13 @@ public class InterLineService {
                         Double powerLength1 = ofNullable(line.getPowerLineLength1()).orElse(0d);
 
                         if (line.getIsProportionLength() && powerLength != 0d) {
-                            lossProc1 = round(100d * powerLength1 / powerLength, 2);
+                            lossProc1 = round(100d * powerLength1 / powerLength, 4);
                             lossProc2 = 100d - lossProc1;
                         }
 
                         Double lossVal1 = round(lossProc1 / 100d * lossVal,paramWL);
                         Double lossVal2 = lossVal - lossVal1;
-                        Double boundaryVal = val1 - lossVal1;
+                        Double boundaryVal = val1 - (direction == 1l ? lossVal1 : lossVal2);
 
                         resultDetLine.setVal1(val1);
                         resultDetLine.setVal2(val2);

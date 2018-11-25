@@ -40,5 +40,4 @@ public class Util {
         msgParams.put("line", line.getLineNum().toString());
         return msgParams;
     }
-
 }
