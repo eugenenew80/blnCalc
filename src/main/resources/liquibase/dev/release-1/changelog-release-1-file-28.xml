@@ -543,16 +543,13 @@
         <rollback/>
     </changeSet>
 
-
     <changeSet id="calc-eug-1879" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Adding column to table: calc_metering_point_settings</comment>
         <addColumn schemaName="apps" tableName="calc_metering_point_settings">
             <column name="param_id" type="number" remarks="Идентификатор параметра">
                 <constraints nullable="true"/>
             </column>
-        </addColumn>
 
-        <addColumn schemaName="apps" tableName="calc_metering_point_settings">
             <column name="method_code" type="varchar2(30)" defaultValue="MPV" remarks="Способ определения объема">
                 <constraints nullable="false"/>
             </column>
@@ -591,4 +588,73 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-1882" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_service_values_reconciliations_l</comment>
+        <addColumn schemaName="apps" tableName="calc_service_values_reconciliations_l">
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="data_type" type="varchar2(30)" remarks="Статус данных">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1883" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_settings to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations_l"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_service_values_reconciliations_l_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1884" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations_l to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations_l"
+                baseColumnNames="data_type"
+                constraintName="fk_calc_service_values_reconciliations_l_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1885" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps" tableName="calc_service_values_reconciliations">
+            <column name="data_type" type="varchar2(30)" remarks="Статус данных">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1886" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations"
+                baseColumnNames="data_type"
+                constraintName="fk_calc_service_values_reconciliations_9"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
 </databaseChangeLog>
