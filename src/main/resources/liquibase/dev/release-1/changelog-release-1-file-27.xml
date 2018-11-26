@@ -431,9 +431,4 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="calc-rus-504" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>modify column datatype in table: calc_bs_result_nb_lines</comment>
-        <modifyDataType schemaName="apps" tableName="calc_bs_result_nb_lines" columnName="tt_start" newDataType="varchar2(100)" />
-    </changeSet>
-
 </databaseChangeLog>

@@ -377,4 +377,35 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1870" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Modify column dataЕype in table: calc_bs_result_nb_lines</comment>
+        <modifyDataType schemaName="apps" tableName="calc_bs_result_nb_lines" columnName="tt_start" newDataType="varchar2(100)" />
+    </changeSet>
+
+
+    <changeSet id="calc-eug-1871" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: dict_power_transformers</comment>
+        <addColumn schemaName="apps" tableName="dict_power_transformers">
+            <column name="is_pkz_converted_to_h" type="number" remarks="Флаг - Паспортные значения потерь мощности короткого замыкания приведены к вводу ВН">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="resist" type="number" remarks="Активное сопротивление, приведенное к вводу высшего напряжения 3-х обмоточного трансорматоа">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="resist_h" type="number" remarks="Активное сопротивление, приведенное к вводу высшего напряжения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="resist_m" type="number" remarks="Активное сопротивление, приведенное к вводу среднего напряжения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="resist_l" type="number" remarks="Активное сопротивление, приведенное к вводу низшего напряжения">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
