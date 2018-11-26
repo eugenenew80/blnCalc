@@ -63,6 +63,6 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
         if (meterHistory.size() > 1)
             throw new RuntimeException("Найдено больше одной запсиси в таблице mdfem_history");
 
-        return !meterHistory.isEmpty() ? meterHistory.get(0).getFactor() : 1d;
+        return meterHistory!= null && !meterHistory.isEmpty() ? meterHistory.get(0).getFactor() : 1d;
     }
 }
