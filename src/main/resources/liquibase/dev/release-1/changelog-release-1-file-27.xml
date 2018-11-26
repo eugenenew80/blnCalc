@@ -393,4 +393,41 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-500" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop foreign constraint: calc_balance_units</comment>
+        <dropForeignKeyConstraint baseTableName="calc_balance_units" constraintName="fk_calc_balance_units_4" baseTableSchemaName="apps"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-501" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_units to dm_regulations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_units"
+                baseColumnNames="doc_type"
+                constraintName="fk_calc_balance_units_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_regulations"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-502" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column mdfem_history</comment>
+        <addColumn schemaName="apps"
+                   tableName="mdfem_history">
+            <column name="tt_mounted_on" type="varchar2(100)" remarks="Трансформаторы тока установлены на выключателях"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-503" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column mdfem_history</comment>
+        <addColumn schemaName="apps"
+                   tableName="mdfem_history">
+            <column name="installed_tt_number" type="number" remarks="Количество установленных трансформаторов тока"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
