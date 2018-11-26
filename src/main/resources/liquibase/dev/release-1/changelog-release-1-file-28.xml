@@ -408,4 +408,187 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-eug-1872" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_volume_determining_methods</comment>
+        <createTable tableName="calc_volume_determining_methods" schemaName="apps" remarks="Способы определения объема оказанных услуг">
+            <column name="code" type="varchar2(30)" remarks="Код правила">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1873" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_volume_determining_methods</comment>
+        <addPrimaryKey
+                columnNames="code"
+                constraintName="pk_calc_volume_determining_methods"
+                schemaName="apps"
+                tableName="calc_volume_determining_methods"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1874" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_volume_determining_methods_tl</comment>
+        <createTable tableName="calc_volume_determining_methods_tl" schemaName="apps" remarks="Способы определения объема оказанных услуг - перевод">
+            <column name="code" type="varchar2(30)" remarks="Код прввила">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(100)" remarks="Наименование правила">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-1875" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_volume_determining_methods_tl</comment>
+        <addPrimaryKey
+                columnNames="code, lang"
+                constraintName="pk_calc_volume_determining_methods_tl"
+                schemaName="apps"
+                tableName="calc_volume_determining_methods_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1876" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_volume_determining_methods_tl to calc_volume_determining_methods</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_volume_determining_methods_tl"
+                baseColumnNames="code"
+                constraintName="fk_calc_volume_determining_methods_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_volume_determining_methods"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1877" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_volume_determining_methods</comment>
+        <insert tableName="calc_volume_determining_methods" schemaName="apps">
+            <column name="code" value="MPV" />
+        </insert>
+
+        <insert tableName="calc_volume_determining_methods" schemaName="apps">
+            <column name="code" value="RDV" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-eug-1878" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding data to table: calc_volume_determining_methods_tl</comment>
+        <insert tableName="calc_volume_determining_methods_tl" schemaName="apps">
+            <column name="code" value="MPV" />
+            <column name="lang" value="RU" />
+            <column name="name" value="По объему в точке учета" />
+        </insert>
+
+        <insert tableName="calc_volume_determining_methods_tl" schemaName="apps">
+            <column name="code" value="MPV" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="По объему в точке учета" />
+        </insert>
+
+        <insert tableName="calc_volume_determining_methods_tl" schemaName="apps">
+            <column name="code" value="RDV" />
+            <column name="lang" value="RU" />
+            <column name="name" value="По результатам Паспределения электрической энергии" />
+        </insert>
+
+        <insert tableName="calc_volume_determining_methods_tl" schemaName="apps">
+            <column name="code" value="RDV" />
+            <column name="lang" value="KZ" />
+            <column name="name" value="По результатам Паспределения электрической энергии" />
+        </insert>
+
+        <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-eug-1879" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_metering_point_settings</comment>
+        <addColumn schemaName="apps" tableName="calc_metering_point_settings">
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addColumn schemaName="apps" tableName="calc_metering_point_settings">
+            <column name="method_code" type="varchar2(30)" defaultValue="MPV" remarks="Способ определения объема">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1880" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_settings to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_point_settings"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_metering_point_settings_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-1881" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_settings to calc_volume_determining_methods</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_point_settings"
+                baseColumnNames="method_code"
+                constraintName="fk_calc_metering_point_settings_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_volume_determining_methods"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
