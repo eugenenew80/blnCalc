@@ -58,7 +58,7 @@ public class BalanceSubstResultUbLine {
     private Double b2dol2;
 
     @Column(name = "tt_star")
-    private Double ttStar;
+    private String ttStar;
 
     @Column(name = "ttac_proc")
     private Double ttacProc;

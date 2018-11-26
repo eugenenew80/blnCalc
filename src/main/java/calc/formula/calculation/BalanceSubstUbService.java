@@ -237,7 +237,8 @@ public class BalanceSubstUbService {
                         if (tnType != null && tnType.getAccuracyClass() != null)
                             buProc = ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
 
-                        Double biProc = bttProc;
+                        Double ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1d);
+                        Double biProc = bttProc * Math.sqrt(ttNumber);
                         Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
                         Double bsoProc = ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
                         Double bProc = Math.sqrt(Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2)) * 1.1d;
@@ -254,7 +255,7 @@ public class BalanceSubstUbService {
                         line.setW(w);
                         line.setWa(wa);
                         line.setWr(wr);
-                        line.setTtStar(null);
+                        line.setTtStar(meterHistory.getTtMountedOn());
                         line.setTtacProc(ttAcProc);
                         line.setI1Nom(ttType.getRatedCurrent1());
                         line.setTRab(workHours);

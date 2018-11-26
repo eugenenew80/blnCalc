@@ -61,6 +61,12 @@ public class MeterHistory {
     @Column(name = "new_metering_reading_re")
     private Double rmNew;
 
+    @Column(name = "installed_tt_number")
+    private Double ttNumber;
+
+    @Column(name = "tt_mounted_on")
+    private String ttMountedOn;
+
     @ManyToOne
     @JoinColumn(name = "undercount_header_id")
     private UnderCount undercount;
