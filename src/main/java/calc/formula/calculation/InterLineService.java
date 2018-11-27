@@ -104,7 +104,7 @@ public class InterLineService {
 
                         Double val = BinaryExpression.builder()
                             .operator(operatorFactory.binary("subtract"))
-                            .expressions(Arrays.asList(expression1, expression2))
+                            .expressions(Arrays.asList(expression2, expression1))
                             .build()
                             .doubleValue();
                         resultLine.setBoundaryVal(val);

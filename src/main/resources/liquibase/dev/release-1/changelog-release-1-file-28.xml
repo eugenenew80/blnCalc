@@ -380,7 +380,7 @@
 
     <changeSet id="calc-eug-1870" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Modify column dataЕype in table: calc_bs_result_nb_lines</comment>
-        <modifyDataType schemaName="apps" tableName="calc_bs_result_nb_lines" columnName="tt_start" newDataType="varchar2(100)" />
+        <modifyDataType schemaName="apps" tableName="calc_bs_result_nb_lines" columnName="tt_star" newDataType="varchar2(100)" />
     </changeSet>
 
 
