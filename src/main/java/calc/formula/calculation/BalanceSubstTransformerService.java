@@ -99,14 +99,13 @@ public class BalanceSubstTransformerService {
             MeteringPoint inputMpM = transformer.getInputMpM();
             MeteringPoint inputMpL = transformer.getInputMpL();
             MeteringPoint inputMp =  transformer.getInputMp();
-            MeteringPoint inputMpW2 = inputMpH != null ? inputMpH : inputMpL;
 
             if  (transformer.getWindingsNumber().equals(3l) && (inputMp == null || inputMpH == null || inputMpM == null || inputMpL == null)) {
                 messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND", info);
                 continue;
             }
 
-            if  (transformer.getWindingsNumber().equals(2l) && (inputMp == null || inputMpW2 == null)) {
+            if  (transformer.getWindingsNumber().equals(2l) && (inputMp == null || (inputMpH == null && inputMpL == null))) {
                 messageService.addMessage(header, peLine.getId(), docCode, "PE_INPUT_NOT_FOUND", info);
                 continue;
             }
@@ -185,31 +184,58 @@ public class BalanceSubstTransformerService {
             transformerLine.setIsBalance(peLine.getIsBalance());
 
             if (transformer.getWindingsNumber().equals(2l)) {
-                Double rpH; Double rmH; Double apH; Double amH;
-                Map<String, String> msgParams = buildMsgParams(inputMpW2);
-                try {
-                    apH = getMrVal(inputMpW2, paramService.getValues().get("A+"), context);
-                    amH = getMrVal(inputMpW2, paramService.getValues().get("A-"), context);
-                    rpH = getMrVal(inputMpW2, paramService.getValues().get("R+"), context);
-                    rmH = getMrVal(inputMpW2, paramService.getValues().get("R-"), context);
-                }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                    continue;
-                }
-                catch (Exception e) {
-                    msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
-                    continue;
+                Double rpH = null, rmH = null, apH = null, amH = null, totalAH = null, totalRH = null, totalEH = null;
+                if (inputMpH != null) {
+                    Map<String, String> msgParams = buildMsgParams(inputMpH);
+                    try {
+                        apH = getMrVal(inputMpH, paramService.getValues().get("A+"), context);
+                        amH = getMrVal(inputMpH, paramService.getValues().get("A-"), context);
+                        rpH = getMrVal(inputMpH, paramService.getValues().get("R+"), context);
+                        rmH = getMrVal(inputMpH, paramService.getValues().get("R-"), context);
+                    }
+                    catch (CycleDetectionException e) {
+                        messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                        continue;
+                    }
+                    catch (Exception e) {
+                        msgParams.putIfAbsent("err", e.getMessage());
+                        messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                        continue;
+                    }
+
+                    totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
+                    totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);
+                    totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
                 }
 
-                Double totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
-                Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);
+                Double rpL = null, rmL = null, apL = null, amL = null, totalAL = null, totalRL = null, totalEL = null;
+                if (inputMpL != null) {
+                    Map<String, String> msgParams = buildMsgParams(inputMpL);
+                    try {
+                        apL = getMrVal(inputMpL, paramService.getValues().get("A+"), context);
+                        amL = getMrVal(inputMpL, paramService.getValues().get("A-"), context);
+                        rpL = getMrVal(inputMpL, paramService.getValues().get("R+"), context);
+                        rmL = getMrVal(inputMpL, paramService.getValues().get("R-"), context);
+                    }
+                    catch (CycleDetectionException e) {
+                        messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                        continue;
+                    }
+                    catch (Exception e) {
+                        msgParams.putIfAbsent("err", e.getMessage());
+                        messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                        continue;
+                    }
 
-                Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
-                Double resistH = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2)) * 1000d;
+                    totalAL = Optional.ofNullable(apL).orElse(0d) + Optional.ofNullable(amL).orElse(0d);
+                    totalRL = Optional.ofNullable(rpL).orElse(0d) + Optional.ofNullable(rmL).orElse(0d);
+                    totalEL = Math.pow(totalAL, 2) + Math.pow(totalRL, 2);
+                }
+
+                Double totalE = inputMpH != null ? totalEH : totalEL;
+                Double resist = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2)) * 1000d;
                 Double valXX = round(deltaPxx * hours * Math.pow(uAvg / uNomH, 2), paramWL);
-                Double valN  = round(totalEH * resistH / (Math.pow(uAvg, 2) * 1000d * hours), paramWL);
+                Double valN  = round(totalE * resist / (Math.pow(uAvg, 2) * 1000d * hours), paramWL);
 
                 transformerLine.setApH(apH);
                 transformerLine.setAmH(amH);
@@ -218,7 +244,16 @@ public class BalanceSubstTransformerService {
                 transformerLine.setTotalAEH(totalAH);
                 transformerLine.setTotalREH(totalRH);
                 transformerLine.setTotalEH(totalEH);
-                transformerLine.setResistH(resistH);
+
+                transformerLine.setApL(apL);
+                transformerLine.setAmL(amL);
+                transformerLine.setRpL(rpL);
+                transformerLine.setRmL(rmL);
+                transformerLine.setTotalAEL(totalAL);
+                transformerLine.setTotalREL(totalRL);
+                transformerLine.setTotalEL(totalEL);
+
+                transformerLine.setResistH(resist);
                 transformerLine.setValXX(valXX);
                 transformerLine.setValN(valN);
             }
