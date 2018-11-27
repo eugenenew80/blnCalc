@@ -64,6 +64,7 @@ public class InterLineService {
                 resultLine.setIsBoundMeterInst(line.getIsBoundMeterInst());
                 resultLine.setPowerLineLength(line.getPowerLineLength());
                 resultLine.setBoundMeteringPoint(line.getBoundMeteringPoint());
+                resultLine.setIsIncludeTotal(line.getIsIncludeTotal());
                 resultLine.setCreateDate(LocalDateTime.now());
                 resultLine.setCreateBy(header.getCreateBy());
                 resultLine.setDetails(ofNullable(resultLine.getDetails()).orElse(new ArrayList<>()));

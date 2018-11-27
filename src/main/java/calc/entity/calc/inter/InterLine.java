@@ -76,6 +76,10 @@ public class InterLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isInverse;
 
+    @Column(name = "is_include_total")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isIncludeTotal;
+
     @Column(name = "start_date")
     private LocalDate startDate;
 
