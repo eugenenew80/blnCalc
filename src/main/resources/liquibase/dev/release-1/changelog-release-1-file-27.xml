@@ -431,4 +431,85 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-rus-504" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_mp_distribution_rules</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_mp_distribution_rules">
+            <column name="group_id" type="number" remarks="Идентификатор группа электростанций"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-505" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_mp_distribution_rules to calc_electricity_producer_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mp_distribution_rules"
+                baseColumnNames="group_id"
+                constraintName="fk_calc_mp_distribution_rules_8"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_electricity_producer_groups"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-507" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_distribution_result_h</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_distribution_result_h">
+            <column name="group_id" type="number" remarks="Идентификатор группа электростанций"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-508" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_h to calc_electricity_producer_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_h"
+                baseColumnNames="group_id"
+                constraintName="fk_calc_distribution_result_h_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_electricity_producer_groups"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-509" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_distribution_result_h</comment>
+        <dropColumn tableName="calc_distribution_result_h" schemaName="apps">
+            <column name="group_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-510" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_distribution_result_l</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_distribution_result_l">
+            <column name="group_id" type="number" remarks="Идентификатор группа электростанций"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-511" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l to calc_electricity_producer_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l"
+                baseColumnNames="group_id"
+                constraintName="fk_calc_distribution_result_l_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_electricity_producer_groups"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
