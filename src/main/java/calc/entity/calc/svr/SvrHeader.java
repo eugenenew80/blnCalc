@@ -65,7 +65,7 @@ public class SvrHeader {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isActive;
 
-    @Column(name="data_type_code")
+    @Column(name="data_type")
     @Enumerated(EnumType.STRING)
     private DataTypeEnum dataType;
 

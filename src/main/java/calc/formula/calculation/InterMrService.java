@@ -1,5 +1,6 @@
 package calc.formula.calculation;
 
+import static calc.util.Util.buildMsgParams;
 import static calc.util.Util.round;
 import static java.util.stream.Collectors.toList;
 
@@ -9,6 +10,7 @@ import calc.entity.calc.inter.InterResultHeader;
 import calc.entity.calc.inter.InterResultMrLine;
 import calc.formula.CalcContext;
 import calc.formula.ContextType;
+import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MrService;
 import calc.repo.calc.InterResultMrLineRepo;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class InterMrService {
     private static final String docCode = "INTER_MR";
     private final InterResultMrLineRepo interResultMrLineRepo;
     private final MrService mrService;
+    private final MessageService messageService;
 
     public boolean calc(InterResultHeader header) {
         try {
@@ -51,7 +55,18 @@ public class InterMrService {
 
             List<InterResultMrLine> resultLines = new ArrayList<>();
             for (MeteringPoint meteringPoint : points) {
-                List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context);
+                Map<String, String> msgParams = buildMsgParams(meteringPoint);
+                List<MeteringReading> meteringReadings;
+                try {
+                    meteringReadings = mrService.calc(meteringPoint, context);
+                }
+                catch (Exception e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
+                    messageService.addMessage(header, null, docCode, "MDFEM_ERROR", msgParams);
+                    e.printStackTrace();
+                    continue;
+                }
+
                 for (MeteringReading t : meteringReadings) {
                     if (!(t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-")))
                         continue;

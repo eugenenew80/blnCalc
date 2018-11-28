@@ -51,7 +51,7 @@ public class InterResultLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isInverse;
 
-    @Column(name = "is_include_total")
+    @Column(name = "is_include_in_total")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isIncludeTotal;
 

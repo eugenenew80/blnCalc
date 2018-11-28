@@ -657,4 +657,27 @@
                 referencedColumnNames="code"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-1887" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop column column from table: calc_service_values_reconciliations</comment>
+        <dropColumn schemaName="apps" tableName="calc_service_values_reconciliations" columnName="data_type_code" />
+    </changeSet>
+
+    <changeSet id="calc-eug-1888" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_act_inter_pl_result_lines</comment>
+        <addColumn schemaName="apps" tableName="calc_act_inter_pl_result_lines">
+            <column name="is_include_in_total" type="number" remarks="Включить в расчет Итого">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-1889" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_act_inter_pl_lines</comment>
+        <addColumn schemaName="apps" tableName="calc_act_inter_pl_lines">
+            <column name="is_include_in_total" type="number" remarks="Включить в расчет Итого">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

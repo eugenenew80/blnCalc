@@ -2,6 +2,9 @@ package calc.entity.calc.svr;
 
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
+import calc.entity.calc.Parameter;
+import calc.entity.calc.enums.DataTypeEnum;
+import calc.entity.calc.enums.DeterminingMethodEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
@@ -26,6 +29,10 @@ public class SvrLine {
     @JoinColumn(name = "metering_point_id")
     private MeteringPoint meteringPoint;
 
+    @ManyToOne
+    @JoinColumn(name = "param_id")
+    private Parameter param;
+
     @Column(name = "cptri_type_code")
     private String typeCode;
 
@@ -35,6 +42,10 @@ public class SvrLine {
     @ManyToOne
     @JoinColumn(name = "org_id")
     private Organization organization;
+
+    @Column(name="data_type")
+    @Enumerated(EnumType.STRING)
+    private DataTypeEnum dataType;
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<SvrLineTranslate> translates;
