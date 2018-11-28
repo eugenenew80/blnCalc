@@ -4,6 +4,7 @@ import calc.entity.calc.*;
 import calc.entity.calc.asp.*;
 import calc.entity.calc.enums.*;
 import calc.formula.CalcContext;
+import calc.formula.CalcProperty;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
 import calc.formula.exception.CycleDetectionException;
@@ -106,7 +107,7 @@ public class AspService {
             if (meteringPoint.getPointType() == PointTypeEnum.VMP) {
                 Double value = null;
                 try {
-                    CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
+                    CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
                     value = result != null ? result.getDoubleValue() : null;
                     value = round(value, param);
                 }
@@ -169,10 +170,9 @@ public class AspService {
             }
 
             if (meteringReadings.size() == 0) {
-
                 CalcResult result = null;
                 try {
-                    result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context, ContextType.DEFAULT);
+                    result = calcService.calcMeteringPoint(meteringPoint, param, context, CalcProperty.builder().build());
                 }
                 catch (CycleDetectionException e) {
                     messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
@@ -262,7 +262,7 @@ public class AspService {
 
             Double value = null;
             try {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
                 value = result != null ? result.getDoubleValue() : null;
                 value = round(value, param);
             }

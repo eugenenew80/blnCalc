@@ -201,7 +201,7 @@ public class BalanceSubstLineService {
             .doubleValue();
 
         if (Optional.ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcMeteringPoint(bsLine.getMeteringPoint(), param, ParamTypeEnum.PT, context);
+            CalcResult result = calcService.calcMeteringPoint(bsLine.getMeteringPoint(), param, context);
             val = result!=null ? result.getDoubleValue() : null;
             if (val != null)
                 val = val * Optional.ofNullable(bsLine.getRate()).orElse(1d);

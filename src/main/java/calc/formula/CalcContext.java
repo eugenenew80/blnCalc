@@ -1,5 +1,6 @@
 package calc.formula;
 
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.*;
@@ -21,6 +22,9 @@ public class CalcContext {
     private String energyObjectType;
     private Long energyObjectId;
     private Exception exception;
+
+    @Builder.Default
+    private DataTypeEnum dataType = DataTypeEnum.FACT;
 
     @Builder.Default
     private ContextType defContextType = ContextType.DEFAULT;

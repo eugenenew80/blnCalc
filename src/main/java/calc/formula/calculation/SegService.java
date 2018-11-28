@@ -130,7 +130,7 @@ public class SegService {
             resultLine.setIsInverse(line.getIsInverse());
 
             if (meteringPoint.getPointType() == PointTypeEnum.VMP && formula != null) {
-                CalcResult result = calcService.calcMeteringPoint(formula, context, context.getDefContextType());
+                CalcResult result = calcService.calcMeteringPoint(formula, context);
                 Double value = result != null ? result.getDoubleValue() : null;
                 if (value != null)
                     value = value * Optional.ofNullable(line.getRate()).orElse(1d);

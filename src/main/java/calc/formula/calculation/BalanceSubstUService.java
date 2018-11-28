@@ -134,7 +134,7 @@ public class BalanceSubstUService {
             .doubleValue();
 
         if (Optional.ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
+            CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
             val = result!=null ? result.getDoubleValue() : null;
         }
 

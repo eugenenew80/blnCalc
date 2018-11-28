@@ -2,16 +2,14 @@ package calc.formula.calculation;
 
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
-import calc.entity.calc.distr.DistrResultHeader;
-import calc.entity.calc.distr.DistrResultLine;
 import calc.entity.calc.enums.*;
 import calc.entity.calc.source.*;
 import calc.formula.CalcContext;
+import calc.formula.CalcProperty;
 import calc.formula.CalcResult;
 import calc.formula.exception.CycleDetectionException;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
-import calc.repo.calc.DistrResultHeaderRepo;
 import calc.repo.calc.SourceResultHeaderRepo;
 import calc.repo.calc.SourceResultLine1Repo;
 import calc.repo.calc.SourceResultLine2Repo;
@@ -23,7 +21,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
-
 import static calc.util.Util.buildMsgParams;
 import static calc.util.Util.round;
 
@@ -36,7 +33,6 @@ public class SourceService {
     private final SourceResultHeaderRepo sourceResultHeaderRepo;
     private final SourceResultLine1Repo sourceResultLine1Repo;
     private final SourceResultLine2Repo sourceResultLine2Repo;
-    private final DistrResultHeaderRepo distrResultHeaderRepo;
     private final MessageService messageService;
     private final CalcService calcService;
 
@@ -54,6 +50,7 @@ public class SourceService {
             .startDate(header.getStartDate())
             .endDate(header.getEndDate())
             .orgId(header.getOrganization().getId())
+            .dataType(header.getDataType())
             .build();
 
         try {
@@ -61,7 +58,7 @@ public class SourceService {
             deleteLines(header);
             deleteMessages(header);
 
-            CalcResult result = calcService.calcMeteringPoint(header.getFormula(), context, context.getDefContextType());
+            CalcResult result = calcService.calcMeteringPoint(header.getFormula(), context);
             Double value = result !=null ? result.getDoubleValue() : null;
             value = round(value, 0);
             header.setDeliveryVal(value);
@@ -124,7 +121,7 @@ public class SourceService {
 
             Double val;
             try {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
                 val = result != null ? result.getDoubleValue() : null;
             }
             catch (CycleDetectionException e) {
@@ -171,30 +168,77 @@ public class SourceService {
                 continue;
             }
 
-            List<DistrResultHeader> distributionList = distrResultHeaderRepo.findByOrg(header.getOrganization().getId(), header.getDataType().name(), header.getStartDate(), header.getEndDate());
-            DistrResultLine distributionLine = distributionList.stream()
-                .flatMap(t -> t.getLines().stream())
-                .filter(t -> t.getMeteringPoint() != null)
-                .filter(t -> t.getParam() != null)
-                .filter(t -> t.getMeteringPoint().equals(meteringPoint))
-                .filter(t -> t.getParam().equals(param))
-                .findFirst()
-                .orElse(null);
+
+            Double ownVal;
+            try {
+                CalcProperty property = CalcProperty.builder()
+                    .determiningMethod(DeterminingMethodEnum.RDV)
+                    .gridType(GridTypeEnum.OWN)
+                    .build();
+
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
+                ownVal = result != null ? result.getDoubleValue() : null;
+            }
+            catch (CycleDetectionException e) {
+                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                continue;
+            }
+            catch (Exception e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                continue;
+            }
+
+            Double otherVal;
+            try {
+                CalcProperty property = CalcProperty.builder()
+                    .determiningMethod(DeterminingMethodEnum.RDV)
+                    .gridType(GridTypeEnum.OTHER)
+                    .build();
+
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
+                otherVal = result != null ? result.getDoubleValue() : null;
+            }
+            catch (CycleDetectionException e) {
+                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                continue;
+            }
+            catch (Exception e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                continue;
+            }
+
+            Double totalVal;
+            try {
+                CalcProperty property = CalcProperty.builder()
+                    .determiningMethod(DeterminingMethodEnum.RDV)
+                    .gridType(GridTypeEnum.TOTAL)
+                    .build();
+
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
+                totalVal = result != null ? result.getDoubleValue() : null;
+            }
+            catch (CycleDetectionException e) {
+                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                continue;
+            }
+            catch (Exception e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                continue;
+            }
 
             SourceResultLine2 resultLine = new SourceResultLine2();
+            resultLine.setOwnVal(ownVal);
+            resultLine.setOtherVal(otherVal);
+            resultLine.setTotalVal(totalVal);
             resultLine.setHeader(header);
             resultLine.setLineNum(line.getLineNum());
             resultLine.setMeteringPoint(line.getMeteringPoint());
             resultLine.setParam(line.getParam());
             resultLine.setIsInverse(line.getIsInverse());
             resultLine.setRowType(line.getRowType());
-
-            if (distributionLine != null) {
-                resultLine.setOwnVal(distributionLine.getOwnVal());
-                resultLine.setOtherVal(distributionLine.getOtherVal());
-                resultLine.setTotalVal(distributionLine.getTotalVal());
-            }
-
             resultLine.setCreateBy(header.getCreateBy());
             resultLine.setCreateDate(LocalDateTime.now());
             copyTranslates2(line, resultLine);

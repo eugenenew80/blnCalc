@@ -382,7 +382,7 @@ public class BalanceSubstTransformerService {
         if (meteringPoint == null)
             return null;
 
-        CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, ParamTypeEnum.PT, context);
+        CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
         Double value = result!=null ? result.getDoubleValue() : null;
         if (context.getException() != null)
             throw context.getException();

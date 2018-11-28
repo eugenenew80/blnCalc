@@ -444,7 +444,7 @@ public class BalanceSubstUbService {
             .doubleValue();
 
         if (ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcMeteringPoint(ubLine.getMeteringPoint(), param, ParamTypeEnum.PT, context);
+            CalcResult result = calcService.calcMeteringPoint(ubLine.getMeteringPoint(), param, context);
             val = result!=null ? result.getDoubleValue() : null;
             if (val != null)
                 val = val * ofNullable(ubLine.getRate()).orElse(1d);
