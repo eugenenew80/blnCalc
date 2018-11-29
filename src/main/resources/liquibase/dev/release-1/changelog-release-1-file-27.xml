@@ -700,4 +700,24 @@
         <rollback/>
     </changeSet>
 
+    <changeSet id="calc-rus-531" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>drop foreign constraint: fk_calc_balance_reg_result_lines_3_det</comment>
+        <dropForeignKeyConstraint baseTableName="calc_balance_reg_result_lines_3_det" constraintName="fk_calc_balance_reg_result_lines_3_det_2" baseTableSchemaName="apps"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-532" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_lines_3_det to calc_balance_reg_result_lines_3</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_lines_3_det"
+                baseColumnNames="result_line_id"
+                constraintName="fk_calc_balance_reg_result_lines_3_det_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_balance_reg_result_lines_3"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
