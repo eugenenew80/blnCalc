@@ -1,6 +1,7 @@
 package calc.entity.calc.reg;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.TemplateLine;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "calc_balance_reg_lines_1")
 @Immutable
-public class RegLine1 {
+public class RegLine1 implements TemplateLine {
     @Id
     private Long id;
 

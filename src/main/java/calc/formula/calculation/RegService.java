@@ -1,13 +1,18 @@
 package calc.formula.calculation;
 
+import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.reg.*;
 import calc.entity.calc.source.*;
 import calc.formula.CalcContext;
+import calc.formula.CalcResult;
 import calc.formula.ContextType;
+import calc.formula.exception.CycleDetectionException;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
+import calc.formula.service.ParamService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -17,6 +22,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static calc.util.Util.buildMsgParams;
 
 @SuppressWarnings({"Duplicates", "ImplicitSubclassInspection"})
 @Service
@@ -30,6 +37,7 @@ public class RegService {
     private final RegResultLine3Repo regResultLine3Repo;
     private final RegResultLine4Repo regResultLine4Repo;
     private final MessageService messageService;
+    private final ParamService paramService;
     private final CalcService calcService;
 
     public boolean calc(Long headerId) {
@@ -81,15 +89,52 @@ public class RegService {
     private void calcLines1(RegResultHeader header, CalcContext context) {
         List<RegResultLine1> resultLines = new ArrayList<>();
         for (RegLine1 line : header.getHeader().getLines1()) {
-            RegResultLine1 resultLine = new RegResultLine1();
+            MeteringPoint meteringPoint = line.getMeteringPoint();
+            if (meteringPoint == null)
+                continue;
 
+            Map<String, String> msgParams = buildMsgParams(line);
+
+            Double ap;
+            try {
+                Parameter param = line.getIsInverse() ? paramService.getValues().get("A-") : paramService.getValues().get("A+");
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+                ap = result != null ? result.getDoubleValue() : null;
+            }
+            catch (CycleDetectionException e) {
+                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                continue;
+            }
+            catch (Exception e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                continue;
+            }
+
+            Double am;
+            try {
+                Parameter param = line.getIsInverse() ?  paramService.getValues().get("A+") : paramService.getValues().get("A-");
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+                am = result != null ? result.getDoubleValue() : null;
+            }
+            catch (CycleDetectionException e) {
+                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                continue;
+            }
+            catch (Exception e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                continue;
+            }
+
+            RegResultLine1 resultLine = new RegResultLine1();
             resultLine.setHeader(header);
             resultLine.setLineNum(line.getLineNum());
             resultLine.setMeteringPoint(line.getMeteringPoint());
             resultLine.setIsInverse(line.getIsInverse());
-            resultLine.setAm(null);
-            resultLine.setAp(null);
-            resultLine.setBalance(null);
+            resultLine.setAp(ap);
+            resultLine.setAm(am);
+            resultLine.setBalance(Optional.of(ap).orElse(0d) - Optional.of(am).orElse(0d));
             resultLine.setCreateBy(header.getCreateBy());
             resultLine.setCreateDate(header.getCreateDate());
 
@@ -102,14 +147,38 @@ public class RegService {
     private void calcLines2(RegResultHeader header, CalcContext context) {
         List<RegResultLine2> resultLines = new ArrayList<>();
         for (RegLine2 line : header.getHeader().getLines2()) {
-            RegResultLine2 resultLine = new RegResultLine2();
+            MeteringPoint meteringPoint = line.getMeteringPoint();
+            if (meteringPoint == null)
+                continue;
 
+            Parameter param = line.getParam();
+            if (param == null)
+                continue;
+
+            Map<String, String> msgParams = buildMsgParams(line);
+
+            Double val;
+            try {
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, inverseParam(param, line.getIsInverse()), context);
+                val = result != null ? result.getDoubleValue() : null;
+            }
+            catch (CycleDetectionException e) {
+                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                continue;
+            }
+            catch (Exception e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                continue;
+            }
+
+            RegResultLine2 resultLine = new RegResultLine2();
             resultLine.setHeader(header);
             resultLine.setLineNum(line.getLineNum());
             resultLine.setMeteringPoint(line.getMeteringPoint());
             resultLine.setParam(line.getParam());
             resultLine.setIsInverse(line.getIsInverse());
-            resultLine.setVal(null);
+            resultLine.setVal(val);
             resultLine.setCreateBy(header.getCreateBy());
             resultLine.setCreateDate(header.getCreateDate());
 
@@ -122,8 +191,33 @@ public class RegService {
     private void calcLines3(RegResultHeader header, CalcContext context) {
         List<RegResultLine3> resultLines = new ArrayList<>();
         for (RegLine3 line : header.getHeader().getLines3()) {
-            RegResultLine3 resultLine = new RegResultLine3();
 
+            MeteringPoint meteringPoint = line.getMeteringPoint();
+            if (meteringPoint == null)
+                continue;
+
+            Parameter param = line.getParam();
+            if (param == null)
+                continue;
+
+            Map<String, String> msgParams = buildMsgParams(line);
+
+            Double totalVal;
+            try {
+                CalcResult result = calcService.calcMeteringPoint(meteringPoint, inverseParam(param, line.getIsInverse()), context);
+                totalVal = result != null ? result.getDoubleValue() : null;
+            }
+            catch (CycleDetectionException e) {
+                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                continue;
+            }
+            catch (Exception e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                continue;
+            }
+
+            RegResultLine3 resultLine = new RegResultLine3();
             resultLine.setHeader(header);
             resultLine.setLineNum(line.getLineNum());
             resultLine.setMeteringPoint(line.getMeteringPoint());
@@ -131,7 +225,7 @@ public class RegService {
             resultLine.setIsInverse(line.getIsInverse());
             resultLine.setOwnVal(null);
             resultLine.setOtherVal(null);
-            resultLine.setTotalVal(null);
+            resultLine.setTotalVal(totalVal);
             resultLine.setCreateBy(header.getCreateBy());
             resultLine.setCreateDate(header.getCreateDate());
 
@@ -158,6 +252,7 @@ public class RegService {
         }
         saveLines4(resultLines);
     }
+
 
     private void copyTranslates1(RegLine1 line, RegResultLine1 resultLine) {
         resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
@@ -258,5 +353,16 @@ public class RegService {
         header.setStatus(status);
         regResultHeaderRepo.save(header);
         regResultHeaderRepo.flush();
+    }
+
+
+    private Parameter inverseParam(Parameter param, Boolean isInverse) {
+        if (isInverse) {
+            if (param.equals(paramService.getValues().get("A+"))) return paramService.getValues().get("A-");
+            if (param.equals(paramService.getValues().get("A-"))) return paramService.getValues().get("A+");
+            if (param.equals(paramService.getValues().get("R+"))) return paramService.getValues().get("R-");
+            if (param.equals(paramService.getValues().get("R-"))) return paramService.getValues().get("R+");
+        }
+        return param;
     }
 }
