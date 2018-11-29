@@ -487,7 +487,6 @@
         <rollback/>
     </changeSet>
 
-
     <changeSet id="calc-rus-510" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>add column calc_distribution_result_l</comment>
         <addColumn schemaName="apps"
@@ -510,6 +509,195 @@
                 referencedTableName="calc_electricity_producer_groups"
                 referencedColumnNames="id"
         />
+    </changeSet>
+
+    <changeSet id="calc-rus-512" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_distribution_result_l</comment>
+        <dropColumn tableName="calc_distribution_result_l" schemaName="apps">
+            <column name="energy_source_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-513" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_balance_reg_lines_3_det</comment>
+        <dropColumn tableName="calc_balance_reg_lines_3_det" schemaName="apps">
+            <column name="energy_source_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-514" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_balance_reg_lines_3_det</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_reg_lines_3_det">
+            <column name="energy_group_id" type="number" remarks="Идентификатор группы электростанций">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-515" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_lines_3_det to calc_electricity_producer_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_lines_3_det"
+                baseColumnNames="energy_group_id"
+                constraintName="fk_calc_balance_reg_lines_3_det_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_electricity_producer_groups"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-516" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_mp_distribution_rules</comment>
+        <dropColumn tableName="calc_mp_distribution_rules" schemaName="apps">
+            <column name="group_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-517" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_mp_distribution_rules</comment>
+        <addColumn schemaName="apps" tableName="calc_mp_distribution_rules">
+            <column name="energy_group_id" type="number" remarks="Идентификатор группы электростанций" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-518" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_mp_distribution_rules to calc_electricity_producer_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_mp_distribution_rules"
+                baseColumnNames="energy_group_id"
+                constraintName="fk_calc_mp_distribution_rules_8"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_electricity_producer_groups"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-519" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_distribution_result_l</comment>
+        <dropColumn tableName="calc_distribution_result_l" schemaName="apps">
+            <column name="group_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-520" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_distribution_result_l</comment>
+        <addColumn schemaName="apps" tableName="calc_distribution_result_l">
+            <column name="energy_group_id" type="number" remarks="Идентификатор группы электростанций" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-521" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l to calc_electricity_producer_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l"
+                baseColumnNames="energy_group_id"
+                constraintName="calc_distribution_result_l_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_electricity_producer_groups"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-522" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_balance_reg_result_lines_3_det</comment>
+        <dropColumn tableName="calc_balance_reg_result_lines_3_det" schemaName="apps">
+            <column name="energy_source_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-523" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_balance_reg_result_lines_3_det</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_reg_result_lines_3_det">
+            <column name="energy_group_id" type="number" remarks="Идентификатор группы электростанций" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-524" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_reg_result_lines_3_det to calc_electricity_producer_groups</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_reg_result_lines_3_det"
+                baseColumnNames="energy_group_id"
+                constraintName="fk_calc_balance_reg_result_lines_3_det_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_electricity_producer_groups"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-525" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: CALC_MP_DISTRIBUTION_RULES</comment>
+        <dropColumn tableName="CALC_MP_DISTRIBUTION_RULES" schemaName="apps">
+            <column name="energy_source_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-526" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_consumption_headers</comment>
+        <dropColumn tableName="calc_consumption_headers" schemaName="apps">
+            <column name="doc_type_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-527" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_consumption_headers</comment>
+        <dropColumn tableName="calc_consumption_headers" schemaName="apps">
+            <column name="doc_name"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-528" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_consumption_headers</comment>
+        <dropColumn tableName="calc_consumption_headers" schemaName="apps">
+            <column name="balance_unit_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+    <changeSet id="calc-rus-529" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_consumption_headers</comment>
+        <dropColumn tableName="calc_consumption_headers" schemaName="apps">
+            <column name="sheet_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+    <changeSet id="calc-rus-530" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_consumption_headers</comment>
+        <dropColumn tableName="calc_consumption_headers" schemaName="apps">
+            <column name="data_unit_code"/>
+        </dropColumn>
+        <rollback/>
     </changeSet>
 
 </databaseChangeLog>
