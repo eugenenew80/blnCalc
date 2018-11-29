@@ -720,4 +720,14 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-533" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_data_types</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_data_types">
+            <column name="priority" type="number" remarks="Приоретет">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
