@@ -223,6 +223,7 @@ public class RegService {
                     CalcProperty property = CalcProperty.builder()
                         .determiningMethod(DeterminingMethodEnum.RDV)
                         .gridType(GridTypeEnum.OWN)
+                        .electricityGroup(detail.getElectricityGroup())
                         .build();
 
                     CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
@@ -243,6 +244,7 @@ public class RegService {
                     CalcProperty property = CalcProperty.builder()
                         .determiningMethod(DeterminingMethodEnum.RDV)
                         .gridType(GridTypeEnum.OTHER)
+                        .electricityGroup(detail.getElectricityGroup())
                         .build();
 
                     CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
@@ -263,6 +265,7 @@ public class RegService {
                     CalcProperty property = CalcProperty.builder()
                         .determiningMethod(DeterminingMethodEnum.RDV)
                         .gridType(GridTypeEnum.TOTAL)
+                        .electricityGroup(detail.getElectricityGroup())
                         .build();
 
                     CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
