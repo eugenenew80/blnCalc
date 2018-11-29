@@ -1,5 +1,6 @@
 package calc.entity.calc.reg;
 
+import calc.entity.calc.ElectricityProducerGroup;
 import calc.entity.calc.EnergySource;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,8 +26,8 @@ public class RegResultLine3Det {
     private RegResultHeader header;
 
     @ManyToOne
-    @JoinColumn(name = "energy_source_id")
-    private EnergySource energySource;
+    @JoinColumn(name = "energy_group_id")
+    private ElectricityProducerGroup electricityGroup;
 
     @Column(name = "own_val")
     private Double ownVal;
