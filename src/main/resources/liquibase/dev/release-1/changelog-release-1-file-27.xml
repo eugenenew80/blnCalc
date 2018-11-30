@@ -730,28 +730,4 @@
             </column>
         </addColumn>
     </changeSet>
-
-    <changeSet id="calc-rus-534" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>add column calc_loss_fact_headers</comment>
-        <addColumn schemaName="apps" tableName="calc_loss_fact_headers">
-            <column name="data_type" type="varchar2(30)" remarks="Статус данных">
-                <constraints nullable="true"/>
-            </column>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="calc-rus-535" logicalFilePath="path-independent" author="ruslan" context="dev">
-        <comment>Creating foreign constraint: calc_loss_fact_headers to calc_data_types</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="calc_loss_fact_headers"
-                baseColumnNames="data_type"
-                constraintName="fk_calc_loss_fact_headers_6"
-                deferrable="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="calc_data_types"
-                referencedColumnNames="code"
-        /></changeSet>
 </databaseChangeLog>
