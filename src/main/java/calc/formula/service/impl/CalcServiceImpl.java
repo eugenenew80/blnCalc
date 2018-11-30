@@ -409,6 +409,7 @@ public class CalcServiceImpl implements CalcService {
                     .meteringPointCode(meteringPoint.getCode())
                     .parameterCode(param.getCode())
                     .gridType(GridTypeEnum.OWN)
+                    .electricityGroupId(property.getElectricityGroup() != null ? property.getElectricityGroup().getId() : null)
                     .service(distributionService)
                     .context(context)
                     .build();
@@ -420,6 +421,7 @@ public class CalcServiceImpl implements CalcService {
                     .meteringPointCode(meteringPoint.getCode())
                     .parameterCode(param.getCode())
                     .gridType(GridTypeEnum.OTHER)
+                    .electricityGroupId(property.getElectricityGroup() != null ? property.getElectricityGroup().getId() : null)
                     .service(distributionService)
                     .context(context)
                     .build();
@@ -431,6 +433,7 @@ public class CalcServiceImpl implements CalcService {
                     .meteringPointCode(meteringPoint.getCode())
                     .parameterCode(param.getCode())
                     .gridType(GridTypeEnum.TOTAL)
+                    .electricityGroupId(property.getElectricityGroup() != null ? property.getElectricityGroup().getId() : null)
                     .service(distributionService)
                     .context(context)
                     .build();

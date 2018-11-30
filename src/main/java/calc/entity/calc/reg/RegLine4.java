@@ -1,5 +1,6 @@
 package calc.entity.calc.reg;
 
+import calc.entity.TemplateLine;
 import calc.entity.calc.Dealer;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.enums.DealTypeEnum;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "calc_balance_reg_lines_4")
 @Immutable
-public class RegLine4 {
+public class RegLine4 implements TemplateLine {
     @Id
     private Long id;
 

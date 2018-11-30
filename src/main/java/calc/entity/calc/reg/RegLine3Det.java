@@ -1,5 +1,6 @@
 package calc.entity.calc.reg;
 
+import calc.entity.calc.ElectricityProducerGroup;
 import calc.entity.calc.EnergySource;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,6 +28,6 @@ public class RegLine3Det {
     private Long lineNum;
 
     @ManyToOne
-    @JoinColumn(name = "energy_source_id")
-    private EnergySource energySource;
+    @JoinColumn(name = "energy_group_id")
+    private ElectricityProducerGroup electricityGroup;
 }

@@ -1,6 +1,7 @@
 package calc.entity.calc.distr;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.calc.ElectricityProducerGroup;
 import calc.entity.calc.EnergySource;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
@@ -26,8 +27,8 @@ public class DistrResultLine {
     private DistrResultHeader header;
 
     @ManyToOne
-    @JoinColumn(name = "energy_source_id")
-    private EnergySource energySource;
+    @JoinColumn(name = "energy_group_id")
+    private ElectricityProducerGroup electricityGroup;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id")

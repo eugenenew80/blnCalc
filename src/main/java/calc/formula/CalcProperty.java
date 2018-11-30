@@ -1,5 +1,6 @@
 package calc.formula;
 
+import calc.entity.calc.ElectricityProducerGroup;
 import calc.entity.calc.enums.DeterminingMethodEnum;
 import calc.entity.calc.enums.GridTypeEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
@@ -21,4 +22,6 @@ public class CalcProperty {
 
     @Builder.Default
     private ParamTypeEnum paramType = ParamTypeEnum.PT;
+
+    private ElectricityProducerGroup electricityGroup;
 }

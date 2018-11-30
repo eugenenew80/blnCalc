@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toSet;
 public class DistributionExpression implements DoubleExpression {
     private final String meteringPointCode;
     private final String parameterCode;
+    private final Long electricityGroupId;
     private final Double rate;
     private final DistributionService service;
     private final CalcContext context;
