@@ -166,8 +166,8 @@ public class BalanceSubstUbService {
 
                     if (meterHistories.size() == 0) {
                         Double w  = getMrVal(mrLines, ubLine, null, param, context);
-                        Double wa = getMrVal(mrLines, ubLine, null, mapParams.get("A+"), context) + getMrVal(mrLines, ubLine, null, mapParams.get("A-"), context);
-                        Double wr = getMrVal(mrLines, ubLine, null, mapParams.get("R+"), context) + getMrVal(mrLines, ubLine, null, mapParams.get("R-"), context);
+                        Double wa = getMrVal(mrLines, ubLine, null, direction.equals("1") ? mapParams.get("A+") : mapParams.get("A-"), context);
+                        Double wr = getMrVal(mrLines, ubLine, null, direction.equals("1") ? mapParams.get("R+") : mapParams.get("R-"), context);
 
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
                         line.setHeader(header);
@@ -244,12 +244,9 @@ public class BalanceSubstUbService {
                                 blProc = buProc <= 0.5 ? 0.25 : 0.5;
                         }
 
-                        Double biProc = null;
-                        if (ttType != null) {
-                            Long ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1l);
-                            biProc = bttProc * sqrt(ttNumber);
-                        }
-
+                        Long ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1l);
+                        String ttMountedOn = ttNumber > 1l ? meterHistory.getTtMountedOn() : null;
+                        Double biProc = ttType != null ? bttProc * sqrt(ttNumber) : null;
                         Double bsoProc = ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
 
                         Double bProc = sqrt(
@@ -271,10 +268,7 @@ public class BalanceSubstUbService {
                         line.setW(w);
                         line.setWa(wa);
                         line.setWr(wr);
-
-                        if (meterHistory.getTtNumber() > 1l)
-                            line.setTtStar(meterHistory.getTtMountedOn());
-
+                        line.setTtStar(ttMountedOn);
                         line.setTtacProc(ttAcProc);
                         line.setI1Nom(ttType.getRatedCurrent1());
                         line.setTRab(workHours);
