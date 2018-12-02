@@ -62,7 +62,7 @@ public class MeterHistory {
     private Double rmNew;
 
     @Column(name = "installed_tt_number")
-    private Double ttNumber;
+    private Long ttNumber;
 
     @Column(name = "tt_mounted_on")
     private String ttMountedOn;

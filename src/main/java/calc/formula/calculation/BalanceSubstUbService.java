@@ -33,6 +33,8 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 
 import static calc.util.Util.round;
+import static java.lang.Math.*;
+import static java.lang.Math.sqrt;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -218,10 +220,10 @@ public class BalanceSubstUbService {
                         }
 
                         Double w  = getMrVal(mrLines, ubLine, meterHistory, param, context);
-                        Double wa = getMrVal(mrLines, ubLine, meterHistory, mapParams.get("A+"), context) + getMrVal(mrLines, ubLine, meterHistory, mapParams.get("A-"), context);
-                        Double wr = getMrVal(mrLines, ubLine, meterHistory, mapParams.get("R+"), context) + getMrVal(mrLines, ubLine, meterHistory, mapParams.get("R-"), context);
+                        Double wa = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? mapParams.get("A+") : mapParams.get("A-"), context);
+                        Double wr = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? mapParams.get("R+") : mapParams.get("R-"), context);
 
-                        Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / (1.73d * uAvg * workHours);
+                        Double i1avgVal = sqrt(pow(wa, 2) + pow(wr, 2)) / (sqrt(3d) * uAvg * workHours);
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
                         Double ttAcProc = ttType.getAccuracyClass().getValue();
 
@@ -237,16 +239,16 @@ public class BalanceSubstUbService {
                         if (tnType != null && tnType.getAccuracyClass() != null)
                             buProc = ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
 
-                        Double ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1d);
-                        Double biProc = bttProc * Math.sqrt(ttNumber);
+                        Long ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1l);
+                        Double biProc = bttProc * sqrt(ttNumber);
                         Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
                         Double bsoProc = ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
-                        Double bProc = Math.sqrt(Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2)) * 1.1d;
+                        Double bProc = sqrt(pow(biProc, 2) + pow(buProc, 2) + pow(blProc, 2) + pow(bsoProc, 2)) * 1.1d;
 
                         Double dol = 0d;
                         if (direction.equals("1") && !wApTotal.equals(0d)) dol = w / wApTotal;
                         if (direction.equals("2") && !wAmTotal.equals(0d)) dol = w / wAmTotal;
-                        Double b2dol2 = Math.pow(bProc / 100d, 2) * Math.pow(dol, 2);
+                        Double b2dol2 = pow(bProc / 100d, 2) * pow(dol, 2);
 
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
                         line.setHeader(header);
@@ -255,7 +257,10 @@ public class BalanceSubstUbService {
                         line.setW(w);
                         line.setWa(wa);
                         line.setWr(wr);
-                        line.setTtStar(meterHistory.getTtMountedOn());
+
+                        if (meterHistory.getTtNumber() > 1l)
+                            line.setTtStar(meterHistory.getTtMountedOn());
+
                         line.setTtacProc(ttAcProc);
                         line.setI1Nom(ttType.getRatedCurrent1());
                         line.setTRab(workHours);
@@ -297,7 +302,7 @@ public class BalanceSubstUbService {
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
-            Double nbdProc = Math.sqrt(r1SumB2D2 + r2SumB2D2) * 100d;
+            Double nbdProc = sqrt(r1SumB2D2 + r2SumB2D2) * 100d;
             Double nbdVal = nbdProc * r1SumW / 100d;
 
             nbdVal = round(nbdVal, paramService.getValues().get("A+"));
