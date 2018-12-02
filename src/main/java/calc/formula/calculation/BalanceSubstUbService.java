@@ -235,15 +235,29 @@ public class BalanceSubstUbService {
                             bttProc = 0d;
                         }
 
-                        Double buProc = 0d;
-                        if (tnType != null && tnType.getAccuracyClass() != null)
-                            buProc = ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
+                        Double buProc = null, blProc = null;
+                        if (tnType != null) {
+                            if (tnType.getAccuracyClass() != null)
+                                buProc = ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
 
-                        Long ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1l);
-                        Double biProc = bttProc * sqrt(ttNumber);
-                        Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
+                            if (buProc != null)
+                                blProc = buProc <= 0.5 ? 0.25 : 0.5;
+                        }
+
+                        Double biProc = null;
+                        if (ttType != null) {
+                            Long ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1l);
+                            biProc = bttProc * sqrt(ttNumber);
+                        }
+
                         Double bsoProc = ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
-                        Double bProc = sqrt(pow(biProc, 2) + pow(buProc, 2) + pow(blProc, 2) + pow(bsoProc, 2)) * 1.1d;
+
+                        Double bProc = sqrt(
+                                pow(ofNullable(biProc).orElse(0d), 2)
+                            +   pow(ofNullable(buProc).orElse(0d), 2)
+                            +   pow(ofNullable(blProc).orElse(0d), 2)
+                            +   pow(ofNullable(bsoProc).orElse(0d), 2)
+                        ) * 1.1d;
 
                         Double dol = 0d;
                         if (direction.equals("1") && !wApTotal.equals(0d)) dol = w / wApTotal;
