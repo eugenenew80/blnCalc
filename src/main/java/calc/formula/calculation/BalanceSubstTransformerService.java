@@ -6,7 +6,6 @@ import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.pe.PowerTransformerValue;
 import calc.entity.calc.enums.TransformerTypeEnum;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
@@ -233,7 +232,13 @@ public class BalanceSubstTransformerService {
                 }
 
                 Double totalE = inputMpH != null ? totalEH : totalEL;
-                Double resist = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2)) * 1000d;
+
+                Double resist = transformer.getResist();
+                if (resist == null) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_RESIST_NOT_FOUND", info);
+                    resist = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2)) * 1000d;
+                }
+
                 Double valXX = round(deltaPxx * hours * Math.pow(uAvg / uNomH, 2), paramWL);
                 Double valN  = round(totalE * resist / (Math.pow(uAvg, 2) * 1000d * hours), paramWL);
 
@@ -324,9 +329,23 @@ public class BalanceSubstTransformerService {
                 Double totalEM = Math.pow(totalAM, 2) + Math.pow(totalRM, 2);
                 Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
 
-                Double resistL = (pkzHL + pkzML - pkzHM) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
-                Double resistM = (pkzHM + pkzML - pkzHL) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
-                Double resistH = (pkzHM + pkzHL - pkzML) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
+                Double resistL = transformer.getResistL();
+                if (resistL == null) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_RESIST_NOT_FOUND", info);
+                    resistL = (pkzHL + pkzML - pkzHM) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
+                }
+
+                Double resistM = transformer.getResistM();
+                if (resistM == null) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_RESIST_NOT_FOUND", info);
+                    resistM = (pkzHM + pkzML - pkzHL) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
+                }
+
+                Double resistH = transformer.getResistH();
+                if (resistH == null) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_RESIST_NOT_FOUND", info);
+                    resistH = (pkzHM + pkzHL - pkzML) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
+                }
 
                 Double valXX = round(deltaPxx * hours * Math.pow(uAvg / uNomH, 2), paramWL);
                 Double valN  = round((totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * hours * 1000d), paramWL);

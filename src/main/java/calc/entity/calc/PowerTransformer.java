@@ -63,6 +63,18 @@ public class PowerTransformer {
     @Column(name = "bn")
     private Double shNom;
 
+    @Column(name = "resist")
+    private Double resist;
+
+    @Column(name = "resist_h")
+    private Double resistH;
+
+    @Column(name = "resist_m")
+    private Double resistM;
+
+    @Column(name = "resist_l")
+    private Double resistL;
+
     @OneToMany(mappedBy = "powerTransformer")
     @MapKey(name = "lang")
     private Map<LangEnum, PowerTransformerTranslate> translates;
