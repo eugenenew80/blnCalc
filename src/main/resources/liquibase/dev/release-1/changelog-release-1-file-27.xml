@@ -730,4 +730,31 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-rus-534" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_balance_source_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_source_result_headers">
+            <column name="data_type" type="varchar2(20)" remarks="Cтатус данных">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-535" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_source_result_headers to calc_data_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_source_result_headers"
+                baseColumnNames="data_type"
+                constraintName="fk_calc_balance_source_result_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_data_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
