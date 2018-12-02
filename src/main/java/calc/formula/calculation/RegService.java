@@ -211,6 +211,7 @@ public class RegService {
             resultLine.setMeteringPoint(line.getMeteringPoint());
             resultLine.setParam(line.getParam());
             resultLine.setIsInverse(line.getIsInverse());
+            resultLine.setBalanceUnit(line.getBalanceUnit());
             resultLine.setOwnVal(null);
             resultLine.setOtherVal(null);
             resultLine.setTotalVal(null);

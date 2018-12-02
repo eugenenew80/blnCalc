@@ -1,6 +1,7 @@
 package calc.entity.calc.reg;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.calc.BalanceUnit;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
 import lombok.Data;
@@ -51,6 +52,10 @@ public class RegResultLine3 {
 
     @Column(name = "total_val")
     private Double totalVal;
+
+    @ManyToOne
+    @JoinColumn(name = "balance_unit_id")
+    private BalanceUnit balanceUnit;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;

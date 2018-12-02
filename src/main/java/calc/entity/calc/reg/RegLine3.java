@@ -2,6 +2,7 @@ package calc.entity.calc.reg;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.TemplateLine;
+import calc.entity.calc.BalanceUnit;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
 import lombok.Data;
@@ -48,6 +49,10 @@ public class RegLine3 implements TemplateLine {
 
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    @ManyToOne
+    @JoinColumn(name = "balance_unit_id")
+    private BalanceUnit balanceUnit;
 
     @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
     private List<RegLine3Translate> translates;
