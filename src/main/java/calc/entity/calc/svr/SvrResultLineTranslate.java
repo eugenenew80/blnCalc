@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "calc_service_values_reconciliations_l_tl")
 @Immutable
-public class SvrLineTranslate {
+public class SvrResultLineTranslate {
     @Id
     @SequenceGenerator(name="calc_service_values_reconciliations_l_tl_s", sequenceName = "calc_service_values_reconciliations_l_tl_s", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_service_values_reconciliations_l_tl_s")
@@ -20,7 +20,7 @@ public class SvrLineTranslate {
 
     @ManyToOne
     @JoinColumn(name = "service_values_reconciliation_l_id")
-    private SvrLine line;
+    private SvrResultLine line;
 
     @Column(name="lang")
     @Enumerated(EnumType.STRING)

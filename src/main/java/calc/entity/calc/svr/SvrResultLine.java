@@ -4,7 +4,6 @@ import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
 import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.DataTypeEnum;
-import calc.entity.calc.enums.DeterminingMethodEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
@@ -14,7 +13,7 @@ import java.util.List;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_service_values_reconciliations_l")
-public class SvrLine {
+public class SvrResultLine {
 
     @Id
     @SequenceGenerator(name="calc_service_values_reconciliations_l_s", sequenceName = "calc_service_values_reconciliations_l_s", allocationSize=1)
@@ -23,7 +22,7 @@ public class SvrLine {
 
     @ManyToOne
     @JoinColumn(name = "header_id")
-    private SvrHeader header;
+    private SvrResultHeader header;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id")
@@ -48,5 +47,5 @@ public class SvrLine {
     private DataTypeEnum dataType;
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<SvrLineTranslate> translates;
+    private List<SvrResultLineTranslate> translates;
 }

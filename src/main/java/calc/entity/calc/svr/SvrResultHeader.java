@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_service_values_reconciliations")
-public class SvrHeader  implements DocHeader {
+public class SvrResultHeader implements DocHeader {
     @Id
     private Long id;
 

@@ -42,7 +42,7 @@ public class SvrService {
     private final MeteringPointSettingNoteRepo mpsRepo;
     private static final String docCode = "SVR";
 
-    public boolean calc(SvrHeader header) {
+    public boolean calc(SvrResultHeader header) {
         try {
             logger.info("Service value reconcilation for header " + header.getId() + " started");
             header = svrHeaderRepo.findOne(header.getId());
@@ -83,14 +83,14 @@ public class SvrService {
         }
     }
 
-    private DataTypeEnum calcLines(SvrHeader header, CalcContext context) {
+    private DataTypeEnum calcLines(SvrResultHeader header, CalcContext context) {
         List<MeteringPointSetting> lines = meteringPointSettingRepo.findAllByContractIdAndDate(
             header.getContract().getId(),
             header.getStartDate(),
             header.getEndDate()
         );
 
-        List<SvrLine> resultLines = new ArrayList<>();
+        List<SvrResultLine> resultLines = new ArrayList<>();
         for (MeteringPointSetting line : lines) {
             if (line.getOrganization()!=null && !line.getOrganization().equals(header.getOrganization()))
                 continue;
@@ -134,7 +134,7 @@ public class SvrService {
             if (val != null)
                 val = Math.abs(val);
 
-            SvrLine resultLine = new SvrLine();
+            SvrResultLine resultLine = new SvrResultLine();
             resultLine.setHeader(header);
             resultLine.setMeteringPoint(meteringPoint);
             resultLine.setParam(param);
@@ -150,11 +150,11 @@ public class SvrService {
         return getDataType(resultLines);
     }
 
-    private DataTypeEnum getDataType(List<SvrLine> resultLines) {
-        Map<DataTypeEnum, List<SvrLine>> dataTypes = resultLines.stream()
+    private DataTypeEnum getDataType(List<SvrResultLine> resultLines) {
+        Map<DataTypeEnum, List<SvrResultLine>> dataTypes = resultLines.stream()
             .filter(t -> t.getDataType() != null)
             .filter(t -> t.getVal() != null)
-            .collect(groupingBy(SvrLine::getDataType));
+            .collect(groupingBy(SvrResultLine::getDataType));
 
         if (dataTypes.containsKey(DataTypeEnum.OPER))
             return DataTypeEnum.OPER;
@@ -166,12 +166,12 @@ public class SvrService {
             return null;
     }
 
-    private void copyTranslates(MeteringPointSetting line, SvrLine resultLine) {
+    private void copyTranslates(MeteringPointSetting line, SvrResultLine resultLine) {
         if (resultLine.getTranslates() == null)
             resultLine.setTranslates(new ArrayList<>());
 
         for (MeteringPointSettingTranslate lineTranslate : line.getTranslates()) {
-            SvrLineTranslate resultLineTranslate = new SvrLineTranslate();
+            SvrResultLineTranslate resultLineTranslate = new SvrResultLineTranslate();
             resultLineTranslate.setLang(lineTranslate.getLang());
             resultLineTranslate.setLine(resultLine);
             resultLineTranslate.setName(lineTranslate.getName());
@@ -180,19 +180,19 @@ public class SvrService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void copyNotes(SvrHeader header) {
+    private void copyNotes(SvrResultHeader header) {
         List<MeteringPointSettingNote> mpsNotes = mpsRepo.findAllByContractId(header.getContract().getId());
 
-        List<SvrNote> resultNotes = new ArrayList<>();
+        List<SvrResultNote> resultNotes = new ArrayList<>();
         for (MeteringPointSettingNote note : mpsNotes) {
-            SvrNote resultNote = new SvrNote();
+            SvrResultNote resultNote = new SvrResultNote();
             resultNote.setHeader(header);
             resultNote.setNoteNum(note.getNoteNum());
             resultNote.setOrg(note.getOrg());
 
             resultNote.setTranslates(ofNullable(resultNote.getTranslates()).orElse(new ArrayList<>()));
             for (MeteringPointSettingNoteTranslate noteTranslate : note.getTranslates()) {
-                SvrNoteTranslate resultNoteTranslate = new SvrNoteTranslate();
+                SvrResultNoteTranslate resultNoteTranslate = new SvrResultNoteTranslate();
                 resultNoteTranslate.setNote(resultNote);
                 resultNoteTranslate.setLang(noteTranslate.getLang());
                 resultNoteTranslate.setNoteText(noteTranslate.getNoteText());
@@ -205,25 +205,25 @@ public class SvrService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void saveLines(List<SvrLine> lines) {
+    private void saveLines(List<SvrResultLine> lines) {
         svrLineRepo.save(lines);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void deleteLines(SvrHeader header) {
-        List<SvrLine> lines = svrLineRepo.findAllByHeaderId(header.getId());
+    private void deleteLines(SvrResultHeader header) {
+        List<SvrResultLine> lines = svrLineRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             svrLineRepo.delete(lines.get(i));
         svrLineRepo.flush();
 
-        List<SvrNote> notes = svrNoteRepo.findAllByHeaderId(header.getId());
+        List<SvrResultNote> notes = svrNoteRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<notes.size(); i++)
             svrNoteRepo.delete(notes.get(i));
         svrNoteRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void updateStatus(SvrHeader header, BatchStatusEnum status) {
+    private void updateStatus(SvrResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         svrHeaderRepo.save(header);
     }

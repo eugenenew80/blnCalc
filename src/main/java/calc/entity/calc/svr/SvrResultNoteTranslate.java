@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "calc_svr_notes_tl")
 @Immutable
-public class SvrNoteTranslate {
+public class SvrResultNoteTranslate {
     @Id
     @SequenceGenerator(name="calc_svr_notes_tl_s", sequenceName = "calc_svr_notes_tl_s", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_svr_notes_tl_s")
@@ -19,7 +19,7 @@ public class SvrNoteTranslate {
 
     @ManyToOne
     @JoinColumn(name = "svr_note_id")
-    private SvrNote note;
+    private SvrResultNote note;
 
     @Column(name="lang")
     @Enumerated(EnumType.STRING)
