@@ -25,7 +25,7 @@ public class UavgExpression implements DoubleExpression {
         if (meteringPointCode==null || meteringPointCode.equals(""))
             return def;
 
-        return service.getValues(context.getHeaderId(), meteringPointCode).stream()
+        return service.getValues(context.getHeader().getId(), meteringPointCode).stream()
             .filter(t -> t.getVal() != null && t.getVal() != 0)
             .map(t -> t.getVal())
             .findFirst()

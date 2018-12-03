@@ -1,18 +1,15 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
-import calc.entity.calc.bs.BalanceSubstLine;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.mr.BalanceSubstResultMrLine;
 import calc.entity.calc.bs.ub.BalanceSubstResultUbLine;
 import calc.entity.calc.bs.ub.BalanceSubstUbLine;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
 import calc.formula.ContextType;
-import calc.formula.expression.impl.MrExpression;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.expression.impl.UavgExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
@@ -67,16 +64,8 @@ public class BalanceSubstUbService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .headerId(header.getId())
-                .periodType(header.getPeriodType())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
-                .energyObjectType("SUBSTATION")
-                .energyObjectId(header.getSubstation().getId())
+                .header(header)
                 .defContextType(ContextType.DEFAULT)
-                .values(new HashMap<>())
                 .build();
 
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
@@ -429,9 +418,11 @@ public class BalanceSubstUbService {
     }
 
     private Double getMrVal(List<BalanceSubstResultMrLine> mrLines, BalanceSubstUbLine ubLine, MeterHistory meterHistory, Parameter param, CalcContext context) throws Exception {
-        if (ubLine.getMeteringPoint().getPointType() == PointTypeEnum.PMP) {
+        MeteringPoint meteringPoint = ubLine.getMeteringPoint();
+
+        if (meteringPoint.getPointType() == PointTypeEnum.PMP) {
             Double val = mrLines.stream()
-                .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
+                .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                 .filter(t -> t.getParam().equals(param))
                 .filter(t -> t.getMeterHistory() != null)
                 .filter(t -> meterHistory == null || t.getMeterHistory().equals(meterHistory))
@@ -445,19 +436,15 @@ public class BalanceSubstUbService {
         }
 
         Double val = PeriodTimeValueExpression.builder()
-            .meteringPointCode(ubLine.getMeteringPoint().getCode())
+            .meteringPointCode(meteringPoint.getCode())
             .parameterCode(param.getCode())
-            .rate(1d)
-            .startHour((byte) 0)
-            .endHour((byte) 23)
-            .periodType(context.getPeriodType())
             .context(context)
             .service(periodTimeValueService)
             .build()
             .doubleValue();
 
         if (ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcMeteringPoint(ubLine.getMeteringPoint(), param, context);
+            CalcResult result = calcService.calcValue(meteringPoint, param, context);
             val = result!=null ? result.getDoubleValue() : null;
             if (val != null)
                 val = val * ofNullable(ubLine.getRate()).orElse(1d);

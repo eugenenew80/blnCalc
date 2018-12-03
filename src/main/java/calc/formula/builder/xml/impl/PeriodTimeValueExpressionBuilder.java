@@ -1,6 +1,5 @@
 package calc.formula.builder.xml.impl;
 
-import calc.entity.calc.Formula;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.builder.xml.ExpressionBuilder;
@@ -61,7 +60,6 @@ public class PeriodTimeValueExpressionBuilder implements ExpressionBuilder<Perio
         return PeriodTimeValueExpression.builder()
             .meteringPointCode(mp)
             .parameterCode(param)
-            .periodType(periodType)
             .rate(rate)
             .startHour(startHour)
             .endHour(endHour)

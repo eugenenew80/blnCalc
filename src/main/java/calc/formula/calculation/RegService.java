@@ -2,16 +2,11 @@ package calc.formula.calculation;
 
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
-import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.DeterminingMethodEnum;
-import calc.entity.calc.enums.GridTypeEnum;
-import calc.entity.calc.enums.LangEnum;
+import calc.entity.calc.enums.*;
 import calc.entity.calc.reg.*;
-import calc.entity.calc.source.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcProperty;
 import calc.formula.CalcResult;
-import calc.formula.ContextType;
 import calc.formula.exception.CycleDetectionException;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
@@ -46,17 +41,15 @@ public class RegService {
     public boolean calc(Long headerId) {
         logger.info("Reg for header " + headerId + " started");
         RegResultHeader header = regResultHeaderRepo.findOne(headerId);
-        if (header.getStatus() == BatchStatusEnum.E)
+        if (header.getStatus() != BatchStatusEnum.W)
             return false;
+
+        if (header.getDataType() == null)
+            header.setDataType(header.getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
 
         CalcContext context = CalcContext.builder()
             .lang(LangEnum.RU)
-            .docCode(docCode)
-            .headerId(header.getId())
-            .periodType(header.getPeriodType())
-            .startDate(header.getStartDate())
-            .endDate(header.getEndDate())
-            .orgId(header.getOrganization().getId())
+            .header(header)
             .build();
 
         try {
@@ -102,7 +95,7 @@ public class RegService {
             Double ap;
             try {
                 Parameter param = line.getIsInverse() ? paramService.getValues().get("A-") : paramService.getValues().get("A+");
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+                CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 ap = result != null ? result.getDoubleValue() : null;
             }
             catch (CycleDetectionException e) {
@@ -118,7 +111,7 @@ public class RegService {
             Double am;
             try {
                 Parameter param = line.getIsInverse() ?  paramService.getValues().get("A+") : paramService.getValues().get("A-");
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+                CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 am = result != null ? result.getDoubleValue() : null;
             }
             catch (CycleDetectionException e) {
@@ -163,7 +156,7 @@ public class RegService {
 
             Double val;
             try {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, inverseParam(param, line.getIsInverse()), context);
+                CalcResult result = calcService.calcValue(meteringPoint, inverseParam(param, line.getIsInverse()), context);
                 val = result != null ? result.getDoubleValue() : null;
             }
             catch (CycleDetectionException e) {
@@ -227,7 +220,7 @@ public class RegService {
                         .electricityGroup(detail.getElectricityGroup())
                         .build();
 
-                    CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
+                    CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                     ownVal = result != null ? result.getDoubleValue() : null;
                 }
                 catch (CycleDetectionException e) {
@@ -248,7 +241,7 @@ public class RegService {
                         .electricityGroup(detail.getElectricityGroup())
                         .build();
 
-                    CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
+                    CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                     otherVal = result != null ? result.getDoubleValue() : null;
                 }
                 catch (CycleDetectionException e) {
@@ -269,7 +262,7 @@ public class RegService {
                         .electricityGroup(detail.getElectricityGroup())
                         .build();
 
-                    CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
+                    CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                     totalVal = result != null ? result.getDoubleValue() : null;
                 }
                 catch (CycleDetectionException e) {
@@ -315,7 +308,7 @@ public class RegService {
 
             Double val;
             try {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+                CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 val = result != null ? result.getDoubleValue() : null;
             }
             catch (CycleDetectionException e) {

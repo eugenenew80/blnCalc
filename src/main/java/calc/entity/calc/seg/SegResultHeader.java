@@ -1,9 +1,11 @@
 package calc.entity.calc.seg;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.DocHeader;
 import calc.entity.calc.BalanceUnit;
 import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_balance_segment_result_headers")
-public class SegResultHeader {
+public class SegResultHeader  implements DocHeader {
 
     @Id
     private Long id;
@@ -35,6 +37,10 @@ public class SegResultHeader {
     @Column(name="period_type")
     @Enumerated(EnumType.STRING)
     private PeriodTypeEnum periodType;
+
+    @Column(name="data_type")
+    @Enumerated(EnumType.STRING)
+    private DataTypeEnum dataType;
 
     @Column(name = "start_date")
     private LocalDate startDate;

@@ -25,6 +25,7 @@ import calc.entity.calc.seg.SegResultMessageTranslate;
 import calc.entity.calc.source.SourceResultHeader;
 import calc.entity.calc.source.SourceResultMessage;
 import calc.entity.calc.source.SourceResultMessageTranslate;
+import calc.entity.calc.svr.SvrHeader;
 import calc.formula.service.MessageError;
 import calc.formula.service.MessageService;
 import calc.repo.calc.*;
@@ -380,5 +381,15 @@ public class MessageServiceImpl implements MessageService {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void deleteMessages(SvrHeader header) {
+
+    }
+
+    @Override
+    public void addMessage(SvrHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
+
     }
 }

@@ -3,7 +3,6 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
@@ -52,16 +51,8 @@ public class BalanceSubstLineService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .headerId(header.getId())
-                .periodType(header.getPeriodType())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
-                .energyObjectType("SUBSTATION")
-                .energyObjectId(header.getSubstation().getId())
+                .header(header)
                 .defContextType(ContextType.MR)
-                .values(new HashMap<>())
                 .build();
 
             List<BalanceSubstResultLine> resultLines = new ArrayList<>();
@@ -191,17 +182,13 @@ public class BalanceSubstLineService {
         Double val = PeriodTimeValueExpression.builder()
             .meteringPointCode(bsLine.getMeteringPoint().getCode())
             .parameterCode(param.getCode())
-            .rate(1d)
-            .startHour((byte) 0)
-            .endHour((byte) 23)
-            .periodType(context.getPeriodType())
             .context(context)
             .service(periodTimeValueService)
             .build()
             .doubleValue();
 
         if (Optional.ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcMeteringPoint(bsLine.getMeteringPoint(), param, context);
+            CalcResult result = calcService.calcValue(bsLine.getMeteringPoint(), param, context);
             val = result!=null ? result.getDoubleValue() : null;
             if (val != null)
                 val = val * Optional.ofNullable(bsLine.getRate()).orElse(1d);

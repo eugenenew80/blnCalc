@@ -38,12 +38,7 @@ public class InterMrService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
                 .defContextType(ContextType.DEFAULT)
-                .values(new HashMap<>())
                 .build();
 
             List<MeteringPoint> points = header.getHeader().getLines()

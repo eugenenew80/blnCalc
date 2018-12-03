@@ -75,12 +75,12 @@ public class DocumentBuilderImpl implements DocumentBuilder {
         //headElement.setAttribute("name", context.getReportName());
 
         Element repPeriodElement = doc.createElement("period");
-        repPeriodElement.setAttribute("start-date", context.getStartDate().format(DateTimeFormatter.ISO_DATE));
-        repPeriodElement.setAttribute("end-date", context.getEndDate().format(DateTimeFormatter.ISO_DATE));
+        repPeriodElement.setAttribute("start-date", context.getHeader().getStartDate().format(DateTimeFormatter.ISO_DATE));
+        repPeriodElement.setAttribute("end-date", context.getHeader().getEndDate().format(DateTimeFormatter.ISO_DATE));
         headElement.appendChild(repPeriodElement);
 
         Element repEnergyObjectElement = doc.createElement("energy-object");
-        repEnergyObjectElement.setAttribute("type", context.getEnergyObjectType());
+        //repEnergyObjectElement.setAttribute("type", context.getEnergyObjectType());
         //repEnergyObjectElement.setAttribute("name", context.getEnergyObjectName());
         headElement.appendChild(repEnergyObjectElement);
 
@@ -268,7 +268,7 @@ public class DocumentBuilderImpl implements DocumentBuilder {
 
         Object val = cell.getVal();
         if (cell.getAttr().getValueType()==ValueTypeEnum.FORMULA && cell.getFormula()!=null) {
-            CalcResult calcResult = context.getResults().get(cell.getId());
+            CalcResult calcResult = null; //context.getResults().get(cell.getId());
             if (calcResult!=null) {
                 if (attrType == AttrTypeEnum.STRING)
                     val = calcResult.getStringValue();

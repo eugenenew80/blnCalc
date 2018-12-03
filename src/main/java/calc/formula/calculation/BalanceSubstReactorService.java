@@ -38,16 +38,8 @@ public class BalanceSubstReactorService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .headerId(header.getId())
-                .periodType(header.getPeriodType())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
-                .energyObjectType("SUBSTATION")
-                .energyObjectId(header.getSubstation().getId())
+                .header(header)
                 .defContextType(ContextType.MR)
-                .values(new HashMap<>())
                 .build();
 
             List<ReactorValue> reactorLines = calcLines(header, context);

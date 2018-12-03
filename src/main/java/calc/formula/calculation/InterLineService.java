@@ -41,16 +41,9 @@ public class InterLineService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .headerId(header.getId())
-                .periodType(header.getPeriodType())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
+                .header(header)
                 .defContextType(ContextType.INTER)
-                .values(new HashMap<>())
                 .build();
-
 
             Parameter paramWL = paramService.getValues().get("WL");
             List<InterResultLine> resultLines = new ArrayList<>();

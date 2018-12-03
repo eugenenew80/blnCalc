@@ -26,34 +26,33 @@ public class PeriodTimeValueServiceImpl implements PeriodTimeValueService {
     private final ParameterRepo parameterRepo;
 
     @Override
-    public List<CalcResult> getValues(String meteringPointCode, String parameterCode, Byte startHour, Byte endHour, CalcContext context) {
+    public List<PeriodTimeValue> getValues(String meteringPointCode, String parameterCode, CalcContext context) {
         MeteringPoint meteringPoint = meteringPointRepo.findByCode(meteringPointCode);
         Parameter parameter = parameterRepo.findByCode(parameterCode);
 
         if (meteringPoint == null || parameter == null)
             return Collections.emptyList();
 
-        if (context.getValues().containsKey(meteringPointCode)) {
-            List<CalcResult> list = context.getValues().get(meteringPointCode)
-                .stream()
-                .filter(t -> t.getParamType().equals("PT"))
-                .filter(t -> t.getParam().equals(parameter))
-                .collect(toList());
-
-            if (!list.isEmpty()) return list;
-        }
-
         return findValues(meteringPoint, parameter, context)
             .stream()
+            .collect(toList());
+    }
+
+    @Override
+    public List<PeriodTimeValue> getValues(String meteringPointCode, String parameterCode, Byte startHour, Byte endHour, CalcContext context) {
+        return getValues(meteringPointCode, parameterCode, context)
+            .stream()
             .filter(t -> t.getMeteringDate().getHour()>=startHour && t.getMeteringDate().getHour()<=endHour)
-            .map(PeriodTimeValue::toResult)
             .collect(toList());
     }
 
     private List<PeriodTimeValue> findValues(MeteringPoint meteringPoint, Parameter parameter, CalcContext context) {
-        LocalDateTime startDate = context.getStartDate().atStartOfDay();
+        LocalDateTime startDate = context.getHeader()
+            .getStartDate()
+            .atStartOfDay();
 
-        LocalDateTime endDate = context.getEndDate()
+        LocalDateTime endDate = context.getHeader()
+            .getEndDate()
             .atStartOfDay()
             .plusDays(1)
             .minusHours(1);

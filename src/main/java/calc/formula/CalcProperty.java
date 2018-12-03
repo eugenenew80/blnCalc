@@ -12,16 +12,19 @@ import lombok.Setter;
 @Builder
 public class CalcProperty {
     @Builder.Default
-    private DeterminingMethodEnum determiningMethod = DeterminingMethodEnum.MPV;
+    private final DeterminingMethodEnum determiningMethod = DeterminingMethodEnum.MPV;
 
     @Builder.Default
-    private ContextType contextType = ContextType.DEFAULT;
+    private final ContextType contextType = ContextType.DEFAULT;
 
     @Builder.Default
-    private GridTypeEnum gridType = GridTypeEnum.OWN;
+    private final GridTypeEnum gridType = GridTypeEnum.OWN;
 
     @Builder.Default
-    private ParamTypeEnum paramType = ParamTypeEnum.PT;
+    private final ParamTypeEnum paramType = ParamTypeEnum.PT;
 
-    private ElectricityProducerGroup electricityGroup;
+    @Builder.Default
+    private final ProcessOrder processOrder = ProcessOrder.CALC_READ;
+
+    private final ElectricityProducerGroup electricityGroup;
 }

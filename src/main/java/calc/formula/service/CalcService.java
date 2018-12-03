@@ -8,9 +8,11 @@ import calc.formula.CalcProperty;
 import calc.formula.CalcResult;
 
 public interface CalcService {
-    CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, CalcContext context) throws Exception;
-    CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) throws Exception;
+    CalcResult calcValue(MeteringPoint point, Parameter param, CalcContext context) throws Exception;
+    CalcResult calcValue(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) throws Exception;
 
-    CalcResult calcMeteringPoint(Formula formula, CalcContext context) throws Exception;
-    CalcResult calcMeteringPoint(Formula formula, CalcContext context, CalcProperty property) throws Exception;
+    CalcResult calcValue(Formula formula, CalcContext context) throws Exception;
+    CalcResult calcValue(Formula formula, CalcContext context, CalcProperty property) throws Exception;
+
+    CalcResult readValue(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property);
 }

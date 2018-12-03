@@ -4,10 +4,13 @@ import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.LangEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.entity.calc.svr.*;
-import calc.formula.CalcContext;
-import calc.formula.ContextType;
-import calc.formula.expression.impl.PeriodTimeValueExpression;
+import calc.formula.*;
+import calc.formula.exception.CycleDetectionException;
+import calc.formula.service.CalcService;
+import calc.formula.service.MessageService;
+import calc.formula.service.ParamService;
 import calc.formula.service.PeriodTimeValueService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -16,21 +19,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.*;
-
+import static calc.util.Util.buildMsgParams;
+import static calc.util.Util.round;
 import static java.util.Optional.*;
+import static java.util.stream.Collectors.groupingBy;
 
 @SuppressWarnings("ALL")
 @Service
 @RequiredArgsConstructor
 public class SvrService {
     private static final Logger logger = LoggerFactory.getLogger(SvrService.class);
+    private final CalcService calcService;
+    private final PeriodTimeValueService periodTimeValueService;
+    private final ParamService paramService;
+    private final MessageService messageService;
     private final SvrHeaderRepo svrHeaderRepo;
     private final SvrLineRepo svrLineRepo;
     private final MeteringPointSettingRepo meteringPointSettingRepo;
-    private final PeriodTimeValueService periodTimeValueService;
     private final SvrNoteRepo svrNoteRepo;
     private final MeteringPointSettingNoteRepo mpsRepo;
     private static final String docCode = "SVR";
@@ -39,101 +46,136 @@ public class SvrService {
         try {
             logger.info("Service value reconcilation for header " + header.getId() + " started");
             header = svrHeaderRepo.findOne(header.getId());
-            if (header.getStatus() == BatchStatusEnum.E)
+            if (header.getStatus() != BatchStatusEnum.W)
                 return false;
+
+            if (header.getDataType() == null)
+                header.setDataType(header.getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
 
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .headerId(header.getId())
-                .periodType(header.getPeriodType())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
+                .header(header)
+                .useDataTypePriority(true)
+                .traceEnabled(true)
                 .defContextType(ContextType.DEFAULT)
-                .values(new HashMap<>())
                 .build();
 
-            List<MeteringPointSetting> lines = meteringPointSettingRepo.findAllByContractIdAndDate(
-                header.getContract().getId(),
-                header.getStartDate(),
-                header.getEndDate()
-            );
-
-            List<SvrLine> resultLines = new ArrayList<>();
-            for (MeteringPointSetting line : lines) {
-                if (line.getOrganization()!=null && !line.getOrganization().equals(header.getOrganization()))
-                    continue;
-
-                MeteringPoint meteringPoint = line.getMeteringPoint();
-                if (meteringPoint == null) continue;
-
-                PeriodTimeValueExpression ap = PeriodTimeValueExpression.builder()
-                    .meteringPointCode(meteringPoint.getCode())
-                    .parameterCode("A+")
-                    .periodType(context.getPeriodType())
-                    .rate(1d)
-                    .startHour((byte) 0)
-                    .endHour((byte) 23)
-                    .service(periodTimeValueService)
-                    .context(context)
-                    .build();
-
-                PeriodTimeValueExpression am = PeriodTimeValueExpression.builder()
-                    .meteringPointCode(meteringPoint.getCode())
-                    .parameterCode("A-")
-                    .periodType(context.getPeriodType())
-                    .rate(1d)
-                    .startHour((byte) 0)
-                    .endHour((byte) 23)
-                    .service(periodTimeValueService)
-                    .context(context)
-                    .build();
-
-                Double val = Math.abs(ofNullable(ap.doubleValue()).orElse(0d) - ofNullable(am.doubleValue()).orElse(0d));
-
-                SvrLine resultLine = new SvrLine();
-                resultLine.setHeader(header);
-                resultLine.setMeteringPoint(line.getMeteringPoint());
-                resultLine.setTypeCode(line.getTypeCode());
-                resultLine.setVal(val);
-                resultLine.setOrganization(header.getOrganization());
-
-                if (resultLine.getTranslates() == null)
-                    resultLine.setTranslates(new ArrayList<>());
-
-                for (MeteringPointSettingTranslate lineTranslate : line.getTranslates()) {
-                    SvrLineTranslate resultLineTranslate = new SvrLineTranslate();
-                    resultLineTranslate.setLang(lineTranslate.getLang());
-                    resultLineTranslate.setLine(resultLine);
-                    resultLineTranslate.setName(lineTranslate.getName());
-                    resultLine.getTranslates().add(resultLineTranslate);
-                }
-
-                resultLines.add(resultLine);
-                saveLines(resultLines);
-            }
-
+            DataTypeEnum dataType = calcLines(header, context);
             copyNotes(header);
+
+            header.setDataType(dataType);
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
-            header.setDataType(DataTypeEnum.OPER);
             updateStatus(header, BatchStatusEnum.C);
 
-            logger.info("Metering reading for header " + header.getId() + " completed");
+            logger.info("Service value reconcilation for header " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             updateStatus(header, BatchStatusEnum.E);
-            logger.error("Metering reading for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
+            logger.error("Service value reconcilation for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private DataTypeEnum calcLines(SvrHeader header, CalcContext context) {
+        List<MeteringPointSetting> lines = meteringPointSettingRepo.findAllByContractIdAndDate(
+            header.getContract().getId(),
+            header.getStartDate(),
+            header.getEndDate()
+        );
+
+        List<SvrLine> resultLines = new ArrayList<>();
+        for (MeteringPointSetting line : lines) {
+            if (line.getOrganization()!=null && !line.getOrganization().equals(header.getOrganization()))
+                continue;
+
+            MeteringPoint meteringPoint = line.getMeteringPoint();
+            if (meteringPoint == null)
+                continue;
+
+            Parameter param = ofNullable(line.getParam()).orElse(paramService.getValues().get("AB"));
+            if (param == null)
+                continue;
+
+            Map<String, String> msgParams = buildMsgParams(meteringPoint);
+
+            CalcProperty property = CalcProperty.builder()
+                .processOrder(ProcessOrder.READ_CALC)
+                .build();
+
+            Double val = null;
+            DataTypeEnum dataType = null;
+            try {
+                CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
+                val = result != null ? result.getDoubleValue() : null;
+                val = round(val, param);
+
+                List<CalcTrace> traces = context.getTraces().get(meteringPoint.getCode());
+                dataType = traces != null && !traces.isEmpty()
+                    ? traces.get(0).getDataType()
+                    : null;
+            }
+            catch (CycleDetectionException e) {
+                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
+                e.printStackTrace();
+            }
+            catch (Exception e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                e.printStackTrace();
+            }
+
+            if (val != null)
+                val = Math.abs(val);
+
+            SvrLine resultLine = new SvrLine();
+            resultLine.setHeader(header);
+            resultLine.setMeteringPoint(meteringPoint);
+            resultLine.setParam(param);
+            resultLine.setTypeCode(line.getTypeCode());
+            resultLine.setVal(val);
+            resultLine.setDataType(dataType);
+            resultLine.setOrganization(header.getOrganization());
+            copyTranslates(line, resultLine);
+            resultLines.add(resultLine);
+        }
+        saveLines(resultLines);
+
+        return getDataType(resultLines);
+    }
+
+    private DataTypeEnum getDataType(List<SvrLine> resultLines) {
+        Map<DataTypeEnum, List<SvrLine>> dataTypes = resultLines.stream()
+            .filter(t -> t.getDataType() != null)
+            .filter(t -> t.getVal() != null)
+            .collect(groupingBy(SvrLine::getDataType));
+
+        if (dataTypes.containsKey(DataTypeEnum.OPER))
+            return DataTypeEnum.OPER;
+        else if (dataTypes.containsKey(DataTypeEnum.FACT))
+            return DataTypeEnum.FACT;
+        else if (dataTypes.containsKey(DataTypeEnum.FINAL))
+            return DataTypeEnum.FINAL;
+        else
+            return null;
+    }
+
+    private void copyTranslates(MeteringPointSetting line, SvrLine resultLine) {
+        if (resultLine.getTranslates() == null)
+            resultLine.setTranslates(new ArrayList<>());
+
+        for (MeteringPointSettingTranslate lineTranslate : line.getTranslates()) {
+            SvrLineTranslate resultLineTranslate = new SvrLineTranslate();
+            resultLineTranslate.setLang(lineTranslate.getLang());
+            resultLineTranslate.setLine(resultLine);
+            resultLineTranslate.setName(lineTranslate.getName());
+            resultLine.getTranslates().add(resultLineTranslate);
         }
     }
 
@@ -162,14 +204,13 @@ public class SvrService {
         svrNoteRepo.flush();
     }
 
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveLines(List<SvrLine> lines) {
+    private void saveLines(List<SvrLine> lines) {
         svrLineRepo.save(lines);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteLines(SvrHeader header) {
+    private void deleteLines(SvrHeader header) {
         List<SvrLine> lines = svrLineRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             svrLineRepo.delete(lines.get(i));
@@ -182,7 +223,7 @@ public class SvrService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void updateStatus(SvrHeader header, BatchStatusEnum status) {
+    private void updateStatus(SvrHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         svrHeaderRepo.save(header);
     }

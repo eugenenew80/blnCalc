@@ -1,29 +1,48 @@
 package calc.formula.expression.impl;
 
+import calc.entity.calc.PeriodTimeValue;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
+import calc.formula.CalcTrace;
+import calc.formula.ContextType;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import java.util.*;
 import java.util.stream.Stream;
-import static java.util.stream.Collectors.toList;
+import static java.util.Optional.*;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PeriodTimeValueExpression implements DoubleExpression {
+
+    @NonNull
     private final String meteringPointCode;
+
+    @NonNull
     private final String parameterCode;
-    private final Double rate;
-    private final PeriodTypeEnum periodType;
-    private final Byte startHour;
-    private final Byte endHour;
+
+    @NonNull
     private final PeriodTimeValueService service;
+
+    @NonNull
     private final CalcContext context;
+
+    @Builder.Default
+    private final Double rate = 1d;
+
+    @Builder.Default
+    private final Byte startHour = 0;
+
+    @Builder.Default
+    private final Byte endHour = 23;
 
     @Override
     public DoubleExpression doubleExpression() { return this; }
@@ -47,18 +66,43 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        List<CalcResult> list = service.getValues(meteringPointCode, parameterCode, startHour, endHour, context)
+        Stream<PeriodTimeValue> stream = service.getValues(meteringPointCode, parameterCode, context)
             .stream()
-            .filter(t -> t.getPeriodType() == periodType)
-            .collect(toList());
+            .filter(t -> t.getPeriodType() == context.getHeader().getPeriodType())
+            .filter(t -> t.getDataType() != null);
 
-        if (periodType == PeriodTypeEnum.H)
+        Map<DataTypeEnum, List<CalcResult>> map = stream
+            .map(PeriodTimeValue::toResult)
+            .collect(groupingBy(CalcResult::getDataType));
+
+        DataTypeEnum dataType = getDataType(map);
+
+        List<CalcResult> list = dataType !=null ? map.get(dataType) : null;
+        if (list == null || list.size() == 0)
+            return new Double[0];
+
+        if (context.isTraceEnabled()) {
+            List<CalcTrace> traces = context.getTraces().getOrDefault(meteringPointCode, new ArrayList<>());
+
+            CalcTrace trace = CalcTrace.builder()
+                .meteringPointCode(meteringPointCode)
+                .parameterCode(parameterCode)
+                .dataType(dataType)
+                .dataTypeCount(map.size())
+                .contextType(ContextType.DEFAULT)
+                .build();
+
+            traces.add(trace);
+            context.getTraces().putIfAbsent(meteringPointCode, traces);
+        }
+
+        if (context.getHeader().getPeriodType() == PeriodTypeEnum.H)
             return getByHours(list);
 
         Double doubleValue = list.stream()
             .map(t -> t.getDoubleValue())
             .filter(t -> t != null)
-            .reduce((t1, t2) -> (Optional.ofNullable(t1).orElse(0d) + Optional.ofNullable(t2).orElse(0d)) * Optional.ofNullable(rate).orElse(1d))
+            .reduce(this::sum)
             .orElse(null);
 
         return new Double[] {doubleValue};
@@ -103,5 +147,33 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         else result = sum;
 
         return result;
+    }
+
+    private Double sum(Double t1, Double t2) {
+        return (ofNullable(t1).orElse(0d) + ofNullable(t2).orElse(0d)) * ofNullable(rate).orElse(1d);
+    }
+
+    private DataTypeEnum getDataType(Map<DataTypeEnum, List<CalcResult>> map) {
+        if (map == null || map.size() ==0)
+            return null;
+
+        List<DataTypeEnum> dataTypes = Arrays.asList(DataTypeEnum.FINAL, DataTypeEnum.FACT, DataTypeEnum.OPER);
+
+        if (context.isUseDataTypePriority()) {
+            if (context.getHeader().getDataType() == DataTypeEnum.FINAL)
+                dataTypes = Arrays.asList(DataTypeEnum.FINAL);
+
+            if (context.getHeader().getDataType() == DataTypeEnum.FACT)
+                dataTypes = Arrays.asList(DataTypeEnum.FACT, DataTypeEnum.FINAL);
+
+            if (context.getHeader().getDataType() == DataTypeEnum.OPER)
+                dataTypes = Arrays.asList(DataTypeEnum.OPER, DataTypeEnum.FACT, DataTypeEnum.FINAL);
+        }
+
+        for (DataTypeEnum dataType : dataTypes)
+            if (map.containsKey(dataType))
+                return dataType;
+
+        return null;
     }
 }

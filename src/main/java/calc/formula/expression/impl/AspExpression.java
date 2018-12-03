@@ -39,7 +39,7 @@ public class AspExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
-        List<AspResultLine> list = service.getValues(context.getHeaderId(), meteringPointCode);
+        List<AspResultLine> list = service.getValues(context.getHeader().getId(), meteringPointCode);
 
         Double value = list.stream()
             .filter(t -> t.getParam() != null)

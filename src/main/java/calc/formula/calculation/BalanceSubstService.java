@@ -4,6 +4,7 @@ import calc.entity.calc.Parameter;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.service.MessageService;
 import calc.formula.service.ParamService;
 import calc.repo.calc.BalanceSubstResultHeaderRepo;
@@ -44,6 +45,9 @@ public class BalanceSubstService {
 
         if (header.getStatus() != BatchStatusEnum.W)
             return;
+
+        if (header.getDataType() == null)
+            header.setDataType(header.getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
 
         try {
             updateStatus(header, BatchStatusEnum.P);

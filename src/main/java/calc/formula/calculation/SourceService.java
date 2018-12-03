@@ -39,18 +39,15 @@ public class SourceService {
     public boolean calc(Long headerId) {
         logger.info("Energy source balance for header " + headerId + " started");
         SourceResultHeader header = sourceResultHeaderRepo.findOne(headerId);
-        if (header.getStatus() == BatchStatusEnum.E)
+        if (header.getStatus() != BatchStatusEnum.W)
             return false;
+
+        if (header.getDataType() == null)
+            header.setDataType(header.getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
 
         CalcContext context = CalcContext.builder()
             .lang(LangEnum.RU)
-            .docCode(docCode)
-            .headerId(header.getId())
-            .periodType(header.getPeriodType())
-            .startDate(header.getStartDate())
-            .endDate(header.getEndDate())
-            .orgId(header.getOrganization().getId())
-            .dataType(header.getDataType())
+            .header(header)
             .build();
 
         try {
@@ -58,7 +55,7 @@ public class SourceService {
             deleteLines(header);
             deleteMessages(header);
 
-            CalcResult result = calcService.calcMeteringPoint(header.getFormula(), context);
+            CalcResult result = calcService.calcValue(header.getFormula(), context);
             Double value = result !=null ? result.getDoubleValue() : null;
             value = round(value, 0);
             header.setDeliveryVal(value);
@@ -121,7 +118,7 @@ public class SourceService {
 
             Double val;
             try {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+                CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 val = result != null ? result.getDoubleValue() : null;
             }
             catch (CycleDetectionException e) {
@@ -176,7 +173,7 @@ public class SourceService {
                     .gridType(GridTypeEnum.OWN)
                     .build();
 
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
+                CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                 ownVal = result != null ? result.getDoubleValue() : null;
             }
             catch (CycleDetectionException e) {
@@ -196,7 +193,7 @@ public class SourceService {
                     .gridType(GridTypeEnum.OTHER)
                     .build();
 
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
+                CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                 otherVal = result != null ? result.getDoubleValue() : null;
             }
             catch (CycleDetectionException e) {
@@ -216,7 +213,7 @@ public class SourceService {
                     .gridType(GridTypeEnum.TOTAL)
                     .build();
 
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context, property);
+                CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                 totalVal = result != null ? result.getDoubleValue() : null;
             }
             catch (CycleDetectionException e) {

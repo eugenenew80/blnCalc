@@ -1,6 +1,6 @@
 package calc.entity.calc.svr;
 
-import calc.entity.calc.ContractKeg;
+import calc.entity.calc.Contract;
 import calc.entity.calc.Organization;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +21,7 @@ public class MeteringPointSettingNote {
 
     @ManyToOne
     @JoinColumn(name = "contract_id")
-    private ContractKeg contract;
+    private Contract contract;
 
     @ManyToOne
     @JoinColumn(name = "org_id")

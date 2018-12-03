@@ -7,6 +7,8 @@ import calc.entity.calc.inter.InterResultHeader;
 import calc.entity.calc.loss.LossFactResultHeader;
 import calc.entity.calc.reg.RegResultHeader;
 import calc.entity.calc.seg.SegResultHeader;
+import calc.entity.calc.svr.SvrHeader;
+
 import java.util.Map;
 
 public interface MessageService {
@@ -32,4 +34,7 @@ public interface MessageService {
 
     void deleteMessages(SourceResultHeader header);
     void addMessage(SourceResultHeader header, Long lineNum, String docCode, String  errCode, Map<String, String> params);
+
+    void deleteMessages(SvrHeader header);
+    void addMessage(SvrHeader header, Long lineNum, String docCode, String  errCode, Map<String, String> params);
 }

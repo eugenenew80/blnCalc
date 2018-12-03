@@ -44,17 +44,8 @@ public class BalanceSubstTransformerService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .headerId(header.getId())
-                .periodType(header.getPeriodType())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
-                .energyObjectType("SUBSTATION")
-                .energyObjectId(header.getSubstation().getId())
+                .header(header)
                 .defContextType(ContextType.MR)
-                .values(new HashMap<>())
-                .transformerValues(new HashMap<>())
                 .build();
 
             List<PowerTransformerValue> lines = calcLines(header, context);
@@ -401,7 +392,7 @@ public class BalanceSubstTransformerService {
         if (meteringPoint == null)
             return null;
 
-        CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+        CalcResult result = calcService.calcValue(meteringPoint, param, context);
         Double value = result!=null ? result.getDoubleValue() : null;
         if (context.getException() != null)
             throw context.getException();

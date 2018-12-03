@@ -1,7 +1,6 @@
 package calc.formula.service.impl;
 
 import calc.entity.calc.MeterHistory;
-import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.entity.calc.AtTimeValue;
 import calc.formula.service.AtTimeValueService;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -24,27 +22,16 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
     private final MeterHistoryRepo meterHistoryRepo;
 
     @Override
-    public List<CalcResult> getValue(String meteringPointCode, String parameterCode, String per, CalcContext context) {
-        if (context.getValues().containsKey(meteringPointCode)) {
-            List<CalcResult> list = context.getValues().get(meteringPointCode)
-                .stream()
-                .filter(t -> t.getParamType().equals("AT"))
-                .filter(t -> t.getParam().getCode().equals(parameterCode))
-                .collect(toList());
-
-            if (!list.isEmpty()) return list;
-        }
-
+    public List<AtTimeValue> getValue(String meteringPointCode, String parameterCode, String per, CalcContext context) {
         return findValues(meteringPointCode, parameterCode, per, context)
             .stream()
-            .map(AtTimeValue::toResult)
             .collect(toList());
     }
 
     private List<AtTimeValue> findValues(String meteringPointCode, String paramCode, String per, CalcContext context) {
         LocalDateTime date = per.equals("end")
-            ? context.getEndDate().atStartOfDay().plusDays(1)
-            : context.getStartDate().atStartOfDay();
+            ? context.getHeader().getEndDate().atStartOfDay().plusDays(1)
+            : context.getHeader().getStartDate().atStartOfDay();
 
         List<AtTimeValue> values = atTimeValueRepo.findByParam(meteringPointCode, paramCode, date);
         Double factor = getFactor(meteringPointCode, per, context);
@@ -58,8 +45,8 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
 
     private Double getFactor(String meteringPointCode, String per, CalcContext context) {
         LocalDateTime date = per.equals("end")
-            ? context.getEndDate().atStartOfDay().plusDays(1)
-            : context.getStartDate().atStartOfDay();
+            ? context.getHeader().getEndDate().atStartOfDay().plusDays(1)
+            : context.getHeader().getStartDate().atStartOfDay();
 
         List<MeterHistory> meterHistory = meterHistoryRepo.findAllByMeteringPoint(meteringPointCode, date);
         if (meterHistory.size() > 1)

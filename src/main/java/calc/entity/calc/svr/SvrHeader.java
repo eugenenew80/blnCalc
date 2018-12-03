@@ -1,7 +1,8 @@
 package calc.entity.calc.svr;
 
 import calc.converter.jpa.BooleanToIntConverter;
-import calc.entity.calc.ContractKeg;
+import calc.entity.DocHeader;
+import calc.entity.calc.Contract;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
@@ -12,19 +13,18 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_service_values_reconciliations")
-public class SvrHeader {
+public class SvrHeader  implements DocHeader {
     @Id
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "contract_id")
-    private ContractKeg contract;
+    private Contract contract;
 
     @ManyToOne
     @JoinColumn(name = "org_id")

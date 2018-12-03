@@ -1,10 +1,7 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
-import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.PointTypeEnum;
-import calc.entity.calc.enums.TreatmentTypeEnum;
+import calc.entity.calc.enums.*;
 import calc.entity.calc.seg.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
@@ -40,17 +37,15 @@ public class SegService {
     public boolean calc(Long headerId) {
         logger.info("Metering reading for header " + headerId + " started");
         SegResultHeader header = segResultHeaderRepo.findOne(headerId);
-        if (header.getStatus() == BatchStatusEnum.E)
+        if (header.getStatus() != BatchStatusEnum.W)
             return false;
+
+        if (header.getDataType() == null)
+            header.setDataType(header.getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
 
         CalcContext context = CalcContext.builder()
             .lang(LangEnum.RU)
-            .docCode(docCode)
-            .headerId(header.getId())
-            .periodType(header.getPeriodType())
-            .startDate(header.getStartDate())
-            .endDate(header.getEndDate())
-            .orgId(header.getOrganization().getId())
+            .header(header)
             .defContextType(ContextType.SEG)
             .build();
 
@@ -130,7 +125,7 @@ public class SegService {
             resultLine.setIsInverse(line.getIsInverse());
 
             if (meteringPoint.getPointType() == PointTypeEnum.VMP && formula != null) {
-                CalcResult result = calcService.calcMeteringPoint(formula, context);
+                CalcResult result = calcService.calcValue(formula, context);
                 Double value = result != null ? result.getDoubleValue() : null;
                 if (value != null)
                     value = value * Optional.ofNullable(line.getRate()).orElse(1d);
@@ -167,7 +162,6 @@ public class SegService {
             PeriodTimeValueExpression expression = PeriodTimeValueExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
-                .periodType(context.getPeriodType())
                 .rate(Optional.ofNullable(line.getRate()).orElse(1d))
                 .startHour((byte) 0)
                 .endHour((byte) 23)

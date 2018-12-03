@@ -48,14 +48,7 @@ public class BalanceSubstMrService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
-                .energyObjectType("SUBSTATION")
-                .energyObjectId(header.getSubstation().getId())
                 .defContextType(ContextType.DEFAULT)
-                .values(new HashMap<>())
                 .build();
 
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();

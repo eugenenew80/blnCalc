@@ -1,5 +1,6 @@
 package calc.entity.calc;
 
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
 import jdk.nashorn.internal.ir.annotations.Immutable;
@@ -57,6 +58,10 @@ public class PeriodTimeValue  {
 	@Column(name = "source_code")
 	private String sourceCode;
 
+	@Column(name="data_type")
+	@Enumerated(EnumType.STRING)
+	private DataTypeEnum dataType;
+
 	public CalcResult toResult() {
 		CalcResult result = new CalcResult();
 		result.setParamType("PT");
@@ -67,6 +72,11 @@ public class PeriodTimeValue  {
 		result.setUnit(getUnit());
 		result.setDoubleValue(getVal());
 		result.setSourceType(getSourceType());
+		result.setDataType(getDataType());
+
+		if (result.getDataType() == null)
+			result.setDataType(getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
+
 		return result;
 	}
 }

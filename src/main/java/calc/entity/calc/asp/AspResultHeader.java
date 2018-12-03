@@ -1,6 +1,7 @@
 package calc.entity.calc.asp;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.DocHeader;
 import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_asp1_result_headers")
-public class AspResultHeader {
+public class AspResultHeader implements DocHeader {
 
     @Id
     private Long id;

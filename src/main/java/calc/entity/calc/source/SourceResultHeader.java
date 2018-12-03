@@ -1,6 +1,7 @@
 package calc.entity.calc.source;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.DocHeader;
 import calc.entity.calc.*;
 import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.BatchStatusEnum;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_balance_source_result_headers")
-public class SourceResultHeader {
+public class SourceResultHeader  implements DocHeader {
 
     @Id
     private Long id;

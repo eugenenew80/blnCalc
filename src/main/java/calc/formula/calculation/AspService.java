@@ -38,19 +38,16 @@ public class AspService {
     public boolean calc(Long headerId) {
         logger.info("Metering reading for header " + headerId + " started");
         AspResultHeader header = aspResultHeaderRepo.findOne(headerId);
-        if (header.getStatus() == BatchStatusEnum.E)
+        if (header.getStatus() != BatchStatusEnum.W)
             return false;
+
+        if (header.getDataType() == null)
+            header.setDataType(header.getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
 
         CalcContext context = CalcContext.builder()
             .lang(LangEnum.RU)
-            .docCode(docCode)
-            .headerId(header.getId())
-            .periodType(header.getPeriodType())
-            .startDate(header.getStartDate())
-            .endDate(header.getEndDate())
-            .orgId(header.getOrganization().getId())
+            .header(header)
             .defContextType(ContextType.ASP)
-            .values(new HashMap<>())
             .build();
 
         try {
@@ -107,7 +104,7 @@ public class AspService {
             if (meteringPoint.getPointType() == PointTypeEnum.VMP) {
                 Double value = null;
                 try {
-                    CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+                    CalcResult result = calcService.calcValue(meteringPoint, param, context);
                     value = result != null ? result.getDoubleValue() : null;
                     value = round(value, param);
                 }
@@ -172,7 +169,7 @@ public class AspService {
             if (meteringReadings.size() == 0) {
                 CalcResult result = null;
                 try {
-                    result = calcService.calcMeteringPoint(meteringPoint, param, context, CalcProperty.builder().build());
+                    result = calcService.calcValue(meteringPoint, param, context, CalcProperty.builder().build());
                 }
                 catch (CycleDetectionException e) {
                     messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
@@ -262,7 +259,7 @@ public class AspService {
 
             Double value = null;
             try {
-                CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+                CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 value = result != null ? result.getDoubleValue() : null;
                 value = round(value, param);
             }

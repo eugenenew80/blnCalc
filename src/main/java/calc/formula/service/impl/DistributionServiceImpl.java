@@ -20,10 +20,10 @@ public class DistributionServiceImpl implements DistributionService {
     @Override
     public List<DistrResultLine> getValues(String meteringPointCode, String parameterCode, CalcContext context) {
         List<DistrResultHeader> distributionList = distrResultHeaderRepo.findByOrg(
-            context.getOrgId(),
-            context.getDataType().name(),
-            context.getStartDate(),
-            context.getEndDate()
+            context.getHeader().getOrganization().getId(),
+            context.getHeader().getDataType().name(),
+            context.getHeader().getStartDate(),
+            context.getHeader().getEndDate()
         );
 
         return distributionList.stream()

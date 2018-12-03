@@ -2,9 +2,7 @@ package calc.formula.calculation;
 
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Parameter;
-import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
+import calc.entity.calc.enums.*;
 import calc.entity.calc.loss.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
@@ -52,19 +50,16 @@ public class LossFactService {
 
     public boolean calc(Long headerId) {
         LossFactResultHeader header = lossFactResultHeaderRepo.findOne(headerId);
-        if (header.getStatus() == BatchStatusEnum.E)
+        if (header.getStatus() != BatchStatusEnum.W)
             return false;
+
+        if (header.getDataType() == null)
+            header.setDataType(header.getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
 
         CalcContext context = CalcContext.builder()
             .lang(LangEnum.RU)
-            .docCode(docCode)
-            .headerId(header.getId())
-            .periodType(header.getPeriodType())
-            .startDate(header.getStartDate())
-            .endDate(header.getEndDate())
-            .orgId( header.getOrganization()!=null ? header.getOrganization().getId() : null)
+            .header(header)
             .defContextType(ContextType.DEFAULT)
-            .values(new HashMap<>())
             .build();
 
         logger.info("started, headerId: " + header.getId());
@@ -300,17 +295,13 @@ public class LossFactService {
         Double val = PeriodTimeValueExpression.builder()
             .meteringPointCode(meteringPoint.getCode())
             .parameterCode(param.getCode())
-            .rate(1d)
-            .startHour((byte) 0)
-            .endHour((byte) 23)
-            .periodType(context.getPeriodType())
             .context(context)
             .service(periodTimeValueService)
             .build()
             .doubleValue();
 
         if (ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+            CalcResult result = calcService.calcValue(meteringPoint, param, context);
             val = result !=null ? result.getDoubleValue() : null;
         }
 
