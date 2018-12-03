@@ -142,7 +142,7 @@ public class TaskExecutor {
         logger.info("Расчёт актов сверки объемов оказанных услуг, количество документов: " + headers.size());
         for (SvrResultHeader header : headers) {
             logger.info("Header " + header.getId() + " started");
-            svrService.calc(header);
+            svrService.calc(header.getId());
             logger.info("Header " + header.getId() + " completed");
         }
     }

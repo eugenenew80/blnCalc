@@ -7,7 +7,7 @@ import calc.entity.calc.source.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcProperty;
 import calc.formula.CalcResult;
-import calc.formula.exception.CycleDetectionException;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
 import calc.repo.calc.SourceResultHeaderRepo;
@@ -116,19 +116,14 @@ public class SourceService {
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = line.getParam();
 
-            Double val;
+            Double val = null;
             try {
                 CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 val = result != null ? result.getDoubleValue() : null;
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                continue;
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                continue;
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
             SourceResultLine1 resultLine = new SourceResultLine1();
@@ -166,7 +161,7 @@ public class SourceService {
             }
 
 
-            Double ownVal;
+            Double ownVal = null;
             try {
                 CalcProperty property = CalcProperty.builder()
                     .determiningMethod(DeterminingMethodEnum.RDV)
@@ -176,17 +171,12 @@ public class SourceService {
                 CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                 ownVal = result != null ? result.getDoubleValue() : null;
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                continue;
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                continue;
+                messageService.addMessage(header, line.getLineNum(), docCode, e.getErrCode(), msgParams);
             }
 
-            Double otherVal;
+            Double otherVal = null;
             try {
                 CalcProperty property = CalcProperty.builder()
                     .determiningMethod(DeterminingMethodEnum.RDV)
@@ -196,17 +186,12 @@ public class SourceService {
                 CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                 otherVal = result != null ? result.getDoubleValue() : null;
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                continue;
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                continue;
+                messageService.addMessage(header, line.getLineNum(), docCode, e.getErrCode(), msgParams);
             }
 
-            Double totalVal;
+            Double totalVal = null;
             try {
                 CalcProperty property = CalcProperty.builder()
                     .determiningMethod(DeterminingMethodEnum.RDV)
@@ -216,14 +201,9 @@ public class SourceService {
                 CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                 totalVal = result != null ? result.getDoubleValue() : null;
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                continue;
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                continue;
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
             SourceResultLine2 resultLine = new SourceResultLine2();

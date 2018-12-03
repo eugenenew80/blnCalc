@@ -1,5 +1,7 @@
 package calc.entity.calc.svr;
 
+import calc.entity.DataTypeSupport;
+import calc.entity.TemplateLine;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
 import calc.entity.calc.Parameter;
@@ -13,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_service_values_reconciliations_l")
-public class SvrResultLine {
+public class SvrResultLine implements DataTypeSupport {
 
     @Id
     @SequenceGenerator(name="calc_service_values_reconciliations_l_s", sequenceName = "calc_service_values_reconciliations_l_s", allocationSize=1)

@@ -7,7 +7,7 @@ import calc.entity.calc.reg.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcProperty;
 import calc.formula.CalcResult;
-import calc.formula.exception.CycleDetectionException;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
 import calc.formula.service.ParamService;
@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static calc.util.Util.buildMsgParams;
+import static java.util.Optional.*;
 
 @SuppressWarnings({"Duplicates", "ImplicitSubclassInspection"})
 @Service
@@ -92,36 +93,26 @@ public class RegService {
 
             Map<String, String> msgParams = buildMsgParams(line);
 
-            Double ap;
+            Double ap = null;
             try {
                 Parameter param = line.getIsInverse() ? paramService.getValues().get("A-") : paramService.getValues().get("A+");
                 CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 ap = result != null ? result.getDoubleValue() : null;
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                continue;
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                continue;
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
-            Double am;
+            Double am = null;
             try {
                 Parameter param = line.getIsInverse() ?  paramService.getValues().get("A+") : paramService.getValues().get("A-");
                 CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 am = result != null ? result.getDoubleValue() : null;
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                continue;
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                continue;
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
             RegResultLine1 resultLine = new RegResultLine1();
@@ -131,7 +122,7 @@ public class RegService {
             resultLine.setIsInverse(line.getIsInverse());
             resultLine.setAp(ap);
             resultLine.setAm(am);
-            resultLine.setBalance(Optional.of(ap).orElse(0d) - Optional.of(am).orElse(0d));
+            resultLine.setBalance(ofNullable(ap).orElse(0d) - ofNullable(am).orElse(0d));
             resultLine.setCreateBy(header.getCreateBy());
             resultLine.setCreateDate(header.getCreateDate());
 
@@ -154,19 +145,14 @@ public class RegService {
 
             Map<String, String> msgParams = buildMsgParams(line);
 
-            Double val;
+            Double val = null;
             try {
                 CalcResult result = calcService.calcValue(meteringPoint, inverseParam(param, line.getIsInverse()), context);
                 val = result != null ? result.getDoubleValue() : null;
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                continue;
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                continue;
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
             RegResultLine2 resultLine = new RegResultLine2();
@@ -212,7 +198,7 @@ public class RegService {
             resultLine.setCreateDate(header.getCreateDate());
 
             for (RegLine3Det detail : line.getDetails()) {
-                Double ownVal;
+                Double ownVal = null;
                 try {
                     CalcProperty property = CalcProperty.builder()
                         .determiningMethod(DeterminingMethodEnum.RDV)
@@ -223,17 +209,12 @@ public class RegService {
                     CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                     ownVal = result != null ? result.getDoubleValue() : null;
                 }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                    continue;
-                }
-                catch (Exception e) {
+                catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                    continue;
+                    messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
                 }
 
-                Double otherVal;
+                Double otherVal = null;
                 try {
                     CalcProperty property = CalcProperty.builder()
                         .determiningMethod(DeterminingMethodEnum.RDV)
@@ -244,17 +225,12 @@ public class RegService {
                     CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                     otherVal = result != null ? result.getDoubleValue() : null;
                 }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                    continue;
-                }
-                catch (Exception e) {
+                catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                    continue;
+                    messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
                 }
 
-                Double totalVal;
+                Double totalVal = null;
                 try {
                     CalcProperty property = CalcProperty.builder()
                         .determiningMethod(DeterminingMethodEnum.RDV)
@@ -265,14 +241,9 @@ public class RegService {
                     CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                     totalVal = result != null ? result.getDoubleValue() : null;
                 }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                    continue;
-                }
-                catch (Exception e) {
+                catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                    continue;
+                    messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
                 }
 
                 RegResultLine3Det resultLineDet = new RegResultLine3Det();
@@ -306,18 +277,14 @@ public class RegService {
 
             Map<String, String> msgParams = buildMsgParams(line);
 
-            Double val;
+            Double val = null;
             try {
                 CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 val = result != null ? result.getDoubleValue() : null;
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                continue;
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
                 continue;
             }
 
@@ -336,7 +303,7 @@ public class RegService {
 
 
     private void copyTranslates1(RegLine1 line, RegResultLine1 resultLine) {
-        resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
+        resultLine.setTranslates(ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
         for (RegLine1Translate lineTranslate : line.getTranslates()) {
             RegResultLine1Translate resultLineTranslate = new RegResultLine1Translate();
             resultLineTranslate.setLang(lineTranslate.getLang());
@@ -351,7 +318,7 @@ public class RegService {
     }
 
     private void copyTranslates2(RegLine2 line, RegResultLine2 resultLine) {
-        resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
+        resultLine.setTranslates(ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
         for (RegLine2Translate lineTranslate : line.getTranslates()) {
             RegResultLine2Translate resultLineTranslate = new RegResultLine2Translate();
             resultLineTranslate.setLang(lineTranslate.getLang());
@@ -366,7 +333,7 @@ public class RegService {
     }
 
     private void copyTranslates3(RegLine3 line, RegResultLine3 resultLine) {
-        resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
+        resultLine.setTranslates(ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
         for (RegLine3Translate lineTranslate : line.getTranslates()) {
             RegResultLine3Translate resultLineTranslate = new RegResultLine3Translate();
             resultLineTranslate.setLang(lineTranslate.getLang());

@@ -43,10 +43,6 @@ public class XmlExpressionServiceImpl implements XmlExpressionService {
         throw new IllegalArgumentException("Invalid operation: " + node.getNodeName());
     }
 
-    @Override
-    public DoubleExpression parse(Formula formula, CalcContext context) throws Exception {
-        return parse(formula, null, context);
-    }
 
     @Override
     public DoubleExpression parse(Formula formula, String parameterCode, CalcContext context) throws Exception {

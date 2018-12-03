@@ -1,6 +1,6 @@
 package calc.formula;
 
-public enum ProcessOrder {
+public enum ProcessOrderEnum {
     CALC,
     READ,
     CALC_READ,

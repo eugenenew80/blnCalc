@@ -11,5 +11,5 @@ public class CalcTrace {
     private final String parameterCode;
     private final Integer dataTypeCount;
     private final DataTypeEnum dataType;
-    private final ContextType contextType;
+    private final ContextTypeEnum contextType;
 }

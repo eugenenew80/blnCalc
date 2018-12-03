@@ -6,7 +6,7 @@ import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.pe.ReactorValue;
 import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
-import calc.formula.ContextType;
+import calc.formula.ContextTypeEnum;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import calc.repo.calc.*;
@@ -39,7 +39,7 @@ public class BalanceSubstReactorService {
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
                 .header(header)
-                .defContextType(ContextType.MR)
+                .defContextType(ContextTypeEnum.MR)
                 .build();
 
             List<ReactorValue> reactorLines = calcLines(header, context);

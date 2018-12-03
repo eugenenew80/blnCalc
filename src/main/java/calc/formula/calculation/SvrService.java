@@ -4,14 +4,12 @@ import calc.entity.calc.*;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.entity.calc.svr.*;
 import calc.formula.*;
-import calc.formula.exception.CycleDetectionException;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
 import calc.formula.service.ParamService;
-import calc.formula.service.PeriodTimeValueService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -21,18 +19,15 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
-import static calc.util.Util.buildMsgParams;
-import static calc.util.Util.round;
+import static calc.util.Util.*;
 import static java.util.Optional.*;
-import static java.util.stream.Collectors.groupingBy;
 
-@SuppressWarnings("ALL")
+@SuppressWarnings("ImplicitSubclassInspection")
 @Service
 @RequiredArgsConstructor
 public class SvrService {
     private static final Logger logger = LoggerFactory.getLogger(SvrService.class);
     private final CalcService calcService;
-    private final PeriodTimeValueService periodTimeValueService;
     private final ParamService paramService;
     private final MessageService messageService;
     private final SvrHeaderRepo svrHeaderRepo;
@@ -42,48 +37,48 @@ public class SvrService {
     private final MeteringPointSettingNoteRepo mpsRepo;
     private static final String docCode = "SVR";
 
-    public boolean calc(SvrResultHeader header) {
+    public boolean calc(Long headerId) {
+        logger.info("Service value reconciliation for header " + headerId + " started");
+        SvrResultHeader header = svrHeaderRepo.findOne(headerId);
+        if (header.getStatus() != BatchStatusEnum.W)
+            return false;
+
+        CalcContext context = CalcContext.builder()
+            .lang(LangEnum.RU)
+            .header(header)
+            .traceEnabled(true)
+            .formulaBehaviour(FormulaBehaviourEnum.EXACTLY_ONE)
+            .defContextType(ContextTypeEnum.DEFAULT)
+            .build();
+
         try {
-            logger.info("Service value reconcilation for header " + header.getId() + " started");
-            header = svrHeaderRepo.findOne(header.getId());
-            if (header.getStatus() != BatchStatusEnum.W)
-                return false;
-
-            if (header.getDataType() == null)
-                header.setDataType(header.getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
-
+            header.setDataType(null);
             updateStatus(header, BatchStatusEnum.P);
             deleteLines(header);
-
-            CalcContext context = CalcContext.builder()
-                .lang(LangEnum.RU)
-                .header(header)
-                .useDataTypePriority(true)
-                .traceEnabled(true)
-                .defContextType(ContextType.DEFAULT)
-                .build();
-
-            DataTypeEnum dataType = calcLines(header, context);
+            calcLines(header, context);
             copyNotes(header);
+
+            List<SvrResultLine> resultLines = svrLineRepo.findAllByHeaderId(headerId);
+            DataTypeEnum dataType = getDocDataType(resultLines);
 
             header.setDataType(dataType);
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
             updateStatus(header, BatchStatusEnum.C);
 
-            logger.info("Service value reconcilation for header " + header.getId() + " completed");
+            logger.info("Service value reconciliation for header " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             updateStatus(header, BatchStatusEnum.E);
-            logger.error("Service value reconcilation for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
+            logger.error("Service value reconciliation for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    private DataTypeEnum calcLines(SvrResultHeader header, CalcContext context) {
+    private void calcLines(SvrResultHeader header, CalcContext context) {
         List<MeteringPointSetting> lines = meteringPointSettingRepo.findAllByContractIdAndDate(
             header.getContract().getId(),
             header.getStartDate(),
@@ -103,10 +98,10 @@ public class SvrService {
             if (param == null)
                 continue;
 
-            Map<String, String> msgParams = buildMsgParams(meteringPoint);
+            Map<String, String> msgParams = buildMsgParams(meteringPoint, param);
 
             CalcProperty property = CalcProperty.builder()
-                .processOrder(ProcessOrder.READ_CALC)
+                .processOrder(ProcessOrderEnum.READ_CALC)
                 .build();
 
             Double val = null;
@@ -115,19 +110,11 @@ public class SvrService {
                 CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                 val = result != null ? result.getDoubleValue() : null;
                 val = round(val, param);
-
-                List<CalcTrace> traces = context.getTraces().get(meteringPoint.getCode());
-                dataType = traces != null && !traces.isEmpty()
-                    ? traces.get(0).getDataType()
-                    : null;
+                dataType = getRowDataType(meteringPoint, context);
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                e.printStackTrace();
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
                 e.printStackTrace();
             }
 
@@ -146,24 +133,6 @@ public class SvrService {
             resultLines.add(resultLine);
         }
         saveLines(resultLines);
-
-        return getDataType(resultLines);
-    }
-
-    private DataTypeEnum getDataType(List<SvrResultLine> resultLines) {
-        Map<DataTypeEnum, List<SvrResultLine>> dataTypes = resultLines.stream()
-            .filter(t -> t.getDataType() != null)
-            .filter(t -> t.getVal() != null)
-            .collect(groupingBy(SvrResultLine::getDataType));
-
-        if (dataTypes.containsKey(DataTypeEnum.OPER))
-            return DataTypeEnum.OPER;
-        else if (dataTypes.containsKey(DataTypeEnum.FACT))
-            return DataTypeEnum.FACT;
-        else if (dataTypes.containsKey(DataTypeEnum.FINAL))
-            return DataTypeEnum.FINAL;
-        else
-            return null;
     }
 
     private void copyTranslates(MeteringPointSetting line, SvrResultLine resultLine) {

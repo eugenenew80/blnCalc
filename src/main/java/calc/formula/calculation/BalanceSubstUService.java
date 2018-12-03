@@ -7,8 +7,8 @@ import calc.entity.calc.bs.u.BalanceSubstULine;
 import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
-import calc.formula.ContextType;
-import calc.formula.exception.CycleDetectionException;
+import calc.formula.ContextTypeEnum;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
@@ -47,7 +47,7 @@ public class BalanceSubstUService {
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
                 .header(header)
-                .defContextType(ContextType.DEFAULT)
+                .defContextType(ContextTypeEnum.DEFAULT)
                 .build();
 
             Parameter parU = paramService.getValues().get("U");
@@ -62,12 +62,9 @@ public class BalanceSubstUService {
                 try {
                     val = getVal(meteringPoint, parU, context);
                 }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, uLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                }
-                catch (Exception e) {
+                catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, uLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    messageService.addMessage(header, uLine.getId(), docCode, e.getErrCode(), msgParams);
                 }
 
                 BalanceSubstResultULine resultLine = new BalanceSubstResultULine();
@@ -120,11 +117,12 @@ public class BalanceSubstUService {
             .build()
             .doubleValue();
 
-        if (Optional.ofNullable(val).orElse(0d) == 0d) {
+        if (ofNullable(val).orElse(0d) == 0d) {
             CalcResult result = calcService.calcValue(meteringPoint, param, context);
-            val = result!=null ? result.getDoubleValue() : null;
+            val = result != null ? result.getDoubleValue() : null;
         }
 
+        val = round(val, param);
         return ofNullable(val).orElse(0d);
     }
 }

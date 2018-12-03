@@ -9,7 +9,7 @@ import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.inter.InterResultHeader;
 import calc.entity.calc.inter.InterResultMrLine;
 import calc.formula.CalcContext;
-import calc.formula.ContextType;
+import calc.formula.ContextTypeEnum;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MrService;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +37,7 @@ public class InterMrService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .defContextType(ContextType.DEFAULT)
+                .defContextType(ContextTypeEnum.DEFAULT)
                 .build();
 
             List<MeteringPoint> points = header.getHeader().getLines()

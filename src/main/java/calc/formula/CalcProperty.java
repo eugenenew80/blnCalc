@@ -15,7 +15,7 @@ public class CalcProperty {
     private final DeterminingMethodEnum determiningMethod = DeterminingMethodEnum.MPV;
 
     @Builder.Default
-    private final ContextType contextType = ContextType.DEFAULT;
+    private final ContextTypeEnum contextType = ContextTypeEnum.DEFAULT;
 
     @Builder.Default
     private final GridTypeEnum gridType = GridTypeEnum.OWN;
@@ -24,7 +24,7 @@ public class CalcProperty {
     private final ParamTypeEnum paramType = ParamTypeEnum.PT;
 
     @Builder.Default
-    private final ProcessOrder processOrder = ProcessOrder.CALC_READ;
+    private final ProcessOrderEnum processOrder = ProcessOrderEnum.CALC_READ;
 
     private final ElectricityProducerGroup electricityGroup;
 }

@@ -6,7 +6,7 @@ import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.formula.CalcTrace;
-import calc.formula.ContextType;
+import calc.formula.ContextTypeEnum;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
@@ -15,6 +15,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import java.util.*;
 import java.util.stream.Stream;
+
+import static java.util.Collections.emptyList;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
@@ -89,7 +91,7 @@ public class PeriodTimeValueExpression implements DoubleExpression {
                 .parameterCode(parameterCode)
                 .dataType(dataType)
                 .dataTypeCount(map.size())
-                .contextType(ContextType.DEFAULT)
+                .contextType(ContextTypeEnum.DEFAULT)
                 .build();
 
             traces.add(trace);
@@ -160,14 +162,24 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         List<DataTypeEnum> dataTypes = Arrays.asList(DataTypeEnum.FINAL, DataTypeEnum.FACT, DataTypeEnum.OPER);
 
         if (context.isUseDataTypePriority()) {
-            if (context.getHeader().getDataType() == DataTypeEnum.FINAL)
-                dataTypes = Arrays.asList(DataTypeEnum.FINAL);
+            DataTypeEnum docDataType = context.getHeader().getDataType();
 
-            if (context.getHeader().getDataType() == DataTypeEnum.FACT)
-                dataTypes = Arrays.asList(DataTypeEnum.FACT, DataTypeEnum.FINAL);
+            switch (docDataType) {
+                case FINAL:
+                    dataTypes = Arrays.asList(DataTypeEnum.FINAL);
+                    break;
 
-            if (context.getHeader().getDataType() == DataTypeEnum.OPER)
-                dataTypes = Arrays.asList(DataTypeEnum.OPER, DataTypeEnum.FACT, DataTypeEnum.FINAL);
+                case FACT:
+                    dataTypes = Arrays.asList(DataTypeEnum.FACT, DataTypeEnum.FINAL);
+                    break;
+
+                case OPER:
+                    dataTypes = Arrays.asList(DataTypeEnum.OPER, DataTypeEnum.FACT, DataTypeEnum.FINAL);
+                    break;
+
+                default:
+                    dataTypes = emptyList();
+            }
         }
 
         for (DataTypeEnum dataType : dataTypes)

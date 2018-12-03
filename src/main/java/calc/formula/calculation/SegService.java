@@ -5,7 +5,7 @@ import calc.entity.calc.enums.*;
 import calc.entity.calc.seg.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
-import calc.formula.ContextType;
+import calc.formula.ContextTypeEnum;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.*;
 import calc.repo.calc.*;
@@ -46,7 +46,7 @@ public class SegService {
         CalcContext context = CalcContext.builder()
             .lang(LangEnum.RU)
             .header(header)
-            .defContextType(ContextType.SEG)
+            .defContextType(ContextTypeEnum.SEG)
             .build();
 
         try {

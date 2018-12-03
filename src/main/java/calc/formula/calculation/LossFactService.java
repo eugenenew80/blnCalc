@@ -6,8 +6,8 @@ import calc.entity.calc.enums.*;
 import calc.entity.calc.loss.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
-import calc.formula.ContextType;
-import calc.formula.exception.CycleDetectionException;
+import calc.formula.ContextTypeEnum;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.CalcService;
 import calc.formula.service.MessageService;
@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
 import static calc.util.Util.buildMsgParams;
+import static calc.util.Util.round;
 import static java.util.Optional.*;
 
 @SuppressWarnings({"Duplicates", "ImplicitSubclassInspection"})
@@ -59,7 +60,7 @@ public class LossFactService {
         CalcContext context = CalcContext.builder()
             .lang(LangEnum.RU)
             .header(header)
-            .defContextType(ContextType.DEFAULT)
+            .defContextType(ContextTypeEnum.DEFAULT)
             .build();
 
         logger.info("started, headerId: " + header.getId());
@@ -82,14 +83,10 @@ public class LossFactService {
                 Parameter param = inverseParam(mapParams.get("AB"), false);
                 r321 = getMrVal(meteringPoint, param, context);
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, null, docCode, "CYCLED_FORMULA", msgParams);
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, null, docCode, "ERROR_FORMULA", msgParams);
+                messageService.addMessage(header, null, docCode, e.getErrCode(), msgParams);
             }
-
 
             Stream<Pair<Double, Double>> aStream = Stream.concat(
                 sec1Lines.stream().map(t -> Pair.of(ofNullable(t.getAp()).orElse(0d), ofNullable(t.getAm()).orElse(0d))),
@@ -162,12 +159,9 @@ public class LossFactService {
                 Parameter param = inverseParam(mapParams.get("A+"), line.getIsInverse());
                 ap = getMrVal(meteringPoint, param, context);
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
             Double am = null;
@@ -175,12 +169,9 @@ public class LossFactService {
                 Parameter param = inverseParam(mapParams.get("A-"), line.getIsInverse());
                 am = getMrVal(meteringPoint, param, context);
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
             LossFactResultSec1Line resultLine = new LossFactResultSec1Line();
@@ -209,24 +200,18 @@ public class LossFactService {
                 Parameter param = inverseParam(mapParams.get("A+"), line.getIsInverse());
                 ap = getMrVal(meteringPoint, param, context);
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
             try {
                 Parameter param = inverseParam(mapParams.get("A-"), line.getIsInverse());
                 am = getMrVal(meteringPoint, param, context);
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
             LossFactResultSec2Line resultLine = new LossFactResultSec2Line();
@@ -291,7 +276,7 @@ public class LossFactService {
         return param;
     }
 
-    private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) throws Exception {
+    private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
         Double val = PeriodTimeValueExpression.builder()
             .meteringPointCode(meteringPoint.getCode())
             .parameterCode(param.getCode())
@@ -305,6 +290,7 @@ public class LossFactService {
             val = result !=null ? result.getDoubleValue() : null;
         }
 
+        val = round(val, param);
         return val;
     }
 }

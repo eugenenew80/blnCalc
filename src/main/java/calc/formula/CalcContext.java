@@ -3,8 +3,6 @@ package calc.formula;
 import calc.entity.DocHeader;
 import calc.entity.calc.enums.LangEnum;
 import lombok.*;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +21,16 @@ public class CalcContext {
     private boolean useDataTypePriority = false;
 
     @Builder.Default
+    private boolean nullPermissible = true;
+
+    @Builder.Default
     private boolean traceEnabled = false;
 
     @Builder.Default
-    private ContextType defContextType = ContextType.DEFAULT;
+    private ContextTypeEnum defContextType = ContextTypeEnum.DEFAULT;
+
+    @Builder.Default
+    private FormulaBehaviourEnum formulaBehaviour = FormulaBehaviourEnum.ANY;
 
     @Builder.Default
     private Map<String, Double> transformerValues = new HashMap<>();

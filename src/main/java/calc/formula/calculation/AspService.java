@@ -6,8 +6,8 @@ import calc.entity.calc.enums.*;
 import calc.formula.CalcContext;
 import calc.formula.CalcProperty;
 import calc.formula.CalcResult;
-import calc.formula.ContextType;
-import calc.formula.exception.CycleDetectionException;
+import calc.formula.ContextTypeEnum;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.service.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class AspService {
         CalcContext context = CalcContext.builder()
             .lang(LangEnum.RU)
             .header(header)
-            .defContextType(ContextType.ASP)
+            .defContextType(ContextTypeEnum.ASP)
             .build();
 
         try {
@@ -108,13 +108,9 @@ public class AspService {
                     value = result != null ? result.getDoubleValue() : null;
                     value = round(value, param);
                 }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, line.getLineNum(), docCode, "CYCLED_FORMULA", msgParams);
-                    e.printStackTrace();
-                }
-                catch (Exception e) {
+                catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, line.getLineNum(), docCode, "ERROR_FORMULA", msgParams);
+                    messageService.addMessage(header, line.getLineNum(), docCode, e.getErrCode(), msgParams);
                     e.printStackTrace();
                 }
 
@@ -167,19 +163,16 @@ public class AspService {
             }
 
             if (meteringReadings.size() == 0) {
-                CalcResult result = null;
+                Double val = null;
                 try {
-                    result = calcService.calcValue(meteringPoint, param, context, CalcProperty.builder().build());
+                    CalcResult result = calcService.calcValue(meteringPoint, param, context, CalcProperty.builder().build());
+                    val = result !=null ? result.getDoubleValue() : null;
+                    val = round(val, param);
                 }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                }
-                catch (Exception e) {
+                catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
                 }
-                Double val = result!=null ? result.getDoubleValue() : null;
-
 
                 AspResultLine resultLine = new AspResultLine();
                 resultLine.setHeader(header);
@@ -257,23 +250,19 @@ public class AspService {
             resultLine.setFormula(line.getFormula());
             resultLine.setTreatmentType(line.getTreatmentType());
 
-            Double value = null;
+            Double val = null;
             try {
                 CalcResult result = calcService.calcValue(meteringPoint, param, context);
-                value = result != null ? result.getDoubleValue() : null;
-                value = round(value, param);
+                val = result != null ? result.getDoubleValue() : null;
+                val = round(val, param);
             }
-            catch (CycleDetectionException e) {
-                messageService.addMessage(header, line.getLineNum(), docCode, "CYCLED_FORMULA", msgParams);
-                e.printStackTrace();
-            }
-            catch (Exception e) {
+            catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getLineNum(), docCode, "ERROR_FORMULA", msgParams);
+                messageService.addMessage(header, line.getLineNum(), docCode, e.getErrCode(), msgParams);
                 e.printStackTrace();
             }
 
-            resultLine.setVal(value);
+            resultLine.setVal(val);
             resultLine.setIsBold(line.getIsBold());
 
             copyTranslates(line, resultLine);

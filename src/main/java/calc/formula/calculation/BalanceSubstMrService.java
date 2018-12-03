@@ -5,7 +5,7 @@ import calc.entity.calc.bs.*;
 import calc.entity.calc.bs.mr.*;
 import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
-import calc.formula.ContextType;
+import calc.formula.ContextTypeEnum;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MrService;
@@ -48,7 +48,7 @@ public class BalanceSubstMrService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .defContextType(ContextType.DEFAULT)
+                .defContextType(ContextTypeEnum.DEFAULT)
                 .build();
 
             List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();

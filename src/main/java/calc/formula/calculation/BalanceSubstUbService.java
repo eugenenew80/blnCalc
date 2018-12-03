@@ -9,7 +9,7 @@ import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
-import calc.formula.ContextType;
+import calc.formula.ContextTypeEnum;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.expression.impl.UavgExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
@@ -65,7 +65,7 @@ public class BalanceSubstUbService {
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
                 .header(header)
-                .defContextType(ContextType.DEFAULT)
+                .defContextType(ContextTypeEnum.DEFAULT)
                 .build();
 
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());

@@ -6,8 +6,8 @@ import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
-import calc.formula.ContextType;
-import calc.formula.exception.CycleDetectionException;
+import calc.formula.ContextTypeEnum;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.expression.impl.MrExpression;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.*;
@@ -52,7 +52,7 @@ public class BalanceSubstLineService {
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
                 .header(header)
-                .defContextType(ContextType.MR)
+                .defContextType(ContextTypeEnum.MR)
                 .build();
 
             List<BalanceSubstResultLine> resultLines = new ArrayList<>();
@@ -66,18 +66,13 @@ public class BalanceSubstLineService {
                     param = inverseParam(param, line.getIsInverse());
 
                     Map<String, String> msgParams = buildMsgParams(meteringPoint);
-                    Double val;
+                    Double val = null;
                     try {
                         val = getMrVal(line, param, context);
                     }
-                    catch (CycleDetectionException e) {
-                        messageService.addMessage(header, line.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                        continue;
-                    }
-                    catch (Exception e) {
+                    catch (CalcServiceException e) {
                         msgParams.putIfAbsent("err", e.getMessage());
-                        messageService.addMessage(header, line.getId(), docCode, "ERROR_FORMULA", msgParams);
-                        continue;
+                        messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
                     }
 
                     BalanceSubstResultLine resultLine = new BalanceSubstResultLine();
