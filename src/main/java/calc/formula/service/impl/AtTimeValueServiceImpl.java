@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -50,13 +50,10 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
 
         List<MeterHistory> meterHistory = meterHistoryRepo.findAllByMeteringPoint(meteringPointCode, date);
         if (meterHistory.size() > 1)
-            throw new RuntimeException("Найдено больше одной запсиси в таблице mdfem_history");
+            throw new RuntimeException("Найдено больше одной записи в таблице mdfem_history");
 
-        if (meterHistory == null) return 1d;
-        if (meterHistory.isEmpty()) return 1d;
-        if (meterHistory.get(0) == null) return 1d;
-        if (meterHistory.get(0).getFactor() == null) return 1d;
-
-        return meterHistory!= null && !meterHistory.isEmpty() ? Optional.of(meterHistory.get(0).getFactor()).orElse(1d) : 1d;
+        return meterHistory != null && !meterHistory.isEmpty()
+            ? ofNullable(meterHistory.get(0).getFactor()).orElse(1d)
+            : 1d;
     }
 }
