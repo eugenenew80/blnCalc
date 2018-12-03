@@ -4,12 +4,9 @@ import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.enums.PointTypeEnum;
-import calc.formula.CalcContext;
-import calc.formula.CalcResult;
-import calc.formula.ContextTypeEnum;
+import calc.formula.*;
 import calc.formula.exception.CalcServiceException;
 import calc.formula.expression.impl.MrExpression;
-import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.service.*;
 import calc.repo.calc.BalanceSubstResultLineRepo;
 import calc.repo.calc.BalanceSubstResultNoteRepo;
@@ -23,6 +20,7 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 
 import static calc.util.Util.buildMsgParams;
+import static java.util.Optional.*;
 
 @SuppressWarnings("Duplicates")
 @Service
@@ -33,7 +31,6 @@ public class BalanceSubstLineService {
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
     private final BalanceSubstResultMrService mrService;
     private final BalanceSubstResultNoteRepo balanceSubstResultNoteRepo;
-    private final PeriodTimeValueService periodTimeValueService;
     private final CalcService calcService;
     private final MessageService messageService;
     private final ParamService paramService;
@@ -79,7 +76,7 @@ public class BalanceSubstLineService {
                     resultLine.setHeader(header);
                     resultLine.setMeteringPoint(meteringPoint);
                     resultLine.setParam(param);
-                    resultLine.setRate(Optional.ofNullable(line.getRate()).orElse(1d));
+                    resultLine.setRate(ofNullable(line.getRate()).orElse(1d));
                     resultLine.setSection(section);
                     resultLine.setVal(val);
                     if (meteringPoint.getVoltageClass()!=null)
@@ -162,10 +159,14 @@ public class BalanceSubstLineService {
         }
     }
 
-    private Double getMrVal(BalanceSubstLine bsLine, Parameter param, CalcContext context) throws Exception {
-        if (bsLine.getMeteringPoint().getPointType() == PointTypeEnum.PMP) {
+    private Double getMrVal(BalanceSubstLine bsLine, Parameter param, CalcContext context) {
+        MeteringPoint meteringPoint = bsLine.getMeteringPoint();
+        if (meteringPoint == null)
+            return null;
+
+        if (meteringPoint.getPointType() == PointTypeEnum.PMP) {
             return MrExpression.builder()
-                .meteringPointCode(bsLine.getMeteringPoint().getCode())
+                .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
                 .rate(bsLine.getRate())
                 .context(context)
@@ -174,20 +175,14 @@ public class BalanceSubstLineService {
                 .doubleValue();
         }
 
-        Double val = PeriodTimeValueExpression.builder()
-            .meteringPointCode(bsLine.getMeteringPoint().getCode())
-            .parameterCode(param.getCode())
-            .context(context)
-            .service(periodTimeValueService)
-            .build()
-            .doubleValue();
+        CalcProperty property = CalcProperty.builder()
+            .processOrder(ProcessOrderEnum.READ_CALC)
+            .build();
 
-        if (Optional.ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcValue(bsLine.getMeteringPoint(), param, context);
-            val = result!=null ? result.getDoubleValue() : null;
-            if (val != null)
-                val = val * Optional.ofNullable(bsLine.getRate()).orElse(1d);
-        }
+        CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
+        Double val = result != null ? result.getDoubleValue() : null;
+        if (val != null)
+            val = val * ofNullable(bsLine.getRate()).orElse(1d);
 
         return val;
     }

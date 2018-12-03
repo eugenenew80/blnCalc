@@ -189,6 +189,9 @@ public class CalcServiceImpl implements CalcService {
         if (result.getPeriodType() == PeriodTypeEnum.H)
             logger.trace("  values: " + Arrays.deepToString(result.getDoubleValues()));
 
+        if (context.getException() != null)
+            throw context.getException();
+
         return result;
     }
 

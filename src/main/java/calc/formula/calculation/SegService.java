@@ -163,8 +163,6 @@ public class SegService {
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
                 .rate(Optional.ofNullable(line.getRate()).orElse(1d))
-                .startHour((byte) 0)
-                .endHour((byte) 23)
                 .service(periodTimeValueService)
                 .context(context)
                 .build();

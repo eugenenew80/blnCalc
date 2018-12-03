@@ -369,14 +369,12 @@ public class BalanceSubstTransformerService {
             .doubleValue();
     }
 
-    private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) throws Exception {
+    private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
         if (meteringPoint == null)
             return null;
 
         CalcResult result = calcService.calcValue(meteringPoint, param, context);
         Double value = result!=null ? result.getDoubleValue() : null;
-        if (context.getException() != null)
-            throw context.getException();
 
         if (value !=null && Double.isNaN(value))
             return null;

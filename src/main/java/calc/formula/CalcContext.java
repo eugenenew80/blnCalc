@@ -2,6 +2,7 @@ package calc.formula;
 
 import calc.entity.DocHeader;
 import calc.entity.calc.enums.LangEnum;
+import calc.formula.exception.CalcServiceException;
 import lombok.*;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Map;
 public class CalcContext {
     @NonNull
     private DocHeader header;
-    private Exception exception;
+    private CalcServiceException exception;
 
     @Builder.Default
     private LangEnum lang = LangEnum.RU;
