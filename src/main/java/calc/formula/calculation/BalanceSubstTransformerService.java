@@ -369,24 +369,20 @@ public class BalanceSubstTransformerService {
             .doubleValue();
     }
 
+    private ParamValue getMrVal(MeteringPoint meteringPoint, CalcContext context) {
+        Double ap = getMrVal(meteringPoint, paramService.getParam("A+"), context);
+        Double am = getMrVal(meteringPoint, paramService.getParam("A-"), context);
+        Double rp = getMrVal(meteringPoint, paramService.getParam("R+"), context);
+        Double rm = getMrVal(meteringPoint, paramService.getParam("R-"), context);
+        return new ParamValue(ap, am, rp, rm);
+    }
+
     private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
         if (meteringPoint == null || param == null)
             return null;
 
         CalcResult result = calcService.calcValue(meteringPoint, param, context);
         return result != null ? result.getDoubleValue() : null;
-    }
-
-    private ParamValue getMrVal(MeteringPoint meteringPoint, CalcContext context) {
-        if (meteringPoint == null)
-            return null;
-
-        Double ap = getMrVal(meteringPoint, paramService.getParam("A+"), context);
-        Double am = getMrVal(meteringPoint, paramService.getParam("A-"), context);
-        Double rp = getMrVal(meteringPoint, paramService.getParam("R+"), context);
-        Double rm = getMrVal(meteringPoint, paramService.getParam("R-"), context);
-
-        return new ParamValue(ap, am, rp, rm);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
