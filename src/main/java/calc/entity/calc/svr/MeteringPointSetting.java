@@ -1,12 +1,10 @@
 package calc.entity.calc.svr;
 
 import calc.converter.jpa.BooleanToIntConverter;
-import calc.entity.calc.ContractKeg;
+import calc.entity.calc.Contract;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
 import calc.entity.calc.Parameter;
-import calc.entity.calc.bs.mr.BalanceSubstMrNoteTranslate;
-import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.DeterminingMethodEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,7 +24,7 @@ public class MeteringPointSetting {
 
     @ManyToOne
     @JoinColumn(name = "contract_id")
-    private ContractKeg contract;
+    private Contract contract;
 
     @ManyToOne
     @JoinColumn(name = "metering_point_id")

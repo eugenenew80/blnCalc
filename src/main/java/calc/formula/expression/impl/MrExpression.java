@@ -40,7 +40,7 @@ public class MrExpression implements DoubleExpression {
     @Override
     public Double doubleValue() {
         List<BalanceSubstResultMrLine> list = service.getValues(
-            context.getHeaderId(),
+            context.getHeader().getId(),
             meteringPointCode
         );
 

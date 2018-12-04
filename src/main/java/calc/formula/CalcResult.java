@@ -1,6 +1,7 @@
 package calc.formula;
 
 import calc.entity.calc.*;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class CalcResult {
     private LocalDateTime meteringDate;
     private SourceType sourceType;
     private PeriodTypeEnum periodType;
+    private DataTypeEnum dataType;
 
     private Double doubleValue;
     private Double[] doubleValues;

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "cm_doc_keg_cte")
 @Immutable
-public class ContractKeg {
+public class Contract {
 
     @Id
     private Long id;

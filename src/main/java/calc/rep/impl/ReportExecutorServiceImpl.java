@@ -37,7 +37,7 @@ public class ReportExecutorServiceImpl implements ReportExecutorService {
             throw new Exception("Entity not found");
 
         Map<Long, CalcResult> results = calc(report, context);
-        context.setResults(results);
+        //context.setResults(results);
         return documentBuilder.buildDocument(report, context);
     }
 

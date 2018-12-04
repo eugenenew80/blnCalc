@@ -8,7 +8,7 @@ import calc.entity.calc.inter.InterResultHeaderW;
 import calc.entity.calc.loss.LossFactResultHeaderW;
 import calc.entity.calc.reg.RegResultHeaderW;
 import calc.entity.calc.seg.SegResultHeaderW;
-import calc.entity.calc.svr.SvrHeader;
+import calc.entity.calc.svr.SvrResultHeader;
 import calc.formula.calculation.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -136,13 +136,13 @@ public class TaskExecutor {
     }
 
     private void calcSvr() {
-        List<SvrHeader> headers = svrHeaderRepo.findAllByStatus(BatchStatusEnum.W);
+        List<SvrResultHeader> headers = svrHeaderRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
         logger.info("Расчёт актов сверки объемов оказанных услуг, количество документов: " + headers.size());
-        for (SvrHeader header : headers) {
+        for (SvrResultHeader header : headers) {
             logger.info("Header " + header.getId() + " started");
-            svrService.calc(header);
+            svrService.calc(header.getId());
             logger.info("Header " + header.getId() + " completed");
         }
     }

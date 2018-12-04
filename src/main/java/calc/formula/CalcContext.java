@@ -1,10 +1,9 @@
 package calc.formula;
 
-import calc.entity.calc.enums.DataTypeEnum;
+import calc.entity.DocHeader;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.PeriodTypeEnum;
+import calc.formula.exception.CalcServiceException;
 import lombok.*;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,29 +11,31 @@ import java.util.Map;
 @Getter @Setter
 @Builder
 public class CalcContext {
-    private LangEnum lang;
-    private String docCode;
-    private Long headerId;
-    private PeriodTypeEnum periodType;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private Long orgId;
-    private String energyObjectType;
-    private Long energyObjectId;
-    private Exception exception;
+    @NonNull
+    private DocHeader header;
+    private CalcServiceException exception;
 
     @Builder.Default
-    private DataTypeEnum dataType = DataTypeEnum.FACT;
+    private LangEnum lang = LangEnum.RU;
 
     @Builder.Default
-    private ContextType defContextType = ContextType.DEFAULT;
+    private boolean useDataTypePriority = false;
+
+    @Builder.Default
+    private boolean nullPermissible = true;
+
+    @Builder.Default
+    private boolean traceEnabled = false;
+
+    @Builder.Default
+    private ContextTypeEnum defContextType = ContextTypeEnum.DEFAULT;
+
+    @Builder.Default
+    private FormulaBehaviourEnum formulaBehaviour = FormulaBehaviourEnum.ANY;
 
     @Builder.Default
     private Map<String, Double> transformerValues = new HashMap<>();
 
     @Builder.Default
-    private Map<String, List<CalcResult>> values = new  HashMap<>();
-
-    @Builder.Default
-    private Map<Long, CalcResult> results = new  HashMap<>();
+    private Map<String, List<CalcTrace>> traces = new HashMap<>();
 }

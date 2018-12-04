@@ -1,6 +1,7 @@
 package calc.entity.calc.bs;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.DocHeader;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
 import calc.entity.calc.Substation;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_bs_result_headers")
-public class BalanceSubstResultHeader {
+public class BalanceSubstResultHeader  implements DocHeader {
     @Id
     private Long id;
 

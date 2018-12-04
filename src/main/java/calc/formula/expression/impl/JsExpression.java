@@ -1,6 +1,7 @@
 package calc.formula.expression.impl;
 
 import calc.formula.CalcContext;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.expression.DoubleExpression;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -91,7 +92,7 @@ public class JsExpression implements DoubleExpression {
             return eval!=null ? Double.parseDouble(eval.toString()) : null;
         }
         catch (ScriptException e) {
-            context.setException(e);
+            context.setException(new CalcServiceException("ERROR_FORMULA", e.getMessage()));
             logger.trace(e.getClass().getCanonicalName(), e);
         }
         return null;

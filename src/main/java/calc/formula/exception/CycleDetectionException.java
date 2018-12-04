@@ -1,7 +1,7 @@
 package calc.formula.exception;
 
-public class CycleDetectionException extends Exception {
+public class CycleDetectionException extends CalcServiceException {
     public CycleDetectionException(String message) {
-        super(message);
+        super("CYCLED_FORMULA", message);
     }
 }

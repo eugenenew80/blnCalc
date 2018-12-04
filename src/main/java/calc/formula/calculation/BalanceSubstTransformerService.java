@@ -6,11 +6,10 @@ import calc.entity.calc.bs.pe.BalanceSubstPeLine;
 import calc.entity.calc.bs.pe.PowerTransformerValue;
 import calc.entity.calc.enums.TransformerTypeEnum;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
-import calc.formula.ContextType;
-import calc.formula.exception.CycleDetectionException;
+import calc.formula.ContextTypeEnum;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import calc.repo.calc.PowerTransformerValueRepo;
@@ -24,6 +23,7 @@ import java.util.*;
 
 import static calc.util.Util.buildMsgParams;
 import static calc.util.Util.round;
+import static java.util.Optional.*;
 
 @SuppressWarnings("Duplicates")
 @Service
@@ -45,17 +45,8 @@ public class BalanceSubstTransformerService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .headerId(header.getId())
-                .periodType(header.getPeriodType())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
-                .energyObjectType("SUBSTATION")
-                .energyObjectId(header.getSubstation().getId())
-                .defContextType(ContextType.MR)
-                .values(new HashMap<>())
-                .transformerValues(new HashMap<>())
+                .header(header)
+                .defContextType(ContextTypeEnum.MR)
                 .build();
 
             List<PowerTransformerValue> lines = calcLines(header, context);
@@ -193,18 +184,14 @@ public class BalanceSubstTransformerService {
                         rpH = getMrVal(inputMpH, paramService.getValues().get("R+"), context);
                         rmH = getMrVal(inputMpH, paramService.getValues().get("R-"), context);
                     }
-                    catch (CycleDetectionException e) {
-                        messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                        continue;
-                    }
-                    catch (Exception e) {
+                    catch (CalcServiceException e) {
                         msgParams.putIfAbsent("err", e.getMessage());
-                        messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                        messageService.addMessage(header, peLine.getId(), docCode, e.getErrCode(), msgParams);
                         continue;
                     }
 
-                    totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
-                    totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);
+                    totalAH = ofNullable(apH).orElse(0d) + ofNullable(amH).orElse(0d);
+                    totalRH = ofNullable(rpH).orElse(0d) + ofNullable(rmH).orElse(0d);
                     totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
                 }
 
@@ -217,23 +204,25 @@ public class BalanceSubstTransformerService {
                         rpL = getMrVal(inputMpL, paramService.getValues().get("R+"), context);
                         rmL = getMrVal(inputMpL, paramService.getValues().get("R-"), context);
                     }
-                    catch (CycleDetectionException e) {
-                        messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                        continue;
-                    }
-                    catch (Exception e) {
+                    catch (CalcServiceException e) {
                         msgParams.putIfAbsent("err", e.getMessage());
-                        messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                        messageService.addMessage(header, peLine.getId(), docCode, e.getErrCode(), msgParams);
                         continue;
                     }
 
-                    totalAL = Optional.ofNullable(apL).orElse(0d) + Optional.ofNullable(amL).orElse(0d);
-                    totalRL = Optional.ofNullable(rpL).orElse(0d) + Optional.ofNullable(rmL).orElse(0d);
+                    totalAL = ofNullable(apL).orElse(0d) + ofNullable(amL).orElse(0d);
+                    totalRL = ofNullable(rpL).orElse(0d) + ofNullable(rmL).orElse(0d);
                     totalEL = Math.pow(totalAL, 2) + Math.pow(totalRL, 2);
                 }
 
                 Double totalE = inputMpH != null ? totalEH : totalEL;
-                Double resist = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2)) * 1000d;
+
+                Double resist = transformer.getResist();
+                if (resist == null) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_RESIST_NOT_FOUND", info);
+                    resist = pkzHL * (Math.pow(uNomH, 2) / Math.pow(sNom, 2)) * 1000d;
+                }
+
                 Double valXX = round(deltaPxx * hours * Math.pow(uAvg / uNomH, 2), paramWL);
                 Double valN  = round(totalE * resist / (Math.pow(uAvg, 2) * 1000d * hours), paramWL);
 
@@ -267,13 +256,9 @@ public class BalanceSubstTransformerService {
                     rpL = getMrVal(inputMpL, paramService.getValues().get("R+"), context);
                     rmL = getMrVal(inputMpL, paramService.getValues().get("R-"), context);
                 }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                    continue;
-                }
-                catch (Exception e) {
+                catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    messageService.addMessage(header, peLine.getId(), docCode, e.getErrCode(), msgParams);
                     continue;
                 }
 
@@ -285,13 +270,9 @@ public class BalanceSubstTransformerService {
                     rpM = getMrVal(inputMpM, paramService.getValues().get("R+"), context);
                     rmM = getMrVal(inputMpM, paramService.getValues().get("R-"), context);
                 }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                    continue;
-                }
-                catch (Exception e) {
+                catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    messageService.addMessage(header, peLine.getId(), docCode, e.getErrCode(), msgParams);
                     continue;
                 }
 
@@ -303,30 +284,40 @@ public class BalanceSubstTransformerService {
                     rpH = getMrVal(inputMpH, paramService.getValues().get("R+"), context);
                     rmH = getMrVal(inputMpH, paramService.getValues().get("R-"), context);
                 }
-                catch (CycleDetectionException e) {
-                    messageService.addMessage(header, peLine.getId(), docCode, "CYCLED_FORMULA", msgParams);
-                    continue;
-                }
-                catch (Exception e) {
+                catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, peLine.getId(), docCode, "ERROR_FORMULA", msgParams);
+                    messageService.addMessage(header, peLine.getId(), docCode, e.getErrCode(), msgParams);
                     continue;
                 }
 
-                Double totalAL = Optional.ofNullable(apL).orElse(0d) + Optional.ofNullable(amL).orElse(0d);
-                Double totalRL = Optional.ofNullable(rpL).orElse(0d) + Optional.ofNullable(rmL).orElse(0d);
-                Double totalAM = Optional.ofNullable(apM).orElse(0d) + Optional.ofNullable(amM).orElse(0d);
-                Double totalRM = Optional.ofNullable(rpM).orElse(0d) + Optional.ofNullable(rmM).orElse(0d);
-                Double totalAH = Optional.ofNullable(apH).orElse(0d) + Optional.ofNullable(amH).orElse(0d);
-                Double totalRH = Optional.ofNullable(rpH).orElse(0d) + Optional.ofNullable(rmH).orElse(0d);
+                Double totalAL = ofNullable(apL).orElse(0d) + ofNullable(amL).orElse(0d);
+                Double totalRL = ofNullable(rpL).orElse(0d) + ofNullable(rmL).orElse(0d);
+                Double totalAM = ofNullable(apM).orElse(0d) + ofNullable(amM).orElse(0d);
+                Double totalRM = ofNullable(rpM).orElse(0d) + ofNullable(rmM).orElse(0d);
+                Double totalAH = ofNullable(apH).orElse(0d) + ofNullable(amH).orElse(0d);
+                Double totalRH = ofNullable(rpH).orElse(0d) + ofNullable(rmH).orElse(0d);
 
                 Double totalEL = Math.pow(totalAL, 2) + Math.pow(totalRL, 2);
                 Double totalEM = Math.pow(totalAM, 2) + Math.pow(totalRM, 2);
                 Double totalEH = Math.pow(totalAH, 2) + Math.pow(totalRH, 2);
 
-                Double resistL = (pkzHL + pkzML - pkzHM) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
-                Double resistM = (pkzHM + pkzML - pkzHL) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
-                Double resistH = (pkzHM + pkzHL - pkzML) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
+                Double resistL = transformer.getResistL();
+                if (resistL == null) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_RESIST_NOT_FOUND", info);
+                    resistL = (pkzHL + pkzML - pkzHM) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
+                }
+
+                Double resistM = transformer.getResistM();
+                if (resistM == null) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_RESIST_NOT_FOUND", info);
+                    resistM = (pkzHM + pkzML - pkzHL) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
+                }
+
+                Double resistH = transformer.getResistH();
+                if (resistH == null) {
+                    messageService.addMessage(header, peLine.getId(), docCode, "PE_RESIST_NOT_FOUND", info);
+                    resistH = (pkzHM + pkzHL - pkzML) / 2d * Math.pow(uNomH / sNom, 2) * 1000d;
+                }
 
                 Double valXX = round(deltaPxx * hours * Math.pow(uAvg / uNomH, 2), paramWL);
                 Double valN  = round((totalEL * resistL + totalEM * resistM + totalEH * resistH) / (Math.pow(uAvg,2) * hours * 1000d), paramWL);
@@ -378,14 +369,12 @@ public class BalanceSubstTransformerService {
             .doubleValue();
     }
 
-    private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) throws Exception {
+    private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
         if (meteringPoint == null)
             return null;
 
-        CalcResult result = calcService.calcMeteringPoint(meteringPoint, param, context);
+        CalcResult result = calcService.calcValue(meteringPoint, param, context);
         Double value = result!=null ? result.getDoubleValue() : null;
-        if (context.getException() != null)
-            throw context.getException();
 
         if (value !=null && Double.isNaN(value))
             return null;

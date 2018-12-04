@@ -44,8 +44,8 @@ public class MrServiceImpl implements MrService {
         if (meteringPoint.getPointType() == PointTypeEnum.VMP)
             return Collections.emptyList();
 
-        LocalDateTime startDate = context.getStartDate().atStartOfDay();
-        LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
+        LocalDateTime startDate = context.getHeader().getStartDate().atStartOfDay();
+        LocalDateTime endDate = context.getHeader().getEndDate().atStartOfDay().plusDays(1);
 
         List<MeteringReading> resultLines = calcMeteringPoint(meteringPoint, null, context);
         for (BypassMode bypassMode : bypassModeRepo.findAllByMeteringPoint(meteringPoint.getId(), startDate, endDate)) {
@@ -73,8 +73,8 @@ public class MrServiceImpl implements MrService {
     }
 
     private List<MeteringReading> calcMeteringPoint(MeteringPoint meteringPoint, BypassMode bypassMode, CalcContext context) {
-        LocalDateTime startDate = context.getStartDate().atStartOfDay();
-        LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
+        LocalDateTime startDate = context.getHeader().getStartDate().atStartOfDay();
+        LocalDateTime endDate = context.getHeader().getEndDate().atStartOfDay().plusDays(1);
 
         List<Parameter> parameters = meteringPoint.getParameters()
             .stream()

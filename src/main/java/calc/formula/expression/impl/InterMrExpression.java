@@ -40,7 +40,7 @@ public class InterMrExpression implements DoubleExpression {
     @Override
     public Double doubleValue() {
         List<InterResultMrLine> list = service.getValues(
-            context.getHeaderId(),
+            context.getHeader().getId(),
             meteringPointCode
         );
 

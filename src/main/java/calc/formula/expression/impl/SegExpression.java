@@ -39,7 +39,7 @@ public class SegExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
-        List<SegResultLine> list = service.getValues(context.getHeaderId(), meteringPointCode, parameterCode);
+        List<SegResultLine> list = service.getValues(context.getHeader().getId(), meteringPointCode, parameterCode);
 
         Double value = list.stream()
             .map(t ->  Optional.ofNullable(t.getVal()).orElse(0d) * Optional.ofNullable(rate).orElse(1d))

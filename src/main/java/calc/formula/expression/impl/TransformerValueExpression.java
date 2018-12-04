@@ -41,7 +41,7 @@ public class TransformerValueExpression implements DoubleExpression {
     @Override
     public Double doubleValue() {
         List<PowerTransformerValue> list = service.getValues(
-            context.getHeaderId(),
+            context.getHeader().getId(),
             meteringPointCode
         );
 

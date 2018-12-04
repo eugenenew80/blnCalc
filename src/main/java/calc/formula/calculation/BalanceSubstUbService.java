@@ -1,18 +1,15 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
-import calc.entity.calc.bs.BalanceSubstLine;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
 import calc.entity.calc.bs.mr.BalanceSubstResultMrLine;
 import calc.entity.calc.bs.ub.BalanceSubstResultUbLine;
 import calc.entity.calc.bs.ub.BalanceSubstUbLine;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcResult;
-import calc.formula.ContextType;
-import calc.formula.expression.impl.MrExpression;
+import calc.formula.ContextTypeEnum;
 import calc.formula.expression.impl.PeriodTimeValueExpression;
 import calc.formula.expression.impl.UavgExpression;
 import calc.formula.expression.impl.WorkingHoursExpression;
@@ -33,6 +30,8 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 
 import static calc.util.Util.round;
+import static java.lang.Math.*;
+import static java.lang.Math.sqrt;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
@@ -65,16 +64,8 @@ public class BalanceSubstUbService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .headerId(header.getId())
-                .periodType(header.getPeriodType())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
-                .energyObjectType("SUBSTATION")
-                .energyObjectId(header.getSubstation().getId())
-                .defContextType(ContextType.DEFAULT)
-                .values(new HashMap<>())
+                .header(header)
+                .defContextType(ContextTypeEnum.DEFAULT)
                 .build();
 
             List<BalanceSubstResultMrLine> mrLines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
@@ -164,8 +155,8 @@ public class BalanceSubstUbService {
 
                     if (meterHistories.size() == 0) {
                         Double w  = getMrVal(mrLines, ubLine, null, param, context);
-                        Double wa = getMrVal(mrLines, ubLine, null, mapParams.get("A+"), context) + getMrVal(mrLines, ubLine, null, mapParams.get("A-"), context);
-                        Double wr = getMrVal(mrLines, ubLine, null, mapParams.get("R+"), context) + getMrVal(mrLines, ubLine, null, mapParams.get("R-"), context);
+                        Double wa = getMrVal(mrLines, ubLine, null, direction.equals("1") ? mapParams.get("A+") : mapParams.get("A-"), context);
+                        Double wr = getMrVal(mrLines, ubLine, null, direction.equals("1") ? mapParams.get("R+") : mapParams.get("R-"), context);
 
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
                         line.setHeader(header);
@@ -218,10 +209,10 @@ public class BalanceSubstUbService {
                         }
 
                         Double w  = getMrVal(mrLines, ubLine, meterHistory, param, context);
-                        Double wa = getMrVal(mrLines, ubLine, meterHistory, mapParams.get("A+"), context) + getMrVal(mrLines, ubLine, meterHistory, mapParams.get("A-"), context);
-                        Double wr = getMrVal(mrLines, ubLine, meterHistory, mapParams.get("R+"), context) + getMrVal(mrLines, ubLine, meterHistory, mapParams.get("R-"), context);
+                        Double wa = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? mapParams.get("A+") : mapParams.get("A-"), context);
+                        Double wr = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? mapParams.get("R+") : mapParams.get("R-"), context);
 
-                        Double i1avgVal = Math.sqrt(Math.pow(wa, 2) + Math.pow(wr, 2)) / (1.73d * uAvg * workHours);
+                        Double i1avgVal = sqrt(pow(wa, 2) + pow(wr, 2)) / (sqrt(3d) * uAvg * workHours);
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
                         Double ttAcProc = ttType.getAccuracyClass().getValue();
 
@@ -233,20 +224,31 @@ public class BalanceSubstUbService {
                             bttProc = 0d;
                         }
 
-                        Double buProc = 0d;
-                        if (tnType != null && tnType.getAccuracyClass() != null)
-                            buProc = ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
+                        Double buProc = null, blProc = null;
+                        if (tnType != null) {
+                            if (tnType.getAccuracyClass() != null)
+                                buProc = ofNullable(tnType.getAccuracyClass().getValue()).orElse(0d);
 
-                        Double ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1d);
-                        Double biProc = bttProc * Math.sqrt(ttNumber);
-                        Double blProc = buProc <= 0.5 ? 0.25 : 0.5;
+                            if (buProc != null)
+                                blProc = buProc <= 0.5 ? 0.25 : 0.5;
+                        }
+
+                        Long ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1l);
+                        String ttMountedOn = ttNumber > 1l ? meterHistory.getTtMountedOn() : null;
+                        Double biProc = ttType != null ? bttProc * sqrt(ttNumber) : null;
                         Double bsoProc = ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);
-                        Double bProc = Math.sqrt(Math.pow(biProc, 2) + Math.pow(buProc, 2) + Math.pow(blProc, 2) + Math.pow(bsoProc, 2)) * 1.1d;
+
+                        Double bProc = sqrt(
+                                pow(ofNullable(biProc).orElse(0d), 2)
+                            +   pow(ofNullable(buProc).orElse(0d), 2)
+                            +   pow(ofNullable(blProc).orElse(0d), 2)
+                            +   pow(ofNullable(bsoProc).orElse(0d), 2)
+                        ) * 1.1d;
 
                         Double dol = 0d;
                         if (direction.equals("1") && !wApTotal.equals(0d)) dol = w / wApTotal;
                         if (direction.equals("2") && !wAmTotal.equals(0d)) dol = w / wAmTotal;
-                        Double b2dol2 = Math.pow(bProc / 100d, 2) * Math.pow(dol, 2);
+                        Double b2dol2 = pow(bProc / 100d, 2) * pow(dol, 2);
 
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
                         line.setHeader(header);
@@ -255,7 +257,7 @@ public class BalanceSubstUbService {
                         line.setW(w);
                         line.setWa(wa);
                         line.setWr(wr);
-                        line.setTtStar(meterHistory.getTtMountedOn());
+                        line.setTtStar(ttMountedOn);
                         line.setTtacProc(ttAcProc);
                         line.setI1Nom(ttType.getRatedCurrent1());
                         line.setTRab(workHours);
@@ -297,7 +299,7 @@ public class BalanceSubstUbService {
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
-            Double nbdProc = Math.sqrt(r1SumB2D2 + r2SumB2D2) * 100d;
+            Double nbdProc = sqrt(r1SumB2D2 + r2SumB2D2) * 100d;
             Double nbdVal = nbdProc * r1SumW / 100d;
 
             nbdVal = round(nbdVal, paramService.getValues().get("A+"));
@@ -416,9 +418,11 @@ public class BalanceSubstUbService {
     }
 
     private Double getMrVal(List<BalanceSubstResultMrLine> mrLines, BalanceSubstUbLine ubLine, MeterHistory meterHistory, Parameter param, CalcContext context) throws Exception {
-        if (ubLine.getMeteringPoint().getPointType() == PointTypeEnum.PMP) {
+        MeteringPoint meteringPoint = ubLine.getMeteringPoint();
+
+        if (meteringPoint.getPointType() == PointTypeEnum.PMP) {
             Double val = mrLines.stream()
-                .filter(t -> t.getMeteringPoint().equals(ubLine.getMeteringPoint()))
+                .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                 .filter(t -> t.getParam().equals(param))
                 .filter(t -> t.getMeterHistory() != null)
                 .filter(t -> meterHistory == null || t.getMeterHistory().equals(meterHistory))
@@ -432,19 +436,15 @@ public class BalanceSubstUbService {
         }
 
         Double val = PeriodTimeValueExpression.builder()
-            .meteringPointCode(ubLine.getMeteringPoint().getCode())
+            .meteringPointCode(meteringPoint.getCode())
             .parameterCode(param.getCode())
-            .rate(1d)
-            .startHour((byte) 0)
-            .endHour((byte) 23)
-            .periodType(context.getPeriodType())
             .context(context)
             .service(periodTimeValueService)
             .build()
             .doubleValue();
 
         if (ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcMeteringPoint(ubLine.getMeteringPoint(), param, context);
+            CalcResult result = calcService.calcValue(meteringPoint, param, context);
             val = result!=null ? result.getDoubleValue() : null;
             if (val != null)
                 val = val * ofNullable(ubLine.getRate()).orElse(1d);

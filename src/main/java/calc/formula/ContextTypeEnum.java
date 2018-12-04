@@ -1,6 +1,6 @@
 package calc.formula;
 
-public enum ContextType {
+public enum ContextTypeEnum {
     DEFAULT,
     MR,
     ASP,

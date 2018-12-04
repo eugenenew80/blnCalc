@@ -2,11 +2,11 @@ package calc.formula.service.impl;
 
 import calc.entity.calc.*;
 import calc.entity.calc.enums.*;
-import calc.formula.CalcProperty;
-import calc.formula.CalcResult;
-import calc.formula.CalcContext;
-import calc.formula.ContextType;
+import calc.formula.*;
 import calc.formula.exception.CycleDetectionException;
+import calc.formula.exception.FormulaNotFoundException;
+import calc.formula.exception.TooManyFormulasException;
+import calc.formula.exception.ValueNotFoundException;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
@@ -26,7 +26,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class CalcServiceImpl implements CalcService {
@@ -49,91 +48,156 @@ public class CalcServiceImpl implements CalcService {
     private Map<String, Parameter> mapParams = null;
 
     @PostConstruct
-    public void init() {
-        mapParams = paramService.getValues();
-    }
+    public void init() { mapParams = paramService.getValues(); }
 
     @Override
-    public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, CalcContext context) throws Exception {
+    public CalcResult calcValue(MeteringPoint point, Parameter param, CalcContext context) {
         CalcProperty property = CalcProperty.builder()
             .contextType(context.getDefContextType())
             .determiningMethod(DeterminingMethodEnum.MPV)
             .paramType(ParamTypeEnum.PT)
             .build();
 
-        return calcMeteringPoint(point, param, context, property);
+        return calcValue(point, param, context, property);
     }
 
     @Override
-    public CalcResult calcMeteringPoint(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) throws Exception {
-        if (point == null || param == null || context == null)
+    public CalcResult calcValue(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) {
+        if (point == null || param == null || context == null || context.getHeader() == null)
             return null;
 
         logger.trace("---------------------------------------------");
-        logger.trace("point: " + point.getCode());
-        logger.trace("pointType: " + point.getPointType().name());
-        logger.trace("param: " + param.getCode());
-        logger.trace("paramType: " + property.getParamType().name());
-        logger.trace("periodType: " + context.getPeriodType());
+        logger.trace("point: "                  + point.getCode());
+        logger.trace("pointType: "              + point.getPointType());
+        logger.trace("param: "                  + param.getCode());
+        logger.trace("paramType: "              + property.getParamType());
+        logger.trace("periodType: "             + context.getHeader().getPeriodType());
+        logger.trace("dataType: "               + context.getHeader().getDataType());
+        logger.trace("processOrder: "           + property.getProcessOrder());
+        logger.trace("formulaBehaviour: "       + context.getFormulaBehaviour());
+        logger.trace("useDataTypePriority: "    + context.isUseDataTypePriority());
+        logger.trace("nullPermissible: "        + context.isNullPermissible());
+        logger.trace("traceEnabled: "           + context.isTraceEnabled());
 
-        Formula formula = null;
-        if (point.getPointType() == PointTypeEnum.VMP) {
-            formula = point.getFormulas()
-                .stream()
-                .filter(t -> t.getParam().equals(param))
-                .filter(t -> t.getParamType() == property.getParamType())
-                .findFirst()
-                .orElse(null);
+        CalcResult result = null;
+        if (point.getPointType() == PointTypeEnum.PMP)
+            result = readValue(point, param, context, property);
 
-            if (formula == null)
-                logger.warn("Formula not found");
+        if (property.getProcessOrder() == ProcessOrderEnum.READ)
+            result = readValue(point, param, context, property);
+
+        List<Formula> formulas = findFormulas(point, param, property.getParamType());
+
+        if (property.getProcessOrder() == ProcessOrderEnum.CALC) {
+            Formula formula = getFormula(formulas, context);
+            result = calcValue(formula, context, property);
         }
 
-        if (formula == null)
-            return getCalcResult(point, param, context, property);
+        if (property.getProcessOrder() == ProcessOrderEnum.CALC_READ) {
+            Formula formula = getFormula(formulas, context);
+            result = calcValue(formula, context, property);
+            if (result == null || result.getDoubleValue() == null)
+                result = readValue(point, param, context, property);
+        }
 
-        logger.trace("formulaId: " + formula.getId());
-        CalcResult result = calcMeteringPoint(formula, context, property);
+        if (property.getProcessOrder() == ProcessOrderEnum.READ_CALC) {
+            result = readValue(point, param, context, property);
+            if (result == null || result.getDoubleValue() == null) {
+                Formula formula = getFormula(formulas, context);
+                result = calcValue(formula, context, property);
+            }
+        }
+
+        if (!context.isNullPermissible())
+            if (result == null || result.getDoubleValue() == null)
+                throw new ValueNotFoundException("Не удалось определить значение параметра");
 
         logger.trace("---------------------------------------------");
         return result;
     }
 
-    @Override
-    public CalcResult calcMeteringPoint(Formula formula, CalcContext context) throws Exception {
-        CalcProperty property = CalcProperty.builder()
-            .contextType(context.getDefContextType())
-            .determiningMethod(DeterminingMethodEnum.MPV).build();
+    private Formula getFormula(List<Formula> formulas, CalcContext context) {
+        if (context.getFormulaBehaviour() == FormulaBehaviourEnum.EXACTLY_ONE || context.getFormulaBehaviour() == FormulaBehaviourEnum.ZERO_OR_ONE)
+            if (formulas.size() > 1)
+                throw new TooManyFormulasException("Невозможно определить значение по формуле: назначено больше одной формулы");
 
-        return calcMeteringPoint(formula, context, property);
+        if (context.getFormulaBehaviour() == FormulaBehaviourEnum.EXACTLY_ONE)
+            if (formulas.isEmpty())
+                throw new FormulaNotFoundException("Невозможно определить значение по формуле: не найдено ни одной формулы");
+
+        Formula formula = formulas!=null && !formulas.isEmpty() ? formulas.get(0) : null;
+        if (formula == null)
+            logger.warn("Formula not found");
+        else
+            logger.trace("Formula found, id: " + formula.getId());
+
+        return formula;
     }
 
     @Override
-    public CalcResult calcMeteringPoint(Formula formula, CalcContext context, CalcProperty property) throws Exception {
+    public CalcResult calcValue(Formula formula, CalcContext context) {
+        CalcProperty property = CalcProperty.builder()
+            .contextType(context.getDefContextType())
+            .determiningMethod(DeterminingMethodEnum.MPV)
+            .paramType(formula.getParamType())
+            .build();
+
+        return calcValue(formula, context, property);
+    }
+
+    @Override
+    public CalcResult calcValue(Formula formula, CalcContext context, CalcProperty property) {
         if (formula == null)
             return null;
 
-        CalcResult result = calcFormula(formula, context, property);
+        detectCycles(formula);
+
+        DoubleExpression expression = buildExpression(formula, context, property);
+        CalcResult result = new CalcResult();
+        result.setFormula(formula);
+        result.setMeteringDate(context.getHeader().getEndDate().atStartOfDay().plusDays(1));
+        result.setMeteringPoint(formula.getMeteringPoint());
+        result.setParam(formula.getParam());
+        result.setUnit(formula.getParam().getUnit());
+        result.setParamType(formula.getParamType().name());
+
+        if (context.getHeader().getPeriodType() != PeriodTypeEnum.H) {
+            Double doubleValue = expression.doubleValue();
+            doubleValue = round(doubleValue, formula.getParam());
+
+            result.setDoubleValue(doubleValue);
+            result.setPeriodType(context.getHeader().getPeriodType());
+        }
+
+        if (context.getHeader().getPeriodType() == PeriodTypeEnum.H) {
+            result.setDoubleValues(expression.doubleValues());
+            result.setPeriodType(context.getHeader().getPeriodType());
+        }
+
         logger.trace("result:");
-        logger.trace("formulaId: " + result.getFormula().getId());
-        logger.trace("src: " + result.getFormula().getText());
-        logger.trace("point: " + result.getMeteringPoint().getCode());
-        logger.trace("param: " + result.getParam().getCode());
-        logger.trace("paramType: " + result.getParamType());
-        logger.trace("meteringDate: " + result.getMeteringDate());
-        logger.trace("periodType: " + result.getPeriodType());
+        logger.trace("  formulaId: " + result.getFormula().getId());
+        logger.trace("  src: " + result.getFormula().getText());
+        logger.trace("  point: " + result.getMeteringPoint().getCode());
+        logger.trace("  param: " + result.getParam().getCode());
+        logger.trace("  paramType: " + result.getParamType());
+        logger.trace("  meteringDate: " + result.getMeteringDate());
+        logger.trace("  periodType: " + result.getPeriodType());
 
         if (result.getPeriodType() != PeriodTypeEnum.H)
-            logger.trace("value: " + result.getDoubleValue());
+            logger.trace("  value: " + result.getDoubleValue());
 
         if (result.getPeriodType() == PeriodTypeEnum.H)
-            logger.trace("values: " + Arrays.deepToString(result.getDoubleValues()));
+            logger.trace("  values: " + Arrays.deepToString(result.getDoubleValues()));
+
+        if (context.getException() != null)
+            throw context.getException();
 
         return result;
     }
 
 
-    private CalcResult getCalcResult(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) {
+    @Override
+    public CalcResult readValue(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) {
         DoubleExpression expression;
         if (!param.equals(mapParams.get("AB")))
             expression = getExpression(point, param, 1d, context, property);
@@ -147,51 +211,37 @@ public class CalcServiceImpl implements CalcService {
         }
 
         CalcResult result = new CalcResult();
-        result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
+        result.setMeteringDate(context.getHeader().getEndDate().atStartOfDay().plusDays(1));
         result.setMeteringPoint(point);
         result.setParam(param);
         result.setUnit(param.getUnit());
         result.setParamType(property.getParamType().name());
 
-        if (context.getPeriodType() != PeriodTypeEnum.H) {
+        if (context.getHeader().getPeriodType() != PeriodTypeEnum.H) {
             result.setDoubleValue(expression.doubleValue());
-            result.setPeriodType(context.getPeriodType());
-            logger.trace("val: " + expression.doubleValue());
+            result.setPeriodType(context.getHeader().getPeriodType());
+            logger.trace("  val: " + expression.doubleValue());
         }
 
-        if (context.getPeriodType() == PeriodTypeEnum.H) {
+        if (context.getHeader().getPeriodType() == PeriodTypeEnum.H) {
             result.setDoubleValues(expression.doubleValues());
-            result.setPeriodType(context.getPeriodType());
-            logger.trace("val: " + Arrays.deepToString(expression.doubleValues()));
+            result.setPeriodType(context.getHeader().getPeriodType());
+            logger.trace("  val: " + Arrays.deepToString(expression.doubleValues()));
         }
         return result;
     }
 
-    private CalcResult calcFormula(Formula formula, CalcContext context, CalcProperty property) throws Exception {
-        detectCycles(formula);
+    private List<Formula> findFormulas(MeteringPoint point, Parameter param, ParamTypeEnum paramType) {
+        if (point.getPointType() != PointTypeEnum.VMP)
+            return null;
 
-        DoubleExpression expression = buildExpression(formula, context, property);
-        CalcResult result = new CalcResult();
-        result.setFormula(formula);
-        result.setMeteringDate(context.getEndDate().atStartOfDay().plusDays(1));
-        result.setMeteringPoint(formula.getMeteringPoint());
-        result.setParam(formula.getParam());
-        result.setUnit(formula.getParam().getUnit());
-        result.setParamType(formula.getParamType().name());
+        List<Formula> formulas = point.getFormulas()
+            .stream()
+            .filter(t -> t.getParam().equals(param))
+            .filter(t -> t.getParamType() == paramType)
+            .collect(toList());
 
-        if (context.getPeriodType() != PeriodTypeEnum.H) {
-            Double doubleValue = expression.doubleValue();
-            doubleValue = round(doubleValue, formula.getParam());
-
-            result.setDoubleValue(doubleValue);
-            result.setPeriodType(context.getPeriodType());
-        }
-
-        if (context.getPeriodType() == PeriodTypeEnum.H) {
-            result.setDoubleValues(expression.doubleValues());
-            result.setPeriodType(context.getPeriodType());
-        }
-        return result;
+        return formulas;
     }
 
     private DoubleExpression buildExpression(Formula formula, CalcContext context, CalcProperty property) {
@@ -242,13 +292,8 @@ public class CalcServiceImpl implements CalcService {
 
     private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context, CalcProperty property) {
         if (det.getMeteringPoint().getPointType() == PointTypeEnum.VMP) {
-            Formula formula = det.getMeteringPoint()
-                .getFormulas()
-                .stream()
-                .filter(t -> t.getParam().equals(det.getParam()))
-                .filter(t -> t.getParamType() == det.getParamType())
-                .findFirst()
-                .orElse(null);
+            List<Formula> formulas = findFormulas(det.getMeteringPoint(), det.getParam(), det.getParamType());
+            Formula formula = !formulas.isEmpty() ? formulas.get(0) : null;
 
             if (formula != null) {
                 logger.trace("nested formula start");
@@ -260,7 +305,10 @@ public class CalcServiceImpl implements CalcService {
                 DoubleExpression expression = buildExpression(formula, context, property);
                 logger.trace("nested formula end");
 
-                UnaryOperator<DoubleExpression> operator = det.getSign().equals("-") ? operatorFactory.unary("minus") : operatorFactory.unary("nothing");
+                UnaryOperator<DoubleExpression> operator = det.getSign().equals("-")
+                    ? operatorFactory.unary("minus")
+                    : operatorFactory.unary("nothing");
+
                 return expression.andThen(operator);
             }
         }
@@ -440,7 +488,7 @@ public class CalcServiceImpl implements CalcService {
             }
         }
 
-        if (param.getCode().equals("WL") && property.getContextType() == ContextType.MR) {
+        if (param.getCode().equals("WL") && property.getContextType() == ContextTypeEnum.MR) {
             Map<String, Double> transformerValues = context.getTransformerValues();
             if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {
                 logger.trace("  expression: CachedValueExpression");
@@ -459,7 +507,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (property.getContextType() == ContextType.MR) {
+        if (property.getContextType() == ContextTypeEnum.MR) {
             logger.trace("  context: mr");
             logger.trace("  expression: MrExpression");
             return MrExpression.builder()
@@ -471,7 +519,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (property.getContextType() == ContextType.ASP) {
+        if (property.getContextType() == ContextTypeEnum.ASP) {
             logger.trace("  context: asp");
             logger.trace("  expression: AspExpression");
             return AspExpression.builder()
@@ -483,7 +531,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (property.getContextType() == ContextType.SEG) {
+        if (property.getContextType() == ContextTypeEnum.SEG) {
             logger.trace("  context: seg");
             logger.trace("  expression: SegExpression");
             return SegExpression.builder()
@@ -495,7 +543,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (property.getContextType() == ContextType.INTER) {
+        if (property.getContextType() == ContextTypeEnum.INTER) {
             logger.trace("  context: inter");
             logger.trace("  expression: InterExpression");
             return InterMrExpression.builder()
@@ -509,16 +557,31 @@ public class CalcServiceImpl implements CalcService {
 
         if (property.getParamType() == ParamTypeEnum.PT) {
             logger.trace("  expression: PeriodTimeValueExpression");
-            return PeriodTimeValueExpression.builder()
+            PeriodTimeValueExpression ptExpression = PeriodTimeValueExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
-                .periodType(context.getPeriodType())
-                .rate(rate)
-                .startHour((byte) 0)
-                .endHour((byte) 23)
                 .service(periodTimeValueService)
                 .context(context)
                 .build();
+
+            if (property.getContextType() != context.getDefContextType()) {
+                Double val = ptExpression.doubleValue();
+                logger.trace("  val: " + val);
+
+                if (val == null && context.getDefContextType() == ContextTypeEnum.MR) {
+                    logger.trace("  context: mr");
+                    logger.trace("  expression: MrExpression");
+                    return MrExpression.builder()
+                        .meteringPointCode(meteringPoint.getCode())
+                        .parameterCode(param.getCode())
+                        .rate(rate)
+                        .context(context)
+                        .service(mrService)
+                        .build();
+                }
+            }
+
+            return ptExpression;
         }
 
         if (property.getParamType() == ParamTypeEnum.AT || property.getParamType() == ParamTypeEnum.ATS || property.getParamType() == ParamTypeEnum.ATE) {
@@ -545,7 +608,7 @@ public class CalcServiceImpl implements CalcService {
 
     private void detectCycles(Formula formula) throws CycleDetectionException {
         DefaultDirectedGraph<MeteringPoint, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
-        fillGraph(formula, graph);
+        buildGraph(formula, graph);
 
         CycleDetector<MeteringPoint, DefaultEdge> cycleDetector = new CycleDetector<>(graph);
         Set<MeteringPoint> detectedCycles = cycleDetector.findCycles();
@@ -553,7 +616,7 @@ public class CalcServiceImpl implements CalcService {
             throw new CycleDetectionException("Cycles detected");
     }
 
-    private void fillGraph(Formula rootFormula, DefaultDirectedGraph<MeteringPoint, DefaultEdge> graph) {
+    private void buildGraph(Formula rootFormula, DefaultDirectedGraph<MeteringPoint, DefaultEdge> graph) {
         if (rootFormula == null)
             return;
 
@@ -585,7 +648,7 @@ public class CalcServiceImpl implements CalcService {
                     .orElse(null);
 
                 if (formula != null)
-                    fillGraph(formula, graph);
+                    buildGraph(formula, graph);
             }
         }
     }

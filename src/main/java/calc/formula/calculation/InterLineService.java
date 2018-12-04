@@ -5,7 +5,7 @@ import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.LangEnum;
 import calc.entity.calc.inter.*;
 import calc.formula.CalcContext;
-import calc.formula.ContextType;
+import calc.formula.ContextTypeEnum;
 import calc.formula.expression.impl.BinaryExpression;
 import calc.formula.expression.impl.InterMrExpression;
 import calc.formula.service.*;
@@ -41,16 +41,9 @@ public class InterLineService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
-                .docCode(docCode)
-                .headerId(header.getId())
-                .periodType(header.getPeriodType())
-                .startDate(header.getStartDate())
-                .endDate(header.getEndDate())
-                .orgId(header.getOrganization().getId())
-                .defContextType(ContextType.INTER)
-                .values(new HashMap<>())
+                .header(header)
+                .defContextType(ContextTypeEnum.INTER)
                 .build();
-
 
             Parameter paramWL = paramService.getValues().get("WL");
             List<InterResultLine> resultLines = new ArrayList<>();

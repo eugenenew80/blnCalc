@@ -25,6 +25,8 @@ import calc.entity.calc.seg.SegResultMessageTranslate;
 import calc.entity.calc.source.SourceResultHeader;
 import calc.entity.calc.source.SourceResultMessage;
 import calc.entity.calc.source.SourceResultMessageTranslate;
+import calc.entity.calc.svr.SvrResultHeader;
+import calc.entity.calc.svr.SvrResultMessage;
 import calc.formula.service.MessageError;
 import calc.formula.service.MessageService;
 import calc.repo.calc.*;
@@ -48,6 +50,7 @@ public class MessageServiceImpl implements MessageService {
     private final SourceResultMessageRepo sourceResultMessageRepo;
     private final InterResultMessageRepo interResultMessageRepo;
     private final LossFactResultMessageRepo lossFactResultMessageRepo;
+    private final SvrResultMessageRepo svrResultMessageRepo;
     private final MessageRepo messageRepo;
     private Map<String, MessageError> mapErrors = new HashMap<>();
 
@@ -376,6 +379,37 @@ public class MessageServiceImpl implements MessageService {
             messageTranslate.setMsg(msg);
             message.getTranslates().add(messageTranslate);
             sourceResultMessageRepo.save(message);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteMessages(SvrResultHeader header) {
+        List<SvrResultMessage> lines = svrResultMessageRepo.findAllByHeaderId(header.getId());
+        for (int i=0; i<lines.size(); i++)
+            svrResultMessageRepo.delete(lines.get(i));
+        svrResultMessageRepo.flush();
+    }
+
+    @Override
+    public void addMessage(SvrResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
+        MessageError err = mapErrors.getOrDefault(errCode, null);
+        try {
+            LangEnum defLang = LangEnum.RU;
+            String defTExt = "Описание не найдено";
+            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
+            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
+            msg = StrSubstitutor.replace(msg, params);
+
+            SvrResultMessage message = new SvrResultMessage();
+            message.setHeader(header);
+            message.setLineNum(lineNum);
+            message.setMessageType(messageType);
+            message.setErrorCode(errCode);
+            message.setMsg(msg);
+            svrResultMessageRepo.save(message);
         }
         catch (Exception e) {
             e.printStackTrace();

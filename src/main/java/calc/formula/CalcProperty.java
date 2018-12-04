@@ -15,13 +15,16 @@ public class CalcProperty {
     private DeterminingMethodEnum determiningMethod = DeterminingMethodEnum.MPV;
 
     @Builder.Default
-    private ContextType contextType = ContextType.DEFAULT;
+    private ContextTypeEnum contextType = ContextTypeEnum.DEFAULT;
 
     @Builder.Default
     private GridTypeEnum gridType = GridTypeEnum.OWN;
 
     @Builder.Default
     private ParamTypeEnum paramType = ParamTypeEnum.PT;
+
+    @Builder.Default
+    private ProcessOrderEnum processOrder = ProcessOrderEnum.CALC_READ;
 
     private ElectricityProducerGroup electricityGroup;
 }

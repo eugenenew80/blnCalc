@@ -27,8 +27,8 @@ public class WorkingHoursServiceImpl implements WorkingHoursService {
 
     @Override
     public Double getWorkingHours(String objectType, Long objectId, CalcContext context) {
-        LocalDateTime startDate = context.getStartDate().atStartOfDay();
-        LocalDateTime endDate = context.getEndDate().atStartOfDay().plusDays(1);
+        LocalDateTime startDate = context.getHeader().getStartDate().atStartOfDay();
+        LocalDateTime endDate = context.getHeader().getEndDate().atStartOfDay().plusDays(1);
 
         if (objectType.equals("mp")) {
             List<MeteringPointMode> modes = meteringPointModeRepo.findAllByMeteringPoint(objectId, startDate, endDate);

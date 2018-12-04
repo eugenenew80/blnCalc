@@ -1,6 +1,9 @@
 package calc.rest;
 
+import calc.entity.DocHeader;
 import calc.entity.calc.Formula;
+import calc.entity.calc.Organization;
+import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.ParamTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcContext;
@@ -14,9 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,19 +31,43 @@ public class FormulaRestController {
         LocalDate endDate   = LocalDate.of(2018, Month.AUGUST, 2);
 
         CalcContext context = CalcContext.builder()
-            .docCode("TEST")
-            .headerId(formula.getId())
-            .periodType(PeriodTypeEnum.H)
-            .startDate(startDate)
-            .endDate(endDate)
-            .orgId(1l)
-            .values(new HashMap<>())
+            .header(new DocHeader() {
+                @Override
+                public Long getId() {
+                    return null;
+                }
+
+                @Override
+                public PeriodTypeEnum getPeriodType() {
+                    return PeriodTypeEnum.D;
+                }
+
+                @Override
+                public LocalDate getStartDate() {
+                    return startDate;
+                }
+
+                @Override
+                public LocalDate getEndDate() {
+                    return endDate;
+                }
+
+                @Override
+                public DataTypeEnum getDataType() {
+                    return null;
+                }
+
+                @Override
+                public Organization getOrganization() {
+                    return null;
+                }
+            })
             .build();
 
         ResultDto resultDto = new ResultDto();
         resultDto.setFormulaId(formulaDto.getFormulaId());
         try {
-            CalcResult result = calcService.calcMeteringPoint(formula, context);
+            CalcResult result = calcService.calcValue(formula, context);
             if (context.getException()!=null)
                 throw context.getException();
 

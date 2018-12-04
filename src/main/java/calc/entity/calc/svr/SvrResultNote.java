@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "calc_svr_notes")
 @Immutable
-public class SvrNote {
+public class SvrResultNote {
     @Id
     @SequenceGenerator(name="calc_svr_notes_s", sequenceName = "calc_svr_notes_s", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "calc_svr_notes_s")
@@ -20,7 +20,7 @@ public class SvrNote {
 
     @ManyToOne
     @JoinColumn(name = "svr_id")
-    private SvrHeader header;
+    private SvrResultHeader header;
 
     @ManyToOne
     @JoinColumn(name = "org_id")
@@ -30,5 +30,5 @@ public class SvrNote {
     private Long noteNum;
 
     @OneToMany(mappedBy = "note", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<SvrNoteTranslate> translates;
+    private List<SvrResultNoteTranslate> translates;
 }

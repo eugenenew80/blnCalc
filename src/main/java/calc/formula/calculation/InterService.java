@@ -1,6 +1,8 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.enums.BatchStatusEnum;
+import calc.entity.calc.enums.DataTypeEnum;
+import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.entity.calc.inter.InterResultHeader;
 import calc.formula.service.MessageService;
 import calc.repo.calc.*;
@@ -26,6 +28,9 @@ public class InterService {
         InterResultHeader header = interResultHeaderRepo.findOne(headerId);
         if (header.getStatus() != BatchStatusEnum.W)
             return;
+
+        if (header.getDataType() == null)
+            header.setDataType(header.getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
 
         try {
             updateStatus(header, BatchStatusEnum.P);

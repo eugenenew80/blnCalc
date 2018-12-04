@@ -1,11 +1,11 @@
 package calc.formula.service;
 
+import calc.entity.calc.AtTimeValue;
 import calc.formula.CalcContext;
-import calc.formula.CalcResult;
 import java.util.List;
 
 public interface AtTimeValueService {
-    List<CalcResult> getValue(
+    List<AtTimeValue> getValue(
         String meteringPointCode,
         String parameterCode,
         String per,
