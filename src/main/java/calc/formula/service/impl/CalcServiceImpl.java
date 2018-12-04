@@ -125,7 +125,7 @@ public class CalcServiceImpl implements CalcService {
             if (formulas.isEmpty())
                 throw new FormulaNotFoundException("Невозможно определить значение по формуле: не найдено ни одной формулы");
 
-        Formula formula = !formulas.isEmpty() ? formulas.get(0) : null;
+        Formula formula = formulas!=null && !formulas.isEmpty() ? formulas.get(0) : null;
         if (formula == null)
             logger.warn("Formula not found");
         else
@@ -220,13 +220,13 @@ public class CalcServiceImpl implements CalcService {
         if (context.getHeader().getPeriodType() != PeriodTypeEnum.H) {
             result.setDoubleValue(expression.doubleValue());
             result.setPeriodType(context.getHeader().getPeriodType());
-            logger.trace("val: " + expression.doubleValue());
+            logger.trace("  val: " + expression.doubleValue());
         }
 
         if (context.getHeader().getPeriodType() == PeriodTypeEnum.H) {
             result.setDoubleValues(expression.doubleValues());
             result.setPeriodType(context.getHeader().getPeriodType());
-            logger.trace("val: " + Arrays.deepToString(expression.doubleValues()));
+            logger.trace("  val: " + Arrays.deepToString(expression.doubleValues()));
         }
         return result;
     }
@@ -557,12 +557,33 @@ public class CalcServiceImpl implements CalcService {
 
         if (property.getParamType() == ParamTypeEnum.PT) {
             logger.trace("  expression: PeriodTimeValueExpression");
-            return PeriodTimeValueExpression.builder()
+            PeriodTimeValueExpression ptExpression = PeriodTimeValueExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
                 .parameterCode(param.getCode())
                 .service(periodTimeValueService)
                 .context(context)
                 .build();
+
+            Double val = ptExpression.doubleValue();
+            logger.trace("  val: " + val);
+
+            if (val == null && context.getDefContextType() == ContextTypeEnum.MR) {
+                logger.trace("  context: mr");
+                logger.trace("  expression: MrExpression");
+                MrExpression mrExpression = MrExpression.builder()
+                    .meteringPointCode(meteringPoint.getCode())
+                    .parameterCode(param.getCode())
+                    .rate(rate)
+                    .context(context)
+                    .service(mrService)
+                    .build();
+
+                val =  mrExpression.doubleValue();
+                logger.trace("  val: " + val);
+                return mrExpression;
+            }
+
+            return ptExpression;
         }
 
         if (property.getParamType() == ParamTypeEnum.AT || property.getParamType() == ParamTypeEnum.ATS || property.getParamType() == ParamTypeEnum.ATE) {

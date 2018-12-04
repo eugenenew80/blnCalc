@@ -24,17 +24,9 @@ import static java.util.stream.Collectors.toSet;
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PeriodTimeValueExpression implements DoubleExpression {
-
-    @NonNull
     private final String meteringPointCode;
-
-    @NonNull
     private final String parameterCode;
-
-    @NonNull
     private final PeriodTimeValueService service;
-
-    @NonNull
     private final CalcContext context;
 
     @Builder.Default
@@ -45,6 +37,7 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Builder.Default
     private final Byte endHour = 23;
+
 
     @Override
     public DoubleExpression doubleExpression() { return this; }
@@ -70,11 +63,11 @@ public class PeriodTimeValueExpression implements DoubleExpression {
     public Double[] doubleValues() {
         Stream<PeriodTimeValue> stream = service.getValues(meteringPointCode, parameterCode, context)
             .stream()
-            .filter(t -> t.getPeriodType() == context.getHeader().getPeriodType())
-            .filter(t -> t.getDataType() != null);
+            .filter(t -> t.getPeriodType() == context.getHeader().getPeriodType());
 
         Map<DataTypeEnum, List<CalcResult>> map = stream
             .map(PeriodTimeValue::toResult)
+            .filter(t -> t.getDataType() != null)
             .collect(groupingBy(CalcResult::getDataType));
 
         DataTypeEnum dataType = getDataType(map);

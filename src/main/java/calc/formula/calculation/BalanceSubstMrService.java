@@ -48,6 +48,7 @@ public class BalanceSubstMrService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
+                .header(header)
                 .defContextType(ContextTypeEnum.DEFAULT)
                 .build();
 
