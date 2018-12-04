@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 @AllArgsConstructor
 public class MessageError {
-    private String code;
-    private MessageTypeEnum messageType;
-    private Map<LangEnum, String> texts;
+    private final String code;
+    private final MessageTypeEnum messageType;
+    private final Map<LangEnum, String> texts;
 }
