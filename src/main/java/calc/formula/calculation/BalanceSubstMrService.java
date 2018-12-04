@@ -6,6 +6,7 @@ import calc.entity.calc.bs.mr.*;
 import calc.entity.calc.enums.LangEnum;
 import calc.formula.CalcContext;
 import calc.formula.ContextTypeEnum;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MrService;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
+import static calc.util.Util.buildMsgParams;
 import static calc.util.Util.round;
 import static java.util.stream.Collectors.toList;
 
@@ -59,8 +61,18 @@ public class BalanceSubstMrService {
                     continue;
 
                 String info = meteringPoint.getCode();
+                Map<String, String> msgParams = buildMsgParams(meteringPoint);
 
-                List<MeteringReading> meteringReadings = mrService.calc(meteringPoint, context);
+                List<MeteringReading> meteringReadings;
+                try {
+                    meteringReadings = mrService.calc(meteringPoint, context);
+                }
+                catch (CalcServiceException e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
+                    messageService.addMessage(header, mrLine.getId(), docCode, e.getErrCode(), msgParams);
+                    continue;
+                }
+
                 for (MeteringReading t : meteringReadings) {
                     BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
 

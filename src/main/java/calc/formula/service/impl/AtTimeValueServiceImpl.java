@@ -3,6 +3,7 @@ package calc.formula.service.impl;
 import calc.entity.calc.MeterHistory;
 import calc.formula.CalcContext;
 import calc.entity.calc.AtTimeValue;
+import calc.formula.exception.TooManyRowsMeterHistoryException;
 import calc.formula.service.AtTimeValueService;
 import calc.repo.calc.AtTimeValueRepo;
 import calc.repo.calc.MeterHistoryRepo;
@@ -50,7 +51,7 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
 
         List<MeterHistory> meterHistory = meterHistoryRepo.findAllByMeteringPoint(meteringPointCode, date);
         if (meterHistory.size() > 1)
-            throw new RuntimeException("Найдено больше одной записи в таблице mdfem_history");
+            throw new TooManyRowsMeterHistoryException("Найдено больше одной записи в таблице mdfem_history");
 
         return meterHistory != null && !meterHistory.isEmpty()
             ? ofNullable(meterHistory.get(0).getFactor()).orElse(1d)

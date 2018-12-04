@@ -277,6 +277,12 @@ public class LossFactService {
     }
 
     private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
+        if (meteringPoint == null)
+            return null;
+
+        if (param == null)
+            return null;
+
         Double val = PeriodTimeValueExpression.builder()
             .meteringPointCode(meteringPoint.getCode())
             .parameterCode(param.getCode())
