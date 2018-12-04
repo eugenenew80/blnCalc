@@ -68,7 +68,7 @@ public class BalanceSubstTransformerService {
         }
     }
 
-    private List<PowerTransformerValue> calcLines(BalanceSubstResultHeader header, CalcContext context) throws Exception  {
+    private List<PowerTransformerValue> calcLines(BalanceSubstResultHeader header, CalcContext context)  {
         Parameter paramWL = paramService.getParam("WL");
         Unit unitWL = paramWL.getUnit();
 
