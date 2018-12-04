@@ -163,8 +163,10 @@ public class CalcServiceImpl implements CalcService {
 
         if (context.getHeader().getPeriodType() != PeriodTypeEnum.H) {
             Double doubleValue = expression.doubleValue();
-            doubleValue = round(doubleValue, formula.getParam());
+            if (doubleValue != null && Double.isNaN(doubleValue))
+                doubleValue = null;
 
+            doubleValue = round(doubleValue, formula.getParam());
             result.setDoubleValue(doubleValue);
             result.setPeriodType(context.getHeader().getPeriodType());
         }

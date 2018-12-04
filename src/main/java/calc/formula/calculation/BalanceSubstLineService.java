@@ -16,13 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import javax.annotation.PostConstruct;
 import java.util.*;
-
 import static calc.util.Util.buildMsgParams;
+import static calc.util.Util.inverseParam;
 import static java.util.Optional.*;
 
-@SuppressWarnings("Duplicates")
+@SuppressWarnings("ImplicitSubclassInspection")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstLineService {
@@ -34,13 +33,6 @@ public class BalanceSubstLineService {
     private final CalcService calcService;
     private final MessageService messageService;
     private final ParamService paramService;
-    private Map<String, Parameter> mapParams = null;
-
-    @PostConstruct
-    public void init() {
-        mapParams = paramService.getValues();
-    }
-
 
     public boolean calc(BalanceSubstResultHeader header) {
         try {
@@ -60,7 +52,7 @@ public class BalanceSubstLineService {
                 Map<String, Parameter> sections = getSections(line);
                 for (String section : sections.keySet()) {
                     Parameter param = line.getParam() == null ? sections.get(section) : line.getParam();
-                    param = inverseParam(param, line.getIsInverse());
+                    param = inverseParam(paramService, param, line.getIsInverse());
 
                     Map<String, String> msgParams = buildMsgParams(meteringPoint);
                     Double val = null;
@@ -102,13 +94,13 @@ public class BalanceSubstLineService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveLines(List<BalanceSubstResultLine> resultLines) {
+    private void saveLines(List<BalanceSubstResultLine> resultLines) {
         balanceSubstResultLineRepo.save(resultLines);
         balanceSubstResultLineRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteLines(BalanceSubstResultHeader header) {
+    private void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultLine> lines = balanceSubstResultLineRepo.findAllByHeaderId(header.getId());
         for (int i=0; i<lines.size(); i++)
             balanceSubstResultLineRepo.delete(lines.get(i));
@@ -121,7 +113,7 @@ public class BalanceSubstLineService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void copyNotes(BalanceSubstResultHeader header) {
+    private void copyNotes(BalanceSubstResultHeader header) {
         List<BalanceSubstResultNote> resultNotes = new ArrayList<>();
         for (BalanceSubstNote note : header.getHeader().getNotes()) {
             BalanceSubstResultNote resultNote = new BalanceSubstResultNote();
@@ -145,7 +137,6 @@ public class BalanceSubstLineService {
         balanceSubstResultNoteRepo.flush();
     }
 
-
     private void addTranslates(BalanceSubstLine line, BalanceSubstResultLine resultLine) {
         if (resultLine.getTranslates() == null)
             resultLine.setTranslates(new ArrayList<>());
@@ -162,6 +153,9 @@ public class BalanceSubstLineService {
     private Double getMrVal(BalanceSubstLine bsLine, Parameter param, CalcContext context) {
         MeteringPoint meteringPoint = bsLine.getMeteringPoint();
         if (meteringPoint == null)
+            return null;
+
+        if (param == null)
             return null;
 
         if (meteringPoint.getPointType() == PointTypeEnum.PMP) {
@@ -189,20 +183,10 @@ public class BalanceSubstLineService {
 
     private Map<String, Parameter> getSections(BalanceSubstLine bLine) {
         Map<String, Parameter> map = new HashMap<>();
-        if (bLine.getIsSection1()) map.put("1", mapParams.get("A+"));
-        if (bLine.getIsSection2()) map.put("2", mapParams.get("A-"));
-        if (bLine.getIsSection3()) map.put("3", mapParams.get("A-"));
-        if (bLine.getIsSection4()) map.put("4", mapParams.get("A-"));
+        if (bLine.getIsSection1()) map.put("1", paramService.getParam("A+"));
+        if (bLine.getIsSection2()) map.put("2", paramService.getParam("A-"));
+        if (bLine.getIsSection3()) map.put("3", paramService.getParam("A-"));
+        if (bLine.getIsSection4()) map.put("4", paramService.getParam("A-"));
         return map;
-    }
-
-    private Parameter inverseParam(Parameter param, Boolean isInverse) {
-        if (isInverse) {
-            if (param.equals(mapParams.get("A+"))) return mapParams.get("A-");
-            if (param.equals(mapParams.get("A-"))) return mapParams.get("A+");
-            if (param.equals(mapParams.get("R+"))) return mapParams.get("R-");
-            if (param.equals(mapParams.get("R-"))) return mapParams.get("R+");
-        }
-        return param;
     }
 }

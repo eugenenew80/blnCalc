@@ -4,6 +4,8 @@ import calc.entity.calc.Parameter;
 import calc.formula.service.ParamService;
 import calc.repo.calc.ParameterRepo;
 import lombok.RequiredArgsConstructor;
+import org.ehcache.Cache;
+import org.ehcache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
@@ -14,6 +16,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ParamServiceImpl implements ParamService {
     private final ParameterRepo parameterRepo;
+    private final CacheManager ehcacheManager;
 
     @Override
     public Map<String, Parameter> getValues() {
@@ -22,5 +25,16 @@ public class ParamServiceImpl implements ParamService {
             mapParams.put(param.getCode(), param);
 
         return mapParams;
+    }
+
+    @Override
+    public Parameter getParam(String paramCode) {
+        Cache<String, Parameter> paramCache = ehcacheManager.getCache("paramCache", String.class, Parameter.class);
+        Parameter param = paramCache.get(paramCode);
+        if (param == null) {
+            param = parameterRepo.findByCode(paramCode);
+            paramCache.putIfAbsent(paramCode, param);
+        }
+        return param;
     }
 }

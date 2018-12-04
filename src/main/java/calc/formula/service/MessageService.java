@@ -7,7 +7,9 @@ import calc.entity.calc.inter.InterResultHeader;
 import calc.entity.calc.loss.LossFactResultHeader;
 import calc.entity.calc.reg.RegResultHeader;
 import calc.entity.calc.seg.SegResultHeader;
+import calc.entity.calc.svr.MeteringPointSetting;
 import calc.entity.calc.svr.SvrResultHeader;
+import calc.formula.exception.CalcServiceException;
 
 import java.util.Map;
 
@@ -36,5 +38,5 @@ public interface MessageService {
     void addMessage(SourceResultHeader header, Long lineNum, String docCode, String  errCode, Map<String, String> params);
 
     void deleteMessages(SvrResultHeader header);
-    void addMessage(SvrResultHeader header, Long lineNum, String docCode, String  errCode, Map<String, String> params);
+    void addMessage(SvrResultHeader header, MeteringPointSetting line, CalcServiceException exc);
 }

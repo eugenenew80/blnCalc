@@ -2,6 +2,7 @@ package calc.entity.calc;
 
 import calc.entity.calc.enums.TransformerTypeEnum;
 import calc.entity.calc.enums.LangEnum;
+import calc.entity.calc.enums.WindingNumber;
 import lombok.*;
 import javax.persistence.*;
 import org.hibernate.annotations.Immutable;
@@ -51,7 +52,7 @@ public class PowerTransformer {
     private MeteringPoint inputMpL;
 
     @Column(name = "windings_number")
-    private Long windingsNumber;
+    private Integer windingsNumber;
 
     @Column(name="equipment_type")
     @Enumerated(EnumType.STRING)
@@ -78,4 +79,19 @@ public class PowerTransformer {
     @OneToMany(mappedBy = "powerTransformer")
     @MapKey(name = "lang")
     private Map<LangEnum, PowerTransformerTranslate> translates;
+
+    @Transient
+    public WindingNumber getWindNum() {
+        if (windingsNumber == null)
+            return WindingNumber.NOT_SET;
+
+        switch (windingsNumber) {
+            case 2:
+                return WindingNumber.TWO;
+            case 3:
+                return WindingNumber.THREE;
+            default:
+                return WindingNumber.NOT_SET;
+        }
+    }
 }
