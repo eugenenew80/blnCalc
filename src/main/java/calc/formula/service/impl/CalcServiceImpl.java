@@ -564,23 +564,21 @@ public class CalcServiceImpl implements CalcService {
                 .context(context)
                 .build();
 
-            Double val = ptExpression.doubleValue();
-            logger.trace("  val: " + val);
-
-            if (val == null && context.getDefContextType() == ContextTypeEnum.MR) {
-                logger.trace("  context: mr");
-                logger.trace("  expression: MrExpression");
-                MrExpression mrExpression = MrExpression.builder()
-                    .meteringPointCode(meteringPoint.getCode())
-                    .parameterCode(param.getCode())
-                    .rate(rate)
-                    .context(context)
-                    .service(mrService)
-                    .build();
-
-                val =  mrExpression.doubleValue();
+            if (property.getContextType() != context.getDefContextType()) {
+                Double val = ptExpression.doubleValue();
                 logger.trace("  val: " + val);
-                return mrExpression;
+
+                if (val == null && context.getDefContextType() == ContextTypeEnum.MR) {
+                    logger.trace("  context: mr");
+                    logger.trace("  expression: MrExpression");
+                    return MrExpression.builder()
+                        .meteringPointCode(meteringPoint.getCode())
+                        .parameterCode(param.getCode())
+                        .rate(rate)
+                        .context(context)
+                        .service(mrService)
+                        .build();
+                }
             }
 
             return ptExpression;
