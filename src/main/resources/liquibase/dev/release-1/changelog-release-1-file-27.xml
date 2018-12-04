@@ -757,4 +757,9 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-536" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop not null constraint for table: calc_balance_source_lines_tl</comment>
+        <dropNotNullConstraint tableName="calc_balance_source_lines_tl" schemaName="apps" columnName="name" />
+    </changeSet>
+
 </databaseChangeLog>
