@@ -21,6 +21,6 @@ public class ParamValue {
     }
 
     public Double getTotalE() {
-        return Math.pow(getTotalE(), 2) + Math.pow(getTotalRE(), 2);
+        return Math.pow(getTotalAE(), 2) + Math.pow(getTotalRE(), 2);
     }
 }

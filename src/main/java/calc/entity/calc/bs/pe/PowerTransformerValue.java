@@ -5,6 +5,7 @@ import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.PowerTransformer;
 import calc.entity.calc.Unit;
 import calc.entity.calc.bs.BalanceSubstResultHeader;
+import calc.formula.ParamValue;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -165,5 +166,40 @@ public class PowerTransformerValue {
     @ManyToOne
     @JoinColumn(name = "metering_point_id_out")
     private MeteringPoint meteringPointOut;
-}
 
+    @Transient
+    public PowerTransformerValue addValueH(ParamValue value) {
+        setApH(value.getAp());
+        setAmH(value.getAm());
+        setRpH(value.getRp());
+        setRmH(value.getRm());
+        setTotalAEH(value.getTotalAE());
+        setTotalREH(value.getTotalRE());
+        setTotalEH(value.getTotalE());
+        return this;
+    }
+
+    @Transient
+    public PowerTransformerValue addValueM(ParamValue value) {
+        setApM(value.getAp());
+        setAmM(value.getAm());
+        setRpM(value.getRp());
+        setRmM(value.getRm());
+        setTotalAEM(value.getTotalAE());
+        setTotalREM(value.getTotalRE());
+        setTotalEM(value.getTotalE());
+        return this;
+    }
+
+    @Transient
+    public PowerTransformerValue addValueL(ParamValue value) {
+        setApL(value.getAp());
+        setAmL(value.getAm());
+        setRpL(value.getRp());
+        setRmL(value.getRm());
+        setTotalAEL(value.getTotalAE());
+        setTotalREL(value.getTotalRE());
+        setTotalEL(value.getTotalE());
+        return this;
+    }
+}

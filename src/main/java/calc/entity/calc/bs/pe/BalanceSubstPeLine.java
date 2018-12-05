@@ -1,6 +1,7 @@
 package calc.entity.calc.bs.pe;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.TemplateLine;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.PowerTransformer;
 import calc.entity.calc.Reactor;
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of= {"id"})
 @Entity
 @Table(name = "calc_balance_subst_pe_lines")
-public class BalanceSubstPeLine {
+public class BalanceSubstPeLine implements TemplateLine {
     @Id
     private Long id;
 
@@ -40,4 +41,9 @@ public class BalanceSubstPeLine {
 
     @Column(name = "calc_num")
     private Long calcNum;
+
+    @Transient
+    public Long getLineNum() {
+        return id;
+    }
 }
