@@ -13,7 +13,6 @@ import calc.repo.calc.MeterHistoryRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -29,12 +28,6 @@ public class MrServiceImpl implements MrService {
     private final AtTimeValueService atTimeValueService;
     private final MeterHistoryRepo meterHistoryRepo;
     private final BypassModeRepo bypassModeRepo;
-    private Map<String, Parameter> mapParams = null;
-
-    @PostConstruct
-    public void init() {
-        mapParams = paramService.getValues();
-    }
 
     @Override
     public List<MeteringReading> calc(MeteringPoint meteringPoint, CalcContext context) {

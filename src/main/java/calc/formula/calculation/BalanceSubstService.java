@@ -105,13 +105,13 @@ public class BalanceSubstService {
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
-            Parameter parAp = paramService.getValues().get("A+");
+            Parameter parAp = paramService.getParam("A+");
             if (parAp != null) {
                 double rounding =  Math.pow(10, Optional.ofNullable(parAp.getDigitsRounding()).orElse(0));
                 if (total1 != null) total1 = Math.round(total1 * rounding) / rounding;
             }
 
-            Parameter parAm = paramService.getValues().get("A-");
+            Parameter parAm = paramService.getParam("A-");
             if (parAm != null) {
                 double rounding =  Math.pow(10, Optional.ofNullable(parAm.getDigitsRounding()).orElse(0));
                 if (total2 != null) total2 = Math.round(total2 * rounding) / rounding;
@@ -119,7 +119,7 @@ public class BalanceSubstService {
                 if (total4 != null) total4 = Math.round(total4 * rounding) / rounding;
             }
 
-            Parameter parWl = paramService.getValues().get("WL");
+            Parameter parWl = paramService.getParam("WL");
             if (parWl != null) {
                 double rounding =  Math.pow(10, Optional.ofNullable(parWl.getDigitsRounding()).orElse(0));
                 if (total5 != null) total5 = Math.round(total5 * rounding) / rounding;

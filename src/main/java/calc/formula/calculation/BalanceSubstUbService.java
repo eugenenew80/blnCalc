@@ -51,12 +51,6 @@ public class BalanceSubstUbService {
     private final ParamService paramService;
     private final CalcService calcService;
     private final PeriodTimeValueService periodTimeValueService;
-    private Map<String, Parameter> mapParams = null;
-
-    @PostConstruct
-    public void init() {
-        mapParams = paramService.getValues();
-    }
 
     public boolean calc(BalanceSubstResultHeader header) {
         try {
@@ -75,7 +69,7 @@ public class BalanceSubstUbService {
                 for (String direction : Arrays.asList("1", "2")) {
                     if (direction.equals("1") && !ubLine.getIsSection1()) continue;
                     if (direction.equals("2") && !ubLine.getIsSection2()) continue;
-                    Parameter param = ofNullable(ubLine.getParam()).orElse(direction.equals("1") ? mapParams.get("A+") : mapParams.get("A-"));
+                    Parameter param = ofNullable(ubLine.getParam()).orElse(direction.equals("1") ? paramService.getParam("A+") : paramService.getParam("A-"));
 
                     Double w  = getMrVal(mrLines, ubLine, null, param, context);
                     if (direction.equals("1")) wApTotal += ofNullable(w).orElse(0d);
@@ -130,7 +124,7 @@ public class BalanceSubstUbService {
                     .build()
                     .doubleValue();
 
-                Parameter parU = paramService.getValues().get("U");
+                Parameter parU = paramService.getParam("U");
                 uAvg = round(uAvg, parU);
                 uAvg = Optional.of(uAvg).orElse(0d);
 
@@ -151,12 +145,12 @@ public class BalanceSubstUbService {
                 for (String direction : Arrays.asList("1", "2")) {
                     if (direction.equals("1") && !ubLine.getIsSection1()) continue;
                     if (direction.equals("2") && !ubLine.getIsSection2()) continue;
-                    Parameter param = ofNullable(ubLine.getParam()).orElse(direction.equals("1") ? mapParams.get("A+") : mapParams.get("A-"));
+                    Parameter param = ofNullable(ubLine.getParam()).orElse(direction.equals("1") ? paramService.getParam("A+") : paramService.getParam("A-"));
 
                     if (meterHistories.size() == 0) {
                         Double w  = getMrVal(mrLines, ubLine, null, param, context);
-                        Double wa = getMrVal(mrLines, ubLine, null, direction.equals("1") ? mapParams.get("A+") : mapParams.get("A-"), context);
-                        Double wr = getMrVal(mrLines, ubLine, null, direction.equals("1") ? mapParams.get("R+") : mapParams.get("R-"), context);
+                        Double wa = getMrVal(mrLines, ubLine, null, direction.equals("1") ? paramService.getParam("A+") : paramService.getParam("A-"), context);
+                        Double wr = getMrVal(mrLines, ubLine, null, direction.equals("1") ? paramService.getParam("R+") : paramService.getParam("R-"), context);
 
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
                         line.setHeader(header);
@@ -209,8 +203,8 @@ public class BalanceSubstUbService {
                         }
 
                         Double w  = getMrVal(mrLines, ubLine, meterHistory, param, context);
-                        Double wa = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? mapParams.get("A+") : mapParams.get("A-"), context);
-                        Double wr = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? mapParams.get("R+") : mapParams.get("R-"), context);
+                        Double wa = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? paramService.getParam("A+") : paramService.getParam("A-"), context);
+                        Double wr = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? paramService.getParam("R+") :paramService.getParam("R-"), context);
 
                         Double i1avgVal = sqrt(pow(wa, 2) + pow(wr, 2)) / (sqrt(3d) * uAvg * workHours);
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
@@ -302,7 +296,7 @@ public class BalanceSubstUbService {
             Double nbdProc = sqrt(r1SumB2D2 + r2SumB2D2) * 100d;
             Double nbdVal = nbdProc * r1SumW / 100d;
 
-            nbdVal = round(nbdVal, paramService.getValues().get("A+"));
+            nbdVal = round(nbdVal,paramService.getParam("A+"));
 
             header.setNbdProc(nbdProc);
             header.setNbdVal(nbdVal);

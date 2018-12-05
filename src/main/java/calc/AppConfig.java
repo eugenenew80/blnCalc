@@ -65,6 +65,6 @@ public class AppConfig {
             .withCache("messageCache",
                     newCacheConfigurationBuilder(String.class, MessageError.class, heap(300))
                     .withExpiry(timeToLiveExpiration(ofMinutes(10))).build())
-            .build();
+            .build(true);
     }
 }

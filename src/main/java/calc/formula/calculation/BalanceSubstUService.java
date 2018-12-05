@@ -50,7 +50,7 @@ public class BalanceSubstUService {
                 .defContextType(ContextTypeEnum.DEFAULT)
                 .build();
 
-            Parameter parU = paramService.getValues().get("U");
+            Parameter parU = paramService.getParam("U");
 
             List<BalanceSubstResultULine> resultLines = new ArrayList<>();
             List<BalanceSubstULine> uLines = header.getHeader().getULines();

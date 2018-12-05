@@ -37,12 +37,6 @@ public class BalanceSubstMrService {
     private final BalanceSubstResultMrNoteRepo balanceSubstResultMrNoteRepo;
     private final MessageService messageService;
     private static final String docCode = "ACT";
-    private Map<String, Parameter> mapParams = null;
-
-    @PostConstruct
-    public void init() {
-        mapParams = paramService.getValues();
-    }
 
     public boolean calc(BalanceSubstResultHeader header) {
         try {
@@ -221,10 +215,10 @@ public class BalanceSubstMrService {
 
     private Parameter inverseParam(Parameter param, Boolean isInverse) {
         if (isInverse) {
-            if (param.getCode().equals("A+")) return mapParams.get("A-");
-            if (param.getCode().equals("A-")) return mapParams.get("A+");
-            if (param.getCode().equals("R+")) return mapParams.get("R-");
-            if (param.getCode().equals("R-")) return mapParams.get("R+");
+            if (param.getCode().equals("A+")) return paramService.getParam("A-");
+            if (param.getCode().equals("A-")) return paramService.getParam("A+");
+            if (param.getCode().equals("R+")) return paramService.getParam("R-");
+            if (param.getCode().equals("R-")) return paramService.getParam("R+");
         }
         return param;
     }

@@ -45,7 +45,7 @@ public class InterLineService {
                 .defContextType(ContextTypeEnum.INTER)
                 .build();
 
-            Parameter paramWL = paramService.getValues().get("WL");
+            Parameter paramWL = paramService.getParam("WL");
             List<InterResultLine> resultLines = new ArrayList<>();
             for (InterLine line : header.getHeader().getLines()) {
                 Map<String, String> params = buildMsgParams(line);

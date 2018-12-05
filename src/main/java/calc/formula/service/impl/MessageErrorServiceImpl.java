@@ -12,6 +12,7 @@ import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,16 +22,19 @@ import java.util.Map;
 public class MessageErrorServiceImpl implements MessageErrorService {
     private final MessageRepo messageRepo;
     private final CacheManager ehcacheManager;
+    private Cache<String, MessageError> messageCache = null;
+
+    @PostConstruct
+    public void init() {
+        messageCache = ehcacheManager.getCache("messageCache", String.class, MessageError.class);
+    }
 
     @Override
     public MessageError getError(String errCode) {
-        //Cache<String, MessageError> messageCache = ehcacheManager.getCache("messageCache", String.class, MessageError.class);
-        //MessageError messageError = messageCache.get(errCode);
-
-        MessageError messageError = null;
+        MessageError messageError = messageCache.get(errCode);
         if (messageError == null) {
             messageError = buildMessageError(errCode);
-            //messageCache.putIfAbsent(errCode, messageError);
+            messageCache.putIfAbsent(errCode, messageError);
         }
 
         return messageError;

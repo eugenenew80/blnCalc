@@ -95,7 +95,7 @@ public class SvrService {
             if (meteringPoint == null)
                 continue;
 
-            Parameter param = ofNullable(line.getParam()).orElse(paramService.getValues().get("AB"));
+            Parameter param = ofNullable(line.getParam()).orElse(paramService.getParam("AB"));
             if (param == null)
                 continue;
 

@@ -95,7 +95,7 @@ public class RegService {
 
             Double ap = null;
             try {
-                Parameter param = line.getIsInverse() ? paramService.getValues().get("A-") : paramService.getValues().get("A+");
+                Parameter param = line.getIsInverse() ? paramService.getParam("A-") : paramService.getParam("A+");
                 CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 ap = result != null ? result.getDoubleValue() : null;
             }
@@ -106,7 +106,7 @@ public class RegService {
 
             Double am = null;
             try {
-                Parameter param = line.getIsInverse() ?  paramService.getValues().get("A+") : paramService.getValues().get("A-");
+                Parameter param = line.getIsInverse() ?  paramService.getParam("A+") : paramService.getParam("A-");
                 CalcResult result = calcService.calcValue(meteringPoint, param, context);
                 am = result != null ? result.getDoubleValue() : null;
             }
@@ -271,7 +271,7 @@ public class RegService {
             if (meteringPoint == null)
                 continue;
 
-            Parameter param = paramService.getValues().get("A+");
+            Parameter param = paramService.getParam("A+");
             if (param == null)
                 continue;
 
@@ -431,10 +431,10 @@ public class RegService {
 
     private Parameter inverseParam(Parameter param, Boolean isInverse) {
         if (isInverse) {
-            if (param.equals(paramService.getValues().get("A+"))) return paramService.getValues().get("A-");
-            if (param.equals(paramService.getValues().get("A-"))) return paramService.getValues().get("A+");
-            if (param.equals(paramService.getValues().get("R+"))) return paramService.getValues().get("R-");
-            if (param.equals(paramService.getValues().get("R-"))) return paramService.getValues().get("R+");
+            if (param.equals(paramService.getParam("A+"))) return paramService.getParam("A-");
+            if (param.equals(paramService.getParam("A-"))) return paramService.getParam("A+");
+            if (param.equals(paramService.getParam("R+"))) return paramService.getParam("R-");
+            if (param.equals(paramService.getParam("R-"))) return paramService.getParam("R+");
         }
         return param;
     }

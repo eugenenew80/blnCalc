@@ -45,10 +45,7 @@ public class CalcServiceImpl implements CalcService {
     private final DistributionService distributionService;
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
-    private Map<String, Parameter> mapParams = null;
 
-    @PostConstruct
-    public void init() { mapParams = paramService.getValues(); }
 
     @Override
     public CalcResult calcValue(MeteringPoint point, Parameter param, CalcContext context) {
@@ -239,8 +236,8 @@ public class CalcServiceImpl implements CalcService {
             .build();
 
         if (param.getCode().equals("AB")) {
-            DoubleExpression expression1 = getExpression(point, mapParams.get("A+"), 1d, context, property);
-            DoubleExpression expression2 = getExpression(point, mapParams.get("A-"), 1d, context, property);
+            DoubleExpression expression1 = getExpression(point, paramService.getParam("A+"), 1d, context, property);
+            DoubleExpression expression2 = getExpression(point, paramService.getParam("A-"), 1d, context, property);
             expression = BinaryExpression.builder()
                 .operator(operatorFactory.binary("subtract"))
                 .expressions(Arrays.asList(expression1, expression2))
@@ -248,8 +245,8 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (param.getCode().equals("RB")) {
-            DoubleExpression expression1 = getExpression(point, mapParams.get("R+"), 1d, context, property);
-            DoubleExpression expression2 = getExpression(point, mapParams.get("R-"), 1d, context, property);
+            DoubleExpression expression1 = getExpression(point, paramService.getParam("R+"), 1d, context, property);
+            DoubleExpression expression2 = getExpression(point, paramService.getParam("R-"), 1d, context, property);
             expression = BinaryExpression.builder()
                 .operator(operatorFactory.binary("subtract"))
                 .expressions(Arrays.asList(expression1, expression2))
@@ -341,9 +338,9 @@ public class CalcServiceImpl implements CalcService {
             }
         }
 
-        if (det.getParam().equals(mapParams.get("AB"))) {
-            DoubleExpression  expression1 = getExpression(det, mapParams.get("A+"), context, property);
-            DoubleExpression  expression2 = getExpression(det, mapParams.get("A-"), context, property);
+        if (det.getParam().equals(paramService.getParam("AB"))) {
+            DoubleExpression  expression1 = getExpression(det, paramService.getParam("A+"), context, property);
+            DoubleExpression  expression2 = getExpression(det, paramService.getParam("A-"), context, property);
             return BinaryExpression.builder()
                 .operator(operatorFactory.binary("subtract"))
                 .expressions(Arrays.asList(expression1, expression2))

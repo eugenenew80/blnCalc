@@ -42,12 +42,6 @@ public class LossFactService {
     private final CalcService calcService;
     private final ParamService paramService;
     private final MessageService messageService;
-    private Map<String, Parameter> mapParams = null;
-
-    @PostConstruct
-    public void init() {
-        mapParams = paramService.getValues();
-    }
 
     public boolean calc(Long headerId) {
         LossFactResultHeader header = lossFactResultHeaderRepo.findOne(headerId);
@@ -80,7 +74,7 @@ public class LossFactService {
 
             Double r321 = null;
             try {
-                Parameter param = inverseParam(mapParams.get("AB"), false);
+                Parameter param = inverseParam(paramService.getParam("AB"), false);
                 r321 = getMrVal(meteringPoint, param, context);
             }
             catch (CalcServiceException e) {
@@ -156,7 +150,7 @@ public class LossFactService {
 
             Double ap = null;
             try {
-                Parameter param = inverseParam(mapParams.get("A+"), line.getIsInverse());
+                Parameter param = inverseParam(paramService.getParam("A+"), line.getIsInverse());
                 ap = getMrVal(meteringPoint, param, context);
             }
             catch (CalcServiceException e) {
@@ -166,7 +160,7 @@ public class LossFactService {
 
             Double am = null;
             try {
-                Parameter param = inverseParam(mapParams.get("A-"), line.getIsInverse());
+                Parameter param = inverseParam(paramService.getParam("A-"), line.getIsInverse());
                 am = getMrVal(meteringPoint, param, context);
             }
             catch (CalcServiceException e) {
@@ -197,7 +191,7 @@ public class LossFactService {
 
             Double ap = null; Double am = null;
             try {
-                Parameter param = inverseParam(mapParams.get("A+"), line.getIsInverse());
+                Parameter param = inverseParam(paramService.getParam("A+"), line.getIsInverse());
                 ap = getMrVal(meteringPoint, param, context);
             }
             catch (CalcServiceException e) {
@@ -206,7 +200,7 @@ public class LossFactService {
             }
 
             try {
-                Parameter param = inverseParam(mapParams.get("A-"), line.getIsInverse());
+                Parameter param = inverseParam(paramService.getParam("A-"), line.getIsInverse());
                 am = getMrVal(meteringPoint, param, context);
             }
             catch (CalcServiceException e) {
@@ -268,10 +262,10 @@ public class LossFactService {
 
     private Parameter inverseParam(Parameter param, Boolean isInverse) {
         if (isInverse) {
-            if (param.equals(mapParams.get("A+"))) return mapParams.get("A-");
-            if (param.equals(mapParams.get("A-"))) return mapParams.get("A+");
-            if (param.equals(mapParams.get("R+"))) return mapParams.get("R-");
-            if (param.equals(mapParams.get("R-"))) return mapParams.get("R+");
+            if (param.equals(paramService.getParam("A+"))) return paramService.getParam("A-");
+            if (param.equals(paramService.getParam("A-"))) return paramService.getParam("A+");
+            if (param.equals(paramService.getParam("R+"))) return paramService.getParam("R-");
+            if (param.equals(paramService.getParam("R-"))) return paramService.getParam("R+");
         }
         return param;
     }

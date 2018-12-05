@@ -8,8 +8,7 @@ import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.PostConstruct;
 
 @Service
 @Transactional(readOnly = true)
@@ -17,25 +16,19 @@ import java.util.Map;
 public class ParamServiceImpl implements ParamService {
     private final ParameterRepo parameterRepo;
     private final CacheManager ehcacheManager;
+    private Cache<String, Parameter> paramCache = null;
 
-    @Override
-    public Map<String, Parameter> getValues() {
-        Map<String, Parameter> mapParams = new HashMap<>();
-        for (Parameter param : parameterRepo.findAll())
-            mapParams.put(param.getCode(), param);
-
-        return mapParams;
+    @PostConstruct
+    public void init() {
+        paramCache = ehcacheManager.getCache("paramCache", String.class, Parameter.class);
     }
 
     @Override
     public Parameter getParam(String paramCode) {
-        //Cache<String, Parameter> paramCache = ehcacheManager.getCache("paramCache", String.class, Parameter.class);
-        //Parameter param = paramCache.get(paramCode);
-
-        Parameter param = null;
+        Parameter param = paramCache.get(paramCode);
         if (param == null) {
             param = parameterRepo.findByCode(paramCode);
-            //paramCache.putIfAbsent(paramCode, param);
+            paramCache.putIfAbsent(paramCode, param);
         }
         return param;
     }

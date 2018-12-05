@@ -11,11 +11,9 @@ import calc.formula.expression.DoubleExpression;
 import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -44,10 +42,14 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
 
     @Override
-    public DoubleExpression doubleExpression() { return this; }
+    public DoubleExpression doubleExpression() {
+        return this;
+    }
 
     @Override
-    public Set<String> pointCodes() { return Stream.of(meteringPointCode).collect(toSet()); }
+    public Set<String> pointCodes() {
+        return Stream.of(meteringPointCode).collect(toSet());
+    }
 
     @Override
     public Double doubleValue() {
@@ -75,8 +77,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
             .collect(groupingBy(CalcResult::getDataType));
 
         DataTypeEnum dataType = getDataType(map);
-        logger.trace("  data types count: " + map.size());
-        logger.trace("  using data type: " + dataType);
 
         List<CalcResult> list = dataType !=null ? map.get(dataType) : null;
         if (list == null || list.size() == 0)

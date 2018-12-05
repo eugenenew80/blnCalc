@@ -59,7 +59,7 @@ public class BalanceSubstReactorService {
     }
 
     private List<ReactorValue> calcLines(BalanceSubstResultHeader header, CalcContext context) {
-        Parameter paramWL = paramService.getValues().get("WL");
+        Parameter paramWL = paramService.getParam("WL");
         Unit unitWL = paramWL.getUnit();
 
         List<ReactorValue> reactorLines = new ArrayList<>();
@@ -101,7 +101,7 @@ public class BalanceSubstReactorService {
                 .build()
                 .doubleValue();
 
-            Parameter parU = paramService.getValues().get("U");
+            Parameter parU = paramService.getParam("U");
             uAvg = round(uAvg, parU);
 
             if (uNom == 0) {
