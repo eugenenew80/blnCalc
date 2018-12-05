@@ -3,6 +3,7 @@ package calc.formula.service.impl;
 import calc.entity.calc.Message;
 import calc.entity.calc.MessageTranslate;
 import calc.entity.calc.enums.LangEnum;
+import calc.entity.calc.enums.MessageTypeEnum;
 import calc.formula.service.MessageError;
 import calc.formula.service.MessageErrorService;
 import calc.repo.calc.MessageRepo;
@@ -23,12 +24,13 @@ public class MessageErrorServiceImpl implements MessageErrorService {
 
     @Override
     public MessageError getError(String errCode) {
-        Cache<String, MessageError> messageCache = ehcacheManager.getCache("messageCache", String.class, MessageError.class);
-        MessageError messageError = messageCache.get(errCode);
+        //Cache<String, MessageError> messageCache = ehcacheManager.getCache("messageCache", String.class, MessageError.class);
+        //MessageError messageError = messageCache.get(errCode);
 
+        MessageError messageError = null;
         if (messageError == null) {
             messageError = buildMessageError(errCode);
-            messageCache.putIfAbsent(errCode, messageError);
+            //messageCache.putIfAbsent(errCode, messageError);
         }
 
         return messageError;
@@ -36,13 +38,15 @@ public class MessageErrorServiceImpl implements MessageErrorService {
 
     private MessageError buildMessageError(String errCode) {
         Message message = messageRepo.findOne(errCode);
+        MessageError messageError = null;
 
-        MessageError messageError;
-        Map<LangEnum, String> texts = new HashMap<>();
-        for (MessageTranslate translate : message.getTranslates())
-            texts.putIfAbsent(translate.getId().getLang(), translate.getText());
+        if (message != null) {
+            Map<LangEnum, String> texts = new HashMap<>();
+            for (MessageTranslate translate : message.getTranslates())
+                texts.putIfAbsent(translate.getId().getLang(), translate.getText());
+            messageError = new MessageError(errCode, message.getMessageType(), texts);
+        }
 
-        messageError = new MessageError(message.getCode(), message.getMessageType(), texts);
-        return messageError;
+        return messageError != null ? messageError : new MessageError(errCode, MessageTypeEnum.E, null);
     }
 }

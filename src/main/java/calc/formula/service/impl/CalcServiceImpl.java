@@ -200,17 +200,17 @@ public class CalcServiceImpl implements CalcService {
 
     @Override
     public CalcResult readValue(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) {
-        DoubleExpression expression;
-        if (!param.equals(mapParams.get("AB")))
+        DoubleExpression expression = DoubleValueExpression.builder()
+            .value(null)
+            .build();
+
+        if (point.getPointType() == PointTypeEnum.PMP)
+            expression = param.getCode().equals("AB") || param.getCode().equals("RB")
+                ? getComplexExpression(point, param, context, property)
+                : getExpression(point, param, 1d, context, property);
+
+        if (point.getPointType() == PointTypeEnum.VMP)
             expression = getExpression(point, param, 1d, context, property);
-        else {
-            DoubleExpression expression1 = getExpression(point, mapParams.get("A+"), 1d, context, property);
-            DoubleExpression expression2 = getExpression(point, mapParams.get("A-"), 1d, context, property);
-            expression = BinaryExpression.builder()
-                .operator(operatorFactory.binary("subtract"))
-                .expressions(Arrays.asList(expression1, expression2))
-                .build();
-        }
 
         CalcResult result = new CalcResult();
         result.setMeteringDate(context.getHeader().getEndDate().atStartOfDay().plusDays(1));
@@ -231,6 +231,32 @@ public class CalcServiceImpl implements CalcService {
             logger.trace("  val: " + Arrays.deepToString(expression.doubleValues()));
         }
         return result;
+    }
+
+    private DoubleExpression getComplexExpression(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) {
+        DoubleExpression expression = DoubleValueExpression.builder()
+            .value(null)
+            .build();
+
+        if (param.getCode().equals("AB")) {
+            DoubleExpression expression1 = getExpression(point, mapParams.get("A+"), 1d, context, property);
+            DoubleExpression expression2 = getExpression(point, mapParams.get("A-"), 1d, context, property);
+            expression = BinaryExpression.builder()
+                .operator(operatorFactory.binary("subtract"))
+                .expressions(Arrays.asList(expression1, expression2))
+                .build();
+        }
+
+        if (param.getCode().equals("RB")) {
+            DoubleExpression expression1 = getExpression(point, mapParams.get("R+"), 1d, context, property);
+            DoubleExpression expression2 = getExpression(point, mapParams.get("R-"), 1d, context, property);
+            expression = BinaryExpression.builder()
+                .operator(operatorFactory.binary("subtract"))
+                .expressions(Arrays.asList(expression1, expression2))
+                .build();
+        }
+
+        return expression;
     }
 
     private List<Formula> findFormulas(MeteringPoint point, Parameter param, ParamTypeEnum paramType) {
@@ -448,8 +474,10 @@ public class CalcServiceImpl implements CalcService {
     private DoubleExpression getExpression(MeteringPoint meteringPoint, Parameter param, Double rate, CalcContext context, CalcProperty property) {
         logger.trace("end point: " + meteringPoint.getCode());
         logger.trace("  param: " + param.getCode());
-        logger.trace("  pointType: " + meteringPoint.getPointType().name());
-        logger.trace("  paramType: " + property.getParamType().name());
+        logger.trace("  pointType: " + meteringPoint.getPointType());
+        logger.trace("  paramType: " + property.getParamType());
+        logger.trace("  defContextType: " + context.getDefContextType());
+        logger.trace("  contextType: " + property.getContextType());
         logger.trace("  rate: " + rate);
 
         if (property.getDeterminingMethod() == DeterminingMethodEnum.RDV) {
@@ -490,7 +518,7 @@ public class CalcServiceImpl implements CalcService {
             }
         }
 
-        if (param.getCode().equals("WL") && property.getContextType() == ContextTypeEnum.MR) {
+        if (param.getCode().equals("WL") && context.getDefContextType() == ContextTypeEnum.MR) {
             Map<String, Double> transformerValues = context.getTransformerValues();
             if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {
                 logger.trace("  expression: CachedValueExpression");

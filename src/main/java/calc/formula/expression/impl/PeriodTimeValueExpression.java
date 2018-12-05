@@ -13,6 +13,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -24,6 +27,7 @@ import static java.util.stream.Collectors.toSet;
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PeriodTimeValueExpression implements DoubleExpression {
+    private static final Logger logger = LoggerFactory.getLogger(PeriodTimeValueExpression.class);
     private final String meteringPointCode;
     private final String parameterCode;
     private final PeriodTimeValueService service;
@@ -71,6 +75,8 @@ public class PeriodTimeValueExpression implements DoubleExpression {
             .collect(groupingBy(CalcResult::getDataType));
 
         DataTypeEnum dataType = getDataType(map);
+        logger.trace("  data types count: " + map.size());
+        logger.trace("  using data type: " + dataType);
 
         List<CalcResult> list = dataType !=null ? map.get(dataType) : null;
         if (list == null || list.size() == 0)

@@ -21,7 +21,7 @@ public class SvrResultMessage {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "result_header_id")
+    @JoinColumn(name = "service_values_reconciliation_id")
     private SvrResultHeader header;
 
     @Column(name = "line_num")

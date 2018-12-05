@@ -29,11 +29,13 @@ public class ParamServiceImpl implements ParamService {
 
     @Override
     public Parameter getParam(String paramCode) {
-        Cache<String, Parameter> paramCache = ehcacheManager.getCache("paramCache", String.class, Parameter.class);
-        Parameter param = paramCache.get(paramCode);
+        //Cache<String, Parameter> paramCache = ehcacheManager.getCache("paramCache", String.class, Parameter.class);
+        //Parameter param = paramCache.get(paramCode);
+
+        Parameter param = null;
         if (param == null) {
             param = parameterRepo.findByCode(paramCode);
-            paramCache.putIfAbsent(paramCode, param);
+            //paramCache.putIfAbsent(paramCode, param);
         }
         return param;
     }
