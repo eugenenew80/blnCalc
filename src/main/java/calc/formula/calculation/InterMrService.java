@@ -10,6 +10,7 @@ import calc.entity.calc.inter.InterResultHeader;
 import calc.entity.calc.inter.InterResultMrLine;
 import calc.formula.CalcContext;
 import calc.formula.ContextTypeEnum;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.service.MessageService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MrService;
@@ -55,9 +56,9 @@ public class InterMrService {
                 try {
                     meteringReadings = mrService.calc(meteringPoint, context);
                 }
-                catch (Exception e) {
+                catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
-                    messageService.addMessage(header, null, docCode, "MDFEM_ERROR", msgParams);
+                    messageService.addMessage(header, null, docCode, e.getErrCode(), msgParams);
                     e.printStackTrace();
                     continue;
                 }

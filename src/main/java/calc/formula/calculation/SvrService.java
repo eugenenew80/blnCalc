@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import static calc.util.Util.*;
+import static java.lang.Math.abs;
 import static java.util.Optional.*;
 
 @SuppressWarnings("ImplicitSubclassInspection")
@@ -86,7 +87,7 @@ public class SvrService {
             header.getEndDate()
         );
 
-        List<SvrResultLine> resultLines = new ArrayList<>();
+        List<SvrResultLine> results = new ArrayList<>();
         for (MeteringPointSetting line : lines) {
             if (line.getOrganization()!=null && !line.getOrganization().equals(header.getOrganization()))
                 continue;
@@ -117,20 +118,20 @@ public class SvrService {
             }
 
             if (val != null)
-                val = Math.abs(val);
+                val = abs(val);
 
-            SvrResultLine resultLine = new SvrResultLine();
-            resultLine.setHeader(header);
-            resultLine.setMeteringPoint(meteringPoint);
-            resultLine.setParam(param);
-            resultLine.setTypeCode(line.getTypeCode());
-            resultLine.setVal(val);
-            resultLine.setDataType(dataType);
-            resultLine.setOrganization(header.getOrganization());
-            copyTranslates(line, resultLine);
-            resultLines.add(resultLine);
+            SvrResultLine result = new SvrResultLine();
+            result.setHeader(header);
+            result.setMeteringPoint(meteringPoint);
+            result.setParam(param);
+            result.setTypeCode(line.getTypeCode());
+            result.setVal(val);
+            result.setDataType(dataType);
+            result.setOrganization(header.getOrganization());
+            copyTranslates(line, result);
+            results.add(result);
         }
-        saveLines(resultLines);
+        saveLines(results);
     }
 
     private void copyTranslates(MeteringPointSetting line, SvrResultLine resultLine) {
@@ -179,13 +180,11 @@ public class SvrService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void deleteLines(SvrResultHeader header) {
         List<SvrResultLine> lines = svrLineRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            svrLineRepo.delete(lines.get(i));
+        svrLineRepo.delete(lines);
         svrLineRepo.flush();
 
         List<SvrResultNote> notes = svrNoteRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<notes.size(); i++)
-            svrNoteRepo.delete(notes.get(i));
+        svrNoteRepo.delete(notes);
         svrNoteRepo.flush();
     }
 

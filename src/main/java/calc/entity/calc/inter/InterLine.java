@@ -1,6 +1,7 @@
 package calc.entity.calc.inter;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.TemplateLine;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.PowerLine;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "calc_act_inter_pl_lines")
 @Immutable
-public class InterLine {
+public class InterLine implements TemplateLine {
     @Id
     private Long id;
 

@@ -17,7 +17,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import javax.annotation.PostConstruct;
+
 import javax.script.ScriptEngine;
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -570,7 +570,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
         }
 
-        if (property.getContextType() == ContextTypeEnum.INTER) {
+        if (property.getContextType() == ContextTypeEnum.INTER_MR) {
             logger.trace("  context: inter");
             logger.trace("  expression: InterExpression");
             return InterMrExpression.builder()

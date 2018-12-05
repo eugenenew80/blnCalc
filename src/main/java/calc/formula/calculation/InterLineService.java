@@ -19,9 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static calc.util.Util.buildMsgParams;
 import static calc.util.Util.round;
+import static java.util.Arrays.*;
 import static java.util.Optional.ofNullable;
 
+@SuppressWarnings("ImplicitSubclassInspection")
 @Service
 @RequiredArgsConstructor
 public class InterLineService {
@@ -42,7 +45,7 @@ public class InterLineService {
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
                 .header(header)
-                .defContextType(ContextTypeEnum.INTER)
+                .defContextType(ContextTypeEnum.INTER_MR)
                 .build();
 
             Parameter paramWL = paramService.getParam("WL");
@@ -62,7 +65,9 @@ public class InterLineService {
                 resultLine.setIsIncludeTotal(line.getIsIncludeTotal());
                 resultLine.setCreateDate(LocalDateTime.now());
                 resultLine.setCreateBy(header.getCreateBy());
-                resultLine.setDetails(ofNullable(resultLine.getDetails()).orElse(new ArrayList<>()));
+
+                resultLine.setDetails(ofNullable(resultLine.getDetails())
+                    .orElse(new ArrayList<>()));
 
                 if (line.getIsBoundMeterInst()) {
                     InterResultDetLine resultDetLine = new InterResultDetLine();
@@ -100,7 +105,7 @@ public class InterLineService {
 
                         Double val = BinaryExpression.builder()
                             .operator(operatorFactory.binary("subtract"))
-                            .expressions(Arrays.asList(expression2, expression1))
+                            .expressions(asList(expression2, expression1))
                             .build()
                             .doubleValue();
                         resultLine.setBoundaryVal(val);
@@ -108,7 +113,7 @@ public class InterLineService {
                 }
 
                 if (!line.getIsBoundMeterInst()) {
-                    for (Long direction : Arrays.asList(1l, 2l)) {
+                    for (Long direction : asList(1l, 2l)) {
                         MeteringPoint meteringPoint1 = direction == 1l ? line.getMeteringPoint1() : line.getMeteringPoint2();
                         MeteringPoint meteringPoint2 = direction == 1l ? line.getMeteringPoint2() : line.getMeteringPoint1();
 
@@ -200,6 +205,7 @@ public class InterLineService {
                 resultLines.add(resultLine);
             }
 
+            messageService.deleteMessages(header);
             deleteLines(header);
             saveLines(resultLines);
             copyNotes(header);
@@ -217,31 +223,28 @@ public class InterLineService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveLines(List<InterResultLine> resultLines) {
+    private void saveLines(List<InterResultLine> resultLines) {
         interResultLineRepo.save(resultLines);
         interResultLineRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteLines(InterResultHeader header) {
+    private void deleteLines(InterResultHeader header) {
         List<InterResultLine> lines = interResultLineRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            interResultLineRepo.delete(lines.get(i));
+        interResultLineRepo.delete(lines);
         interResultLineRepo.flush();
 
         List<InterResultNote> notes = interResultNoteRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<notes.size(); i++)
-            interResultNoteRepo.delete(notes.get(i));
+        interResultNoteRepo.delete(notes);
         interResultNoteRepo.flush();
 
         List<InterResultApp> apps = interResultAppRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<apps.size(); i++)
-            interResultAppRepo.delete(apps.get(i));
+        interResultAppRepo.delete(apps);
         interResultAppRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void copyNotes(InterResultHeader header) {
+    private void copyNotes(InterResultHeader header) {
         List<InterResultNote> resultNotes = new ArrayList<>();
         for (InterNote note : header.getHeader().getNotes()) {
             InterResultNote resultNote = new InterResultNote();
@@ -264,7 +267,7 @@ public class InterLineService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void copyApps(InterResultHeader header) {
+    private void copyApps(InterResultHeader header) {
         List<InterResultApp> resultApps = new ArrayList<>();
         for (InterApp app : header.getHeader().getApps()) {
             InterResultApp resultApp = new InterResultApp();
@@ -283,12 +286,5 @@ public class InterLineService {
         }
         interResultAppRepo.save(resultApps);
         interResultAppRepo.flush();
-    }
-
-
-    private Map<String, String> buildMsgParams(InterLine line) {
-        Map<String, String> msgParams = new HashMap<>();
-        msgParams.put("line", line.getLineNum().toString());
-        return msgParams;
     }
 }

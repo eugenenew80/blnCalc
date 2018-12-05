@@ -4,9 +4,9 @@ public enum ContextTypeEnum {
     DEFAULT,
     MR,
     ASP,
-    SVR,
-    INTER,
+    INTER_MR,
     SEG,
     REG,
+    SVR,
     SOURCE
 }
