@@ -36,7 +36,7 @@ public class PowerTransformerValue {
     private Double valN;
 
     @Column(name = "windings_number")
-    private Long windingsNumber;
+    private Integer windingsNumber;
 
     @Column(name = "delta_pxx")
     private Double deltaPXX;

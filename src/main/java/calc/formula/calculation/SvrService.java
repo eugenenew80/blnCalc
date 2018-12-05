@@ -54,6 +54,7 @@ public class SvrService {
         try {
             header.setDataType(null);
             updateStatus(header, BatchStatusEnum.P);
+            messageService.deleteMessages(header);
             deleteLines(header);
             calcLines(header, context);
             copyNotes(header);
@@ -98,8 +99,6 @@ public class SvrService {
             if (param == null)
                 continue;
 
-            Map<String, String> msgParams = buildMsgParams(meteringPoint, param);
-
             CalcProperty property = CalcProperty.builder()
                 .processOrder(ProcessOrderEnum.READ_CALC)
                 .build();
@@ -113,8 +112,7 @@ public class SvrService {
                 dataType = getRowDataType(meteringPoint, context);
             }
             catch (CalcServiceException e) {
-                msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
+                messageService.addMessage(header, line, e);
                 e.printStackTrace();
             }
 

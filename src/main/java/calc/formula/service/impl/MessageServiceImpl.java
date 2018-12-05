@@ -1,7 +1,5 @@
 package calc.formula.service.impl;
 
-import calc.entity.calc.Message;
-import calc.entity.calc.MessageTranslate;
 import calc.entity.calc.asp.AspResultHeader;
 import calc.entity.calc.asp.AspResultMessage;
 import calc.entity.calc.asp.AspResultMessageTranslate;
@@ -25,9 +23,12 @@ import calc.entity.calc.seg.SegResultMessageTranslate;
 import calc.entity.calc.source.SourceResultHeader;
 import calc.entity.calc.source.SourceResultMessage;
 import calc.entity.calc.source.SourceResultMessageTranslate;
+import calc.entity.calc.svr.MeteringPointSetting;
 import calc.entity.calc.svr.SvrResultHeader;
 import calc.entity.calc.svr.SvrResultMessage;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.service.MessageError;
+import calc.formula.service.MessageErrorService;
 import calc.formula.service.MessageService;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static calc.util.Util.buildMsgParams;
 
 @SuppressWarnings("Duplicates")
 @Service
@@ -51,20 +54,7 @@ public class MessageServiceImpl implements MessageService {
     private final InterResultMessageRepo interResultMessageRepo;
     private final LossFactResultMessageRepo lossFactResultMessageRepo;
     private final SvrResultMessageRepo svrResultMessageRepo;
-    private final MessageRepo messageRepo;
-    private Map<String, MessageError> mapErrors = new HashMap<>();
-
-    @PostConstruct
-    public void init() {
-        List<Message> messages = messageRepo.findAll();
-        for (Message message : messages) {
-            Map<LangEnum, String> texts = new HashMap<>();
-            for (MessageTranslate translate : message.getTranslates()) {
-                texts.putIfAbsent(translate.getId().getLang(), translate.getText());
-                mapErrors.put(message.getCode(), new MessageError(message.getCode(), message.getMessageType(), texts));
-            }
-        }
-    }
+    private final MessageErrorService messageErrorService;
 
     @Override
     public void deleteMessages(AspResultHeader header) {
@@ -84,7 +74,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void addMessage(BalanceSubstResultHeader header, Long lineNum, String docCode, String errCode, String info) {
-        MessageError err = mapErrors.getOrDefault(errCode, null);
+        MessageError err = messageErrorService.getError(errCode);
         try {
             LangEnum defLang = LangEnum.RU;
             String defTExt = "Описание не найдено";
@@ -114,7 +104,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void addMessage(BalanceSubstResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
-        MessageError err = mapErrors.getOrDefault(errCode, null);
+        MessageError err = messageErrorService.getError(errCode);
         try {
             LangEnum defLang = LangEnum.RU;
             String defTExt = "Описание не найдено";
@@ -145,7 +135,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void addMessage(AspResultHeader header, Long lineNum, String docCode, String errCode) {
-        MessageError err = mapErrors.getOrDefault(errCode, null);
+        MessageError err = messageErrorService.getError(errCode);
         try {
             LangEnum defLang = LangEnum.RU;
             String defTExt = "Описание не найдено";
@@ -173,7 +163,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void addMessage(AspResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
-        MessageError err = mapErrors.getOrDefault(errCode, null);
+        MessageError err = messageErrorService.getError(errCode);
         try {
             LangEnum defLang = LangEnum.RU;
             String defTExt = "Описание не найдено";
@@ -210,7 +200,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void addMessage(SegResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
-        MessageError err = mapErrors.getOrDefault(errCode, null);
+        MessageError err = messageErrorService.getError(errCode);
         try {
             LangEnum defLang = LangEnum.RU;
             String defTExt = "Описание не найдено";
@@ -247,7 +237,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void addMessage(InterResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
-        MessageError err = mapErrors.getOrDefault(errCode, null);
+        MessageError err = messageErrorService.getError(errCode);
         try {
             LangEnum defLang = LangEnum.RU;
             String defTExt = "Описание не найдено";
@@ -284,7 +274,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void addMessage(LossFactResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
-        MessageError err = mapErrors.getOrDefault(errCode, null);
+        MessageError err = messageErrorService.getError(errCode);
         try {
             LangEnum defLang = LangEnum.RU;
             String defTExt = "Описание не найдено";
@@ -321,7 +311,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void addMessage(RegResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
-        MessageError err = mapErrors.getOrDefault(errCode, null);
+        MessageError err = messageErrorService.getError(errCode);
         try {
             LangEnum defLang = LangEnum.RU;
             String defTExt = "Описание не найдено";
@@ -358,7 +348,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void addMessage(SourceResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
-        MessageError err = mapErrors.getOrDefault(errCode, null);
+        MessageError err = messageErrorService.getError(errCode);
         try {
             LangEnum defLang = LangEnum.RU;
             String defTExt = "Описание не найдено";
@@ -394,21 +384,16 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void addMessage(SvrResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
-        MessageError err = mapErrors.getOrDefault(errCode, null);
-        try {
-            LangEnum defLang = LangEnum.RU;
-            String defTExt = "Описание не найдено";
-            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
-            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
-            msg = StrSubstitutor.replace(msg, params);
+    public void addMessage(SvrResultHeader header, MeteringPointSetting line, CalcServiceException exc) {
+        Map<String, String> params = buildMsgParams(line.getMeteringPoint());
+        if (exc != null)
+            params.putIfAbsent("err", exc.getMessage());
 
-            SvrResultMessage message = new SvrResultMessage();
+        MessageError err = messageErrorService.getError(exc.getErrCode());
+        try {
+            SvrResultMessage message = SvrResultMessage.of(err, params);
             message.setHeader(header);
-            message.setLineNum(lineNum);
-            message.setMessageType(messageType);
-            message.setErrorCode(errCode);
-            message.setMsg(msg);
+            message.setLineNum(line.getId());
             svrResultMessageRepo.save(message);
         }
         catch (Exception e) {

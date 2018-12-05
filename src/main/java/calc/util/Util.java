@@ -7,6 +7,7 @@ import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.DataTypeEnum;
 import calc.formula.CalcContext;
 import calc.formula.CalcTrace;
+import calc.formula.service.ParamService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -83,5 +84,15 @@ public class Util {
             ? traces.get(0).getDataType()
             : null;
         return dataType;
+    }
+
+    public static Parameter inverseParam(ParamService paramService, Parameter param, Boolean isInverse) {
+        if (isInverse) {
+            if (param.equals(paramService.getParam("A+"))) return paramService.getParam("A-");
+            if (param.equals(paramService.getParam("A-"))) return paramService.getParam("A+");
+            if (param.equals(paramService.getParam("R+"))) return paramService.getParam("R-");
+            if (param.equals(paramService.getParam("R-"))) return paramService.getParam("R+");
+        }
+        return param;
     }
 }
