@@ -37,6 +37,7 @@ public class InterMrService {
 
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
+                .header(header)
                 .defContextType(ContextTypeEnum.DEFAULT)
                 .build();
 

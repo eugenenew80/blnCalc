@@ -55,6 +55,14 @@ public class InterResultLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isIncludeTotal;
 
+    @ManyToOne
+    @JoinColumn(name = "metering_point_id_out_1")
+    private MeteringPoint meteringPointOut1;
+
+    @ManyToOne
+    @JoinColumn(name = "metering_point_id_out_2")
+    private MeteringPoint meteringPointOut2;
+
     @Column(name = "create_date")
     private LocalDateTime createDate;
 
