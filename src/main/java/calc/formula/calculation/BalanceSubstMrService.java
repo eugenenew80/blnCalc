@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 import static calc.util.Util.buildMsgParams;
+import static calc.util.Util.inverseParam;
 import static calc.util.Util.round;
 import static java.util.stream.Collectors.toList;
 
@@ -54,9 +54,7 @@ public class BalanceSubstMrService {
                 if (meteringPoint == null)
                     continue;
 
-                String info = meteringPoint.getCode();
                 Map<String, String> msgParams = buildMsgParams(meteringPoint);
-
                 List<MeteringReading> meteringReadings;
                 try {
                     meteringReadings = mrService.calc(meteringPoint, context);
@@ -71,18 +69,18 @@ public class BalanceSubstMrService {
                     BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
 
                     if (t.getMeter() == null)
-                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_NOT_FOUND", info);
+                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_NOT_FOUND", msgParams);
 
                     if (t.getMeterHistory() == null)
-                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_HISTORY_NOT_FOUND", info);
+                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_HISTORY_NOT_FOUND", msgParams);
 
                     String section = getSection(mrLine);
                     if (section == null || section.equals("")) {
-                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_SECTION_NOT_FOUND", info);
+                        messageService.addMessage(header, mrLine.getId(), docCode, "MR_SECTION_NOT_FOUND", msgParams);
                         continue;
                     }
 
-                    Parameter param = inverseParam(t.getParam(), mrLine.getIsInverse());
+                    Parameter param = inverseParam(paramService, t.getParam(), mrLine.getIsInverse());
                     Double val = round(t.getVal(), param);
 
                     line.setHeader(header);
@@ -129,7 +127,6 @@ public class BalanceSubstMrService {
         }
     }
 
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void saveLines(List<BalanceSubstResultMrLine> resultLines) {
         balanceSubstResultMrLineRepo.save(resultLines);
@@ -171,36 +168,34 @@ public class BalanceSubstMrService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultMrLine> lines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            balanceSubstResultMrLineRepo.delete(lines.get(i));
+        balanceSubstResultMrLineRepo.delete(lines);
         balanceSubstResultMrLineRepo.flush();
 
         List<BalanceSubstResultMrNote> notes = balanceSubstResultMrNoteRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<notes.size(); i++)
-            balanceSubstResultMrNoteRepo.delete(notes.get(i));
+        balanceSubstResultMrNoteRepo.delete(notes);
         balanceSubstResultMrNoteRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void copyNotes(BalanceSubstResultHeader header) {
-        List<BalanceSubstResultMrNote> resultNotes = new ArrayList<>();
+        List<BalanceSubstResultMrNote> results = new ArrayList<>();
         for (BalanceSubstMrNote note : header.getHeader().getMrNotes()) {
-            BalanceSubstResultMrNote resultNote = new BalanceSubstResultMrNote();
-            resultNote.setHeader(header);
-            resultNote.setMeteringPoint(note.getMeteringPoint());
-            resultNote.setLineNum(note.getLineNum());
+            BalanceSubstResultMrNote result = new BalanceSubstResultMrNote();
+            result.setHeader(header);
+            result.setMeteringPoint(note.getMeteringPoint());
+            result.setLineNum(note.getLineNum());
 
-            resultNote.setTranslates(Optional.ofNullable(resultNote.getTranslates()).orElse(new ArrayList<>()));
-            for (BalanceSubstMrNoteTranslate noteTranslate : note.getTranslates()) {
-                BalanceSubstResultMrNoteTranslate resultNoteTranslate = new BalanceSubstResultMrNoteTranslate();
-                resultNoteTranslate.setNote(resultNote);
-                resultNoteTranslate.setLang(noteTranslate.getLang());
-                resultNoteTranslate.setNoteText(noteTranslate.getNoteText());
-                resultNote.getTranslates().add(resultNoteTranslate);
+            result.setTranslates(Optional.ofNullable(result.getTranslates()).orElse(new ArrayList<>()));
+            for (BalanceSubstMrNoteTranslate translate : note.getTranslates()) {
+                BalanceSubstResultMrNoteTranslate resultTranslate = new BalanceSubstResultMrNoteTranslate();
+                resultTranslate.setNote(result);
+                resultTranslate.setLang(translate.getLang());
+                resultTranslate.setNoteText(translate.getNoteText());
+                result.getTranslates().add(resultTranslate);
             }
-            resultNotes.add(resultNote);
+            results.add(result);
         }
-        balanceSubstResultMrNoteRepo.save(resultNotes);
+        balanceSubstResultMrNoteRepo.save(results);
         balanceSubstResultMrNoteRepo.flush();
     }
 
@@ -211,15 +206,5 @@ public class BalanceSubstMrService {
         if (mrLine.getIsSection4()) return "4";
         if (mrLine.getIsSection5()) return "5";
         return "";
-    }
-
-    private Parameter inverseParam(Parameter param, Boolean isInverse) {
-        if (isInverse) {
-            if (param.getCode().equals("A+")) return paramService.getParam("A-");
-            if (param.getCode().equals("A-")) return paramService.getParam("A+");
-            if (param.getCode().equals("R+")) return paramService.getParam("R-");
-            if (param.getCode().equals("R-")) return paramService.getParam("R+");
-        }
-        return param;
     }
 }

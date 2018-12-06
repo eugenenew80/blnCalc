@@ -77,31 +77,30 @@ public class CalcServiceImpl implements CalcService {
         logger.trace("traceEnabled: "           + context.isTraceEnabled());
 
         CalcResult result = null;
-        if (point.getPointType() == PointTypeEnum.PMP)
+        if (point.getPointType() == PointTypeEnum.PMP || property.getProcessOrder() == ProcessOrderEnum.READ)
             result = readValue(point, param, context, property);
-
-        if (property.getProcessOrder() == ProcessOrderEnum.READ)
-            result = readValue(point, param, context, property);
-
-        List<Formula> formulas = findFormulas(point, param, property.getParamType());
-
-        if (property.getProcessOrder() == ProcessOrderEnum.CALC) {
-            Formula formula = getFormula(formulas, context);
-            result = calcValue(formula, context, property);
-        }
-
-        if (property.getProcessOrder() == ProcessOrderEnum.CALC_READ) {
-            Formula formula = getFormula(formulas, context);
-            result = calcValue(formula, context, property);
-            if (result == null || result.getDoubleValue() == null)
-                result = readValue(point, param, context, property);
-        }
-
-        if (property.getProcessOrder() == ProcessOrderEnum.READ_CALC) {
-            result = readValue(point, param, context, property);
-            if (result == null || result.getDoubleValue() == null) {
+        else {
+            if (property.getProcessOrder() == ProcessOrderEnum.CALC) {
+                List<Formula> formulas = findFormulas(point, param, property.getParamType());
                 Formula formula = getFormula(formulas, context);
                 result = calcValue(formula, context, property);
+            }
+
+            if (property.getProcessOrder() == ProcessOrderEnum.CALC_READ) {
+                List<Formula> formulas = findFormulas(point, param, property.getParamType());
+                Formula formula = getFormula(formulas, context);
+                result = calcValue(formula, context, property);
+                if (result == null || result.getDoubleValue() == null)
+                    result = readValue(point, param, context, property);
+            }
+
+            if (property.getProcessOrder() == ProcessOrderEnum.READ_CALC) {
+                result = readValue(point, param, context, property);
+                if (result == null || result.getDoubleValue() == null) {
+                    List<Formula> formulas = findFormulas(point, param, property.getParamType());
+                    Formula formula = getFormula(formulas, context);
+                    result = calcValue(formula, context, property);
+                }
             }
         }
 
@@ -468,141 +467,141 @@ public class CalcServiceImpl implements CalcService {
         return getExpression(meteringPoint, param, rate, context, property);
     }
 
-    private DoubleExpression getExpression(MeteringPoint meteringPoint, Parameter param, Double rate, CalcContext context, CalcProperty property) {
-        logger.trace("end point: " + meteringPoint.getCode());
+    private DoubleExpression getExpression(MeteringPoint mp, Parameter param, Double rate, CalcContext ctx, CalcProperty prop) {
+        logger.trace("end point: " + mp.getCode());
         logger.trace("  param: " + param.getCode());
-        logger.trace("  pointType: " + meteringPoint.getPointType());
-        logger.trace("  paramType: " + property.getParamType());
-        logger.trace("  defContextType: " + context.getDefContextType());
-        logger.trace("  contextType: " + property.getContextType());
+        logger.trace("  pointType: " + mp.getPointType());
+        logger.trace("  paramType: " + prop.getParamType());
+        logger.trace("  defContextType: " + ctx.getDefContextType());
+        logger.trace("  contextType: " + prop.getContextType());
         logger.trace("  rate: " + rate);
 
-        if (property.getDeterminingMethod() == DeterminingMethodEnum.RDV) {
-            if (property.getGridType() == GridTypeEnum.OWN) {
+        if (prop.getDeterminingMethod() == DeterminingMethodEnum.RDV) {
+            if (prop.getGridType() == GridTypeEnum.OWN) {
                 logger.trace("  expression: DistributionExpression: own");
                 DistributionExpression.builder()
-                    .meteringPointCode(meteringPoint.getCode())
+                    .meteringPointCode(mp.getCode())
                     .parameterCode(param.getCode())
                     .gridType(GridTypeEnum.OWN)
-                    .electricityGroupId(property.getElectricityGroup() != null ? property.getElectricityGroup().getId() : null)
+                    .electricityGroupId(prop.getElectricityGroup() != null ? prop.getElectricityGroup().getId() : null)
                     .service(distributionService)
-                    .context(context)
+                    .context(ctx)
                     .build();
             }
 
-            if (property.getGridType() == GridTypeEnum.OTHER) {
+            if (prop.getGridType() == GridTypeEnum.OTHER) {
                 logger.trace("  expression: DistributionExpression: other");
                 DistributionExpression.builder()
-                    .meteringPointCode(meteringPoint.getCode())
+                    .meteringPointCode(mp.getCode())
                     .parameterCode(param.getCode())
                     .gridType(GridTypeEnum.OTHER)
-                    .electricityGroupId(property.getElectricityGroup() != null ? property.getElectricityGroup().getId() : null)
+                    .electricityGroupId(prop.getElectricityGroup() != null ? prop.getElectricityGroup().getId() : null)
                     .service(distributionService)
-                    .context(context)
+                    .context(ctx)
                     .build();
             }
 
-            if (property.getGridType() == GridTypeEnum.TOTAL) {
+            if (prop.getGridType() == GridTypeEnum.TOTAL) {
                 logger.trace("  expression: DistributionExpression: total");
                 DistributionExpression.builder()
-                    .meteringPointCode(meteringPoint.getCode())
+                    .meteringPointCode(mp.getCode())
                     .parameterCode(param.getCode())
                     .gridType(GridTypeEnum.TOTAL)
-                    .electricityGroupId(property.getElectricityGroup() != null ? property.getElectricityGroup().getId() : null)
+                    .electricityGroupId(prop.getElectricityGroup() != null ? prop.getElectricityGroup().getId() : null)
                     .service(distributionService)
-                    .context(context)
+                    .context(ctx)
                     .build();
             }
         }
 
-        if (param.getCode().equals("WL") && context.getDefContextType() == ContextTypeEnum.MR) {
-            Map<String, Double> transformerValues = context.getTransformerValues();
-            if (transformerValues != null && transformerValues.containsKey(meteringPoint.getCode())) {
+        if (param.getCode().equals("WL") && ctx.getDefContextType() == ContextTypeEnum.MR) {
+            Map<String, Double> cachedValues = ctx.getTransformerValues();
+            if (cachedValues != null && cachedValues.containsKey(mp.getCode())) {
                 logger.trace("  expression: CachedValueExpression");
                 return DoubleValueExpression.builder()
-                    .value(transformerValues.get(meteringPoint.getCode()))
+                    .value(cachedValues.get(mp.getCode()))
                     .build();
             }
 
             logger.trace("  expression: TransformerValueExpression");
             return TransformerValueExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
+                .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
                 .rate(rate)
-                .context(context)
+                .context(ctx)
                 .service(transformerValueService)
                 .build();
         }
 
-        if (property.getContextType() == ContextTypeEnum.MR) {
-            logger.trace("  context: mr");
+        if (prop.getContextType() == ContextTypeEnum.MR || (ctx.getDefContextType() == ContextTypeEnum.MR && mp.getPointType() == PointTypeEnum.PMP)) {
+            logger.trace("  ctx: mr");
             logger.trace("  expression: MrExpression");
             return MrExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
+                .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
                 .rate(rate)
-                .context(context)
+                .context(ctx)
                 .service(mrService)
                 .build();
         }
 
-        if (property.getContextType() == ContextTypeEnum.ASP) {
-            logger.trace("  context: asp");
+        if (prop.getContextType() == ContextTypeEnum.ASP) {
+            logger.trace("  ctx: asp");
             logger.trace("  expression: AspExpression");
             return AspExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
+                .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
                 .rate(rate)
-                .context(context)
+                .context(ctx)
                 .service(aspService)
                 .build();
         }
 
-        if (property.getContextType() == ContextTypeEnum.SEG) {
-            logger.trace("  context: seg");
+        if (prop.getContextType() == ContextTypeEnum.SEG) {
+            logger.trace("  ctx: seg");
             logger.trace("  expression: SegExpression");
             return SegExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
+                .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
                 .rate(rate)
-                .context(context)
+                .context(ctx)
                 .service(segService)
                 .build();
         }
 
-        if (property.getContextType() == ContextTypeEnum.INTER_MR) {
-            logger.trace("  context: inter");
+        if (prop.getContextType() == ContextTypeEnum.INTER_MR) {
+            logger.trace("  ctx: inter");
             logger.trace("  expression: InterExpression");
             return InterMrExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
+                .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
                 .rate(rate)
-                .context(context)
+                .context(ctx)
                 .service(interMrService)
                 .build();
         }
 
-        if (property.getParamType() == ParamTypeEnum.PT) {
+        if (prop.getParamType() == ParamTypeEnum.PT) {
             logger.trace("  expression: PeriodTimeValueExpression");
             PeriodTimeValueExpression ptExpression = PeriodTimeValueExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
+                .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
                 .service(periodTimeValueService)
-                .context(context)
+                .context(ctx)
                 .build();
 
-            if (property.getContextType() != context.getDefContextType()) {
+            if (prop.getContextType() != ctx.getDefContextType()) {
                 Double val = ptExpression.doubleValue();
                 logger.trace("  val: " + val);
 
-                if (val == null && context.getDefContextType() == ContextTypeEnum.MR) {
-                    logger.trace("  context: mr");
+                if (val == null && ctx.getDefContextType() == ContextTypeEnum.MR) {
+                    logger.trace("  ctx: mr");
                     logger.trace("  expression: MrExpression");
                     return MrExpression.builder()
-                        .meteringPointCode(meteringPoint.getCode())
+                        .meteringPointCode(mp.getCode())
                         .parameterCode(param.getCode())
                         .rate(rate)
-                        .context(context)
+                        .context(ctx)
                         .service(mrService)
                         .build();
                 }
@@ -611,22 +610,22 @@ public class CalcServiceImpl implements CalcService {
             return ptExpression;
         }
 
-        if (property.getParamType() == ParamTypeEnum.AT || property.getParamType() == ParamTypeEnum.ATS || property.getParamType() == ParamTypeEnum.ATE) {
+        if (prop.getParamType() == ParamTypeEnum.AT || prop.getParamType() == ParamTypeEnum.ATS || prop.getParamType() == ParamTypeEnum.ATE) {
             logger.trace("  expression: AtTimeValueExpression");
             String per = "end";
-            if (property.getParamType() == ParamTypeEnum.ATS)
+            if (prop.getParamType() == ParamTypeEnum.ATS)
                 per = "start";
 
-            if (property.getParamType() == ParamTypeEnum.ATE)
+            if (prop.getParamType() == ParamTypeEnum.ATE)
                 per = "end";
 
             return AtTimeValueExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
+                .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
                 .per(per)
                 .rate(rate)
                 .service(atTimeValueService)
-                .context(context)
+                .context(ctx)
                 .build();
         }
 

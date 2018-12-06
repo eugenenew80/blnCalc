@@ -3,10 +3,8 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.PointTypeEnum;
 import calc.formula.*;
 import calc.formula.exception.CalcServiceException;
-import calc.formula.expression.impl.MrExpression;
 import calc.formula.service.*;
 import calc.repo.calc.BalanceSubstResultLineRepo;
 import calc.repo.calc.BalanceSubstResultNoteRepo;
@@ -44,43 +42,8 @@ public class BalanceSubstLineService {
                 .defContextType(ContextTypeEnum.MR)
                 .build();
 
-            List<BalanceSubstResultLine> resultLines = new ArrayList<>();
-            for (BalanceSubstLine line : header.getHeader().getLines()) {
-                MeteringPoint meteringPoint = line.getMeteringPoint();
-                if (meteringPoint == null) continue;
-
-                Map<String, Parameter> sections = getSections(line);
-                for (String section : sections.keySet()) {
-                    Parameter param = line.getParam() == null ? sections.get(section) : line.getParam();
-                    param = inverseParam(paramService, param, line.getIsInverse());
-
-                    Map<String, String> msgParams = buildMsgParams(meteringPoint);
-                    Double val = null;
-                    try {
-                        val = getMrVal(line, param, context);
-                    }
-                    catch (CalcServiceException e) {
-                        msgParams.putIfAbsent("err", e.getMessage());
-                        messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
-                    }
-
-                    BalanceSubstResultLine resultLine = new BalanceSubstResultLine();
-                    resultLine.setHeader(header);
-                    resultLine.setMeteringPoint(meteringPoint);
-                    resultLine.setParam(param);
-                    resultLine.setRate(ofNullable(line.getRate()).orElse(1d));
-                    resultLine.setSection(section);
-                    resultLine.setVal(val);
-                    if (meteringPoint.getVoltageClass()!=null)
-                        resultLine.setSubSection(meteringPoint.getVoltageClass().getValue().toString());
-
-                    addTranslates(line, resultLine);
-                    resultLines.add(resultLine);
-                }
-            }
-
             deleteLines(header);
-            saveLines(resultLines);
+            calcLines(header, context);
             copyNotes(header);
             return true;
         }
@@ -93,6 +56,44 @@ public class BalanceSubstLineService {
         }
     }
 
+    private void calcLines(BalanceSubstResultHeader header, CalcContext context) {
+        List<BalanceSubstResultLine> resultLines = new ArrayList<>();
+        for (BalanceSubstLine line : header.getHeader().getLines()) {
+            MeteringPoint meteringPoint = line.getMeteringPoint();
+            if (meteringPoint == null) continue;
+
+            Map<String, Parameter> sections = getSections(line);
+            for (String section : sections.keySet()) {
+                Parameter param = line.getParam() == null ? sections.get(section) : line.getParam();
+                param = inverseParam(paramService, param, line.getIsInverse());
+
+                Map<String, String> msgParams = buildMsgParams(meteringPoint);
+                Double val = null;
+                try {
+                    val = getMrVal(line, param, context);
+                }
+                catch (CalcServiceException e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
+                    messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
+                }
+
+                BalanceSubstResultLine resultLine = new BalanceSubstResultLine();
+                resultLine.setHeader(header);
+                resultLine.setMeteringPoint(meteringPoint);
+                resultLine.setParam(param);
+                resultLine.setRate(ofNullable(line.getRate()).orElse(1d));
+                resultLine.setSection(section);
+                resultLine.setVal(val);
+                if (meteringPoint.getVoltageClass() != null)
+                    resultLine.setSubSection(meteringPoint.getVoltageClass().getValue().toString());
+
+                addTranslates(line, resultLine);
+                resultLines.add(resultLine);
+            }
+        }
+        saveLines(resultLines);
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void saveLines(List<BalanceSubstResultLine> resultLines) {
         balanceSubstResultLineRepo.save(resultLines);
@@ -102,38 +103,36 @@ public class BalanceSubstLineService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultLine> lines = balanceSubstResultLineRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            balanceSubstResultLineRepo.delete(lines.get(i));
+        balanceSubstResultLineRepo.delete(lines);
         balanceSubstResultLineRepo.flush();
 
         List<BalanceSubstResultNote> notes = balanceSubstResultNoteRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<notes.size(); i++)
-            balanceSubstResultNoteRepo.delete(notes.get(i));
+        balanceSubstResultNoteRepo.delete(notes);
         balanceSubstResultNoteRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void copyNotes(BalanceSubstResultHeader header) {
-        List<BalanceSubstResultNote> resultNotes = new ArrayList<>();
+        List<BalanceSubstResultNote> results = new ArrayList<>();
         for (BalanceSubstNote note : header.getHeader().getNotes()) {
-            BalanceSubstResultNote resultNote = new BalanceSubstResultNote();
-            resultNote.setHeader(header);
-            resultNote.setMeteringPoint(note.getMeteringPoint());
-            resultNote.setLineNum(note.getLineNum());
+            BalanceSubstResultNote result = new BalanceSubstResultNote();
+            result.setHeader(header);
+            result.setMeteringPoint(note.getMeteringPoint());
+            result.setLineNum(note.getLineNum());
 
-            if (resultNote.getTranslates() == null)
-                resultNote.setTranslates(new ArrayList<>());
+            if (result.getTranslates() == null)
+                result.setTranslates(new ArrayList<>());
 
             for (BalanceSubstNoteTranslate noteTranslate : note.getTranslates()) {
-                BalanceSubstResultNoteTranslate resultNoteTranslate = new BalanceSubstResultNoteTranslate();
-                resultNoteTranslate.setNote(resultNote);
-                resultNoteTranslate.setLang(noteTranslate.getLang());
-                resultNoteTranslate.setNoteText(noteTranslate.getNoteText());
-                resultNote.getTranslates().add(resultNoteTranslate);
+                BalanceSubstResultNoteTranslate resultTranslate = new BalanceSubstResultNoteTranslate();
+                resultTranslate.setNote(result);
+                resultTranslate.setLang(noteTranslate.getLang());
+                resultTranslate.setNoteText(noteTranslate.getNoteText());
+                result.getTranslates().add(resultTranslate);
             }
-            resultNotes.add(resultNote);
+            results.add(result);
         }
-        balanceSubstResultNoteRepo.save(resultNotes);
+        balanceSubstResultNoteRepo.save(results);
         balanceSubstResultNoteRepo.flush();
     }
 
@@ -141,23 +140,21 @@ public class BalanceSubstLineService {
         if (resultLine.getTranslates() == null)
             resultLine.setTranslates(new ArrayList<>());
 
-        for (BalanceSubstLineTranslate lineTranslate : line.getTranslates()) {
-            BalanceSubstResultLineTranslate resultLineTranslate = new BalanceSubstResultLineTranslate();
-            resultLineTranslate.setLang(lineTranslate.getLang());
-            resultLineTranslate.setLine(resultLine);
-            resultLineTranslate.setName(lineTranslate.getName());
-            resultLine.getTranslates().add(resultLineTranslate);
+        for (BalanceSubstLineTranslate translate : line.getTranslates()) {
+            BalanceSubstResultLineTranslate resultTranslate = new BalanceSubstResultLineTranslate();
+            resultTranslate.setLang(translate.getLang());
+            resultTranslate.setLine(resultLine);
+            resultTranslate.setName(translate.getName());
+            resultLine.getTranslates().add(resultTranslate);
         }
     }
 
     private Double getMrVal(BalanceSubstLine bsLine, Parameter param, CalcContext context) {
         MeteringPoint meteringPoint = bsLine.getMeteringPoint();
-        if (meteringPoint == null)
+        if (meteringPoint == null || param == null)
             return null;
 
-        if (param == null)
-            return null;
-
+        /*
         if (meteringPoint.getPointType() == PointTypeEnum.PMP) {
             return MrExpression.builder()
                 .meteringPointCode(meteringPoint.getCode())
@@ -168,6 +165,7 @@ public class BalanceSubstLineService {
                 .build()
                 .doubleValue();
         }
+        */
 
         CalcProperty property = CalcProperty.builder()
             .processOrder(ProcessOrderEnum.READ_CALC)
