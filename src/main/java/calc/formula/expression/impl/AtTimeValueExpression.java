@@ -9,6 +9,8 @@ import calc.formula.service.AtTimeValueService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +24,7 @@ import static java.util.stream.Collectors.toSet;
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AtTimeValueExpression implements DoubleExpression {
+    private static final Logger logger = LoggerFactory.getLogger(AtTimeValueExpression.class);
     private final String meteringPointCode;
     private final String parameterCode;
     private final String per;
@@ -54,6 +57,10 @@ public class AtTimeValueExpression implements DoubleExpression {
             .collect(groupingBy(CalcResult::getSourceSystem));
 
         SourceSystemEnum source = getSourceSystem(map);
+        logger.trace("mp: " + meteringPointCode);
+        logger.trace("param: " + parameterCode);
+        logger.trace("source systems: " + map.keySet());
+        logger.trace("selected source system: " + source);
 
         List<CalcResult> list = source !=null ? map.get(source) : null;
         if (list == null || list.size() == 0)

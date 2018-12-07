@@ -26,7 +26,6 @@ public class BalanceSubstLineService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstLineService.class);
     private static final String docCode = "BALANCE";
     private final BalanceSubstResultLineRepo balanceSubstResultLineRepo;
-    private final BalanceSubstResultMrService mrService;
     private final BalanceSubstResultNoteRepo balanceSubstResultNoteRepo;
     private final CalcService calcService;
     private final MessageService messageService;
@@ -153,19 +152,6 @@ public class BalanceSubstLineService {
         MeteringPoint meteringPoint = bsLine.getMeteringPoint();
         if (meteringPoint == null || param == null)
             return null;
-
-        /*
-        if (meteringPoint.getPointType() == PointTypeEnum.PMP) {
-            return MrExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(param.getCode())
-                .rate(bsLine.getRate())
-                .context(context)
-                .service(mrService)
-                .build()
-                .doubleValue();
-        }
-        */
 
         CalcProperty property = CalcProperty.builder()
             .processOrder(ProcessOrderEnum.READ_CALC)

@@ -59,15 +59,15 @@ public class BalanceSubstTransformerService {
     }
 
     private List<PowerTransformerValue> calcLines(BalanceSubstResultHeader header, CalcContext context)  {
-        Parameter paramWL = paramService.getParam("WL");
-        Parameter parU = paramService.getParam("U");
-        Unit unitWL = paramWL.getUnit();
-
         List<PowerTransformerValue> results = new ArrayList<>();
         for (BalanceSubstPeLine line : header.getHeader().getPeLines()) {
             PowerTransformer transformer = line.getPowerTransformer();
             if (transformer == null)
                 continue;
+
+            Parameter paramWL = paramService.getParam("WL");
+            Parameter parU = paramService.getParam("U");
+            Unit unitWL = paramWL.getUnit();
 
             String transformerName = "";
             if (transformer.getTranslates().containsKey(context.getLang()))
