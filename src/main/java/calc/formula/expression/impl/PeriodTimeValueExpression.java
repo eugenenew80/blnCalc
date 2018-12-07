@@ -2,7 +2,6 @@ package calc.formula.expression.impl;
 
 import calc.entity.calc.PeriodTimeValue;
 import calc.entity.calc.enums.DataTypeEnum;
-import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.formula.CalcResult;
 import calc.formula.CalcContext;
 import calc.formula.CalcTrace;
@@ -16,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Stream;
-
 import static java.util.Collections.emptyList;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.groupingBy;
@@ -30,6 +28,7 @@ public class PeriodTimeValueExpression implements DoubleExpression {
     private final String parameterCode;
     private final PeriodTimeValueService service;
     private final CalcContext context;
+    private Double[] values =null;
 
     @Builder.Default
     private final Double rate = 1d;
@@ -67,6 +66,9 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
+        if (values != null)
+            return values;
+
         Stream<PeriodTimeValue> stream = service.getValues(meteringPointCode, parameterCode, context)
             .stream()
             .filter(t -> t.getPeriodType() == context.getHeader().getPeriodType());
@@ -97,9 +99,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
             context.getTraces().putIfAbsent(meteringPointCode, traces);
         }
 
-        if (context.getHeader().getPeriodType() == PeriodTypeEnum.H)
-            return getByHours(list);
-
         Double doubleValue = list.stream()
             .map(t -> t.getDoubleValue())
             .filter(t -> t != null)
@@ -107,47 +106,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
             .orElse(null);
 
         return new Double[] {doubleValue};
-    }
-
-    private Double[] getByHours(List<CalcResult> list) {
-        Double[] result;
-        Double[] sum = new Double[24];
-        Double[] count = new Double[24];
-        Double[] avg = new Double[24];
-        Arrays.fill(sum, null);
-        Arrays.fill(count, null);
-        Arrays.fill(avg, null);
-
-        list.stream()
-            .map(t -> t.getMeteringDate().toLocalDate())
-            .distinct()
-            .sorted()
-            .forEach(d -> {
-                list.stream()
-                    .filter(t -> t.getMeteringDate().toLocalDate().equals(d))
-                    .forEach(t -> {
-                        if (t.getDoubleValue()!=null && !t.getDoubleValue().isNaN()) {
-                            int ind = t.getMeteringDate().getHour();
-
-                            if (sum[ind]==null || sum[ind].isNaN())
-                                sum[ind] = 0d;
-
-                            if (count[ind]==null || count[ind].isNaN())
-                                count[ind] = 0d;
-
-                            sum[ind] = sum[ind] + t.getDoubleValue();
-                            count[ind] = count[ind] + 1;
-                        }
-                    });
-            });
-
-        for (int i=0; i<sum.length; i++)
-            if (sum[i]!=null && count[i]!=null) avg[i] = sum[i] / count[i];
-
-        if (parameterCode.equals("U")) result = avg;
-        else result = sum;
-
-        return result;
     }
 
     private Double sum(Double t1, Double t2) {
@@ -158,33 +116,37 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         if (map == null || map.size() ==0)
             return null;
 
-        List<DataTypeEnum> dataTypes = Arrays.asList(DataTypeEnum.FINAL, DataTypeEnum.FACT, DataTypeEnum.OPER);
-
-        if (context.isUseDataTypePriority()) {
-            DataTypeEnum docDataType = context.getHeader().getDataType();
-
-            switch (docDataType) {
-                case FINAL:
-                    dataTypes = Arrays.asList(DataTypeEnum.FINAL);
-                    break;
-
-                case FACT:
-                    dataTypes = Arrays.asList(DataTypeEnum.FACT, DataTypeEnum.FINAL);
-                    break;
-
-                case OPER:
-                    dataTypes = Arrays.asList(DataTypeEnum.OPER, DataTypeEnum.FACT, DataTypeEnum.FINAL);
-                    break;
-
-                default:
-                    dataTypes = emptyList();
-            }
-        }
-
+        List<DataTypeEnum> dataTypes = getDataTypes();
         for (DataTypeEnum dataType : dataTypes)
             if (map.containsKey(dataType))
                 return dataType;
 
         return null;
+    }
+
+    private List<DataTypeEnum> getDataTypes() {
+        List<DataTypeEnum> dataTypes = Arrays.asList(DataTypeEnum.FINAL, DataTypeEnum.FACT, DataTypeEnum.OPER);
+        if (!context.isUseDataTypePriority() || context.getHeader().getDataType() == null)
+            return dataTypes;
+
+        DataTypeEnum docDataType = context.getHeader().getDataType();
+        switch (docDataType) {
+            case FINAL:
+                dataTypes = Arrays.asList(DataTypeEnum.FINAL);
+                break;
+
+            case FACT:
+                dataTypes = Arrays.asList(DataTypeEnum.FACT, DataTypeEnum.FINAL);
+                break;
+
+            case OPER:
+                dataTypes = Arrays.asList(DataTypeEnum.OPER, DataTypeEnum.FACT, DataTypeEnum.FINAL);
+                break;
+
+            default:
+                dataTypes = emptyList();
+        }
+
+        return dataTypes;
     }
 }
