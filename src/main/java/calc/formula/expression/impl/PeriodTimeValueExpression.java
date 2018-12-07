@@ -28,7 +28,7 @@ public class PeriodTimeValueExpression implements DoubleExpression {
     private final String parameterCode;
     private final PeriodTimeValueService service;
     private final CalcContext context;
-    private Double[] values =null;
+    //private Double[] values = null;
 
     @Builder.Default
     private final Double rate = 1d;
@@ -66,8 +66,8 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        if (values != null)
-            return values;
+        //if (values != null)
+        //    return values;
 
         Stream<PeriodTimeValue> stream = service.getValues(meteringPointCode, parameterCode, context)
             .stream()

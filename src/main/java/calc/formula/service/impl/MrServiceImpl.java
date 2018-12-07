@@ -175,8 +175,10 @@ public class MrServiceImpl implements MrService {
                 }
 
                 if (meterHistory.getUndercount()!=null && meterHistory.getUndercount().getParameter().equals(param)) {
-                    line.setUnderCount(meterHistory.getUndercount());
-                    line.setUnderCountVal(meterHistory.getUndercount().getVal());
+                    if (meterHistory.getUndercount().getIsActive()) {
+                        line.setUnderCount(meterHistory.getUndercount());
+                        line.setUnderCountVal(meterHistory.getUndercount().getVal());
+                    }
                 }
 
                 if (line.getEndMeteringDate().isAfter(line.getStartMeteringDate()))
