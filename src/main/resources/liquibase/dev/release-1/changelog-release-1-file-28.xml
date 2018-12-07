@@ -733,7 +733,7 @@
 
     <changeSet id="calc-eug-1994" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating table: mdfem_undercount_lines</comment>
-        <createTable tableName="mdfem_undercount_lines" schemaName="apps" remarks="Акт недоучёта - строки">
+        <createTable tableName="mdfem_undercount_lines" schemaName="apps" remarks="Акт недоучёта - объемы нежоучета">
             <column name="id" type="number" remarks="Идентификатор">
                 <constraints nullable="false"/>
             </column>
@@ -742,15 +742,15 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта">
-                <constraints nullable="false"/>
-            </column>
-
             <column name="param_id" type="number" remarks="Идентификатор параметра">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="val" type="number" remarks="Значение" defaultValue="0">
+            <column name="pavg" type="number" remarks="Средняя мощность, кВт">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="val" type="number" defaultValue="0" remarks="Объем недоучета, кВт.ч (кВар)">
                 <constraints nullable="false"/>
             </column>
 
@@ -806,21 +806,11 @@
                      schemaName="apps"
                      tableName="mdfem_undercount_lines"
                      unique="false">
-            <column name="metering_point_id" type="number"/>
-        </createIndex>
-    </changeSet>
-
-    <changeSet id="calc-eug-1999" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating index: mdfem_undercount_lines</comment>
-        <createIndex indexName="idx_mdfem_undercount_lines_3"
-                     schemaName="apps"
-                     tableName="mdfem_undercount_lines"
-                     unique="false">
             <column name="param_id" type="number"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="calc-eug-2000" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-1999" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: mdfem_undercount_lines to mdfem_undercount_header</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
@@ -836,29 +826,132 @@
         />
     </changeSet>
 
-    <changeSet id="calc-eug-2001" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Creating foreign constraint: mdfem_undercount_lines to dict_metering_points</comment>
-        <addForeignKeyConstraint
-                baseTableSchemaName="apps"
-                baseTableName="mdfem_undercount_lines"
-                baseColumnNames="metering_point_id"
-                constraintName="fk_mdfem_undercount_lines_2"
-                deferrable="true"
-                onDelete="RESTRICT"
-                onUpdate="RESTRICT"
-                referencedTableSchemaName="apps"
-                referencedTableName="dict_metering_points"
-                referencedColumnNames="id"
-        />
-    </changeSet>
-
-    <changeSet id="calc-eug-2002" logicalFilePath="path-independent" author="eugene" context="dev">
+    <changeSet id="calc-eug-2000" logicalFilePath="path-independent" author="eugene" context="dev">
         <comment>Creating foreign constraint: mdfem_undercount_lines to media_parameters</comment>
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="mdfem_undercount_lines"
                 baseColumnNames="param_id"
-                constraintName="fk_mdfem_undercount_lines_3"
+                constraintName="fk_mdfem_undercount_lines_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-2001" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: mdfem_undercount_periods</comment>
+        <createTable tableName="mdfem_undercount_periods" schemaName="apps" remarks="Акт недоучёта - расчет недоучтенной электроэнергии">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="param_id" type="number" remarks="Идентификатор параметра">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="pavg" type="number" remarks="Средняя мощность, кВт">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="val" type="number" defaultValue="0" remarks="Объем недоучета, кВт.ч (кВар)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="start_date" type="TIMESTAMP" remarks="Дата и время начала периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="end_date" type="TIMESTAMP" remarks="Дата и время окончания периода">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-2002" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: mdfem_undercount_periods</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_mdfem_undercount_periods"
+                schemaName="apps"
+                tableName="mdfem_undercount_periods"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2003" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: mdfem_undercount_periods</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="mdfem_undercount_periods_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2004" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: mdfem_undercount_periods</comment>
+        <createIndex indexName="idx_mdfem_undercount_periods_1"
+                     schemaName="apps"
+                     tableName="mdfem_undercount_periods"
+                     unique="false">
+            <column name="header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-2005" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: mdfem_undercount_periods</comment>
+        <createIndex indexName="idx_mdfem_undercount_periods_2"
+                     schemaName="apps"
+                     tableName="mdfem_undercount_periods"
+                     unique="false">
+            <column name="param_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-2006" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: mdfem_undercount_periods to mdfem_undercount_header</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="mdfem_undercount_periods"
+                baseColumnNames="header_id"
+                constraintName="fk_mdfem_undercount_periods_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="mdfem_undercount_periods"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-2007" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: mdfem_undercount_periods to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="mdfem_undercount_periods"
+                baseColumnNames="param_id"
+                constraintName="fk_mdfem_undercount_periods_2"
                 deferrable="true"
                 onDelete="RESTRICT"
                 onUpdate="RESTRICT"
