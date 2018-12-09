@@ -2,10 +2,9 @@ package calc.formula;
 
 import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.SourceEnum;
+import calc.entity.calc.enums.SourceSystemEnum;
 import lombok.Builder;
 import lombok.Data;
-
-import javax.xml.transform.Source;
 
 @Data
 @Builder
@@ -16,5 +15,6 @@ public class CalcTrace {
     private final DataTypeEnum dataType;
     private final Integer sourceCount;
     private final SourceEnum source;
-    private final ContextTypeEnum contextType;
+    private final Integer sourceSystemCount;
+    private final SourceSystemEnum sourceSystem;
 }

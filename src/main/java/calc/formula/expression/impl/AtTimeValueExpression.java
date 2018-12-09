@@ -2,8 +2,7 @@ package calc.formula.expression.impl;
 
 import calc.entity.calc.AtTimeValue;
 import calc.entity.calc.enums.SourceSystemEnum;
-import calc.formula.CalcContext;
-import calc.formula.CalcResult;
+import calc.formula.*;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.AtTimeValueService;
 import lombok.AccessLevel;
@@ -11,11 +10,7 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.groupingBy;
@@ -56,10 +51,23 @@ public class AtTimeValueExpression implements DoubleExpression {
             .map(AtTimeValue::toResult)
             .collect(groupingBy(CalcResult::getSourceSystem));
 
-        SourceSystemEnum source = getSourceSystem(map);
-        List<CalcResult> list = source !=null ? map.get(source) : null;
+        SourceSystemEnum sourceSystem = getSourceSystem(map);
+        List<CalcResult> list = sourceSystem !=null ? map.get(sourceSystem) : null;
         if (list == null || list.size() == 0)
             return null;
+
+        if (context.isTraceEnabled()) {
+            List<CalcTrace> traces = context.getTraces().getOrDefault(meteringPointCode, new ArrayList<>());
+            CalcTrace trace = CalcTrace.builder()
+                .meteringPointCode(meteringPointCode)
+                .parameterCode(parameterCode)
+                .sourceSystemCount(map.size())
+                .sourceSystem(sourceSystem)
+                .build();
+
+            traces.add(trace);
+            context.getTraces().putIfAbsent(meteringPointCode, traces);
+        }
 
         Double result = list.stream()
             .map(t -> t.getDoubleValue())
@@ -75,7 +83,7 @@ public class AtTimeValueExpression implements DoubleExpression {
     }
 
     private SourceSystemEnum getSourceSystem(Map<SourceSystemEnum, List<CalcResult>> map) {
-        if (map == null || map.size() ==0)
+        if (map == null || map.size() == 0)
             return null;
 
         List<SourceSystemEnum> sources = Arrays.asList(SourceSystemEnum.BIS, SourceSystemEnum.EMCOS, SourceSystemEnum.OIC);

@@ -1,6 +1,7 @@
 package calc.entity.calc;
 
 import calc.entity.calc.enums.PeriodTypeEnum;
+import calc.entity.calc.enums.SourceEnum;
 import calc.formula.CalcResult;
 import lombok.*;
 import org.hibernate.annotations.Immutable;
@@ -53,7 +54,7 @@ public class AtTimeValue {
 	private PeriodTypeEnum periodType;
 
 	@Column(name = "source_code")
-	private String sourceCode;
+	private SourceEnum source;
 
 	public CalcResult toResult() {
 		CalcResult result = new CalcResult();
@@ -65,6 +66,11 @@ public class AtTimeValue {
 		result.setUnit(getUnit());
 		result.setDoubleValue(getVal());
 		result.setSourceType(getSourceType());
+		result.setSource(getSource());
+
+		if (result.getSource() == null)
+			result.setSource(SourceEnum.DEFAULT);
+
 		return result;
 	}
 }

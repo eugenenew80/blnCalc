@@ -63,11 +63,9 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        Stream<PeriodTimeValue> stream = service.getValues(meteringPointCode, parameterCode, context)
+        Map<DataTypeEnum, List<CalcResult>> mapDataStatus = service.getValues(meteringPointCode, parameterCode, context)
             .stream()
-            .filter(t -> t.getPeriodType() == context.getHeader().getPeriodType());
-
-        Map<DataTypeEnum, List<CalcResult>> mapDataStatus = stream
+            .filter(t -> t.getPeriodType() == context.getHeader().getPeriodType())
             .map(PeriodTimeValue::toResult)
             .filter(t -> t.getDataType() != null)
             .collect(groupingBy(CalcResult::getDataType));
@@ -85,6 +83,14 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         if (list == null || list.size() == 0)
             return new Double[0];
 
+        Map<SourceSystemEnum, List<CalcResult>> mapSourceSystem = list.stream()
+            .collect(groupingBy(CalcResult::getSourceSystem));
+
+        SourceSystemEnum sourceSystem = getSourceSystem(mapSourceSystem);
+        list = sourceSystem != null ? mapSourceSystem.get(sourceSystem) : null;
+        if (list == null || list.size() == 0)
+            return null;
+
         if (context.isTraceEnabled()) {
             List<CalcTrace> traces = context.getTraces().getOrDefault(meteringPointCode, new ArrayList<>());
             CalcTrace trace = CalcTrace.builder()
@@ -94,7 +100,8 @@ public class PeriodTimeValueExpression implements DoubleExpression {
                 .dataTypeCount(mapDataStatus.size())
                 .source(source)
                 .sourceCount(mapSource.size())
-                .contextType(ContextTypeEnum.DEFAULT)
+                .sourceSystemCount(mapSourceSystem.size())
+                .sourceSystem(sourceSystem)
                 .build();
 
             traces.add(trace);
@@ -132,6 +139,18 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
         List<SourceEnum> sources = Arrays.asList(CALC_BALPS, CALC_ASP1, CALC_SVR, CONSUMPTION, DAILY_SHEET, CALC_INTER_LEP, CALC_SEG, DEFAULT);
         for (SourceEnum source : sources)
+            if (map.containsKey(source))
+                return source;
+
+        return null;
+    }
+
+    private SourceSystemEnum getSourceSystem(Map<SourceSystemEnum, List<CalcResult>> map) {
+        if (map == null || map.size() == 0)
+            return null;
+
+        List<SourceSystemEnum> sources = Arrays.asList(SourceSystemEnum.BIS, SourceSystemEnum.EMCOS, SourceSystemEnum.OIC);
+        for (SourceSystemEnum source : sources)
             if (map.containsKey(source))
                 return source;
 

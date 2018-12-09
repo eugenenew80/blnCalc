@@ -123,6 +123,10 @@ public class CalcServiceImpl implements CalcService {
             logger.trace("  mp: " + mpCode);
             List<CalcTrace> traces = context.getTraces().get(mpCode);
             for (CalcTrace trace : traces) {
+                if (trace.getSourceSystem() != null) {
+                    logger.trace("  source systems count: " + trace.getSourceSystemCount());
+                    logger.trace("  selected source system: " + trace.getSourceSystem());
+                }
                 if (trace.getDataType() != null) {
                     logger.trace("  data statuses count: " + trace.getDataTypeCount());
                     logger.trace("  selected data status: " + trace.getDataType());
