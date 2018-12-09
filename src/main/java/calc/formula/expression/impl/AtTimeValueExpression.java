@@ -57,11 +57,6 @@ public class AtTimeValueExpression implements DoubleExpression {
             .collect(groupingBy(CalcResult::getSourceSystem));
 
         SourceSystemEnum source = getSourceSystem(map);
-        logger.trace("mp: " + meteringPointCode);
-        logger.trace("param: " + parameterCode);
-        logger.trace("source systems: " + map.keySet());
-        logger.trace("selected source system: " + source);
-
         List<CalcResult> list = source !=null ? map.get(source) : null;
         if (list == null || list.size() == 0)
             return null;

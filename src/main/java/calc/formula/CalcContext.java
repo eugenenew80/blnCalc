@@ -25,7 +25,7 @@ public class CalcContext {
     private boolean nullPermissible = true;
 
     @Builder.Default
-    private boolean traceEnabled = false;
+    private boolean traceEnabled = true;
 
     @Builder.Default
     private ContextTypeEnum defContextType = ContextTypeEnum.DEFAULT;

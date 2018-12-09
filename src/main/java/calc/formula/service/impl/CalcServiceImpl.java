@@ -70,6 +70,8 @@ public class CalcServiceImpl implements CalcService {
         logger.trace("paramType: "              + property.getParamType());
         logger.trace("periodType: "             + context.getHeader().getPeriodType());
         logger.trace("dataType: "               + context.getHeader().getDataType());
+        logger.trace("startDate: "              + context.getHeader().getStartDate());
+        logger.trace("endDate: "                + context.getHeader().getEndDate());
         logger.trace("processOrder: "           + property.getProcessOrder());
         logger.trace("formulaBehaviour: "       + context.getFormulaBehaviour());
         logger.trace("useDataTypePriority: "    + context.isUseDataTypePriority());
@@ -108,8 +110,30 @@ public class CalcServiceImpl implements CalcService {
             if (result == null || result.getDoubleValue() == null)
                 throw new ValueNotFoundException("Не удалось определить значение параметра");
 
+        if (context.isTraceEnabled())
+            printCalcTrace(context);
+
         logger.trace("---------------------------------------------");
         return result;
+    }
+
+    private void printCalcTrace(CalcContext context) {
+        for (String mpCode: context.getTraces().keySet()) {
+            logger.trace("--trace----------------------------------");
+            logger.trace("  mp: " + mpCode);
+            List<CalcTrace> traces = context.getTraces().get(mpCode);
+            for (CalcTrace trace : traces) {
+                if (trace.getDataType() != null) {
+                    logger.trace("  data statuses count: " + trace.getDataTypeCount());
+                    logger.trace("  selected data status: " + trace.getDataType());
+                }
+                if (trace.getSource() != null) {
+                    logger.trace("  sources count: " + trace.getSourceCount());
+                    logger.trace("  selected source: " + trace.getSource());
+                }
+            }
+            logger.trace("-----------------------------------------");
+        }
     }
 
     private Formula getFormula(List<Formula> formulas, CalcContext context) {
@@ -143,6 +167,8 @@ public class CalcServiceImpl implements CalcService {
 
     @Override
     public CalcResult calcValue(Formula formula, CalcContext context, CalcProperty property) {
+        context.getTraces().clear();
+
         if (formula == null)
             return null;
 
@@ -196,6 +222,8 @@ public class CalcServiceImpl implements CalcService {
 
     @Override
     public CalcResult readValue(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) {
+        context.getTraces().clear();
+
         DoubleExpression expression = DoubleValueExpression.builder()
             .value(null)
             .build();

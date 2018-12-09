@@ -63,9 +63,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        logger.trace("mp: " + meteringPointCode);
-        logger.trace("param: " + parameterCode);
-
         Stream<PeriodTimeValue> stream = service.getValues(meteringPointCode, parameterCode, context)
             .stream()
             .filter(t -> t.getPeriodType() == context.getHeader().getPeriodType());
@@ -76,21 +73,14 @@ public class PeriodTimeValueExpression implements DoubleExpression {
             .collect(groupingBy(CalcResult::getDataType));
 
         DataTypeEnum dataType = getDataType(mapDataStatus);
-        logger.trace("data statuses: " + mapDataStatus.keySet());
-        logger.trace("selected data status: " + dataType);
-
         List<CalcResult> list = dataType !=null ? mapDataStatus.get(dataType) : null;
         if (list == null || list.size() == 0)
             return new Double[0];
-
 
         Map<SourceEnum, List<CalcResult>> mapSource = list.stream()
             .collect(groupingBy(CalcResult::getSource));
 
         SourceEnum source = getSource(mapSource);
-        logger.trace("sources: " + mapSource.keySet());
-        logger.trace("selected source: " + source);
-
         list = source !=null ? mapSource.get(source) : null;
         if (list == null || list.size() == 0)
             return new Double[0];
