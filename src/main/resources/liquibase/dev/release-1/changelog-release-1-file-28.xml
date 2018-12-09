@@ -960,4 +960,70 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+
+    <changeSet id="calc-eug-2008" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_bs_result_nb_lines</comment>
+        <addColumn schemaName="apps" tableName="calc_bs_result_nb_lines">
+            <column name="tt_accuracy_class_id" type="number" remarks="Идентификатор класса точности трансформатора тока">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="tn_accuracy_class_id" type="number" remarks="Идентификатор класса точности трансформатора напряжения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="meter_accuracy_class_id" type="number" remarks="Идентификатор класса точности счетчика">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-2009" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_nb_lines to dict_accurancy_classes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_nb_lines"
+                baseColumnNames="tt_accuracy_class_id"
+                constraintName="fk_calc_bs_result_nb_lines_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_accurancy_classes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-2010" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_nb_lines to dict_accurancy_classes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_nb_lines"
+                baseColumnNames="tn_accuracy_class_id"
+                constraintName="fk_calc_bs_result_nb_lines_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_accurancy_classes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-2011" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bs_result_nb_lines to dict_accurancy_classes</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bs_result_nb_lines"
+                baseColumnNames="meter_accuracy_class_id"
+                constraintName="fk_calc_bs_result_nb_lines_5"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_accurancy_classes"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>

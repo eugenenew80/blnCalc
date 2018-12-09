@@ -258,6 +258,16 @@ public class BalanceSubstUbService {
                         result.setBProc(bProc);
                         result.setDol(dol);
                         result.setB2dol2(b2dol2);
+
+                        if (tnType != null)
+                            result.setTnAccuracyClass(tnType.getAccuracyClass());
+
+                        if (ttType != null)
+                            result.setTtAccuracyClass(ttType.getAccuracyClass());
+
+                        if (eemType != null)
+                            result.setMeterAccuracyClass(eemType.getAccuracyClass());
+
                         results.add(result);
                     }
                 }
@@ -309,6 +319,7 @@ public class BalanceSubstUbService {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     private Pair<Double, String> getBttProc(AccuracyClass accuracyClass, Double i1avgProc) {
         Double bttProc = Double.MIN_VALUE;
         String msgCode = "OK";
