@@ -1,18 +1,11 @@
 package calc.formula.calculation;
 
-import calc.entity.calc.MeteringPoint;
-import calc.entity.calc.Parameter;
+import calc.entity.calc.*;
 import calc.entity.calc.enums.*;
 import calc.entity.calc.loss.*;
-import calc.formula.CalcContext;
-import calc.formula.CalcResult;
-import calc.formula.ContextTypeEnum;
+import calc.formula.*;
 import calc.formula.exception.CalcServiceException;
-import calc.formula.expression.impl.PeriodTimeValueExpression;
-import calc.formula.service.CalcService;
-import calc.formula.service.MessageService;
-import calc.formula.service.ParamService;
-import calc.formula.service.PeriodTimeValueService;
+import calc.formula.service.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -21,15 +14,13 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
-import static calc.util.Util.buildMsgParams;
-import static calc.util.Util.round;
+import static calc.util.Util.*;
 import static java.util.Optional.*;
 
-@SuppressWarnings({"Duplicates", "ImplicitSubclassInspection"})
+@SuppressWarnings({"ImplicitSubclassInspection"})
 @Service
 @RequiredArgsConstructor
 public class LossFactService {
@@ -38,7 +29,6 @@ public class LossFactService {
     private final LossFactResultHeaderRepo lossFactResultHeaderRepo;
     private final LossFactResultSec1LineRepo lossFactResultSec1LineRepo;
     private final LossFactResultSec2LineRepo lossFactResultSec2LineRepo;
-    private final PeriodTimeValueService periodTimeValueService;
     private final CalcService calcService;
     private final ParamService paramService;
     private final MessageService messageService;
@@ -74,7 +64,7 @@ public class LossFactService {
 
             Double r321 = null;
             try {
-                Parameter param = inverseParam(paramService.getParam("AB"), false);
+                Parameter param = paramService.getParam("AB");
                 r321 = getMrVal(meteringPoint, param, context);
             }
             catch (CalcServiceException e) {
@@ -148,20 +138,14 @@ public class LossFactService {
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Map<String, String> msgParams = buildMsgParams(meteringPoint);
 
-            Double ap = null;
-            try {
-                Parameter param = inverseParam(paramService.getParam("A+"), line.getIsInverse());
-                ap = getMrVal(meteringPoint, param, context);
-            }
-            catch (CalcServiceException e) {
-                msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
-            }
+            Double ap = null, am = null;
+            Parameter paramAp = inverseParam(paramService, paramService.getParam("A+"), line.getIsInverse());
+            Parameter paramAm = inverseParam(paramService, paramService.getParam("A-"), line.getIsInverse());
 
-            Double am = null;
+            //noinspection Duplicates
             try {
-                Parameter param = inverseParam(paramService.getParam("A-"), line.getIsInverse());
-                am = getMrVal(meteringPoint, param, context);
+                ap = getMrVal(meteringPoint, paramAp, context);
+                am = getMrVal(meteringPoint, paramAm, context);
             }
             catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
@@ -190,18 +174,13 @@ public class LossFactService {
             Map<String, String> msgParams = buildMsgParams(meteringPoint);
 
             Double ap = null; Double am = null;
-            try {
-                Parameter param = inverseParam(paramService.getParam("A+"), line.getIsInverse());
-                ap = getMrVal(meteringPoint, param, context);
-            }
-            catch (CalcServiceException e) {
-                msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
-            }
+            Parameter paramAp = inverseParam(paramService, paramService.getParam("A+"), line.getIsInverse());
+            Parameter paramAm = inverseParam(paramService, paramService.getParam("A-"), line.getIsInverse());
 
+            //noinspection Duplicates
             try {
-                Parameter param = inverseParam(paramService.getParam("A-"), line.getIsInverse());
-                am = getMrVal(meteringPoint, param, context);
+                ap = getMrVal(meteringPoint, paramAp, context);
+                am = getMrVal(meteringPoint, paramAm, context);
             }
             catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
@@ -246,7 +225,6 @@ public class LossFactService {
         lossFactResultSec2LineRepo.flush();
     }
 
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteMessages(LossFactResultHeader header) {
         messageService.deleteMessages(header);
@@ -259,36 +237,17 @@ public class LossFactService {
         lossFactResultHeaderRepo.flush();
     }
 
-
-    private Parameter inverseParam(Parameter param, Boolean isInverse) {
-        if (isInverse) {
-            if (param.equals(paramService.getParam("A+"))) return paramService.getParam("A-");
-            if (param.equals(paramService.getParam("A-"))) return paramService.getParam("A+");
-            if (param.equals(paramService.getParam("R+"))) return paramService.getParam("R-");
-            if (param.equals(paramService.getParam("R-"))) return paramService.getParam("R+");
-        }
-        return param;
-    }
-
     private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
-        if (meteringPoint == null)
+        if (meteringPoint == null || param == null)
             return null;
 
-        if (param == null)
-            return null;
+        CalcProperty property = CalcProperty.builder()
+            .processOrder(ProcessOrderEnum.READ_CALC)
+            .contextType(context.getDefContextType())
+            .build();
 
-        Double val = PeriodTimeValueExpression.builder()
-            .meteringPointCode(meteringPoint.getCode())
-            .parameterCode(param.getCode())
-            .context(context)
-            .service(periodTimeValueService)
-            .build()
-            .doubleValue();
-
-        if (ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcValue(meteringPoint, param, context);
-            val = result !=null ? result.getDoubleValue() : null;
-        }
+        CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
+        Double val = result !=null ? result.getDoubleValue() : null;
 
         val = round(val, param);
         return val;

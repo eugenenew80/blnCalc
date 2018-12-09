@@ -1,18 +1,12 @@
 package calc.formula.calculation;
 
-import calc.entity.calc.MeteringPoint;
-import calc.entity.calc.Parameter;
+import calc.entity.calc.*;;
 import calc.entity.calc.enums.*;
 import calc.entity.calc.source.*;
-import calc.formula.CalcContext;
-import calc.formula.CalcProperty;
-import calc.formula.CalcResult;
-import calc.formula.exception.CalcServiceException;
-import calc.formula.service.CalcService;
-import calc.formula.service.MessageService;
-import calc.repo.calc.SourceResultHeaderRepo;
-import calc.repo.calc.SourceResultLine1Repo;
-import calc.repo.calc.SourceResultLine2Repo;
+import calc.formula.*;
+import calc.formula.exception.*;
+import calc.formula.service.*;
+import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +15,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
-import static calc.util.Util.buildMsgParams;
-import static calc.util.Util.round;
+import static calc.util.Util.*;
+import static java.util.Optional.*;
 
-@SuppressWarnings({"Duplicates", "ImplicitSubclassInspection"})
+@SuppressWarnings({"ImplicitSubclassInspection"})
 @Service
 @RequiredArgsConstructor
 public class SourceService {
@@ -61,9 +55,7 @@ public class SourceService {
             header.setDeliveryVal(value);
 
             calcLines1(header, context);
-            copyGroups2(header);
             calcLines2(header, context);
-            setParents2(header);
 
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
@@ -73,103 +65,77 @@ public class SourceService {
 
             return true;
         }
-
         catch (Exception e) {
-            HashMap<String, String> msgParams = new HashMap<>();
-            msgParams.putIfAbsent("err", e.getMessage());
-            messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", msgParams);
+            messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", buildMsgParams(e));
+            e.printStackTrace();
 
             updateStatus(header, BatchStatusEnum.E);
             logger.error("Energy source balance for header " + header.getId() + " terminated with exception: " + e.getMessage());
-            e.printStackTrace();
             return false;
         }
     }
 
-    private void copyGroups2(SourceResultHeader header) {
-        List<SourceResultLine2> resultLines = new ArrayList<>();
-        for (SourceLine2 line : header.getHeader().getLines2()) {
-            if (line.getRowType() != RowTypeEnum.GROUP)
-                continue;
-
-            SourceResultLine2 resultLine = new SourceResultLine2();
-            resultLine.setHeader(header);
-            resultLine.setLineNum(line.getLineNum());
-            resultLine.setMeteringPoint(line.getMeteringPoint());
-            resultLine.setParam(line.getParam());
-            resultLine.setIsInverse(line.getIsInverse());
-            resultLine.setRowType(line.getRowType());
-            resultLine.setCreateBy(header.getCreateBy());
-            resultLine.setCreateDate(LocalDateTime.now());
-            copyTranslates2(line, resultLine);
-            resultLines.add(resultLine);
-        }
-        saveLines2(resultLines);
-    }
-
     private void calcLines1(SourceResultHeader header, CalcContext context) {
-        List<SourceLine1> lines = header.getHeader().getLines1();
-
-        List<SourceResultLine1> resultLines = new ArrayList<>();
-        for (SourceLine1 line : lines) {
+        List<SourceResultLine1> results = new ArrayList<>();
+        for (SourceLine1 line : header.getHeader().getLines1()) {
             Map<String, String> msgParams = buildMsgParams(line);
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = line.getParam();
 
             Double val = null;
             try {
-                CalcResult result = calcService.calcValue(meteringPoint, param, context);
-                val = result != null ? result.getDoubleValue() : null;
+                CalcResult calc = calcService.calcValue(meteringPoint, param, context);
+                val = calc != null ? calc.getDoubleValue() : null;
             }
             catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
                 messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
-            SourceResultLine1 resultLine = new SourceResultLine1();
-            resultLine.setHeader(header);
-            resultLine.setLineNum(line.getLineNum());
-            resultLine.setMeteringPoint(meteringPoint);
-            resultLine.setParam(param);
-            resultLine.setTotalVal(val);
-            resultLine.setCreateBy(header.getCreateBy());
-            resultLine.setCreateDate(LocalDateTime.now());
-            copyTranslates1(line, resultLine);
-            resultLines.add(resultLine);
+            SourceResultLine1 result = new SourceResultLine1();
+            result.setHeader(header);
+            result.setLineNum(line.getLineNum());
+            result.setMeteringPoint(meteringPoint);
+            result.setParam(param);
+            result.setTotalVal(val);
+            result.setCreateBy(header.getCreateBy());
+            result.setCreateDate(LocalDateTime.now());
+            copyTranslates1(line, result);
+            results.add(result);
         }
-        saveLines1(resultLines);
+        saveLines1(results);
     }
 
     private void calcLines2(SourceResultHeader header, CalcContext context) {
-        List<SourceResultLine2> resultLines = new ArrayList<>();
+        List<SourceResultLine2> results = new ArrayList<>();
         for (SourceLine2 line : header.getHeader().getLines2()) {
-            if (line.getRowType() != RowTypeEnum.ROW)
-                continue;
-
             Map<String, String> msgParams = buildMsgParams(line);
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = line.getParam();
 
-            if (meteringPoint == null) {
-                messageService.addMessage(header, line.getLineNum(), docCode, "ES_MP_NOT_FOUND", msgParams);
-                continue;
-            }
+            SourceResultLine2 result = new SourceResultLine2();
+            copyTranslates2(line, result);
+            results.add(result);
 
-            if (param == null) {
-                messageService.addMessage(header, line.getLineNum(), docCode, "ES_PARAM_NOT_FOUND", msgParams);
-                continue;
-            }
+            result.setHeader(header);
+            result.setLineNum(line.getLineNum());
+            result.setMeteringPoint(line.getMeteringPoint());
+            result.setParam(line.getParam());
+            result.setIsInverse(line.getIsInverse());
+            result.setRowType(line.getRowType());
+            result.setCreateBy(header.getCreateBy());
+            result.setCreateDate(LocalDateTime.now());
 
+            if (line.getRowType() == RowTypeEnum.GROUP)
+                continue;
+
+            CalcProperty.CalcPropertyBuilder pb = CalcProperty.builder()
+                .determiningMethod(DeterminingMethodEnum.RDV);
 
             Double ownVal = null;
             try {
-                CalcProperty property = CalcProperty.builder()
-                    .determiningMethod(DeterminingMethodEnum.RDV)
-                    .gridType(GridTypeEnum.OWN)
-                    .build();
-
-                CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
-                ownVal = result != null ? result.getDoubleValue() : null;
+                CalcResult calc = calcService.calcValue(meteringPoint, param, context, pb.gridType(GridTypeEnum.OWN).build());
+                ownVal = calc != null ? calc.getDoubleValue() : null;
             }
             catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
@@ -178,13 +144,8 @@ public class SourceService {
 
             Double otherVal = null;
             try {
-                CalcProperty property = CalcProperty.builder()
-                    .determiningMethod(DeterminingMethodEnum.RDV)
-                    .gridType(GridTypeEnum.OTHER)
-                    .build();
-
-                CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
-                otherVal = result != null ? result.getDoubleValue() : null;
+                CalcResult calc = calcService.calcValue(meteringPoint, param, context, pb.gridType(GridTypeEnum.OTHER).build());
+                otherVal = calc != null ? calc.getDoubleValue() : null;
             }
             catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
@@ -193,64 +154,49 @@ public class SourceService {
 
             Double totalVal = null;
             try {
-                CalcProperty property = CalcProperty.builder()
-                    .determiningMethod(DeterminingMethodEnum.RDV)
-                    .gridType(GridTypeEnum.TOTAL)
-                    .build();
-
-                CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
-                totalVal = result != null ? result.getDoubleValue() : null;
+                CalcResult calc = calcService.calcValue(meteringPoint, param, context, pb.gridType(GridTypeEnum.TOTAL).build());
+                totalVal = calc != null ? calc.getDoubleValue() : null;
             }
             catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
                 messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
             }
 
-            SourceResultLine2 resultLine = new SourceResultLine2();
-            resultLine.setOwnVal(ownVal);
-            resultLine.setOtherVal(otherVal);
-            resultLine.setTotalVal(totalVal);
-            resultLine.setHeader(header);
-            resultLine.setLineNum(line.getLineNum());
-            resultLine.setMeteringPoint(line.getMeteringPoint());
-            resultLine.setParam(line.getParam());
-            resultLine.setIsInverse(line.getIsInverse());
-            resultLine.setRowType(line.getRowType());
-            resultLine.setCreateBy(header.getCreateBy());
-            resultLine.setCreateDate(LocalDateTime.now());
-            copyTranslates2(line, resultLine);
-            resultLines.add(resultLine);
+            result.setOwnVal(ownVal);
+            result.setOtherVal(otherVal);
+            result.setTotalVal(totalVal);
         }
-        saveLines2(resultLines);
+        saveLines2(results);
+        setParents2(header);
     }
 
     private void copyTranslates1(SourceLine1 line, SourceResultLine1 resultLine) {
-        resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
-        for (SourceLine1Translate lineTranslate : line.getTranslates()) {
-            SourceResultLine1Translate resultLineTranslate = new SourceResultLine1Translate();
-            resultLineTranslate.setLang(lineTranslate.getLang());
-            resultLineTranslate.setLine(resultLine);
+        resultLine.setTranslates(ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
+        for (SourceLine1Translate ltl : line.getTranslates()) {
+            SourceResultLine1Translate rtl = new SourceResultLine1Translate();
+            rtl.setLang(ltl.getLang());
+            rtl.setLine(resultLine);
+            rtl.setName(ltl.getName());
 
-            resultLineTranslate.setName(lineTranslate.getName());
-            if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
-                resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
+            if (rtl.getName() == null && resultLine.getMeteringPoint()!=null)
+                rtl.setName(resultLine.getMeteringPoint().getShortName());
 
-            resultLine.getTranslates().add(resultLineTranslate);
+            resultLine.getTranslates().add(rtl);
         }
     }
 
     private void copyTranslates2(SourceLine2 line, SourceResultLine2 resultLine) {
-        resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
-        for (SourceLine2Translate lineTranslate : line.getTranslates()) {
-            SourceResultLine2Translate resultLineTranslate = new SourceResultLine2Translate();
-            resultLineTranslate.setLang(lineTranslate.getLang());
-            resultLineTranslate.setLine(resultLine);
+        resultLine.setTranslates(ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
+        for (SourceLine2Translate ltl : line.getTranslates()) {
+            SourceResultLine2Translate rtl = new SourceResultLine2Translate();
+            rtl.setLang(ltl.getLang());
+            rtl.setLine(resultLine);
+            rtl.setName(ltl.getName());
 
-            resultLineTranslate.setName(lineTranslate.getName());
-            if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
-                resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
+            if (rtl.getName() == null && resultLine.getMeteringPoint()!=null)
+                rtl.setName(resultLine.getMeteringPoint().getShortName());
 
-            resultLine.getTranslates().add(resultLineTranslate);
+            resultLine.getTranslates().add(rtl);
         }
     }
 

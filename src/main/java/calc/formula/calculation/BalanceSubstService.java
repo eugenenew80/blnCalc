@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static calc.util.Util.buildMsgParams;
+
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstService {
@@ -165,10 +167,11 @@ public class BalanceSubstService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", e.getClass().getCanonicalName());
-            updateStatus(header, BatchStatusEnum.E);
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", buildMsgParams(e));
+            updateStatus(header, BatchStatusEnum.E);
         }
     }
 

@@ -3,10 +3,8 @@ package calc.formula.calculation;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.*;
 import calc.entity.calc.seg.*;
-import calc.formula.CalcContext;
-import calc.formula.CalcResult;
-import calc.formula.ContextTypeEnum;
-import calc.formula.expression.impl.PeriodTimeValueExpression;
+import calc.formula.*;
+import calc.formula.exception.CalcServiceException;
 import calc.formula.service.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +15,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
-
+import static calc.entity.calc.enums.TreatmentTypeEnum.*;
+import static calc.util.Util.buildMsgParams;
 import static calc.util.Util.round;
+import static java.util.Collections.emptyList;
+import static java.util.Optional.*;
+import static java.util.stream.Collectors.groupingBy;
 
 @SuppressWarnings("ImplicitSubclassInspection")
 @Service
@@ -31,11 +33,10 @@ public class SegService {
     private final SegResultNoteRepo segResultNoteRepo;
     private final SegResultAppRepo segResultAppRepo;
     private final MessageService messageService;
-    private final PeriodTimeValueService periodTimeValueService;
     private final CalcService calcService;
 
     public boolean calc(Long headerId) {
-        logger.info("Metering reading for header " + headerId + " started");
+        logger.info("Seg calculation for header " + headerId + " started");
         SegResultHeader header = segResultHeaderRepo.findOne(headerId);
         if (header.getStatus() != BatchStatusEnum.W)
             return false;
@@ -54,9 +55,7 @@ public class SegService {
             deleteLines(header);
             deleteMessages(header);
 
-            copyInfoRows(header);
-            calcInRows(header, context);
-            calcOutRows(header, context);
+            calcLines(header, context);
             setParents(header);
             copyNotes(header);
             copyApps(header);
@@ -65,162 +64,109 @@ public class SegService {
             header.setIsActive(false);
 
             updateStatus(header, BatchStatusEnum.C);
-            logger.info("Metering reading for header " + header.getId() + " completed");
+            logger.info("Seg calculation for header " + header.getId() + " completed");
 
             return true;
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", new HashMap<>());
-            updateStatus(header, BatchStatusEnum.E);
-            logger.error("Metering reading for header " + header.getId() + " terminated with exception");
-            logger.error(e.toString() + ": " + e.getMessage());
+            logger.error("Seg calculation for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+
+            messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", buildMsgParams(e));
+            updateStatus(header, BatchStatusEnum.E);
             return false;
         }
     }
 
-    private void calcOutRows(SegResultHeader header, CalcContext context) throws Exception {
-        List<SegResultLine> resultLines = new ArrayList<>();
-        for (BalanceUnitLine line : header.getBalanceUnit().getLines()) {
-            if (line.getTreatmentType() != TreatmentTypeEnum.OUT && line.getTreatmentType() != TreatmentTypeEnum.EMPTY)
-                continue;
+    private void calcLines(SegResultHeader header, CalcContext context) {
+        Map<TreatmentTypeEnum, List<BalanceUnitLine>> map = header.getBalanceUnit()
+            .getLines()
+            .stream()
+            .filter(t -> t.getTreatmentType() != null)
+            .collect(groupingBy(BalanceUnitLine::getTreatmentType));
 
-            Map<String, String> msgParams = buildMsgParams(line);
+        for (TreatmentTypeEnum treatmentType : Arrays.asList(INFO, IN, EMPTY, OUT)) {
+            List<SegResultLine> results = new ArrayList<>();
+            for (BalanceUnitLine line : map.getOrDefault(treatmentType, emptyList())) {
+                Map<String, String> msgParams = buildMsgParams(line);
+                MeteringPoint meteringPoint = line.getMeteringPoint();
+                Parameter param = line.getParam();
+                Formula formula = line.getFormula();
 
-            MeteringPoint meteringPoint = line.getMeteringPoint();
-            Parameter param = line.getParam();
-            Formula formula = line.getFormula();
+                SegResultLine result = new SegResultLine();
+                copyTranslates(line, result);
+                results.add(result);
 
-            if (meteringPoint == null) {
-                messageService.addMessage(header, line.getLineNum(), docCode, "SEG_MP_NOT_FOUND", msgParams);
-                continue;
+                result.setHeader(header);
+                result.setLineNum(line.getLineNum());
+                result.setRowType(line.getRowType());
+                result.setTreatmentType(line.getTreatmentType());
+                result.setDataLocation(line.getDataLocation());
+                result.setMeteringPoint(line.getMeteringPoint());
+                result.setParam(line.getParam());
+                result.setFormula(line.getFormula());
+                result.setRate(line.getRate());
+                result.setUnit(line.getParam().getUnit());
+                result.setIsBold(line.getIsBold());
+                result.setIsInverse(line.getIsInverse());
+                result.setCreateBy(header.getCreateBy());
+                result.setCreateDate(LocalDateTime.now());
+
+                if (treatmentType == INFO)
+                    continue;
+
+                if (meteringPoint.getPointType() == PointTypeEnum.VMP && formula == null)
+                    messageService.addMessage(header, line.getLineNum(), docCode, "SEG_FORMULA_NOT_FOUND", msgParams);
+
+                Double val = null;
+                try {
+                    CalcProperty property = treatmentType == IN || formula == null
+                        ? CalcProperty.builder()
+                            .contextType(ContextTypeEnum.DEFAULT)
+                            .processOrder(ProcessOrderEnum.READ)
+                            .build()
+
+                        : CalcProperty.builder()
+                            .contextType(context.getDefContextType())
+                            .processOrder(ProcessOrderEnum.CALC)
+                            .build();
+
+                    CalcResult calc;
+                    if (formula != null)
+                        calc = calcService.calcValue(formula, context, property);
+                    else
+                        calc = calcService.calcValue(meteringPoint, param, context, property);
+
+                    val = result != null ? calc.getDoubleValue() : null;
+                    if (val != null)
+                        val = val * ofNullable(line.getRate()).orElse(1d);
+
+                    val = round(val, param);
+                }
+                catch (CalcServiceException e) {
+                    msgParams.putIfAbsent("err", e.getMessage());
+                    messageService.addMessage(header, line.getId(), docCode, e.getErrCode(), msgParams);
+                }
+                result.setVal(val);
             }
-
-            if (param == null) {
-                messageService.addMessage(header, line.getLineNum(), docCode, "SEG_PARAM_NOT_FOUND", msgParams);
-                continue;
-            }
-
-            if (formula == null)
-                messageService.addMessage(header, line.getLineNum(), docCode, "SEG_FORMULA_NOT_FOUND", msgParams);
-
-            if (meteringPoint.getPointType() != PointTypeEnum.VMP)
-                messageService.addMessage(header, line.getLineNum(), docCode, "SEG_NOT_VMP", msgParams);
-
-            SegResultLine resultLine = new SegResultLine();
-            resultLine.setHeader(header);
-            resultLine.setLineNum(line.getLineNum());
-            resultLine.setRowType(line.getRowType());
-            resultLine.setTreatmentType(line.getTreatmentType());
-            resultLine.setDataLocation(line.getDataLocation());
-            resultLine.setMeteringPoint(meteringPoint);
-            resultLine.setParam(param);
-            resultLine.setFormula(formula);
-            resultLine.setRate(line.getRate());
-            resultLine.setUnit(param.getUnit());
-            resultLine.setCreateDate(LocalDateTime.now());
-            resultLine.setCreateBy(header.getCreateBy());
-            resultLine.setIsBold(line.getIsBold());
-            resultLine.setIsInverse(line.getIsInverse());
-
-            if (meteringPoint.getPointType() == PointTypeEnum.VMP && formula != null) {
-                CalcResult result = calcService.calcValue(formula, context);
-                Double value = result != null ? result.getDoubleValue() : null;
-                if (value != null)
-                    value = value * Optional.ofNullable(line.getRate()).orElse(1d);
-
-                value = round(value, param);
-                resultLine.setVal(value);
-            }
-            copyTranslates(line, resultLine);
-            resultLines.add(resultLine);
+            saveLines(results);
         }
-        saveLines(resultLines);
     }
 
-    private void calcInRows(SegResultHeader header, CalcContext context) {
-        List<SegResultLine> resultLines = new ArrayList<>();
-        for (BalanceUnitLine line : header.getBalanceUnit().getLines()) {
-            if (line.getTreatmentType() != TreatmentTypeEnum.IN)
-                continue;
+    private void copyTranslates(BalanceUnitLine l, SegResultLine rl) {
+        rl.setTranslates(ofNullable(rl.getTranslates()).orElse(new ArrayList<>()));
+        for (BalanceUnitLineTranslate tl : l.getTranslates()) {
+            SegResultLineTranslate rtl = new SegResultLineTranslate();
+            rtl.setLang(tl.getLang());
+            rtl.setLine(rl);
+            rtl.setName(tl.getName());
+            rtl.setShortName(tl.getShortName());
 
-            Map<String, String> msgParams = buildMsgParams(line);
-            MeteringPoint meteringPoint = line.getMeteringPoint();
-            Parameter param = line.getParam();
+            if (rtl.getName() == null && rl.getMeteringPoint()!=null)
+                rtl.setName(rl.getMeteringPoint().getShortName());
 
-            if (meteringPoint == null) {
-                messageService.addMessage(header, line.getLineNum(), docCode, "SEG_MP_NOT_FOUND", msgParams);
-                continue;
-            }
-
-            if (param == null) {
-                messageService.addMessage(header, line.getLineNum(), docCode, "SEG_PARAM_NOT_FOUND", msgParams);
-                continue;
-            }
-
-            PeriodTimeValueExpression expression = PeriodTimeValueExpression.builder()
-                .meteringPointCode(meteringPoint.getCode())
-                .parameterCode(param.getCode())
-                .rate(Optional.ofNullable(line.getRate()).orElse(1d))
-                .service(periodTimeValueService)
-                .context(context)
-                .build();
-
-            Double value = expression.doubleValue();
-            value = round(value, param);
-
-            SegResultLine resultLine = new SegResultLine();
-            resultLine.setHeader(header);
-            resultLine.setLineNum(line.getLineNum());
-            resultLine.setRowType(line.getRowType());
-            resultLine.setTreatmentType(line.getTreatmentType());
-            resultLine.setDataLocation(line.getDataLocation());
-            resultLine.setMeteringPoint(line.getMeteringPoint());
-            resultLine.setParam(line.getParam());
-            resultLine.setFormula(line.getFormula());
-            resultLine.setRate(line.getRate());
-            resultLine.setUnit(line.getParam().getUnit());
-            resultLine.setIsBold(line.getIsBold());
-            resultLine.setIsInverse(line.getIsInverse());
-            resultLine.setVal(value);
-            resultLine.setCreateBy(header.getCreateBy());
-            resultLine.setCreateDate(LocalDateTime.now());
-            copyTranslates(line, resultLine);
-            resultLines.add(resultLine);
-        }
-        saveLines(resultLines);
-    }
-
-    private void copyInfoRows(SegResultHeader header) {
-        List<SegResultLine> resultLines = new ArrayList<>();
-        for (BalanceUnitLine line : header.getBalanceUnit().getLines()) {
-            if (line.getTreatmentType() != TreatmentTypeEnum.INFO)
-                continue;
-
-            SegResultLine resultLine = new SegResultLine();
-            resultLine.setHeader(header);
-            resultLine.setLineNum(line.getLineNum());
-            resultLine.setTreatmentType(line.getTreatmentType());
-            copyTranslates(line, resultLine);
-            resultLines.add(resultLine);
-        }
-        saveLines(resultLines);
-    }
-
-    private void copyTranslates(BalanceUnitLine line, SegResultLine resultLine) {
-        resultLine.setTranslates(Optional.ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
-        for (BalanceUnitLineTranslate lineTranslate : line.getTranslates()) {
-            SegResultLineTranslate resultLineTranslate = new SegResultLineTranslate();
-            resultLineTranslate.setLang(lineTranslate.getLang());
-            resultLineTranslate.setLine(resultLine);
-
-            resultLineTranslate.setName(lineTranslate.getName());
-            resultLineTranslate.setShortName(lineTranslate.getShortName());
-            if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
-                resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
-
-            resultLine.getTranslates().add(resultLineTranslate);
+            rl.getTranslates().add(rtl);
         }
     }
 
@@ -233,7 +179,7 @@ public class SegService {
             resultNote.setLineNum(note.getLineNum());
             resultNote.setNoteNum(note.getNoteNum());
 
-            resultNote.setTranslates(Optional.ofNullable(resultNote.getTranslates()).orElse(new ArrayList<>()));
+            resultNote.setTranslates(ofNullable(resultNote.getTranslates()).orElse(new ArrayList<>()));
             for (SegNoteTranslate noteTranslate : note.getTranslates()) {
                 SegResultNoteTranslate resultNoteTranslate = new SegResultNoteTranslate();
                 resultNoteTranslate.setNote(resultNote);
@@ -255,7 +201,7 @@ public class SegService {
             resultApp.setHeader(header);
             resultApp.setAppNum(app.getAppNum());
 
-            resultApp.setTranslates(Optional.ofNullable(resultApp.getTranslates()).orElse(new ArrayList<>()));
+            resultApp.setTranslates(ofNullable(resultApp.getTranslates()).orElse(new ArrayList<>()));
             for (SegAppTranslate appTranslate : app.getTranslates()) {
                 SegResultAppTranslate resultAppTranslate = new SegResultAppTranslate();
                 resultAppTranslate.setApp(resultApp);
@@ -302,7 +248,6 @@ public class SegService {
         segResultHeaderRepo.flush();
     }
 
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void setParents(SegResultHeader header) {
         List<SegResultLine> lines = segResultLineRepo.findAllByHeaderId(header.getId());
@@ -328,11 +273,5 @@ public class SegService {
 
         segResultLineRepo.save(lines);
         segResultLineRepo.flush();
-    }
-
-    private Map<String, String> buildMsgParams(BalanceUnitLine line) {
-        Map<String, String> msgParams = new HashMap<>();
-        msgParams.put("line", line.getLineNum().toString());
-        return msgParams;
     }
 }

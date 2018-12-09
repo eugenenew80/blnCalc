@@ -1,12 +1,10 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
-import calc.entity.calc.bs.pe.BalanceSubstPeLine;
-import calc.entity.calc.bs.BalanceSubstResultHeader;
-import calc.entity.calc.bs.pe.ReactorValue;
-import calc.entity.calc.enums.LangEnum;
-import calc.formula.CalcContext;
-import calc.formula.ContextTypeEnum;
+import calc.entity.calc.bs.pe.*;
+import calc.entity.calc.bs.*;
+import calc.entity.calc.enums.*;
+import calc.formula.*;
 import calc.formula.expression.impl.*;
 import calc.formula.service.*;
 import calc.repo.calc.*;
@@ -17,8 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
-
-import static calc.util.Util.round;
+import static calc.util.Util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +48,10 @@ public class BalanceSubstReactorService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", e.getClass().getCanonicalName());
             logger.error("Reactor losses for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", buildMsgParams(e));
             return false;
         }
     }
@@ -140,7 +138,6 @@ public class BalanceSubstReactorService {
             .doubleValue();
     }
 
-
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void saveLines(List<ReactorValue> reactorLines) {
         reactorValueRepo.save(reactorLines);
@@ -150,8 +147,7 @@ public class BalanceSubstReactorService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void deleteLines(BalanceSubstResultHeader header) {
         List<ReactorValue> reactorValues = reactorValueRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<reactorValues.size(); i++)
-            reactorValueRepo.delete(reactorValues.get(i));
+        reactorValueRepo.delete(reactorValues);
         reactorValueRepo.flush();
     }
 }

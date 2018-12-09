@@ -1,19 +1,11 @@
 package calc.formula.calculation;
 
-import static calc.util.Util.buildMsgParams;
-import static calc.util.Util.round;
-import static java.util.stream.Collectors.toList;
-
-import calc.entity.calc.MeteringPoint;
-import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.inter.InterResultHeader;
-import calc.entity.calc.inter.InterResultMrLine;
-import calc.formula.CalcContext;
-import calc.formula.ContextTypeEnum;
-import calc.formula.exception.CalcServiceException;
-import calc.formula.service.MessageService;
-import calc.formula.service.MeteringReading;
-import calc.formula.service.MrService;
+import calc.entity.calc.*;
+import calc.entity.calc.enums.*;
+import calc.entity.calc.inter.*;
+import calc.formula.*;
+import calc.formula.exception.*;
+import calc.formula.service.*;
 import calc.repo.calc.InterResultMrLineRepo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
+
+import static calc.util.Util.*;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +41,7 @@ public class InterMrService {
                 .stream()
                 .flatMap(t -> Arrays.asList(t.getMeteringPoint1(), t.getMeteringPoint2(), t.getBoundMeteringPoint()).stream())
                 .filter(t -> t != null)
+                .filter(t -> t.getPointType() == PointTypeEnum.PMP)
                 .distinct()
                 .collect(toList());
 
@@ -57,17 +53,15 @@ public class InterMrService {
                     meteringReadings = mrService.calc(meteringPoint, context);
                 }
                 catch (CalcServiceException e) {
+                    e.printStackTrace();
                     msgParams.putIfAbsent("err", e.getMessage());
                     messageService.addMessage(header, null, docCode, e.getErrCode(), msgParams);
-                    e.printStackTrace();
                     continue;
                 }
 
                 for (MeteringReading t : meteringReadings) {
                     if (!(t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-")))
                         continue;
-
-                    Double val = round(t.getVal(), t.getParam());
 
                     InterResultMrLine resultLine = new InterResultMrLine();
                     resultLine.setHeader(header);
@@ -85,13 +79,12 @@ public class InterMrService {
                     resultLine.setEndVal(t.getEndVal());
                     resultLine.setDelta(t.getDelta());
                     resultLine.setMeterRate(t.getMeterRate());
-                    resultLine.setVal(val);
+                    resultLine.setVal(round(t.getVal(), t.getParam()));
                     resultLine.setUnderCountVal(t.getUnderCountVal());
                     resultLine.setUndercount(t.getUnderCount());
                     resultLines.add(resultLine);
                 }
             }
-
             deleteLines(header);
             saveLines(resultLines);
 
@@ -102,6 +95,8 @@ public class InterMrService {
         catch (Exception e) {
             logger.error("terminated, headerId " + header.getId() + " , exception: " + e.toString() + ", " + e.getMessage());
             e.printStackTrace();
+
+            messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", buildMsgParams(e));
             return false;
         }
     }
@@ -115,8 +110,7 @@ public class InterMrService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void deleteLines(InterResultHeader header) {
         List<InterResultMrLine> lines = interResultMrLineRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            interResultMrLineRepo.delete(lines.get(i));
+        interResultMrLineRepo.delete(lines);
         interResultMrLineRepo.flush();
     }
 }

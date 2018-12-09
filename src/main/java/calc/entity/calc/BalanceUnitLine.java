@@ -1,6 +1,7 @@
 package calc.entity.calc;
 
 import calc.converter.jpa.BooleanToIntConverter;
+import calc.entity.TemplateLine;
 import calc.entity.calc.enums.DataLocationEnum;
 import calc.entity.calc.enums.RowTypeEnum;
 import calc.entity.calc.enums.TreatmentTypeEnum;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "calc_balance_unit_lines")
 @Immutable
-public class BalanceUnitLine {
+public class BalanceUnitLine implements TemplateLine {
     @Id
     private Long id;
 

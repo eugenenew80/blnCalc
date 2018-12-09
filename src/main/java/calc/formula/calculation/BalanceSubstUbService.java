@@ -1,23 +1,14 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
-import calc.entity.calc.bs.BalanceSubstResultHeader;
-import calc.entity.calc.bs.mr.BalanceSubstResultMrLine;
-import calc.entity.calc.bs.ub.BalanceSubstResultUbLine;
-import calc.entity.calc.bs.ub.BalanceSubstUbLine;
-import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.PointTypeEnum;
-import calc.formula.CalcContext;
-import calc.formula.CalcResult;
-import calc.formula.ContextTypeEnum;
-import calc.formula.expression.impl.PeriodTimeValueExpression;
-import calc.formula.expression.impl.UavgExpression;
-import calc.formula.expression.impl.WorkingHoursExpression;
+import calc.entity.calc.bs.*;
+import calc.entity.calc.bs.mr.*;
+import calc.entity.calc.bs.ub.*;
+import calc.entity.calc.enums.*;
+import calc.formula.*;
+import calc.formula.expression.impl.*;
 import calc.formula.service.*;
-import calc.repo.calc.BalanceSubstResultHeaderRepo;
-import calc.repo.calc.BalanceSubstResultMrLineRepo;
-import calc.repo.calc.BalanceSubstResultULineRepo;
-import calc.repo.calc.BalanceSubstResultUbLineRepo;
+import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,17 +16,12 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
 import java.util.*;
-
-import static calc.util.Util.round;
+import static calc.util.Util.*;
 import static java.lang.Math.*;
-import static java.lang.Math.sqrt;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
-@SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class BalanceSubstUbService {
@@ -50,7 +36,6 @@ public class BalanceSubstUbService {
     private final MessageService messageService;
     private final ParamService paramService;
     private final CalcService calcService;
-    private final PeriodTimeValueService periodTimeValueService;
 
     public boolean calc(BalanceSubstResultHeader header) {
         try {
@@ -69,7 +54,10 @@ public class BalanceSubstUbService {
                 for (String direction : Arrays.asList("1", "2")) {
                     if (direction.equals("1") && !ubLine.getIsSection1()) continue;
                     if (direction.equals("2") && !ubLine.getIsSection2()) continue;
-                    Parameter param = ofNullable(ubLine.getParam()).orElse(direction.equals("1") ? paramService.getParam("A+") : paramService.getParam("A-"));
+
+                    Parameter param = ofNullable(ubLine.getParam()).orElse(direction.equals("1")
+                        ? paramService.getParam("A+")
+                        : paramService.getParam("A-"));
 
                     Double w  = getMrVal(mrLines, ubLine, null, param, context);
                     if (direction.equals("1")) wApTotal += ofNullable(w).orElse(0d);
@@ -77,7 +65,7 @@ public class BalanceSubstUbService {
                 }
             }
 
-            List<BalanceSubstResultUbLine> lines = new ArrayList<>();
+            List<BalanceSubstResultUbLine> results = new ArrayList<>();
             for (BalanceSubstUbLine ubLine : header.getHeader().getUbLines()) {
                 MeteringPoint meteringPoint = ubLine.getMeteringPoint();
                 if (meteringPoint == null)
@@ -145,7 +133,10 @@ public class BalanceSubstUbService {
                 for (String direction : Arrays.asList("1", "2")) {
                     if (direction.equals("1") && !ubLine.getIsSection1()) continue;
                     if (direction.equals("2") && !ubLine.getIsSection2()) continue;
-                    Parameter param = ofNullable(ubLine.getParam()).orElse(direction.equals("1") ? paramService.getParam("A+") : paramService.getParam("A-"));
+
+                    Parameter param = ofNullable(ubLine.getParam()).orElse(direction.equals("1")
+                        ? paramService.getParam("A+")
+                        : paramService.getParam("A-"));
 
                     if (meterHistories.size() == 0) {
                         Double w  = getMrVal(mrLines, ubLine, null, param, context);
@@ -159,7 +150,7 @@ public class BalanceSubstUbService {
                         line.setW(w);
                         line.setWa(wa);
                         line.setWr(wr);
-                        lines.add(line);
+                        results.add(line);
                     }
 
                     for (MeterHistory meterHistory : meterHistories) {
@@ -244,49 +235,49 @@ public class BalanceSubstUbService {
                         if (direction.equals("2") && !wAmTotal.equals(0d)) dol = w / wAmTotal;
                         Double b2dol2 = pow(bProc / 100d, 2) * pow(dol, 2);
 
-                        BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
-                        line.setHeader(header);
-                        line.setMeteringPoint(meteringPoint);
-                        line.setDirection(direction);
-                        line.setW(w);
-                        line.setWa(wa);
-                        line.setWr(wr);
-                        line.setTtStar(ttMountedOn);
-                        line.setTtacProc(ttAcProc);
-                        line.setI1Nom(ttType.getRatedCurrent1());
-                        line.setTRab(workHours);
-                        line.setUavg(uAvg);
-                        line.setI1avgVal(i1avgVal);
-                        line.setI1avgProc(i1avgProc);
-                        line.setBttFactor(null);
-                        line.setBttProc(bttProc);
-                        line.setBiProc(biProc);
-                        line.setBuProc(buProc);
-                        line.setBlProc(blProc);
-                        line.setBsoProc(bsoProc);
-                        line.setBProc(bProc);
-                        line.setDol(dol);
-                        line.setB2dol2(b2dol2);
-                        lines.add(line);
+                        BalanceSubstResultUbLine result = new BalanceSubstResultUbLine();
+                        result.setHeader(header);
+                        result.setMeteringPoint(meteringPoint);
+                        result.setDirection(direction);
+                        result.setW(w);
+                        result.setWa(wa);
+                        result.setWr(wr);
+                        result.setTtStar(ttMountedOn);
+                        result.setTtacProc(ttAcProc);
+                        result.setI1Nom(ttType.getRatedCurrent1());
+                        result.setTRab(workHours);
+                        result.setUavg(uAvg);
+                        result.setI1avgVal(i1avgVal);
+                        result.setI1avgProc(i1avgProc);
+                        result.setBttFactor(null);
+                        result.setBttProc(bttProc);
+                        result.setBiProc(biProc);
+                        result.setBuProc(buProc);
+                        result.setBlProc(blProc);
+                        result.setBsoProc(bsoProc);
+                        result.setBProc(bProc);
+                        result.setDol(dol);
+                        result.setB2dol2(b2dol2);
+                        results.add(result);
                     }
                 }
             }
 
-            Double r1SumW = lines.stream()
+            Double r1SumW = results.stream()
                 .filter(t -> t.getDirection().equals("1"))
                 .filter(t -> t.getW() != null)
                 .map(t -> t.getW())
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
-            Double r1SumB2D2 = lines.stream()
+            Double r1SumB2D2 = results.stream()
                 .filter(t -> t.getDirection().equals("1"))
                 .filter(t -> t.getB2dol2() != null)
                 .map(t -> t.getB2dol2())
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
-            Double r2SumB2D2 = lines.stream()
+            Double r2SumB2D2 = results.stream()
                 .filter(t -> t.getDirection().equals("2"))
                 .filter(t -> t.getB2dol2() != null)
                 .map(t -> t.getB2dol2())
@@ -302,7 +293,7 @@ public class BalanceSubstUbService {
             header.setNbdVal(nbdVal);
 
             deleteLines(header);
-            saveLines(lines);
+            saveLines(results);
             balanceSubstResultHeaderRepo.save(header);
 
             logger.info("Unbalance for balance with headerId " + header.getId() + " completed");
@@ -310,9 +301,10 @@ public class BalanceSubstUbService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", e.getClass().getCanonicalName());
             logger.error("Unbalance for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", buildMsgParams(e));
             return false;
         }
     }
@@ -406,8 +398,7 @@ public class BalanceSubstUbService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultUbLine> lines = balanceSubstResultUbLineRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            balanceSubstResultUbLineRepo.delete(lines.get(i));
+        balanceSubstResultUbLineRepo.delete(lines);
         balanceSubstResultUbLineRepo.flush();
     }
 
@@ -429,20 +420,15 @@ public class BalanceSubstUbService {
             return val * ofNullable(ubLine.getRate()).orElse(1d);
         }
 
-        Double val = PeriodTimeValueExpression.builder()
-            .meteringPointCode(meteringPoint.getCode())
-            .parameterCode(param.getCode())
-            .context(context)
-            .service(periodTimeValueService)
-            .build()
-            .doubleValue();
+        CalcProperty property = CalcProperty.builder()
+            .contextType(context.getDefContextType())
+            .processOrder(ProcessOrderEnum.READ_CALC)
+            .build();
 
-        if (ofNullable(val).orElse(0d) == 0d) {
-            CalcResult result = calcService.calcValue(meteringPoint, param, context);
-            val = result!=null ? result.getDoubleValue() : null;
-            if (val != null)
-                val = val * ofNullable(ubLine.getRate()).orElse(1d);
-        }
+        CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
+        Double val = result!=null ? result.getDoubleValue() : null;
+        if (val != null)
+            val = val * ofNullable(ubLine.getRate()).orElse(1d);
 
         return ofNullable(val).orElse(0d);
     }

@@ -62,6 +62,12 @@ public class Util {
         return msgParams;
     }
 
+    public static Map<String, String> buildMsgParams(Exception e) {
+        HashMap<String, String> msgParams = new HashMap<>();
+        msgParams.putIfAbsent("err", e.getMessage());
+        return msgParams;
+    }
+
     public static  DataTypeEnum getDocDataType(List<? extends DataTypeSupport> resultLines) {
         Map<DataTypeEnum, List<DataTypeSupport>> dataTypes = resultLines.stream()
             .filter(t -> t.getDataType() != null)

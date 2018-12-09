@@ -4,13 +4,9 @@ import calc.entity.calc.*;
 import calc.entity.calc.bs.*;
 import calc.entity.calc.bs.mr.*;
 import calc.entity.calc.enums.LangEnum;
-import calc.formula.CalcContext;
-import calc.formula.ContextTypeEnum;
-import calc.formula.exception.CalcServiceException;
-import calc.formula.service.MessageService;
-import calc.formula.service.MeteringReading;
-import calc.formula.service.MrService;
-import calc.formula.service.ParamService;
+import calc.formula.*;
+import calc.formula.exception.*;
+import calc.formula.service.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -19,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
-
-import static calc.util.Util.buildMsgParams;
-import static calc.util.Util.inverseParam;
-import static calc.util.Util.round;
+import static calc.util.Util.*;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("ImplicitSubclassInspection")
@@ -30,13 +23,13 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class BalanceSubstMrService {
     private static final Logger logger = LoggerFactory.getLogger(BalanceSubstMrService.class);
+    private static final String docCode = "ACT";
     private final BalanceSubstResultMrLineRepo balanceSubstResultMrLineRepo;
     private final BalanceSubstResultBpLineRepo balanceSubstResultBpLineRepo;
     private final MrService mrService;
     private final ParamService paramService;
     private final BalanceSubstResultMrNoteRepo balanceSubstResultMrNoteRepo;
     private final MessageService messageService;
-    private static final String docCode = "ACT";
 
     public boolean calc(BalanceSubstResultHeader header) {
         try {
@@ -48,7 +41,7 @@ public class BalanceSubstMrService {
                 .defContextType(ContextTypeEnum.DEFAULT)
                 .build();
 
-            List<BalanceSubstResultMrLine> resultLines = new ArrayList<>();
+            List<BalanceSubstResultMrLine> results = new ArrayList<>();
             for (BalanceSubstMrLine mrLine : header.getHeader().getMrLines()) {
                 MeteringPoint meteringPoint = mrLine.getMeteringPoint();
                 if (meteringPoint == null)
@@ -66,7 +59,7 @@ public class BalanceSubstMrService {
                 }
 
                 for (MeteringReading t : meteringReadings) {
-                    BalanceSubstResultMrLine line = new BalanceSubstResultMrLine();
+                    BalanceSubstResultMrLine result = new BalanceSubstResultMrLine();
 
                     if (t.getMeter() == null)
                         messageService.addMessage(header, mrLine.getId(), docCode, "MR_METER_NOT_FOUND", msgParams);
@@ -83,36 +76,36 @@ public class BalanceSubstMrService {
                     Parameter param = inverseParam(paramService, t.getParam(), mrLine.getIsInverse());
                     Double val = round(t.getVal(), param);
 
-                    line.setHeader(header);
-                    line.setMeteringPoint(meteringPoint);
-                    line.setSection(section);
-                    line.setBypassMeteringPoint(t.getBypassMeteringPoint());
-                    line.setBypassMode(t.getBypassMode());
-                    line.setIsBypassSection(t.getIsBypassSection());
-                    line.setIsIgnore(false);
-                    line.setParam(param);
-                    line.setUnit(t.getUnit());
-                    line.setMeter(t.getMeter());
-                    line.setMeterHistory(t.getMeterHistory());
-                    line.setStartMeteringDate(t.getStartMeteringDate());
-                    line.setEndMeteringDate(t.getEndMeteringDate());
-                    line.setStartVal(t.getStartVal());
-                    line.setEndVal(t.getEndVal());
-                    line.setDelta(t.getDelta());
-                    line.setMeterRate(t.getMeterRate());
-                    line.setVal(val);
-                    line.setUnderCountVal(t.getUnderCountVal());
-                    line.setUndercount(t.getUnderCount());
-                    if (meteringPoint.getVoltageClass()!=null)
-                        line.setSubSection(meteringPoint.getVoltageClass().getValue().toString());
+                    result.setHeader(header);
+                    result.setMeteringPoint(meteringPoint);
+                    result.setSection(section);
+                    result.setBypassMeteringPoint(t.getBypassMeteringPoint());
+                    result.setBypassMode(t.getBypassMode());
+                    result.setIsBypassSection(t.getIsBypassSection());
+                    result.setIsIgnore(false);
+                    result.setParam(param);
+                    result.setUnit(t.getUnit());
+                    result.setMeter(t.getMeter());
+                    result.setMeterHistory(t.getMeterHistory());
+                    result.setStartMeteringDate(t.getStartMeteringDate());
+                    result.setEndMeteringDate(t.getEndMeteringDate());
+                    result.setStartVal(t.getStartVal());
+                    result.setEndVal(t.getEndVal());
+                    result.setDelta(t.getDelta());
+                    result.setMeterRate(t.getMeterRate());
+                    result.setVal(val);
+                    result.setUnderCountVal(t.getUnderCountVal());
+                    result.setUndercount(t.getUnderCount());
+                    if (meteringPoint.getVoltageClass() != null)
+                        result.setSubSection(meteringPoint.getVoltageClass().getValue().toString());
 
-                    resultLines.add(line);
+                    results.add(result);
                 }
             }
 
             deleteLines(header);
-            saveLines(resultLines);
-            saveBpLines(resultLines);
+            saveLines(results);
+            saveBpLines(results);
             copyNotes(header);
 
             logger.info("Act for balance with headerId " + header.getId() + " completed");
@@ -120,9 +113,10 @@ public class BalanceSubstMrService {
         }
 
         catch (Exception e) {
-            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", e.getClass().getCanonicalName());
-            logger.error("Act for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+            logger.error("Act for balance with headerId " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
+
+            messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", buildMsgParams(e));
             return false;
         }
     }

@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static calc.util.Util.buildMsgParams;
+import static calc.util.Util.inverseParam;
 import static java.util.Optional.*;
 
 @SuppressWarnings({"Duplicates", "ImplicitSubclassInspection"})
@@ -147,7 +148,7 @@ public class RegService {
 
             Double val = null;
             try {
-                CalcResult result = calcService.calcValue(meteringPoint, inverseParam(param, line.getIsInverse()), context);
+                CalcResult result = calcService.calcValue(meteringPoint, inverseParam(paramService, param, line.getIsInverse()), context);
                 val = result != null ? result.getDoubleValue() : null;
             }
             catch (CalcServiceException e) {
@@ -427,15 +428,5 @@ public class RegService {
 
         regResultLine3Repo.save(resultLines);
         regResultLine3Repo.flush();
-    }
-
-    private Parameter inverseParam(Parameter param, Boolean isInverse) {
-        if (isInverse) {
-            if (param.equals(paramService.getParam("A+"))) return paramService.getParam("A-");
-            if (param.equals(paramService.getParam("A-"))) return paramService.getParam("A+");
-            if (param.equals(paramService.getParam("R+"))) return paramService.getParam("R-");
-            if (param.equals(paramService.getParam("R-"))) return paramService.getParam("R+");
-        }
-        return param;
     }
 }
