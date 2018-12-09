@@ -3,6 +3,7 @@ package calc.formula;
 import calc.entity.calc.*;
 import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
+import calc.entity.calc.enums.SourceEnum;
 import calc.entity.calc.enums.SourceSystemEnum;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ public class CalcResult {
     private SourceType sourceType;
     private PeriodTypeEnum periodType;
     private DataTypeEnum dataType;
+    private SourceEnum source;
 
     private Double doubleValue;
     private Double[] doubleValues;

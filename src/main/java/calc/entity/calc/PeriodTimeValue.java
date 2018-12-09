@@ -2,6 +2,7 @@ package calc.entity.calc;
 
 import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
+import calc.entity.calc.enums.SourceEnum;
 import calc.formula.CalcResult;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import lombok.*;
@@ -56,7 +57,7 @@ public class PeriodTimeValue  {
 	private PeriodTypeEnum periodType;
 
 	@Column(name = "source_code")
-	private String sourceCode;
+	private SourceEnum source;
 
 	@Column(name="data_type")
 	@Enumerated(EnumType.STRING)
@@ -73,9 +74,13 @@ public class PeriodTimeValue  {
 		result.setDoubleValue(getVal());
 		result.setSourceType(getSourceType());
 		result.setDataType(getDataType());
+		result.setSource(getSource());
 
 		if (result.getDataType() == null)
 			result.setDataType(getPeriodType() == PeriodTypeEnum.M ? DataTypeEnum.FINAL : DataTypeEnum.OPER);
+
+		if (result.getSource() == null)
+			result.setSource(SourceEnum.DEFAULT);
 
 		return result;
 	}

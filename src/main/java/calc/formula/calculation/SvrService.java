@@ -110,7 +110,7 @@ public class SvrService {
                 CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
                 val = result != null ? result.getDoubleValue() : null;
                 val = round(val, param);
-                dataType = getRowDataType(meteringPoint, context);
+                dataType = getRowDataType(context);
             }
             catch (CalcServiceException e) {
                 messageService.addMessage(header, line, e);

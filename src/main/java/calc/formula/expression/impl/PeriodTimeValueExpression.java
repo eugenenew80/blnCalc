@@ -1,11 +1,8 @@
 package calc.formula.expression.impl;
 
 import calc.entity.calc.PeriodTimeValue;
-import calc.entity.calc.enums.DataTypeEnum;
-import calc.formula.CalcResult;
-import calc.formula.CalcContext;
-import calc.formula.CalcTrace;
-import calc.formula.ContextTypeEnum;
+import calc.entity.calc.enums.*;
+import calc.formula.*;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.PeriodTimeValueService;
 import lombok.AccessLevel;
@@ -15,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Stream;
+import static calc.entity.calc.enums.SourceEnum.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.groupingBy;
@@ -28,7 +26,6 @@ public class PeriodTimeValueExpression implements DoubleExpression {
     private final String parameterCode;
     private final PeriodTimeValueService service;
     private final CalcContext context;
-    //private Double[] values = null;
 
     @Builder.Default
     private final Double rate = 1d;
@@ -66,32 +63,47 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double[] doubleValues() {
-        //if (values != null)
-        //    return values;
+        logger.trace("mp: " + meteringPointCode);
+        logger.trace("param: " + parameterCode);
 
         Stream<PeriodTimeValue> stream = service.getValues(meteringPointCode, parameterCode, context)
             .stream()
             .filter(t -> t.getPeriodType() == context.getHeader().getPeriodType());
 
-        Map<DataTypeEnum, List<CalcResult>> map = stream
+        Map<DataTypeEnum, List<CalcResult>> mapDataStatus = stream
             .map(PeriodTimeValue::toResult)
             .filter(t -> t.getDataType() != null)
             .collect(groupingBy(CalcResult::getDataType));
 
-        DataTypeEnum dataType = getDataType(map);
+        DataTypeEnum dataType = getDataType(mapDataStatus);
+        logger.trace("data statuses: " + mapDataStatus.keySet());
+        logger.trace("selected data status: " + dataType);
 
-        List<CalcResult> list = dataType !=null ? map.get(dataType) : null;
+        List<CalcResult> list = dataType !=null ? mapDataStatus.get(dataType) : null;
+        if (list == null || list.size() == 0)
+            return new Double[0];
+
+
+        Map<SourceEnum, List<CalcResult>> mapSource = list.stream()
+            .collect(groupingBy(CalcResult::getSource));
+
+        SourceEnum source = getSource(mapSource);
+        logger.trace("sources: " + mapSource.keySet());
+        logger.trace("selected source: " + source);
+
+        list = source !=null ? mapSource.get(source) : null;
         if (list == null || list.size() == 0)
             return new Double[0];
 
         if (context.isTraceEnabled()) {
             List<CalcTrace> traces = context.getTraces().getOrDefault(meteringPointCode, new ArrayList<>());
-
             CalcTrace trace = CalcTrace.builder()
                 .meteringPointCode(meteringPointCode)
                 .parameterCode(parameterCode)
                 .dataType(dataType)
-                .dataTypeCount(map.size())
+                .dataTypeCount(mapDataStatus.size())
+                .source(source)
+                .sourceCount(mapSource.size())
                 .contextType(ContextTypeEnum.DEFAULT)
                 .build();
 
@@ -120,6 +132,18 @@ public class PeriodTimeValueExpression implements DoubleExpression {
         for (DataTypeEnum dataType : dataTypes)
             if (map.containsKey(dataType))
                 return dataType;
+
+        return null;
+    }
+
+    private SourceEnum getSource(Map<SourceEnum, List<CalcResult>> map) {
+        if (map == null || map.size() == 0)
+            return null;
+
+        List<SourceEnum> sources = Arrays.asList(CALC_BALPS, CALC_ASP1, CALC_SVR, CONSUMPTION, DAILY_SHEET, CALC_INTER_LEP, CALC_SEG, DEFAULT);
+        for (SourceEnum source : sources)
+            if (map.containsKey(source))
+                return source;
 
         return null;
     }

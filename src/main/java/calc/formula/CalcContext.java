@@ -37,5 +37,6 @@ public class CalcContext {
     private Map<String, Double> transformerValues = new HashMap<>();
 
     @Builder.Default
+    @Getter
     private Map<String, List<CalcTrace>> traces = new HashMap<>();
 }

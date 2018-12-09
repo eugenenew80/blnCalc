@@ -9,13 +9,13 @@ import calc.formula.CalcContext;
 import calc.formula.CalcTrace;
 import calc.formula.service.ParamService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import javax.xml.crypto.Data;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toSet;
 
 public class Util {
     public static <K, V> Function<K, V> first(Function<K, V> f) {
@@ -83,13 +83,18 @@ public class Util {
             return null;
     }
 
-    public static DataTypeEnum getRowDataType(MeteringPoint meteringPoint, CalcContext context) {
-        DataTypeEnum dataType;
-        List<CalcTrace> traces = context.getTraces().get(meteringPoint.getCode());
-        dataType = traces != null && !traces.isEmpty()
-            ? traces.get(0).getDataType()
-            : null;
-        return dataType;
+    public static DataTypeEnum getRowDataType(CalcContext context) {
+        Set<DataTypeEnum> set = context.getTraces().values()
+            .stream()
+            .flatMap(t -> t.stream())
+            .map(t -> t.getDataType())
+            .collect(toSet());
+
+        for (DataTypeEnum dataType : Arrays.asList(DataTypeEnum.OPER, DataTypeEnum.FACT, DataTypeEnum.FINAL))
+            if (set.contains(dataType))
+                return dataType;
+
+        return null;
     }
 
     public static Parameter inverseParam(ParamService paramService, Parameter param, Boolean isInverse) {
