@@ -104,12 +104,13 @@ public class AspService {
                 copyTranslates(line, result);
                 result.setHeader(header);
                 result.setLineNum(line.getLineNum());
-                result.setMeteringPoint(line.getMeteringPoint());
-                result.setParam(line.getParam());
-                result.setUnit(line.getParam().getUnit());
-                result.setFormula(formula);
                 result.setTreatmentType(line.getTreatmentType());
                 result.setIsBold(line.getIsBold());
+                result.setFormula(formula);
+                result.setMeteringPoint(line.getMeteringPoint());
+                result.setParam(line.getParam());
+                if (line.getParam() != null)
+                    result.setUnit(line.getParam().getUnit());
 
                 if (line.getTreatmentType() == INFO || meteringPoint == null || param == null || meteringPoint.getPointType() == PointTypeEnum.PMP)
                     continue;
@@ -148,6 +149,7 @@ public class AspService {
     }
 
     private void readRows(AspResultHeader header, CalcContext context) {
+        logger.trace("read metering data");
         List<AspResultLine> results = new ArrayList<>();
         for (AspLine line : header.getHeader().getLines()) {
             MeteringPoint meteringPoint = line.getMeteringPoint();
