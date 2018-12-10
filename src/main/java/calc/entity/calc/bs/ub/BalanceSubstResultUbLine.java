@@ -85,6 +85,7 @@ public class BalanceSubstResultUbLine {
     @Column(name = "btt_proc")
     private Double bttProc;
 
+    /*
     @ManyToOne
     @JoinColumn(name = "tt_accuracy_class_id")
     private AccuracyClass ttAccuracyClass;
@@ -96,4 +97,5 @@ public class BalanceSubstResultUbLine {
     @ManyToOne
     @JoinColumn(name = "meter_accuracy_class_id")
     private AccuracyClass meterAccuracyClass;
+    */
 }
