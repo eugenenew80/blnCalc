@@ -203,8 +203,7 @@ public class BalanceSubstTransformerService {
                 Double valN  = value.getTotalE() * resist / (pow(uAvg, 2) * 1000d * hours);
                 valN = round(valN, paramWL);
 
-                result
-                    .addValueH(valueH)
+                result.addValueH(valueH)
                     .addValueL(valueL);
 
                 result.setResistH(resist);
@@ -254,11 +253,16 @@ public class BalanceSubstTransformerService {
                 Double valXX = deltaPxx * hours * pow(uAvg / uNomH, 2);
                 valXX = round(valXX, paramWL);
 
-                Double valN  = (valueL.getTotalE() * resistL + valueM.getTotalE() * resistM + valueH.getTotalE() * resistH) / (pow(uAvg,2) * hours * 1000d);
+                Double valN  = (
+                            valueL.getTotalE() * resistL
+                        +   valueM.getTotalE() * resistM
+                        +   valueH.getTotalE() * resistH
+                    )
+                    / (pow(uAvg,2) * hours * 1000d);
+
                 valN  = round(valN, paramWL);
 
-                result
-                    .addValueH(valueH)
+                result.addValueH(valueH)
                     .addValueM(valueM)
                     .addValueL(valueL);
 
