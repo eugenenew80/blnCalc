@@ -350,7 +350,7 @@ public class CalcServiceImpl implements CalcService {
     private DoubleExpression mapDetail(FormulaVarDet det, CalcContext context, CalcProperty property) {
         if (det.getMeteringPoint().getPointType() == PointTypeEnum.VMP) {
             List<Formula> formulas = findFormulas(det.getMeteringPoint(), det.getParam(), det.getParamType());
-            Formula formula = !formulas.isEmpty() ? formulas.get(0) : null;
+            Formula formula = formulas != null && !formulas.isEmpty() ? formulas.get(0) : null;
 
             if (formula != null) {
                 logger.trace("nested formula start");
@@ -370,7 +370,7 @@ public class CalcServiceImpl implements CalcService {
             }
         }
 
-        if (det.getParam().equals(paramService.getParam("AB"))) {
+        if (det.getMeteringPoint().getPointType() == PointTypeEnum.PMP && det.getParam().equals(paramService.getParam("AB"))) {
             DoubleExpression  expression1 = getExpression(det, paramService.getParam("A+"), context, property);
             DoubleExpression  expression2 = getExpression(det, paramService.getParam("A-"), context, property);
             return BinaryExpression.builder()
@@ -581,13 +581,15 @@ public class CalcServiceImpl implements CalcService {
         if (prop.getContextType() == ContextTypeEnum.ASP) {
             logger.trace("  ctx: asp");
             logger.trace("  expression: AspExpression");
-            return AspExpression.builder()
+            AspExpression expression = AspExpression.builder()
                 .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
                 .rate(rate)
                 .context(ctx)
                 .service(aspService)
                 .build();
+
+            return expression;
         }
 
         if (prop.getContextType() == ContextTypeEnum.SEG) {

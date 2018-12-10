@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import static calc.entity.calc.enums.TreatmentTypeEnum.*;
 import static calc.util.Util.*;
 import static java.util.Optional.*;
+import static java.util.stream.Collectors.groupingBy;
 
 @SuppressWarnings({"ImplicitSubclassInspection"})
 @Service
@@ -78,64 +79,72 @@ public class AspService {
     }
 
     private void calcRows(AspResultHeader header, CalcContext context)  {
-        List<AspResultLine> results = new ArrayList<>();
-        for (AspLine line : header.getHeader().getLines()) {
-            MeteringPoint meteringPoint = line.getMeteringPoint();
-            Parameter param = line.getParam();
-            Formula formula = line.getFormula();
-            Map<String, String> msgParams = buildMsgParams(meteringPoint);
+        Map<TreatmentTypeEnum, List<AspLine>> map = header.getHeader().getLines()
+            .stream()
+            .filter(t ->
+                       t.getTreatmentType() == INFO
+                    || (t.getTreatmentType() == OUT   && t.getMeteringPoint() != null)
+                    || (t.getTreatmentType() == EMPTY && t.getMeteringPoint() != null)
+                    || (t.getTreatmentType() == IN    && t.getMeteringPoint() != null && t.getMeteringPoint().getPointType() == PointTypeEnum.VMP)
+            )
+            .collect(groupingBy(AspLine::getTreatmentType));
 
-            if (meteringPoint == null || param == null)
-                continue;
+        for (TreatmentTypeEnum treatmentType : Arrays.asList(INFO, IN, EMPTY, OUT)) {
+            logger.trace("calc row type: " + treatmentType);
 
-            if (!(line.getTreatmentType() == INFO || line.getTreatmentType() == OUT || line.getTreatmentType() == EMPTY || meteringPoint.getPointType() == PointTypeEnum.VMP))
-                continue;
+            List<AspResultLine> results = new ArrayList<>();
+            for (AspLine line : map.getOrDefault(treatmentType, new ArrayList<>())) {
+                MeteringPoint meteringPoint = line.getMeteringPoint();
+                Parameter param = line.getParam();
+                Formula formula = line.getFormula();
+                Map<String, String> msgParams = buildMsgParams(meteringPoint);
 
-            AspResultLine result = new AspResultLine();
-            results.add(result);
-            copyTranslates(line, result);
+                AspResultLine result = new AspResultLine();
+                results.add(result);
+                copyTranslates(line, result);
+                result.setHeader(header);
+                result.setLineNum(line.getLineNum());
+                result.setMeteringPoint(line.getMeteringPoint());
+                result.setParam(line.getParam());
+                result.setUnit(line.getParam().getUnit());
+                result.setFormula(formula);
+                result.setTreatmentType(line.getTreatmentType());
+                result.setIsBold(line.getIsBold());
 
-            result.setHeader(header);
-            result.setLineNum(line.getLineNum());
-            result.setMeteringPoint(line.getMeteringPoint());
-            result.setParam(line.getParam());
-            result.setUnit(line.getParam().getUnit());
-            result.setFormula(formula);
-            result.setTreatmentType(line.getTreatmentType());
-            result.setIsBold(line.getIsBold());
+                if (line.getTreatmentType() == INFO || meteringPoint == null || param == null || meteringPoint.getPointType() == PointTypeEnum.PMP)
+                    continue;
 
-            if (line.getTreatmentType() == INFO || meteringPoint.getPointType() != PointTypeEnum.VMP)
-                continue;
+                Double val = null;
+                try {
+                    CalcProperty property;
+                    if (line.getTreatmentType() == IN)
+                        property = CalcProperty.builder()
+                            .contextType(ContextTypeEnum.DEFAULT)
+                            .build();
+                    else
+                        property = CalcProperty.builder()
+                            .contextType(context.getDefContextType())
+                            .processOrder(ProcessOrderEnum.CALC)
+                            .build();
 
-            Double val = null;
-            try {
-                CalcProperty property;
-                if (line.getTreatmentType() == IN)
-                    property = CalcProperty.builder()
-                        .contextType(ContextTypeEnum.DEFAULT)
-                        .build();
-                else
-                    property = CalcProperty.builder()
-                        .contextType(context.getDefContextType())
-                        .build();
+                    CalcResult calc;
+                    if (formula != null)
+                        calc = calcService.calcValue(formula, context, property);
+                    else
+                        calc = calcService.calcValue(meteringPoint, param, context, property);
 
-                CalcResult calc;
-                if (formula != null)
-                    calc = calcService.calcValue(formula, context, property);
-                else
-                    calc = calcService.calcValue(meteringPoint, param, context, property);
-
-                val = calc != null ? calc.getDoubleValue() : null;
-                val = round(val, param);
+                    val = calc != null ? calc.getDoubleValue() : null;
+                    val = round(val, param);
+                }
+                catch (CalcServiceException e) {
+                    e.printStackTrace();
+                    msgParams.putIfAbsent("err", e.getMessage());
+                    messageService.addMessage(header, line.getLineNum(), docCode, e.getErrCode(), msgParams);
+                }
+                result.setVal(val);
             }
-            catch (CalcServiceException e) {
-                e.printStackTrace();
-                msgParams.putIfAbsent("err", e.getMessage());
-                messageService.addMessage(header, line.getLineNum(), docCode, e.getErrCode(), msgParams);
-            }
-            result.setVal(val);
+            saveLines(results);
         }
-        saveLines(results);
     }
 
     private void readRows(AspResultHeader header, CalcContext context) {

@@ -259,7 +259,6 @@ public class BalanceSubstUbService {
                         result.setDol(dol);
                         result.setB2dol2(b2dol2);
 
-                        /*
                         if (tnType != null)
                             result.setTnAccuracyClass(tnType.getAccuracyClass());
 
@@ -268,7 +267,7 @@ public class BalanceSubstUbService {
 
                         if (eemType != null)
                             result.setMeterAccuracyClass(eemType.getAccuracyClass());
-                        */
+
                         results.add(result);
                     }
                 }
