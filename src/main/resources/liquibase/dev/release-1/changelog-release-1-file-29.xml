@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet id="calc-rus-537" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_distribution_result_l_top_top</comment>
+        <createTable tableName="calc_distribution_result_l_top" schemaName="apps" remarks="Строки результатов распределения электрической энергии">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_header_id" type="number" remarks="Идентификатор заголовка">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="fact_val" type="number" remarks="Всего Фактический объем">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-538" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_distribution_result_l_top</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_distribution_result_l_top"
+                schemaName="apps"
+                tableName="calc_distribution_result_l_top"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-539" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_distribution_result_l_top</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_distribution_result_l_top_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-540" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_distribution_result_l_top</comment>
+        <createIndex indexName="idx_calc_distribution_result_l_top_1" schemaName="apps" tableName="calc_distribution_result_l_top">
+            <column name="result_header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-541" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l_top to calc_distribution_result_h</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l_top"
+                baseColumnNames="result_header_id"
+                constraintName="fk_calc_distribution_result_l_top_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_distribution_result_h"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-542" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_distribution_result_l</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_distribution_result_l">
+            <column name="top_line_id" type="number"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-543" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_distribution_result_l_top</comment>
+        <createIndex indexName="idx_calc_distribution_result_l_7" schemaName="apps" tableName="calc_distribution_result_l">
+            <column name="top_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-544" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l to calc_distribution_result_l_top</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l"
+                baseColumnNames="top_line_id"
+                constraintName="fk_calc_distribution_result_l_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_distribution_result_l_top"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+
+    <changeSet id="calc-rus-545" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_distribution_result_l_top</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_distribution_result_l_top">
+            <column name="metering_point_id" type="number" remarks="Идентификатор точки учёта"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-546" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_distribution_result_l_top</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_distribution_result_l_top">
+            <column name="param_id" type="number" remarks="Идентификатор параметра"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-547" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_distribution_result_l_top</comment>
+        <createIndex indexName="idx_calc_distribution_result_l_top_2" schemaName="apps" tableName="calc_distribution_result_l_top">
+            <column name="metering_point_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-548" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_distribution_result_l_top</comment>
+        <createIndex indexName="idx_calc_distribution_result_l_top_3" schemaName="apps" tableName="calc_distribution_result_l_top">
+            <column name="param_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-549" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l_top to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l_top"
+                baseColumnNames="metering_point_id"
+                constraintName="fk_calc_distribution_result_l_top_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-550" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_distribution_result_l_top to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_distribution_result_l_top"
+                baseColumnNames="param_id"
+                constraintName="fk_calc_distribution_result_l_top_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-551" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_distribution_result_l</comment>
+        <dropColumn tableName="calc_distribution_result_l" schemaName="apps">
+            <column name="param_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-552" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_distribution_result_l</comment>
+        <dropColumn tableName="calc_distribution_result_l" schemaName="apps">
+            <column name="metering_point_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+</databaseChangeLog>
+
