@@ -4,6 +4,7 @@ import calc.entity.calc.enums.MessageTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -29,6 +30,12 @@ public class InterResultMessage {
 
     @Column(name = "error_code")
     private String errorCode;
+
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @Column(name = "create_by")
+    private Long createBy;
 
     @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<InterResultMessageTranslate> translates;

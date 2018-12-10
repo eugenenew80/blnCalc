@@ -31,6 +31,7 @@ public class InterLineService {
     private final ParamService paramService;
     private final CalcService calcService;
 
+
     public boolean calc(InterResultHeader header) {
         try {
             logger.info("started, headerId: " + header.getId());
@@ -41,131 +42,9 @@ public class InterLineService {
                 .defContextType(ContextTypeEnum.INTER_MR)
                 .build();
 
-            Parameter paramWL = paramService.getParam("WL");
-            List<InterResultLine> results = new ArrayList<>();
-            for (InterLine line : header.getHeader().getLines()) {
-                Map<String, String> params = buildMsgParams(line);
-
-                InterResultLine result = new InterResultLine();
-                result.setHeader(header);
-                result.setLineNum(line.getLineNum());
-                result.setPowerLine(line.getPowerLine());
-                result.setIsBoundMeterInst(line.getIsBoundMeterInst());
-                result.setPowerLineLength(line.getPowerLineLength());
-                result.setBoundMeteringPoint(line.getBoundMeteringPoint());
-                result.setMeteringPointOut1(line.getMeteringPointOut1());
-                result.setMeteringPointOut2(line.getMeteringPointOut2());
-                result.setIsIncludeTotal(line.getIsIncludeTotal());
-                result.setCreateDate(LocalDateTime.now());
-                result.setCreateBy(header.getCreateBy());
-
-                result.setDetails(ofNullable(result.getDetails())
-                    .orElse(new ArrayList<>()));
-
-                if (line.getIsBoundMeterInst()) {
-                    InterResultDetLine resultDet = new InterResultDetLine();
-                    resultDet.setHeader(header);
-                    resultDet.setLine(result);
-                    resultDet.setDirection(1l);
-                    resultDet.setMeteringPoint1(line.getMeteringPoint1());
-                    resultDet.setMeteringPoint2(line.getMeteringPoint2());
-                    resultDet.setCreateDate(LocalDateTime.now());
-                    resultDet.setCreateBy(header.getCreateBy());
-                    result.getDetails().add(resultDet);
-
-                    if (line.getBoundMeteringPoint() == null)
-                        messageService.addMessage(header, line.getLineNum(), docCode, "INTER_BOUND_MP_NOT_FOUND", params);
-
-                    Parameter paramAp = inverseParam(paramService, paramService.getParam("A+"), line.getIsInverse());
-                    Parameter paramAm = inverseParam(paramService, paramService.getParam("A-"), line.getIsInverse());
-
-                    if (line.getBoundMeteringPoint() != null) {
-                        CalcResult calc = calcService.calcValue(line.getBoundMeteringPoint(), paramAm, context);
-                        Double val1 = calc != null ? calc.getDoubleValue() : null;
-
-                        calc = calcService.calcValue(line.getBoundMeteringPoint(), paramAp, context);
-                        Double val2 = calc != null ? calc.getDoubleValue() : null;
-
-                        Double val = null;
-                        if (val1 != null || val2 != null)
-                            val = ofNullable(val2).orElse(0d) - ofNullable(val).orElse(0d);
-
-                        result.setBoundaryVal(val);
-                    }
-                }
-                else  {
-                    for (Long direction : asList(1l, 2l)) {
-                        MeteringPoint meteringPoint1 = direction == 1l ? line.getMeteringPoint1() : line.getMeteringPoint2();
-                        MeteringPoint meteringPoint2 = direction == 1l ? line.getMeteringPoint2() : line.getMeteringPoint1();
-
-                        if (meteringPoint1 == null)
-                            messageService.addMessage(header, line.getLineNum(), docCode, "INTER_SRC_MP_NOT_FOUND", params);
-
-                        if (meteringPoint2 == null)
-                            messageService.addMessage(header, line.getLineNum(), docCode, "INTER_TRG_MP_NOT_FOUND", params);
-
-                        Parameter paramAp = paramService.getParam("A+");
-                        Parameter paramAm = paramService.getParam("A-");
-
-                        InterResultDetLine resultDet = new InterResultDetLine();
-                        resultDet.setHeader(header);
-                        resultDet.setLine(result);
-                        resultDet.setDirection(direction);
-                        resultDet.setMeteringPoint1(line.getMeteringPoint1());
-                        resultDet.setMeteringPoint2(line.getMeteringPoint2());
-                        resultDet.setCreateDate(LocalDateTime.now());
-                        resultDet.setCreateBy(header.getCreateBy());
-
-                        CalcResult calc = calcService.calcValue(meteringPoint1, paramAm, context);
-                        Double val1 = calc != null ? calc.getDoubleValue() : null;
-
-                        calc = calcService.calcValue(meteringPoint2, paramAp, context);
-                        Double val2 = calc != null ? calc.getDoubleValue() : null;
-
-                        val1 = ofNullable(val1).orElse(0d);
-                        val2 = ofNullable(val2).orElse(0d);
-                        Double lossVal = val1 - val2;
-
-                        Double lossProc1 = ofNullable(line.getProportion1()).orElse(0d);
-                        Double lossProc2 = ofNullable(line.getProportion2()).orElse(0d);
-
-                        Double powerLength = ofNullable(line.getPowerLineLength()).orElse(0d);
-                        Double powerLength1 = ofNullable(line.getPowerLineLength1()).orElse(0d);
-
-                        if (line.getIsProportionLength() && powerLength != 0d) {
-                            lossProc1 = round(100d * powerLength1 / powerLength, 4);
-                            lossProc2 = 100d - lossProc1;
-                        }
-
-                        Double lossVal1 = round(lossProc1 / 100d * lossVal,paramWL);
-                        Double lossVal2 = lossVal - lossVal1;
-                        Double boundaryVal = val1 - (direction == 1l ? lossVal1 : lossVal2);
-
-                        resultDet.setVal1(val1);
-                        resultDet.setVal2(val2);
-                        resultDet.setLossVal(lossVal);
-                        resultDet.setLossProc1(lossProc1);
-                        resultDet.setLossProc2(lossProc2);
-                        resultDet.setLossVal1(lossVal1);
-                        resultDet.setLossVal2(lossVal2);
-                        resultDet.setBoundaryVal(boundaryVal);
-                        result.getDetails().add(resultDet);
-                    }
-
-                    Double totalBoundaryVal = result.getDetails()
-                        .stream()
-                        .map(t -> t.getDirection() == 1l ? -1 * t.getBoundaryVal() : t.getBoundaryVal())
-                        .reduce((t1, t2) -> t1 + t2)
-                        .orElse(0d);
-
-                    result.setBoundaryVal(totalBoundaryVal);
-                }
-                results.add(result);
-            }
-
             messageService.deleteMessages(header);
             deleteLines(header);
-            saveLines(results);
+            calcLines(header, context);
             copyNotes(header);
             copyApps(header);
 
@@ -180,6 +59,131 @@ public class InterLineService {
             messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", buildMsgParams(e));
             return false;
         }
+    }
+
+    private void calcLines(InterResultHeader header, CalcContext context) {
+        Parameter paramWL = paramService.getParam("WL");
+        List<InterResultLine> results = new ArrayList<>();
+        for (InterLine line : header.getHeader().getLines()) {
+            Map<String, String> params = buildMsgParams(line);
+
+            InterResultLine result = new InterResultLine();
+            result.setHeader(header);
+            result.setLineNum(line.getLineNum());
+            result.setPowerLine(line.getPowerLine());
+            result.setIsBoundMeterInst(line.getIsBoundMeterInst());
+            result.setPowerLineLength(line.getPowerLineLength());
+            result.setBoundMeteringPoint(line.getBoundMeteringPoint());
+            result.setMeteringPointOut1(line.getMeteringPointOut1());
+            result.setMeteringPointOut2(line.getMeteringPointOut2());
+            result.setIsIncludeTotal(line.getIsIncludeTotal());
+            result.setCreateDate(LocalDateTime.now());
+            result.setCreateBy(header.getCreateBy());
+
+            result.setDetails(ofNullable(result.getDetails())
+                .orElse(new ArrayList<>()));
+
+            if (line.getIsBoundMeterInst()) {
+                InterResultDetLine resultDet = new InterResultDetLine();
+                resultDet.setHeader(header);
+                resultDet.setLine(result);
+                resultDet.setDirection(1l);
+                resultDet.setMeteringPoint1(line.getMeteringPoint1());
+                resultDet.setMeteringPoint2(line.getMeteringPoint2());
+                resultDet.setCreateDate(LocalDateTime.now());
+                resultDet.setCreateBy(header.getCreateBy());
+                result.getDetails().add(resultDet);
+
+                if (line.getBoundMeteringPoint() == null)
+                    messageService.addMessage(header, line.getLineNum(), docCode, "INTER_BOUND_MP_NOT_FOUND", params);
+
+                Parameter paramAp = inverseParam(paramService, paramService.getParam("A+"), line.getIsInverse());
+                Parameter paramAm = inverseParam(paramService, paramService.getParam("A-"), line.getIsInverse());
+
+                if (line.getBoundMeteringPoint() != null) {
+                    CalcResult calc = calcService.calcValue(line.getBoundMeteringPoint(), paramAm, context);
+                    Double val1 = calc != null ? calc.getDoubleValue() : null;
+
+                    calc = calcService.calcValue(line.getBoundMeteringPoint(), paramAp, context);
+                    Double val2 = calc != null ? calc.getDoubleValue() : null;
+
+                    Double val = null;
+                    if (val1 != null || val2 != null)
+                        val = ofNullable(val2).orElse(0d) - ofNullable(val).orElse(0d);
+
+                    result.setBoundaryVal(val);
+                }
+            }
+            else  {
+                for (Long direction : asList(1l, 2l)) {
+                    MeteringPoint meteringPoint1 = direction == 1l ? line.getMeteringPoint1() : line.getMeteringPoint2();
+                    MeteringPoint meteringPoint2 = direction == 1l ? line.getMeteringPoint2() : line.getMeteringPoint1();
+
+                    if (meteringPoint1 == null)
+                        messageService.addMessage(header, line.getLineNum(), docCode, "INTER_SRC_MP_NOT_FOUND", params);
+
+                    if (meteringPoint2 == null)
+                        messageService.addMessage(header, line.getLineNum(), docCode, "INTER_TRG_MP_NOT_FOUND", params);
+
+                    Parameter paramAp = paramService.getParam("A+");
+                    Parameter paramAm = paramService.getParam("A-");
+
+                    InterResultDetLine resultDet = new InterResultDetLine();
+                    resultDet.setHeader(header);
+                    resultDet.setLine(result);
+                    resultDet.setDirection(direction);
+                    resultDet.setMeteringPoint1(line.getMeteringPoint1());
+                    resultDet.setMeteringPoint2(line.getMeteringPoint2());
+                    resultDet.setCreateDate(LocalDateTime.now());
+                    resultDet.setCreateBy(header.getCreateBy());
+
+                    CalcResult calc = calcService.calcValue(meteringPoint1, paramAm, context);
+                    Double val1 = calc != null ? calc.getDoubleValue() : null;
+
+                    calc = calcService.calcValue(meteringPoint2, paramAp, context);
+                    Double val2 = calc != null ? calc.getDoubleValue() : null;
+
+                    val1 = ofNullable(val1).orElse(0d);
+                    val2 = ofNullable(val2).orElse(0d);
+                    Double lossVal = val1 - val2;
+
+                    Double lossProc1 = ofNullable(line.getProportion1()).orElse(0d);
+                    Double lossProc2 = ofNullable(line.getProportion2()).orElse(0d);
+
+                    Double powerLength = ofNullable(line.getPowerLineLength()).orElse(0d);
+                    Double powerLength1 = ofNullable(line.getPowerLineLength1()).orElse(0d);
+
+                    if (line.getIsProportionLength() && powerLength != 0d) {
+                        lossProc1 = round(100d * powerLength1 / powerLength, 4);
+                        lossProc2 = 100d - lossProc1;
+                    }
+
+                    Double lossVal1 = round(lossProc1 / 100d * lossVal,paramWL);
+                    Double lossVal2 = lossVal - lossVal1;
+                    Double boundaryVal = val1 - (direction == 1l ? lossVal1 : lossVal2);
+
+                    resultDet.setVal1(val1);
+                    resultDet.setVal2(val2);
+                    resultDet.setLossVal(lossVal);
+                    resultDet.setLossProc1(lossProc1);
+                    resultDet.setLossProc2(lossProc2);
+                    resultDet.setLossVal1(lossVal1);
+                    resultDet.setLossVal2(lossVal2);
+                    resultDet.setBoundaryVal(boundaryVal);
+                    result.getDetails().add(resultDet);
+                }
+
+                Double totalBoundaryVal = result.getDetails()
+                    .stream()
+                    .map(t -> t.getDirection() == 1l ? -1 * t.getBoundaryVal() : t.getBoundaryVal())
+                    .reduce((t1, t2) -> t1 + t2)
+                    .orElse(0d);
+
+                result.setBoundaryVal(totalBoundaryVal);
+            }
+            results.add(result);
+        }
+        saveLines(results);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

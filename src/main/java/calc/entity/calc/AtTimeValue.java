@@ -54,6 +54,7 @@ public class AtTimeValue {
 	private PeriodTypeEnum periodType;
 
 	@Column(name = "source_code")
+	@Enumerated(EnumType.STRING)
 	private SourceEnum source;
 
 	public CalcResult toResult() {

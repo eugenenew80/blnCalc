@@ -123,6 +123,7 @@ public class CalcServiceImpl implements CalcService {
             logger.trace("  mp: " + mpCode);
             List<CalcTrace> traces = context.getTraces().get(mpCode);
             for (CalcTrace trace : traces) {
+                logger.trace("  param: " + trace.getParameterCode());
                 if (trace.getSourceSystem() != null) {
                     logger.trace("  source systems count: " + trace.getSourceSystemCount());
                     logger.trace("  selected source system: " + trace.getSourceSystem());

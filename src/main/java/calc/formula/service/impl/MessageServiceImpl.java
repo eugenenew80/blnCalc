@@ -1,51 +1,33 @@
 package calc.formula.service.impl;
 
-import calc.entity.calc.asp.AspResultHeader;
-import calc.entity.calc.asp.AspResultMessage;
-import calc.entity.calc.asp.AspResultMessageTranslate;
-import calc.entity.calc.bs.BalanceSubstResultMessageTranslate;
-import calc.entity.calc.bs.BalanceSubstResultHeader;
-import calc.entity.calc.bs.BalanceSubstResultMessage;
-import calc.entity.calc.enums.LangEnum;
-import calc.entity.calc.enums.MessageTypeEnum;
-import calc.entity.calc.inter.InterResultHeader;
-import calc.entity.calc.inter.InterResultMessage;
-import calc.entity.calc.inter.InterResultMessageTranslate;
-import calc.entity.calc.loss.LossFactResultHeader;
-import calc.entity.calc.loss.LossFactResultMessage;
-import calc.entity.calc.loss.LossFactResultMessageTranslate;
-import calc.entity.calc.reg.RegResultHeader;
-import calc.entity.calc.reg.RegResultMessage;
-import calc.entity.calc.reg.RegResultMessageTranslate;
-import calc.entity.calc.seg.SegResultHeader;
-import calc.entity.calc.seg.SegResultMessage;
-import calc.entity.calc.seg.SegResultMessageTranslate;
-import calc.entity.calc.source.SourceResultHeader;
-import calc.entity.calc.source.SourceResultMessage;
-import calc.entity.calc.source.SourceResultMessageTranslate;
-import calc.entity.calc.svr.MeteringPointSetting;
-import calc.entity.calc.svr.SvrResultHeader;
-import calc.entity.calc.svr.SvrResultMessage;
-import calc.formula.exception.CalcServiceException;
-import calc.formula.service.MessageError;
-import calc.formula.service.MessageErrorService;
-import calc.formula.service.MessageService;
+import calc.entity.calc.asp.*;
+import calc.entity.calc.bs.*;
+import calc.entity.calc.enums.*;
+import calc.entity.calc.inter.*;
+import calc.entity.calc.loss.*;
+import calc.entity.calc.reg.*;
+import calc.entity.calc.seg.*;
+import calc.entity.calc.source.*;
+import calc.entity.calc.svr.*;
+import calc.formula.exception.*;
+import calc.formula.service.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.text.StrSubstitutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static calc.util.Util.buildMsgParams;
 
 @SuppressWarnings("Duplicates")
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
+    private static final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
     private final BsResultMessageRepo bsResultMessageRepo;
     private final AspResultMessageRepo aspResultMessageRepo;
     private final SegResultMessageRepo segResultMessageRepo;
@@ -59,16 +41,14 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteMessages(AspResultHeader header) {
         List<AspResultMessage> lines = aspResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            aspResultMessageRepo.delete(lines.get(i));
+        aspResultMessageRepo.delete(lines);
         aspResultMessageRepo.flush();
     }
 
     @Override
     public void deleteMessages(BalanceSubstResultHeader header) {
         List<BalanceSubstResultMessage> lines = bsResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-                bsResultMessageRepo.delete(lines.get(i));
+        bsResultMessageRepo.delete(lines);
         bsResultMessageRepo.flush();
     }
 
@@ -193,8 +173,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteMessages(SegResultHeader header) {
         List<SegResultMessage> lines = segResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            segResultMessageRepo.delete(lines.get(i));
+        segResultMessageRepo.delete(lines);
         segResultMessageRepo.flush();
     }
 
@@ -230,8 +209,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteMessages(InterResultHeader header) {
         List<InterResultMessage> lines = interResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            interResultMessageRepo.delete(lines.get(i));
+        interResultMessageRepo.delete(lines);
         interResultMessageRepo.flush();
     }
 
@@ -250,13 +228,16 @@ public class MessageServiceImpl implements MessageService {
             message.setLineNum(lineNum);
             message.setMessageType(messageType);
             message.setErrorCode(errCode);
-            message.setTranslates(new ArrayList<>());
+            message.setCreateBy(header.getCreateBy());
+            message.setCreateDate(LocalDateTime.now());
 
+            message.setTranslates(new ArrayList<>());
             InterResultMessageTranslate messageTranslate = new InterResultMessageTranslate();
             messageTranslate.setMessage(message);
             messageTranslate.setLang(defLang);
             messageTranslate.setMsg(msg);
             message.getTranslates().add(messageTranslate);
+
             interResultMessageRepo.save(message);
         }
         catch (Exception e) {
@@ -267,8 +248,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteMessages(LossFactResultHeader header) {
         List<LossFactResultMessage> lines = lossFactResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            lossFactResultMessageRepo.delete(lines.get(i));
+        lossFactResultMessageRepo.delete(lines);
         lossFactResultMessageRepo.flush();
     }
 
@@ -304,8 +284,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteMessages(RegResultHeader header) {
         List<RegResultMessage> lines = regResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            regResultMessageRepo.delete(lines.get(i));
+        regResultMessageRepo.delete(lines);
         regResultMessageRepo.flush();
     }
 
@@ -341,8 +320,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteMessages(SourceResultHeader header) {
         List<SourceResultMessage> lines = sourceResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            sourceResultMessageRepo.delete(lines.get(i));
+        sourceResultMessageRepo.delete(lines);
         sourceResultMessageRepo.flush();
     }
 
@@ -378,8 +356,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteMessages(SvrResultHeader header) {
         List<SvrResultMessage> lines = svrResultMessageRepo.findAllByHeaderId(header.getId());
-        for (int i=0; i<lines.size(); i++)
-            svrResultMessageRepo.delete(lines.get(i));
+        svrResultMessageRepo.delete(lines);
         svrResultMessageRepo.flush();
     }
 

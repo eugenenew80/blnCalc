@@ -1,12 +1,12 @@
 package calc.entity.calc.enums;
 
 public enum SourceEnum {
-	CALC_INTER_LEP,
-	CALC_SEG,
 	CALC_BALPS,
 	CALC_ASP1,
-	CALC_SVR,
+	CALC_INTER_LEP,
 	CONSUMPTION,
 	DAILY_SHEET,
+	CALC_SEG,
+	CALC_SVR,
 	DEFAULT
 }

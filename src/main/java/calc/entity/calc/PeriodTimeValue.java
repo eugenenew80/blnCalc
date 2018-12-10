@@ -57,11 +57,13 @@ public class PeriodTimeValue  {
 	private PeriodTypeEnum periodType;
 
 	@Column(name = "source_code")
+	@Enumerated(EnumType.STRING)
 	private SourceEnum source;
 
 	@Column(name="data_type")
 	@Enumerated(EnumType.STRING)
 	private DataTypeEnum dataType;
+
 
 	public CalcResult toResult() {
 		CalcResult result = new CalcResult();
