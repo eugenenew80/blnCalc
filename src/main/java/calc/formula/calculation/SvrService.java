@@ -1,15 +1,11 @@
 package calc.formula.calculation;
 
 import calc.entity.calc.*;
-import calc.entity.calc.enums.BatchStatusEnum;
-import calc.entity.calc.enums.DataTypeEnum;
-import calc.entity.calc.enums.LangEnum;
+import calc.entity.calc.enums.*;
 import calc.entity.calc.svr.*;
 import calc.formula.*;
-import calc.formula.exception.CalcServiceException;
-import calc.formula.service.CalcService;
-import calc.formula.service.MessageService;
-import calc.formula.service.ParamService;
+import calc.formula.exception.*;
+import calc.formula.service.*;
 import calc.repo.calc.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -89,15 +85,23 @@ public class SvrService {
 
         List<SvrResultLine> results = new ArrayList<>();
         for (MeteringPointSetting line : lines) {
-            if (line.getOrganization()!=null && !line.getOrganization().equals(header.getOrganization()))
+            if (line.getOrganization() != null && !line.getOrganization().equals(header.getOrganization()))
                 continue;
 
             MeteringPoint meteringPoint = line.getMeteringPoint();
-            if (meteringPoint == null)
-                continue;
-
             Parameter param = ofNullable(line.getParam()).orElse(paramService.getParam("AB"));
-            if (param == null)
+
+            SvrResultLine result = new SvrResultLine();
+            result.setHeader(header);
+            result.setMeteringPoint(meteringPoint);
+            result.setParam(param);
+            result.setTypeCode(line.getTypeCode());
+            result.setOrganization(header.getOrganization());
+            result.setIsTotal(line.getIsTotal());
+            copyTranslates(line, result);
+            results.add(result);
+
+            if (meteringPoint == null || param == null)
                 continue;
 
             CalcProperty property = CalcProperty.builder()
@@ -107,8 +111,8 @@ public class SvrService {
             Double val = null;
             DataTypeEnum dataType = null;
             try {
-                CalcResult result = calcService.calcValue(meteringPoint, param, context, property);
-                val = result != null ? result.getDoubleValue() : null;
+                CalcResult calc = calcService.calcValue(meteringPoint, param, context, property);
+                val = calc != null ? calc.getDoubleValue() : null;
                 val = round(val, param);
                 dataType = getRowDataType(context);
             }
@@ -120,17 +124,8 @@ public class SvrService {
             if (val != null)
                 val = abs(val);
 
-            SvrResultLine result = new SvrResultLine();
-            result.setHeader(header);
-            result.setMeteringPoint(meteringPoint);
-            result.setParam(param);
-            result.setTypeCode(line.getTypeCode());
             result.setVal(val);
             result.setDataType(dataType);
-            result.setOrganization(header.getOrganization());
-            result.setIsTotal(line.getIsTotal());
-            copyTranslates(line, result);
-            results.add(result);
         }
         saveLines(results);
     }
