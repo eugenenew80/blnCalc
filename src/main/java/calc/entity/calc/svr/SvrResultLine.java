@@ -1,5 +1,6 @@
 package calc.entity.calc.svr;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.DataTypeSupport;
 import calc.entity.TemplateLine;
 import calc.entity.calc.MeteringPoint;
@@ -39,6 +40,10 @@ public class SvrResultLine implements DataTypeSupport {
 
     @Column(name = "val")
     private Double val;
+
+    @Column(name = "is_total")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isTotal;
 
     @ManyToOne
     @JoinColumn(name = "org_id")

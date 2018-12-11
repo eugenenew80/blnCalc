@@ -128,6 +128,7 @@ public class SvrService {
             result.setVal(val);
             result.setDataType(dataType);
             result.setOrganization(header.getOrganization());
+            result.setIsTotal(line.getIsTotal());
             copyTranslates(line, result);
             results.add(result);
         }
