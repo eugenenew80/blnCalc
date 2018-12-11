@@ -18,6 +18,6 @@ public class VoltageClass {
     @Id
     private Long id;
 
-    @Column(name = "value")
+    @Column(name = "cachedValue")
     private Long value;
 }

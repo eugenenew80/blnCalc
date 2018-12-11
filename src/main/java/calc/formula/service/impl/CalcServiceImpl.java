@@ -213,10 +213,10 @@ public class CalcServiceImpl implements CalcService {
         logger.trace("  periodType: " + result.getPeriodType());
 
         if (result.getPeriodType() != PeriodTypeEnum.H)
-            logger.trace("  value: " + result.getDoubleValue());
+            logger.trace("  cachedValue: " + result.getDoubleValue());
 
         if (result.getPeriodType() == PeriodTypeEnum.H)
-            logger.trace("  values: " + Arrays.deepToString(result.getDoubleValues()));
+            logger.trace("  cachedValues: " + Arrays.deepToString(result.getDoubleValues()));
 
         if (context.getException() != null)
             throw context.getException();

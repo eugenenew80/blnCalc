@@ -18,7 +18,7 @@ public class AccuracyClass {
     @Id
     private Long id;
 
-    @Column(name = "value")
+    @Column(name = "cachedValue")
     private Double value;
 
     @Column(name = "designation")

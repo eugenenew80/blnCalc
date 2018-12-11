@@ -6,8 +6,8 @@ import calc.formula.*;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.AtTimeValueService;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
 @Builder
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AtTimeValueExpression implements DoubleExpression {
     private static final Logger logger = LoggerFactory.getLogger(AtTimeValueExpression.class);
     private final String meteringPointCode;
@@ -26,6 +26,7 @@ public class AtTimeValueExpression implements DoubleExpression {
     private final Double rate;
     private final AtTimeValueService service;
     private final CalcContext context;
+    private Double cachedValue = null;
 
     @Override
     public DoubleExpression doubleExpression() {
@@ -44,6 +45,9 @@ public class AtTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
+        if (cachedValue != null)
+            return cachedValue;
+
         Stream<AtTimeValue> stream = service.getValue(meteringPointCode, parameterCode, per, context)
             .stream();
 
@@ -75,7 +79,8 @@ public class AtTimeValueExpression implements DoubleExpression {
             .reduce(this::sum)
             .orElse(null);
 
-        return result;
+        cachedValue = result;
+        return cachedValue;
     }
 
     private Double sum(Double t1, Double t2) {

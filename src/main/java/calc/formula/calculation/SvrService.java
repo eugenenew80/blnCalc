@@ -39,7 +39,7 @@ public class SvrService {
     private static final String docCode = "SVR";
 
     public boolean calc(Long headerId) {
-        logger.info("Service value reconciliation for header " + headerId + " started");
+        logger.info("Service cachedValue reconciliation for header " + headerId + " started");
         SvrResultHeader header = svrHeaderRepo.findOne(headerId);
         if (header.getStatus() != BatchStatusEnum.W)
             return false;
@@ -68,13 +68,13 @@ public class SvrService {
             header.setIsActive(false);
             updateStatus(header, BatchStatusEnum.C);
 
-            logger.info("Service value reconciliation for header " + header.getId() + " completed");
+            logger.info("Service cachedValue reconciliation for header " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             updateStatus(header, BatchStatusEnum.E);
-            logger.error("Service value reconciliation for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
+            logger.error("Service cachedValue reconciliation for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
             return false;
         }

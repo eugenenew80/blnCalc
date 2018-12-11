@@ -5,9 +5,7 @@ import calc.entity.calc.enums.*;
 import calc.formula.*;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.PeriodTimeValueService;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
@@ -19,13 +17,15 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toSet;
 
 @Builder
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PeriodTimeValueExpression implements DoubleExpression {
     private static final Logger logger = LoggerFactory.getLogger(PeriodTimeValueExpression.class);
     private final String meteringPointCode;
     private final String parameterCode;
     private final PeriodTimeValueService service;
     private final CalcContext context;
+    private Double[] cachedValues = null;
+    private Double cachedValue = null;
 
     @Builder.Default
     private final Double rate = 1d;
@@ -49,20 +49,25 @@ public class PeriodTimeValueExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
-        Double[] values = doubleValues();
+        if (cachedValue != null)
+            return cachedValue;
 
-        Double value = null;
-        for (Double v : values) {
+        Double val = null;
+        for (Double v : doubleValues()) {
             if (v != null) {
-                if (value==null) value = 0d;
-                value+=v;
+                if (val == null) val = 0d;
+                val += v;
             }
         }
-        return value;
+        cachedValue = val;
+        return cachedValue;
     }
 
     @Override
     public Double[] doubleValues() {
+        if (cachedValues != null)
+            return cachedValues;
+
         Map<DataTypeEnum, List<CalcResult>> mapDataStatus = service.getValues(meteringPointCode, parameterCode, context)
             .stream()
             .filter(t -> t.getPeriodType() == context.getHeader().getPeriodType())
@@ -114,7 +119,8 @@ public class PeriodTimeValueExpression implements DoubleExpression {
             .reduce(this::sum)
             .orElse(null);
 
-        return new Double[] {doubleValue};
+        cachedValues = new Double[] {doubleValue};
+        return cachedValues;
     }
 
     private Double sum(Double t1, Double t2) {
