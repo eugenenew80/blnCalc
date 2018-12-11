@@ -6,6 +6,7 @@ import calc.formula.service.WorkingHoursService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import static calc.util.Util.round;
 
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,6 +23,7 @@ public class WorkingHoursExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
-        return service.getWorkingHours(objectType, objectId, context);
+        Double hours = service.getWorkingHours(objectType, objectId, context);
+        return round(hours,1);
     }
 }

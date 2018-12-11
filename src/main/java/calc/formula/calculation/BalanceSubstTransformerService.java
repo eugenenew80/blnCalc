@@ -107,6 +107,7 @@ public class BalanceSubstTransformerService {
                 .build()
                 .doubleValue();
 
+
             Double uAvgDef = inputMp != null && inputMp.getVoltageClass() != null
                 ? inputMp.getVoltageClass().getValue() / 1000d
                 : 0d;
@@ -119,10 +120,10 @@ public class BalanceSubstTransformerService {
                 .build()
                 .doubleValue();
 
-            hours = round(hours, 1);
             uAvg = round(uAvg, parU);
 
             PowerTransformerValue result = new PowerTransformerValue();
+            results.add(result);
             result.setHeader(header);
             result.setTransformer(transformer);
             result.setDeltaPXX(deltaPxx);
@@ -172,6 +173,9 @@ public class BalanceSubstTransformerService {
                 messageService.addMessage(header, line.getId(), docCode, "PE_UAVG_NOT_FOUND", defMsgParams);
                 continue;
             }
+
+            if (hours  == 0) continue;
+
 
             if (transformer.getWindNum() == WindingNumber.TWO) {
                 ParamValue valueH, valueL, value;
@@ -274,7 +278,6 @@ public class BalanceSubstTransformerService {
                 result.setVal(valXX + valN);
             }
 
-            results.add(result);
             if (result.getMeteringPointOut() != null)
                 context.getTransformerValues().putIfAbsent(result.getMeteringPointOut().getCode(), result.getVal());
         }
