@@ -24,8 +24,8 @@ public class PeriodTimeValueExpression implements DoubleExpression {
     private final String parameterCode;
     private final PeriodTimeValueService service;
     private final CalcContext context;
-    private Double[] cachedValues = null;
-    private Double cachedValue = null;
+    private Double[] cachedValues;
+    private Double cachedValue;
 
     @Builder.Default
     private final Double rate = 1d;
@@ -102,10 +102,10 @@ public class PeriodTimeValueExpression implements DoubleExpression {
                 .meteringPointCode(meteringPointCode)
                 .parameterCode(parameterCode)
                 .dataType(dataType)
-                .dataTypeCount(mapDataStatus.size())
+                .dataTypes(mapDataStatus.keySet())
                 .source(source)
-                .sourceCount(mapSource.size())
-                .sourceSystemCount(mapSourceSystem.size())
+                .sources(mapSource.keySet())
+                .sourceSystems(mapSourceSystem.keySet())
                 .sourceSystem(sourceSystem)
                 .build();
 

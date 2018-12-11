@@ -26,7 +26,7 @@ public class AtTimeValueExpression implements DoubleExpression {
     private final Double rate;
     private final AtTimeValueService service;
     private final CalcContext context;
-    private Double cachedValue = null;
+    private Double cachedValue;
 
     @Override
     public DoubleExpression doubleExpression() {
@@ -65,7 +65,7 @@ public class AtTimeValueExpression implements DoubleExpression {
             CalcTrace trace = CalcTrace.builder()
                 .meteringPointCode(meteringPointCode)
                 .parameterCode(parameterCode)
-                .sourceSystemCount(map.size())
+                .sourceSystems(map.keySet())
                 .sourceSystem(sourceSystem)
                 .build();
 

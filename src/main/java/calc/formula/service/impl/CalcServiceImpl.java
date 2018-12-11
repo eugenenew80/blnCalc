@@ -125,15 +125,15 @@ public class CalcServiceImpl implements CalcService {
             for (CalcTrace trace : traces) {
                 logger.trace("  param: " + trace.getParameterCode());
                 if (trace.getSourceSystem() != null) {
-                    logger.trace("  source systems count: " + trace.getSourceSystemCount());
+                    logger.trace("  available source systems: " + trace.getSourceSystems());
                     logger.trace("  selected source system: " + trace.getSourceSystem());
                 }
                 if (trace.getDataType() != null) {
-                    logger.trace("  data statuses count: " + trace.getDataTypeCount());
+                    logger.trace("  available data statuses: " + trace.getDataTypes());
                     logger.trace("  selected data status: " + trace.getDataType());
                 }
                 if (trace.getSource() != null) {
-                    logger.trace("  sources count: " + trace.getSourceCount());
+                    logger.trace("  available sources: " + trace.getSources());
                     logger.trace("  selected source: " + trace.getSource());
                 }
             }

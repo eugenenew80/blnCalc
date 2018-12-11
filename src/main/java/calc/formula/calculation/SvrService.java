@@ -24,6 +24,7 @@ import static java.util.Optional.*;
 @RequiredArgsConstructor
 public class SvrService {
     private static final Logger logger = LoggerFactory.getLogger(SvrService.class);
+    private static final String docCode = "SVR";
     private final CalcService calcService;
     private final ParamService paramService;
     private final MessageService messageService;
@@ -32,10 +33,9 @@ public class SvrService {
     private final MeteringPointSettingRepo meteringPointSettingRepo;
     private final SvrNoteRepo svrNoteRepo;
     private final MeteringPointSettingNoteRepo mpsRepo;
-    private static final String docCode = "SVR";
 
     public boolean calc(Long headerId) {
-        logger.info("Service cachedValue reconciliation for header " + headerId + " started");
+        logger.info(docCode + " for header " + headerId + " started");
         SvrResultHeader header = svrHeaderRepo.findOne(headerId);
         if (header.getStatus() != BatchStatusEnum.W)
             return false;
@@ -64,14 +64,14 @@ public class SvrService {
             header.setIsActive(false);
             updateStatus(header, BatchStatusEnum.C);
 
-            logger.info("Service cachedValue reconciliation for header " + header.getId() + " completed");
+            logger.info(docCode + " for header " + header.getId() + " completed");
             return true;
         }
-
         catch (Exception e) {
-            updateStatus(header, BatchStatusEnum.E);
-            logger.error("Service cachedValue reconciliation for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
+            logger.error(docCode + " for header " + header.getId() + " terminated with exception: " + e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+
+            updateStatus(header, BatchStatusEnum.E);
             return false;
         }
     }
