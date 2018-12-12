@@ -86,4 +86,8 @@ public class MeterHistory {
     @Column(name = "tt_direct_inclusion")
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isTtDirectInclusion;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private MeterHistory parent;
 }

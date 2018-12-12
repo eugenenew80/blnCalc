@@ -58,5 +58,9 @@ public class ReactorValue {
     @ManyToOne
     @JoinColumn(name = "metering_point_id_out")
     private MeteringPoint meteringPointOut;
+
+    @Column(name = "is_losses")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isLosses;
 }
 

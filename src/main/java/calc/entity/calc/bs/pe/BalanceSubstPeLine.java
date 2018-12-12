@@ -35,6 +35,10 @@ public class BalanceSubstPeLine implements TemplateLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isBalance;
 
+    @Column(name = "is_losses")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isLosses;
+
     @ManyToOne
     @JoinColumn(name = "metering_point_id_out")
     private MeteringPoint meteringPointOut;

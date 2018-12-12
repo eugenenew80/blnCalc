@@ -50,10 +50,10 @@ public class CalcServiceImpl implements CalcService {
     @Override
     public CalcResult calcValue(MeteringPoint point, Parameter param, CalcContext context) {
         CalcProperty property = CalcProperty.builder()
-            .contextType(context.getDefContextType())
-            .determiningMethod(DeterminingMethodEnum.MPV)
-            .paramType(ParamTypeEnum.PT)
-            .build();
+                .contextType(context.getDefContextType())
+                .determiningMethod(DeterminingMethodEnum.MPV)
+                .paramType(ParamTypeEnum.PT)
+                .build();
 
         return calcValue(point, param, context, property);
     }
@@ -125,15 +125,15 @@ public class CalcServiceImpl implements CalcService {
             for (CalcTrace trace : traces) {
                 logger.trace("  param: " + trace.getParameterCode());
                 if (trace.getSourceSystem() != null) {
-                    logger.trace("  available source systems: " + trace.getSourceSystems());
+                    logger.trace("  source system: " + trace.getSourceSystems());
                     logger.trace("  selected source system: " + trace.getSourceSystem());
                 }
                 if (trace.getDataType() != null) {
-                    logger.trace("  available data statuses: " + trace.getDataTypes());
+                    logger.trace("  data statuses: " + trace.getDataTypes());
                     logger.trace("  selected data status: " + trace.getDataType());
                 }
                 if (trace.getSource() != null) {
-                    logger.trace("  available sources: " + trace.getSources());
+                    logger.trace("  sources: " + trace.getSources());
                     logger.trace("  selected source: " + trace.getSource());
                 }
             }
@@ -213,10 +213,10 @@ public class CalcServiceImpl implements CalcService {
         logger.trace("  periodType: " + result.getPeriodType());
 
         if (result.getPeriodType() != PeriodTypeEnum.H)
-            logger.trace("  cachedValue: " + result.getDoubleValue());
+            logger.trace("  value: " + result.getDoubleValue());
 
         if (result.getPeriodType() == PeriodTypeEnum.H)
-            logger.trace("  cachedValues: " + Arrays.deepToString(result.getDoubleValues()));
+            logger.trace("  values: " + Arrays.deepToString(result.getDoubleValues()));
 
         if (context.getException() != null)
             throw context.getException();
@@ -264,8 +264,8 @@ public class CalcServiceImpl implements CalcService {
 
     private DoubleExpression getComplexExpression(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) {
         DoubleExpression expression = DoubleValueExpression.builder()
-            .value(null)
-            .build();
+                .value(null)
+                .build();
 
         if (param.getCode().equals("AB")) {
             DoubleExpression expression1 = getExpression(point, paramService.getParam("A+"), 1d, context, property);
@@ -363,8 +363,8 @@ public class CalcServiceImpl implements CalcService {
                 logger.trace("nested formula end");
 
                 UnaryOperator<DoubleExpression> operator = det.getSign().equals("-")
-                    ? operatorFactory.unary("minus")
-                    : operatorFactory.unary("nothing");
+                        ? operatorFactory.unary("minus")
+                        : operatorFactory.unary("nothing");
 
                 return expression.andThen(operator);
             }

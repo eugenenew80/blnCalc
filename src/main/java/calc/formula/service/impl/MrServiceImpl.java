@@ -7,10 +7,11 @@ import calc.formula.expression.impl.AtTimeValueExpression;
 import calc.formula.service.AtTimeValueService;
 import calc.formula.service.MeteringReading;
 import calc.formula.service.MrService;
-import calc.formula.service.ParamService;
 import calc.repo.calc.BypassModeRepo;
 import calc.repo.calc.MeterHistoryRepo;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MrServiceImpl implements MrService {
-    private final ParamService paramService;
+    private static final Logger logger = LoggerFactory.getLogger(MrServiceImpl.class);
     private final AtTimeValueService atTimeValueService;
     private final MeterHistoryRepo meterHistoryRepo;
     private final BypassModeRepo bypassModeRepo;
@@ -190,11 +191,11 @@ public class MrServiceImpl implements MrService {
 
     private Double getBypassStartVal(BypassMode bypassMode, Parameter param) {
         return bypassMode.getValues()
-            .stream()
-            .filter(v -> v.getParameter().equals(param))
-            .map(v -> v.getStartValue())
-            .findFirst()
-            .orElse(null);
+                .stream()
+                .filter(v -> v.getParameter().equals(param))
+                .map(v -> v.getStartValue())
+                .findFirst()
+                .orElse(null);
     }
 
     private Double getBypassEndVal(BypassMode bypassMode, Parameter param) {
@@ -207,18 +208,18 @@ public class MrServiceImpl implements MrService {
     }
 
     private Double getMeterStartVal(MeterHistory meter, Parameter param) {
-        if (param.getCode().equals("A+")) return meter.getApPrev();
-        if (param.getCode().equals("A-")) return meter.getAmPrev();
-        if (param.getCode().equals("R+")) return meter.getRpPrev();
-        if (param.getCode().equals("R-")) return meter.getRmPrev();
-        return null;
-    }
-
-    private Double getMeterEndVal(MeterHistory meter, Parameter param) {
         if (param.getCode().equals("A+")) return meter.getApNew();
         if (param.getCode().equals("A-")) return meter.getAmNew();
         if (param.getCode().equals("R+")) return meter.getRpNew();
         if (param.getCode().equals("R-")) return meter.getRmNew();
+        return null;
+    }
+
+    private Double getMeterEndVal(MeterHistory meter, Parameter param) {
+        if (param.getCode().equals("A+")) return meter.getApPrev();
+        if (param.getCode().equals("A-")) return meter.getAmPrev();
+        if (param.getCode().equals("R+")) return meter.getRpPrev();
+        if (param.getCode().equals("R-")) return meter.getRmPrev();
         return null;
     }
 

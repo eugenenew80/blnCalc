@@ -143,6 +143,8 @@ public class BalanceSubstTransformerService {
             result.setIsBalance(line.getIsBalance());
             result.setMeteringPointOut(line.getMeteringPointOut());
             result.setIsBalance(line.getIsBalance());
+            result.setIsLosses(line.getIsLosses());
+
 
             if (transformer.getWindingsNumber() == null) {
                 messageService.addMessage(header, line.getId(), docCode, "PE_WN_NOT_FOUND", defMsgParams);

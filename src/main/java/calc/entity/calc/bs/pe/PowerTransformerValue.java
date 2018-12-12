@@ -167,6 +167,10 @@ public class PowerTransformerValue {
     @JoinColumn(name = "metering_point_id_out")
     private MeteringPoint meteringPointOut;
 
+    @Column(name = "is_losses")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isLosses;
+
     @Transient
     public PowerTransformerValue addValueH(ParamValue value) {
         setApH(value.getAp());

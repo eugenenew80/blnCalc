@@ -1026,4 +1026,22 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-eug-2012" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_reactor_values</comment>
+        <addColumn schemaName="apps" tableName="calc_reactor_values">
+            <column name="is_losses" type="number" remarks="Флаг - Учитывать в Потери всего">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-2013" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_power_transformer_values</comment>
+        <addColumn schemaName="apps" tableName="calc_power_transformer_values">
+            <column name="is_losses" type="number" remarks="Флаг - Учитывать в Потери всего">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
