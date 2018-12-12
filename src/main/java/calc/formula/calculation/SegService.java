@@ -170,7 +170,7 @@ public class SegService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void copyNotes(SegResultHeader header) {
         List<SegResultNote> resultNotes = new ArrayList<>();
         for (SegNote note : header.getHeader().getNotes()) {
@@ -193,7 +193,7 @@ public class SegService {
         segResultNoteRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void copyApps(SegResultHeader header) {
         List<SegResultApp> resultApps = new ArrayList<>();
         for (SegApp app : header.getHeader().getApps()) {
@@ -215,13 +215,13 @@ public class SegService {
         segResultAppRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void saveLines(List<SegResultLine> lines) {
         segResultLineRepo.save(lines);
         segResultLineRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void deleteLines(SegResultHeader header) {
         List<SegResultLine> lines = segResultLineRepo.findAllByHeaderId(header.getId());
         segResultLineRepo.delete(lines);
@@ -236,19 +236,19 @@ public class SegService {
         segResultAppRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     public void deleteMessages(SegResultHeader header) {
         messageService.deleteMessages(header);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void updateStatus(SegResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         segResultHeaderRepo.save(header);
         segResultHeaderRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void setParents(SegResultHeader header) {
         List<SegResultLine> lines = segResultLineRepo.findAllByHeaderId(header.getId());
         List<BalanceUnitLine> balanceUnitLines = header.getBalanceUnit().getLines();

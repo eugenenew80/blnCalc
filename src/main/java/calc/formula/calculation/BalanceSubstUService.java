@@ -30,8 +30,7 @@ public class BalanceSubstUService {
 
     public boolean calc(BalanceSubstResultHeader header)  {
         try {
-            logger.info("U avg for balance with headerId " + header.getId() + " started");
-
+            logger.info(docCode + " for headerId " + header.getId() + " started");
             CalcContext context = CalcContext.builder()
                 .lang(LangEnum.RU)
                 .header(header)
@@ -48,7 +47,7 @@ public class BalanceSubstUService {
 
                 Double val = null;
                 try {
-                    val = getVal(meteringPoint, parU, context);
+                    val = getMrVal(meteringPoint, parU, context);
                 }
                 catch (CalcServiceException e) {
                     msgParams.putIfAbsent("err", e.getMessage());
@@ -67,33 +66,20 @@ public class BalanceSubstUService {
             deleteLines(header);
             saveLines(results);
 
-            logger.info("U avg for balance with headerId " + header.getId() + " completed");
+            logger.info(docCode + " for headerId " + header.getId() + " completed");
             return true;
         }
 
         catch (Exception e) {
             e.printStackTrace();
-            logger.error("U avg for balance with headerId " + header.getId() + " terminated with exception: " +  e.toString() + ": " + e.getMessage());
+            logger.error(docCode + " for headerId " + header.getId() + " terminated with exception: " +  e.toString() + ": " + e.getMessage());
 
             messageService.addMessage(header, null,  docCode,"RUNTIME_EXCEPTION", buildMsgParams(e));
             return false;
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveLines(List<BalanceSubstResultULine> resultLines) {
-        balanceSubstResultULineRepo.save(resultLines);
-        balanceSubstResultULineRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteLines(BalanceSubstResultHeader header) {
-        List<BalanceSubstResultULine> lines = balanceSubstResultULineRepo.findAllByHeaderId(header.getId());
-        balanceSubstResultULineRepo.delete(lines);
-        balanceSubstResultULineRepo.flush();
-    }
-
-    private Double getVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
+    private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
         if (meteringPoint == null || param == null)
             return null;
 
@@ -107,5 +93,18 @@ public class BalanceSubstUService {
         val = round(val, param);
 
         return ofNullable(val).orElse(0d);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
+    void saveLines(List<BalanceSubstResultULine> resultLines) {
+        balanceSubstResultULineRepo.save(resultLines);
+        balanceSubstResultULineRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
+    void deleteLines(BalanceSubstResultHeader header) {
+        List<BalanceSubstResultULine> lines = balanceSubstResultULineRepo.findAllByHeaderId(header.getId());
+        balanceSubstResultULineRepo.delete(lines);
+        balanceSubstResultULineRepo.flush();
     }
 }

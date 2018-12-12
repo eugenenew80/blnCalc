@@ -59,14 +59,14 @@ public class SvrService {
             List<SvrResultLine> resultLines = svrLineRepo.findAllByHeaderId(headerId);
             DataTypeEnum dataType = getDocDataType(resultLines);
 
-
-            /*
-            resultLines.stream()
+            Double total = resultLines.stream()
                 .filter(t -> t.getIsTotal())
-                .reduce( (t1, t2) -> ofNullable() )
-            */
+                .filter(t -> t.getVal() != null)
+                .map(t -> t.getVal())
+                .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t1).orElse(0d))
+                .orElse(0d);
 
-
+            header.setVal(total);
             header.setDataType(dataType);
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
@@ -151,7 +151,7 @@ public class SvrService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void copyNotes(SvrResultHeader header) {
         List<MeteringPointSettingNote> mpsNotes = mpsRepo.findAllByContractId(header.getContract().getId());
 
@@ -176,12 +176,12 @@ public class SvrService {
         svrNoteRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void saveLines(List<SvrResultLine> lines) {
         svrLineRepo.save(lines);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void deleteLines(SvrResultHeader header) {
         List<SvrResultLine> lines = svrLineRepo.findAllByHeaderId(header.getId());
         svrLineRepo.delete(lines);
@@ -192,7 +192,7 @@ public class SvrService {
         svrNoteRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void updateStatus(SvrResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         svrHeaderRepo.save(header);

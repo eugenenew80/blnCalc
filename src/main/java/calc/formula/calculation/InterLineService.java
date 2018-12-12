@@ -31,7 +31,6 @@ public class InterLineService {
     private final ParamService paramService;
     private final CalcService calcService;
 
-
     public boolean calc(InterResultHeader header) {
         try {
             logger.info("started, headerId: " + header.getId());
@@ -186,13 +185,13 @@ public class InterLineService {
         saveLines(results);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void saveLines(List<InterResultLine> resultLines) {
         interResultLineRepo.save(resultLines);
         interResultLineRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void deleteLines(InterResultHeader header) {
         List<InterResultLine> lines = interResultLineRepo.findAllByHeaderId(header.getId());
         interResultLineRepo.delete(lines);
@@ -207,7 +206,7 @@ public class InterLineService {
         interResultAppRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void copyNotes(InterResultHeader header) {
         List<InterResultNote> resultNotes = new ArrayList<>();
         for (InterNote note : header.getHeader().getNotes()) {
@@ -230,7 +229,7 @@ public class InterLineService {
         interResultNoteRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void copyApps(InterResultHeader header) {
         List<InterResultApp> resultApps = new ArrayList<>();
         for (InterApp app : header.getHeader().getApps()) {

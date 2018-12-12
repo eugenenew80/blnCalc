@@ -400,19 +400,6 @@ public class BalanceSubstUbService {
         return Pair.of(bttProc, msgCode);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveLines(List<BalanceSubstResultUbLine> lines) {
-        balanceSubstResultUbLineRepo.save(lines);
-        balanceSubstResultUbLineRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteLines(BalanceSubstResultHeader header) {
-        List<BalanceSubstResultUbLine> lines = balanceSubstResultUbLineRepo.findAllByHeaderId(header.getId());
-        balanceSubstResultUbLineRepo.delete(lines);
-        balanceSubstResultUbLineRepo.flush();
-    }
-
     private Double getMrVal(List<BalanceSubstResultMrLine> mrLines, BalanceSubstUbLine ubLine, MeterHistory meterHistory, Parameter param, CalcContext context) throws Exception {
         MeteringPoint meteringPoint = ubLine.getMeteringPoint();
 
@@ -442,5 +429,18 @@ public class BalanceSubstUbService {
             val = val * ofNullable(ubLine.getRate()).orElse(1d);
 
         return ofNullable(val).orElse(0d);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
+    void saveLines(List<BalanceSubstResultUbLine> lines) {
+        balanceSubstResultUbLineRepo.save(lines);
+        balanceSubstResultUbLineRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
+    void deleteLines(BalanceSubstResultHeader header) {
+        List<BalanceSubstResultUbLine> lines = balanceSubstResultUbLineRepo.findAllByHeaderId(header.getId());
+        balanceSubstResultUbLineRepo.delete(lines);
+        balanceSubstResultUbLineRepo.flush();
     }
 }

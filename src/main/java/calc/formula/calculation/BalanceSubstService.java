@@ -186,12 +186,12 @@ public class BalanceSubstService {
             .orElse(0d);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     void deleteMessages(BalanceSubstResultHeader header) {
         messageService.deleteMessages(header);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     void updateStatus(BalanceSubstResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         balanceSubstResultHeaderRepo.save(header);

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
-
 import static calc.util.Util.*;
 import static java.util.stream.Collectors.toList;
 
@@ -101,13 +100,13 @@ public class InterMrService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     void saveLines(List<InterResultMrLine> resultLines) {
         interResultMrLineRepo.save(resultLines);
         interResultMrLineRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     void deleteLines(InterResultHeader header) {
         List<InterResultMrLine> lines = interResultMrLineRepo.findAllByHeaderId(header.getId());
         interResultMrLineRepo.delete(lines);

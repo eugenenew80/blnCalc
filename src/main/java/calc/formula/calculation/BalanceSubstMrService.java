@@ -121,13 +121,13 @@ public class BalanceSubstMrService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void saveLines(List<BalanceSubstResultMrLine> resultLines) {
         balanceSubstResultMrLineRepo.save(resultLines);
         balanceSubstResultMrLineRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void saveBpLines(List<BalanceSubstResultMrLine> resultLines) {
         List<BalanceSubstResultBpLine> bpLines = resultLines.stream()
             .filter(t -> t.getBypassMeteringPoint() != null)
@@ -159,7 +159,7 @@ public class BalanceSubstMrService {
         balanceSubstResultBpLineRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultMrLine> lines = balanceSubstResultMrLineRepo.findAllByHeaderId(header.getId());
         balanceSubstResultMrLineRepo.delete(lines);
@@ -170,7 +170,7 @@ public class BalanceSubstMrService {
         balanceSubstResultMrNoteRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void copyNotes(BalanceSubstResultHeader header) {
         List<BalanceSubstResultMrNote> results = new ArrayList<>();
         for (BalanceSubstMrNote note : header.getHeader().getMrNotes()) {

@@ -49,20 +49,20 @@ public class InterService {
         }
 
         catch (Exception e) {
-            updateStatus(header, BatchStatusEnum.E);
             logger.error(e.toString() + ": " + e.getMessage());
             e.printStackTrace();
+            updateStatus(header, BatchStatusEnum.E);
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void updateStatus(InterResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         interResultHeaderRepo.save(header);
         interResultHeaderRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     public void deleteMessages(InterResultHeader header) {
         messageService.deleteMessages(header);
     }

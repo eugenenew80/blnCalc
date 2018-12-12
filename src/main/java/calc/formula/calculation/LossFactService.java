@@ -202,41 +202,6 @@ public class LossFactService {
         return resultLines;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveSec1Lines(List<LossFactResultSec1Line> resultLines) {
-        lossFactResultSec1LineRepo.save(resultLines);
-        lossFactResultSec1LineRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void saveSec2Lines(List<LossFactResultSec2Line> resultLines) {
-        lossFactResultSec2LineRepo.save(resultLines);
-        lossFactResultSec2LineRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void deleteLines(LossFactResultHeader header) {
-        List<LossFactResultSec1Line> lines1 = lossFactResultSec1LineRepo.findAllByHeaderId(header.getId());
-        lossFactResultSec1LineRepo.delete(lines1);
-        lossFactResultSec1LineRepo.flush();
-
-        List<LossFactResultSec2Line> lines2 = lossFactResultSec2LineRepo.findAllByHeaderId(header.getId());
-        lossFactResultSec2LineRepo.delete(lines2);
-        lossFactResultSec2LineRepo.flush();
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void deleteMessages(LossFactResultHeader header) {
-        messageService.deleteMessages(header);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void updateStatus(LossFactResultHeader header, BatchStatusEnum status) {
-        header.setStatus(status);
-        lossFactResultHeaderRepo.save(header);
-        lossFactResultHeaderRepo.flush();
-    }
-
     private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
         if (meteringPoint == null || param == null)
             return null;
@@ -251,5 +216,40 @@ public class LossFactService {
 
         val = round(val, param);
         return val;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
+    void saveSec1Lines(List<LossFactResultSec1Line> resultLines) {
+        lossFactResultSec1LineRepo.save(resultLines);
+        lossFactResultSec1LineRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
+    void saveSec2Lines(List<LossFactResultSec2Line> resultLines) {
+        lossFactResultSec2LineRepo.save(resultLines);
+        lossFactResultSec2LineRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
+    void deleteLines(LossFactResultHeader header) {
+        List<LossFactResultSec1Line> lines1 = lossFactResultSec1LineRepo.findAllByHeaderId(header.getId());
+        lossFactResultSec1LineRepo.delete(lines1);
+        lossFactResultSec1LineRepo.flush();
+
+        List<LossFactResultSec2Line> lines2 = lossFactResultSec2LineRepo.findAllByHeaderId(header.getId());
+        lossFactResultSec2LineRepo.delete(lines2);
+        lossFactResultSec2LineRepo.flush();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
+    public void deleteMessages(LossFactResultHeader header) {
+        messageService.deleteMessages(header);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
+    private void updateStatus(LossFactResultHeader header, BatchStatusEnum status) {
+        header.setStatus(status);
+        lossFactResultHeaderRepo.save(header);
+        lossFactResultHeaderRepo.flush();
     }
 }

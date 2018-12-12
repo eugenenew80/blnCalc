@@ -313,13 +313,13 @@ public class BalanceSubstTransformerService {
         return result != null ? result.getDoubleValue() : null;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     void saveLines(List<PowerTransformerValue> transformerLines) {
         powerTransformerValueRepo.save(transformerLines);
         powerTransformerValueRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     void deleteLines(BalanceSubstResultHeader header) {
         List<PowerTransformerValue> transformerValues = powerTransformerValueRepo.findAllByHeaderId(header.getId());
         powerTransformerValueRepo.delete(transformerValues);

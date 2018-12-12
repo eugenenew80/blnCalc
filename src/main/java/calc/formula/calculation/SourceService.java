@@ -200,19 +200,19 @@ public class SourceService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void saveLines1(List<SourceResultLine1> lines) {
         sourceResultLine1Repo.save(lines);
         sourceResultLine1Repo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void saveLines2(List<SourceResultLine2> lines) {
         sourceResultLine2Repo.save(lines);
         sourceResultLine2Repo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void deleteLines(SourceResultHeader header) {
         List<SourceResultLine1> lines1 = sourceResultLine1Repo.findAllByHeaderId(header.getId());
         sourceResultLine1Repo.delete(lines1);
@@ -223,12 +223,12 @@ public class SourceService {
         sourceResultLine2Repo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     public void deleteMessages(SourceResultHeader header) {
         messageService.deleteMessages(header);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void setParents2(SourceResultHeader header) {
         List<SourceResultLine2> resultLines = sourceResultLine2Repo.findAllByHeaderId(header.getId());
         List<SourceLine2> sourceLines = header.getHeader().getLines2();
@@ -255,7 +255,7 @@ public class SourceService {
         sourceResultLine2Repo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void updateStatus(SourceResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         sourceResultHeaderRepo.save(header);

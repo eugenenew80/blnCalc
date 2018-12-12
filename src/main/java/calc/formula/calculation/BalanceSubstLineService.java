@@ -94,13 +94,13 @@ public class BalanceSubstLineService {
         saveLines(resultLines);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void saveLines(List<BalanceSubstResultLine> resultLines) {
         balanceSubstResultLineRepo.save(resultLines);
         balanceSubstResultLineRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void deleteLines(BalanceSubstResultHeader header) {
         List<BalanceSubstResultLine> lines = balanceSubstResultLineRepo.findAllByHeaderId(header.getId());
         balanceSubstResultLineRepo.delete(lines);
@@ -111,7 +111,7 @@ public class BalanceSubstLineService {
         balanceSubstResultNoteRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void copyNotes(BalanceSubstResultHeader header) {
         List<BalanceSubstResultNote> results = new ArrayList<>();
         for (BalanceSubstNote note : header.getHeader().getNotes()) {

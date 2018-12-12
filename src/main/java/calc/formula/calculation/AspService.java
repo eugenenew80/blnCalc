@@ -36,7 +36,7 @@ public class AspService {
     private final CalcService calcService;
 
     public boolean calc(Long headerId) {
-        logger.info("ASP calculation for header " + headerId + " started");
+        logger.info(docCode + " calculation for header " + headerId + " started");
         AspResultHeader header = aspResultHeaderRepo.findOne(headerId);
         if (header.getStatus() != BatchStatusEnum.W)
             return false;
@@ -61,15 +61,14 @@ public class AspService {
             copyApps(header);
 
             header.setLastUpdateDate(LocalDateTime.now());
-            header.setIsActive(false);
             header.setDataType(DataTypeEnum.OPER);
 
             updateStatus(header, BatchStatusEnum.C);
-            logger.info("ASP calculation for header " + header.getId() + " completed");
+            logger.info(docCode + " calculation for header " + header.getId() + " completed");
             return true;
         }
         catch (Exception e) {
-            logger.error("ASP calculation for header " + header.getId() + " terminated with exception: " + e.getMessage());
+            logger.error(docCode + " calculation for header " + header.getId() + " terminated with exception: " + e.getMessage());
             e.printStackTrace();
 
             messageService.addMessage(header, null, docCode, "RUNTIME_EXCEPTION", buildMsgParams(e));
@@ -79,7 +78,8 @@ public class AspService {
     }
 
     private void calcRows(AspResultHeader header, CalcContext context)  {
-        Map<TreatmentTypeEnum, List<AspLine>> map = header.getHeader().getLines()
+        Map<TreatmentTypeEnum, List<AspLine>> map = header.getHeader()
+            .getLines()
             .stream()
             .filter(t ->
                        t.getTreatmentType() == INFO
@@ -128,14 +128,11 @@ public class AspService {
                             .processOrder(ProcessOrderEnum.CALC)
                             .build();
 
-                    CalcResult calc;
-                    if (formula != null)
-                        calc = calcService.calcValue(formula, context, property);
-                    else
-                        calc = calcService.calcValue(meteringPoint, param, context, property);
+                    CalcResult calc = (formula != null)
+                        ? calcService.calcValue(formula, context, property)
+                        : calcService.calcValue(meteringPoint, param, context, property);
 
-                    val = calc != null ? calc.getDoubleValue() : null;
-                    val = round(val, param);
+                    val = calc != null ? round(calc.getDoubleValue(),param) : null;
                 }
                 catch (CalcServiceException e) {
                     e.printStackTrace();
@@ -149,7 +146,7 @@ public class AspService {
     }
 
     private void readRows(AspResultHeader header, CalcContext context) {
-        logger.trace("read metering data");
+        logger.trace("reading metering data");
         List<AspResultLine> results = new ArrayList<>();
         for (AspLine line : header.getHeader().getLines()) {
             MeteringPoint meteringPoint = line.getMeteringPoint();
@@ -221,7 +218,7 @@ public class AspService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void copyNotes(AspResultHeader header) {
         List<AspResultNote> results = new ArrayList<>();
         for (AspNote note : header.getHeader().getNotes()) {
@@ -244,7 +241,7 @@ public class AspService {
         aspResultNoteRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void copyApps(AspResultHeader header) {
         List<AspResultApp> resultApps = new ArrayList<>();
         for (AspApp app : header.getHeader().getApps()) {
@@ -266,13 +263,13 @@ public class AspService {
         aspResultAppRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void saveLines(List<AspResultLine> lines) {
         aspResultLineRepo.save(lines);
         aspResultLineRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void deleteLines(AspResultHeader header) {
         List<AspResultLine> lines = aspResultLineRepo.findAllByHeaderId(header.getId());
         aspResultLineRepo.delete(lines);
@@ -287,12 +284,12 @@ public class AspService {
         aspResultAppRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     public void deleteMessages(AspResultHeader header) {
         messageService.deleteMessages(header);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     private void updateStatus(AspResultHeader header, BatchStatusEnum status) {
         header.setStatus(status);
         aspResultHeaderRepo.save(header);

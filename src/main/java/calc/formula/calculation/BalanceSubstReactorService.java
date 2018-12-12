@@ -139,13 +139,13 @@ public class BalanceSubstReactorService {
             .doubleValue();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     void saveLines(List<ReactorValue> reactorLines) {
         reactorValueRepo.save(reactorLines);
         reactorValueRepo.flush();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
     void deleteLines(BalanceSubstResultHeader header) {
         List<ReactorValue> reactorValues = reactorValueRepo.findAllByHeaderId(header.getId());
         reactorValueRepo.delete(reactorValues);
