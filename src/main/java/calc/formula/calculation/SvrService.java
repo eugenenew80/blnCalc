@@ -59,6 +59,14 @@ public class SvrService {
             List<SvrResultLine> resultLines = svrLineRepo.findAllByHeaderId(headerId);
             DataTypeEnum dataType = getDocDataType(resultLines);
 
+
+            /*
+            resultLines.stream()
+                .filter(t -> t.getIsTotal())
+                .reduce( (t1, t2) -> ofNullable() )
+            */
+
+
             header.setDataType(dataType);
             header.setLastUpdateDate(LocalDateTime.now());
             header.setIsActive(false);
