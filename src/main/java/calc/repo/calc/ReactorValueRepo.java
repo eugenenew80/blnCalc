@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ReactorValueRepo extends JpaRepository<ReactorValue, Long> {
     List<ReactorValue> findAllByHeaderId(Long headerId);
+    List<ReactorValue> findAllByHeaderIdAndMeteringPointOutId(Long headerId, Long meteringPointId);
 }

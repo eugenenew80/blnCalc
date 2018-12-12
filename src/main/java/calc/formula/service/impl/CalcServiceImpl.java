@@ -34,6 +34,7 @@ public class CalcServiceImpl implements CalcService {
     private final AtTimeValueService atTimeValueService;
     private final BalanceSubstResultMrService mrService;
     private final TransformerValueService transformerValueService;
+    private final ReactorValueService reactorValueService;
     private final AspResultService aspService;
     private final SegResultService segService;
     private final InterResultMrService interMrService;
@@ -557,13 +558,27 @@ public class CalcServiceImpl implements CalcService {
             }
 
             logger.trace("  expression: TransformerValueExpression");
-            return TransformerValueExpression.builder()
+            DoubleExpression expression = TransformerValueExpression.builder()
                 .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
                 .rate(rate)
                 .context(ctx)
                 .service(transformerValueService)
                 .build();
+
+
+            if (expression.doubleValue() == null) {
+                logger.trace("  expression: ReactorValueExpression");
+                return ReactorValueExpression.builder()
+                    .meteringPointCode(mp.getCode())
+                    .parameterCode(param.getCode())
+                    .rate(rate)
+                    .context(ctx)
+                    .service(reactorValueService)
+                    .build();
+            }
+
+            return expression;
         }
 
         if (prop.getContextType() == ContextTypeEnum.MR || (ctx.getDefContextType() == ContextTypeEnum.MR && mp.getPointType() == PointTypeEnum.PMP)) {
