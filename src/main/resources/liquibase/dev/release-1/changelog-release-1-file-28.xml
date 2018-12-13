@@ -1084,4 +1084,178 @@
         <comment>Drop not null constraint from table: calc_bypass_modes</comment>
         <dropNotNullConstraint schemaName="apps" tableName="calc_bypass_modes" columnName="substation_id" />
     </changeSet>
+
+    <changeSet id="calc-eug-2018" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_loss_fact_result_sec1_lines_tl</comment>
+        <createTable tableName="calc_loss_fact_result_sec1_lines_tl" schemaName="apps" remarks="Перевод к строкам раздела 1 документа Фактические потери">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_line_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование строки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-2019" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_loss_fact_result_sec1_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_loss_fact_result_sec1_lines_tl"
+                schemaName="apps"
+                tableName="calc_loss_fact_result_sec1_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2020" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_loss_fact_result_sec1_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="result_line_id, lang"
+                constraintName="uk_calc_loss_fact_result_sec1_lines_tl_1"
+                schemaName="apps"
+                tableName="calc_loss_fact_result_sec1_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2021" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_loss_fact_result_sec1_lines_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_loss_fact_result_sec1_lines_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2022" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_result_sec1_lines_tl</comment>
+        <createIndex indexName="idx_calc_loss_fact_result_sec1_lines_tl_1" schemaName="apps" tableName="calc_loss_fact_result_sec1_lines_tl">
+            <column name="result_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-2023" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_sec1_lines_tl to calc_loss_fact_result_sec1_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_sec1_lines_tl"
+                baseColumnNames="result_line_id"
+                constraintName="fk_calc_loss_fact_result_sec1_lines_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_loss_fact_result_sec1_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-2024" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_loss_fact_result_sec2_lines_tl</comment>
+        <createTable tableName="calc_loss_fact_result_sec2_lines_tl" schemaName="apps" remarks="Перевод к строкам раздела 2 документа Фактические потери">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="result_line_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование строки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-2025" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_loss_fact_result_sec2_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_loss_fact_result_sec2_lines_tl"
+                schemaName="apps"
+                tableName="calc_loss_fact_result_sec2_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2026" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_loss_fact_result_sec2_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="result_line_id, lang"
+                constraintName="uk_calc_loss_fact_result_sec2_lines_tl_1"
+                schemaName="apps"
+                tableName="calc_loss_fact_result_sec2_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2027" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_loss_fact_result_sec2_lines_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_loss_fact_result_sec2_lines_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2028" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_result_sec2_lines_tl</comment>
+        <createIndex indexName="idx_calc_loss_fact_result_sec2_lines_tl_1" schemaName="apps" tableName="calc_loss_fact_result_sec2_lines_tl">
+            <column name="result_line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-2029" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_sec2_lines_tl to calc_loss_fact_result_sec2_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_sec2_lines_tl"
+                baseColumnNames="result_line_id"
+                constraintName="fk_calc_loss_fact_result_sec2_lines_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_loss_fact_result_sec2_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
