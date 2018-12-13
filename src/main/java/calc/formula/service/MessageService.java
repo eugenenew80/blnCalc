@@ -19,7 +19,6 @@ public interface MessageService {
     void addMessage(BalanceSubstResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params);
 
     void deleteMessages(AspResultHeader header);
-    void addMessage(AspResultHeader header, Long lineNum, String docCode, String  errCode);
     void addMessage(AspResultHeader header, Long lineNum, String docCode, String  errCode, Map<String, String> params);
 
     void deleteMessages(SegResultHeader header);

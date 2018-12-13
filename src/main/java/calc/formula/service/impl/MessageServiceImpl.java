@@ -114,34 +114,6 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void addMessage(AspResultHeader header, Long lineNum, String docCode, String errCode) {
-        MessageError err = messageErrorService.getError(errCode);
-        try {
-            LangEnum defLang = LangEnum.RU;
-            String defTExt = "Описание не найдено";
-            String msg = err != null ? err.getTexts().getOrDefault(defLang, defTExt) : defTExt;
-            MessageTypeEnum messageType = err != null ? err.getMessageType() : MessageTypeEnum.E;
-
-            AspResultMessage message = new AspResultMessage();
-            message.setHeader(header);
-            message.setLineNum(lineNum);
-            message.setMessageType(messageType);
-            message.setErrorCode(errCode);
-            message.setTranslates(new ArrayList<>());
-
-            AspResultMessageTranslate messageTranslate = new AspResultMessageTranslate();
-            messageTranslate.setMessage(message);
-            messageTranslate.setLang(defLang);
-            messageTranslate.setMsg(msg);
-            message.getTranslates().add(messageTranslate);
-            aspResultMessageRepo.save(message);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public void addMessage(AspResultHeader header, Long lineNum, String docCode, String errCode, Map<String, String> params) {
         MessageError err = messageErrorService.getError(errCode);
         try {

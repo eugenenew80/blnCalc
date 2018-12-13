@@ -1,19 +1,21 @@
 package calc.formula.expression.impl;
 
+import calc.entity.calc.bs.u.BalanceSubstResultULine;
 import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.BalanceSubstResultUService;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.springframework.util.StringUtils;
+import java.util.List;
 
 @Builder
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UavgExpression implements DoubleExpression {
     private final String meteringPointCode;
     private final Double def;
     private final BalanceSubstResultUService service;
     private final CalcContext context;
+    private Double cachedValue;
 
     @Override
     public DoubleExpression doubleExpression() {
@@ -22,13 +24,21 @@ public class UavgExpression implements DoubleExpression {
 
     @Override
     public Double doubleValue() {
-        if (meteringPointCode==null || meteringPointCode.equals(""))
+        if (cachedValue != null)
+            return cachedValue;
+
+        if (StringUtils.isEmpty(meteringPointCode))
             return def;
 
-        return service.getValues(context.getHeader().getId(), meteringPointCode).stream()
+        List<BalanceSubstResultULine> list = service.getValues(context.getHeader().getId(), meteringPointCode);
+
+        Double value = list.stream()
             .filter(t -> t.getVal() != null && t.getVal() != 0)
             .map(t -> t.getVal())
             .findFirst()
             .orElse(def);
+
+        cachedValue = value;
+        return value;
     }
 }

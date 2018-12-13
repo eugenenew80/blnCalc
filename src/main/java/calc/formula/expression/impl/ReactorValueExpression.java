@@ -5,31 +5,25 @@ import calc.formula.CalcContext;
 import calc.formula.expression.DoubleExpression;
 import calc.formula.service.ReactorValueService;
 import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import lombok.*;
+import java.util.*;
 import java.util.stream.Stream;
+import static java.util.Optional.*;
 import static java.util.stream.Collectors.toSet;
 
 @Builder
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReactorValueExpression implements DoubleExpression {
     private final String meteringPointCode;
     private final String parameterCode;
     private final Double rate;
     private final ReactorValueService service;
     private final CalcContext context;
+    private Double cachedValue;
 
     @Override
     public DoubleExpression doubleExpression() {
         return this;
-    }
-
-    @Override
-    public Double[] doubleValues() {
-        return new Double[] { doubleValue() };
     }
 
     @Override
@@ -38,17 +32,23 @@ public class ReactorValueExpression implements DoubleExpression {
     }
 
     @Override
+    public Double[] doubleValues() {
+        return new Double[] { doubleValue() };
+    }
+
+    @Override
     public Double doubleValue() {
-        List<ReactorValue> list = service.getValues(
-            context.getHeader().getId(),
-            meteringPointCode
-        );
+        if (cachedValue != null)
+            return cachedValue;
+
+        List<ReactorValue> list = service.getValues(context.getHeader().getId(), meteringPointCode);
 
         Double value = list.stream()
-            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) )
+            .map(t -> ofNullable(t.getVal()).orElse(0d) )
             .reduce((t1, t2) -> t1 + t2)
             .orElse(null);
 
+        cachedValue = value;
         return value;
     }
 }
