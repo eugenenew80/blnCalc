@@ -1044,4 +1044,44 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-eug-2014" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_bypass_modes</comment>
+        <addColumn schemaName="apps" tableName="calc_bypass_modes">
+            <column name="energy_source_id" type="number" remarks="Идентификатор электростанции">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-2015" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_bypass_modes</comment>
+        <createIndex indexName="idx_calc_bypass_modes_4"
+                     schemaName="apps"
+                     tableName="calc_bypass_modes"
+                     unique="false">
+            <column name="energy_source_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-2016" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_bypass_modes to dict_energy_sources</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_bypass_modes"
+                baseColumnNames="energy_source_id"
+                constraintName="fk_calc_bypass_modes_4"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_energy_sources"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-2017" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Drop not null constraint from table: calc_bypass_modes</comment>
+        <dropNotNullConstraint schemaName="apps" tableName="calc_bypass_modes" columnName="substation_id" />
+    </changeSet>
 </databaseChangeLog>
