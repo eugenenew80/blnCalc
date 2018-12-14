@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -56,4 +57,7 @@ public class LossFactResultSec2Line {
 
     @Column(name = "last_update_by")
     private Long lastUpdateBy;
+
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<LossFactResultSec2LineTranslate> translates;
 }

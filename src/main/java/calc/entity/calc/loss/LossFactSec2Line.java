@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(of= {"id"})
@@ -42,4 +43,7 @@ public class LossFactSec2Line {
 
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
+    private List<LossFactSec1LineTranslate> translates;
 }

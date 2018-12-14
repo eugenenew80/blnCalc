@@ -1258,4 +1258,179 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+
+    <changeSet id="calc-eug-2030" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_loss_fact_sec1_lines_tl</comment>
+        <createTable tableName="calc_loss_fact_sec1_lines_tl" schemaName="apps" remarks="Перевод к строкам раздела 1 шаблона Фактические потери">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование строки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-2031" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_loss_fact_sec1_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_loss_fact_sec1_lines_tl"
+                schemaName="apps"
+                tableName="calc_loss_fact_sec1_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2032" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_loss_fact_sec1_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="line_id, lang"
+                constraintName="uk_calc_loss_fact_sec1_lines_tl_1"
+                schemaName="apps"
+                tableName="calc_loss_fact_sec1_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2033" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_loss_fact_sec1_lines_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_loss_fact_sec1_lines_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2034" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_sec1_lines_tl</comment>
+        <createIndex indexName="idx_calc_loss_fact_sec1_lines_tl_1" schemaName="apps" tableName="calc_loss_fact_sec1_lines_tl">
+            <column name="line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-2035" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_sec1_lines_tl to calc_loss_fact_sec1_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_sec1_lines_tl"
+                baseColumnNames="line_id"
+                constraintName="fk_calc_loss_fact_sec1_lines_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_loss_fact_sec1_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-eug-2036" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_loss_fact_sec2_lines_tl</comment>
+        <createTable tableName="calc_loss_fact_sec2_lines_tl" schemaName="apps" remarks="Перевод к строкам раздела 2 шаблона Фактические потери">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_id" type="number" remarks="Идентификатор родительской записи">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="lang" type="varchar(10)" remarks="язык">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(300)" remarks="Наименование строки">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-2037" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_loss_fact_sec2_lines_tl</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_loss_fact_sec2_lines_tl"
+                schemaName="apps"
+                tableName="calc_loss_fact_sec2_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2038" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating unique key for table: calc_loss_fact_sec2_lines_tl</comment>
+        <addUniqueConstraint
+                columnNames="line_id, lang"
+                constraintName="uk_calc_loss_fact_sec2_lines_tl_1"
+                schemaName="apps"
+                tableName="calc_loss_fact_sec2_lines_tl"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2039" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_loss_fact_sec2_lines_tl</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_loss_fact_sec2_lines_tl_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2040" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>creating index for table: calc_loss_fact_sec2_lines_tl</comment>
+        <createIndex indexName="idx_calc_loss_fact_sec2_lines_tl_1" schemaName="apps" tableName="calc_loss_fact_sec2_lines_tl">
+            <column name="line_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-2041" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_sec2_lines_tl to calc_loss_fact_sec2_lines</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_sec2_lines_tl"
+                baseColumnNames="line_id"
+                constraintName="fk_calc_loss_fact_sec2_lines_tl_1"
+                deferrable="true"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_loss_fact_sec2_lines"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
