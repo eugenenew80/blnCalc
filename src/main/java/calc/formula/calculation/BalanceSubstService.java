@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static calc.util.Util.buildMsgParams;
+import static java.util.Optional.*;
 
 @Service
 @RequiredArgsConstructor
@@ -96,26 +97,26 @@ public class BalanceSubstService {
             Double total5 = powerTransformerValueRepo.findAllByHeaderId(header.getId())
                 .stream()
                 .filter(t -> t.getIsBalance())
-                .map(t -> Optional.ofNullable(t.getVal()).orElse(0d))
+                .map(t -> ofNullable(t.getVal()).orElse(0d))
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
             Double total6 = reactorValueRepo.findAllByHeaderId(header.getId())
                 .stream()
                 .filter(t -> t.getIsBalance())
-                .map(t -> Optional.ofNullable(t.getVal()).orElse(0d))
+                .map(t -> ofNullable(t.getVal()).orElse(0d))
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
             Parameter parAp = paramService.getParam("A+");
             if (parAp != null) {
-                double rounding =  Math.pow(10, Optional.ofNullable(parAp.getDigitsRounding()).orElse(0));
+                double rounding =  Math.pow(10, ofNullable(parAp.getDigitsRounding()).orElse(0));
                 if (total1 != null) total1 = Math.round(total1 * rounding) / rounding;
             }
 
             Parameter parAm = paramService.getParam("A-");
             if (parAm != null) {
-                double rounding =  Math.pow(10, Optional.ofNullable(parAm.getDigitsRounding()).orElse(0));
+                double rounding =  Math.pow(10, ofNullable(parAm.getDigitsRounding()).orElse(0));
                 if (total2 != null) total2 = Math.round(total2 * rounding) / rounding;
                 if (total2 != null) total3 = Math.round(total3 * rounding) / rounding;
                 if (total4 != null) total4 = Math.round(total4 * rounding) / rounding;
@@ -123,7 +124,7 @@ public class BalanceSubstService {
 
             Parameter parWl = paramService.getParam("WL");
             if (parWl != null) {
-                double rounding =  Math.pow(10, Optional.ofNullable(parWl.getDigitsRounding()).orElse(0));
+                double rounding =  Math.pow(10, ofNullable(parWl.getDigitsRounding()).orElse(0));
                 if (total5 != null) total5 = Math.round(total5 * rounding) / rounding;
                 if (total6 != null) total6 = Math.round(total6 * rounding) / rounding;
             }
@@ -132,7 +133,7 @@ public class BalanceSubstService {
             Double nbfVal   = total1 - total2 - total3 - total4 - total5 - total6;
             Double nbfProc  = total1 != 0d ? 100d * nbfVal / total1 :  0d;
 
-            Double nbdVal    = Optional.ofNullable(header.getNbdVal()).orElse(0d);
+            Double nbdVal    = ofNullable(header.getNbdVal()).orElse(0d);
             Double nbDifVal  = Math.abs(nbfVal) - Math.abs(nbdVal);
             if (nbDifVal < 0) nbDifVal = 0d;
             Double nbDifProc = nbdVal != 0d ? 100d * nbDifVal / nbdVal : 0d;
@@ -161,7 +162,9 @@ public class BalanceSubstService {
             header.setNbfVal(nbfVal);
             header.setNbfProc(nbfProc);
             header.setNbDifVal(nbDifVal);
+            header.setNbDifProc(nbDifProc);
             header.setNbfProc(nbDifProc);
+            header.setNbdVal(nbdVal);
 
             updateStatus(header, BatchStatusEnum.C);
         }
@@ -181,7 +184,7 @@ public class BalanceSubstService {
             .filter(t -> t!=null)
             .filter(t -> t.getVal() != null)
             .filter(t -> t.getSection().equals(section))
-            .map(t -> Optional.ofNullable(t.getVal()).orElse(0d) )
+            .map(t -> ofNullable(t.getVal()).orElse(0d) )
             .reduce((t1, t2) -> t1 + t2)
             .orElse(0d);
     }
