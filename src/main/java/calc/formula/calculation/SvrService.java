@@ -60,6 +60,7 @@ public class SvrService {
             DataTypeEnum dataType = getDocDataType(resultLines);
 
             Double total = resultLines.stream()
+                .filter(t -> t.getOrganization() != null && t.getOrganization().equals(header.getOrganization()))
                 .filter(t -> !t.getIsTotal())
                 .filter(t -> t.getVal() != null)
                 .map(t -> t.getVal())
