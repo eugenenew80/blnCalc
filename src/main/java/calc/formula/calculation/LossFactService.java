@@ -110,6 +110,8 @@ public class LossFactService {
                 ?  ofNullable(lossFact).orElse(0d) * 100 / ofNullable(r325).orElse(0d)
                 : null;
 
+            r326 = round(r326, 2);
+
             header.setAp(totalAp);
             header.setAm(totalAm);
             header.setLossFact(lossFact);
