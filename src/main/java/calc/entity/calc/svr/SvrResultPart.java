@@ -20,6 +20,10 @@ public class SvrResultPart implements DataTypeSupport {
     @JoinColumn(name = "header_id")
     private SvrResultHeader header;
 
+    @ManyToOne
+    @JoinColumn(name = "part_id")
+    private SvrResultHeader part;
+
     @Override
     @Transient
     public DataTypeEnum getDataType() {

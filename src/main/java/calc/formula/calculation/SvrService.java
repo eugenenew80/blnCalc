@@ -61,8 +61,8 @@ public class SvrService {
                 dataType = getDocDataType(parts);
 
                 total = parts.stream()
-                    .filter(t -> t.getHeader() != null)
-                    .map(t -> t.getHeader())
+                    .filter(t -> t.getPart() != null)
+                    .map(t -> t.getPart())
                     .filter(t -> t.getIsActive())
                     .filter(t -> t.getVal() != null)
                     .map(t -> t.getVal())
