@@ -92,4 +92,12 @@
         />
     </changeSet>
 
+    <changeSet id="calc-eug-2048" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps" tableName="calc_service_values_reconciliations">
+            <column name="is_part_of_aggregation" type="number" remarks="Флаг - включен в сводный акт сверки">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
