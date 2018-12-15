@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="calc-eug-2042" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps" tableName="calc_service_values_reconciliations">
+            <column name="is_aggregation" type="number" remarks="Флаг - сводный акт сверки">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-2043" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating table: calc_svr_parts</comment>
+            <createTable tableName="calc_svr_parts" schemaName="apps" remarks="Ссылки на сводные акты, включенные в сводный">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="line_num" type="number" remarks="Номер строки">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="header_id" type="number" remarks="Идентификатор сводного акта">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-eug-2044" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating primary key for table: calc_svr_parts</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_svr_parts"
+                schemaName="apps"
+                tableName="calc_svr_parts"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2045" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating sequence for table: calc_svr_parts</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_svr_parts_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-eug-2046" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_svr_parts</comment>
+        <createIndex indexName="idx_calc_svr_parts_1"
+                     schemaName="apps"
+                     tableName="calc_svr_parts"
+                     unique="false">
+            <column name="header_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-2047" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_svr_parts to calc_service_values_reconciliations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_svr_parts"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_svr_parts_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_service_values_reconciliations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+</databaseChangeLog>
