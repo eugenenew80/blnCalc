@@ -102,8 +102,8 @@
     </changeSet>
 
     <changeSet id="calc-eug-2049" logicalFilePath="path-independent" author="eugene" context="dev">
-        <comment>Adding column to table: calc_service_values_reconciliations</comment>
-        <addColumn schemaName="apps" tableName="calc_service_values_reconciliations">
+        <comment>Adding column to table: calc_svr_parts</comment>
+        <addColumn schemaName="apps" tableName="calc_svr_parts">
             <column name="part_id" type="number" remarks="Идентификатор дочернего документа">
                 <constraints nullable="false"/>
             </column>
