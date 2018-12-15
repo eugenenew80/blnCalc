@@ -100,4 +100,39 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-eug-2049" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Adding column to table: calc_service_values_reconciliations</comment>
+        <addColumn schemaName="apps" tableName="calc_service_values_reconciliations">
+            <column name="part_id" type="number" remarks="Идентификатор дочернего документа">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-eug-2050" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating index: calc_svr_parts</comment>
+        <createIndex indexName="idx_calc_svr_parts_2"
+                     schemaName="apps"
+                     tableName="calc_svr_parts"
+                     unique="false">
+            <column name="part_id" type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-eug-2051" logicalFilePath="path-independent" author="eugene" context="dev">
+        <comment>Creating foreign constraint: calc_svr_parts to calc_service_values_reconciliations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_svr_parts"
+                baseColumnNames="part_id"
+                constraintName="fk_calc_svr_parts_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_service_values_reconciliations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
