@@ -106,6 +106,10 @@ public class LossFactService {
             Double r32 = ofNullable(r321).orElse(0d) +  r322 + r323 + r324;
             Double r325 = r32 + totalAp;
 
+            Double r326 = ofNullable(r325).orElse(0d) != 0
+                ?  ofNullable(lossFact).orElse(0d) * 100 / ofNullable(r325).orElse(0d)
+                : null;
+
             header.setAp(totalAp);
             header.setAm(totalAm);
             header.setLossFact(lossFact);
@@ -114,6 +118,7 @@ public class LossFactService {
             header.setR323(r323);
             header.setR324(r324);
             header.setR325(r325);
+            header.setR326(r326);
             header.setR32(r32);
 
             header.setLastUpdateDate(LocalDateTime.now());
