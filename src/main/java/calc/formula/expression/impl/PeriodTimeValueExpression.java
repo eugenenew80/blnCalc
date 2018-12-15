@@ -113,11 +113,23 @@ public class PeriodTimeValueExpression implements DoubleExpression {
             context.getTraces().putIfAbsent(meteringPointCode, traces);
         }
 
-        Double doubleValue = list.stream()
-            .map(t -> t.getDoubleValue())
-            .filter(t -> t != null)
-            .reduce(this::sum)
-            .orElse(null);
+        Double doubleValue;
+
+        if (sourceSystem != SourceSystemEnum.BIS) {
+            doubleValue = list.stream()
+                .map(t -> t.getDoubleValue())
+                .filter(t -> t != null)
+                .reduce(this::sum)
+                .orElse(null);
+        }
+        else {
+            doubleValue = list.stream()
+                .map(t -> t.getDoubleValue())
+                .filter(t -> t != null)
+                .distinct()
+                .findFirst()
+                .orElse(null);
+        }
 
         cachedValues = new Double[] {doubleValue};
         return cachedValues;
