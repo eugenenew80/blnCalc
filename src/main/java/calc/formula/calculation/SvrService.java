@@ -30,6 +30,7 @@ public class SvrService {
     private final MessageService messageService;
     private final SvrHeaderRepo svrHeaderRepo;
     private final SvrLineRepo svrLineRepo;
+    private final SvrPartRepo svrPartRepo;
     private final MeteringPointSettingRepo meteringPointSettingRepo;
     private final SvrNoteRepo svrNoteRepo;
     private final MeteringPointSettingNoteRepo mpsRepo;
@@ -52,25 +53,42 @@ public class SvrService {
             header.setDataType(null);
             updateStatus(header, BatchStatusEnum.P);
             messageService.deleteMessages(header);
-            deleteLines(header);
-            calcLines(header, context);
-            copyNotes(header);
 
-            List<SvrResultLine> resultLines = svrLineRepo.findAllByHeaderId(headerId);
-            DataTypeEnum dataType = getDocDataType(resultLines);
+            DataTypeEnum dataType;
+            Double total;
+            if (header.getIsAggregation()) {
+                List<SvrResultPart> parts = svrPartRepo.findAllByHeaderId(headerId);
+                dataType = getDocDataType(parts);
 
-            Double total = resultLines.stream()
-                .filter(t -> t.getOrganization() != null && t.getOrganization().equals(header.getOrganization()))
-                .filter(t -> !t.getIsTotal())
-                .filter(t -> t.getVal() != null)
-                .map(t -> t.getVal())
-                .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t1).orElse(0d))
-                .orElse(0d);
+                total = parts.stream()
+                    .filter(t -> t.getHeader() != null)
+                    .map(t -> t.getHeader())
+                    .filter(t -> t.getIsActive())
+                    .filter(t -> t.getVal() != null)
+                    .map(t -> t.getVal())
+                    .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t1).orElse(0d))
+                    .orElse(0d);
+            }
+            else {
+                deleteLines(header);
+                calcLines(header, context);
+                copyNotes(header);
+
+                List<SvrResultLine> resultLines = svrLineRepo.findAllByHeaderId(headerId);
+                dataType = getDocDataType(resultLines);
+
+                total = resultLines.stream()
+                    .filter(t -> t.getOrganization() != null && t.getOrganization().equals(header.getOrganization()))
+                    .filter(t -> !t.getIsTotal())
+                    .filter(t -> t.getVal() != null)
+                    .map(t -> t.getVal())
+                    .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t1).orElse(0d))
+                    .orElse(0d);
+            }
 
             header.setVal(total);
             header.setDataType(dataType);
             header.setLastUpdateDate(LocalDateTime.now());
-            header.setIsActive(false);
             updateStatus(header, BatchStatusEnum.C);
 
             logger.info(docCode + " for header " + header.getId() + " completed");

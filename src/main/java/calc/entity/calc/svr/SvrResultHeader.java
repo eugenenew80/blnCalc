@@ -57,6 +57,14 @@ public class SvrResultHeader implements DocHeader {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isCurrentRecord;
 
+    @Column(name = "is_aggregation")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isAggregation;
+
+    @Column(name = "is_part_of_aggregation")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isPartOfAggregation;
+
     @ManyToOne
     @JoinColumn(name = "total_metering_point_id")
     private MeteringPoint totalMeteringPoint;
