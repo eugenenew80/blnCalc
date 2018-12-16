@@ -19,24 +19,17 @@ public class DistrResultLine {
     @Id
     private Long id;
 
-    @Column(name = "line_num")
-    private Long lineNum;
-
     @ManyToOne
     @JoinColumn(name = "result_header_id")
     private DistrResultHeader header;
 
     @ManyToOne
+    @JoinColumn(name = "top_line_id")
+    private DistrResultLineTop topLine;
+
+    @ManyToOne
     @JoinColumn(name = "energy_group_id")
     private ElectricityProducerGroup electricityGroup;
-
-    @ManyToOne
-    @JoinColumn(name = "metering_point_id")
-    private MeteringPoint meteringPoint;
-
-    @ManyToOne
-    @JoinColumn(name = "param_id")
-    private Parameter param;
 
     @Column(name = "plan_val")
     private Double planVal;

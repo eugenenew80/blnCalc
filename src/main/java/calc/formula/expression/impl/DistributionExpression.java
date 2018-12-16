@@ -45,8 +45,6 @@ public class DistributionExpression implements DoubleExpression {
         List<DistrResultLine> list = service.getValues(meteringPointCode, parameterCode, context);
 
         Double value = list.stream()
-            .filter(t -> t.getParam() != null)
-            .filter(t -> t.getParam().getCode().equals(parameterCode))
             .map(t -> {
                 if (gridType == GridTypeEnum.OWN)
                     return (Optional.ofNullable(t.getOwnVal()).orElse(0d)  * Optional.of(rate).orElse(1d));

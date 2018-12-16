@@ -59,5 +59,5 @@ public class DistrResultHeader {
     private DataTypeEnum dataType;
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
-    private List<DistrResultLine> lines;
+    private List<DistrResultLineTop> lines;
 }

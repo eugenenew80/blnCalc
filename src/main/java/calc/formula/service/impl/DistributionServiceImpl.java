@@ -19,6 +19,7 @@ public class DistributionServiceImpl implements DistributionService {
 
     @Override
     public List<DistrResultLine> getValues(String meteringPointCode, String parameterCode, CalcContext context) {
+
         List<DistrResultHeader> distributionList = distrResultHeaderRepo.findByOrg(
             context.getHeader().getOrganization().getId(),
             context.getHeader().getDataType().name(),
@@ -32,6 +33,7 @@ public class DistributionServiceImpl implements DistributionService {
             .filter(t -> t.getParam() != null)
             .filter(t -> t.getMeteringPoint().getCode().equals(meteringPointCode))
             .filter(t -> t.getParam().getCode().equals(parameterCode))
+            .flatMap(t -> t.getLines().stream())
             .collect(toList());
     }
 }
