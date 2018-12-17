@@ -55,7 +55,7 @@ public class TaskExecutor {
         List<BalanceSubstResultHeaderW> headers = balanceSubstResultHeaderWRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
-        logger.info("Расяёт балансов по подстанции, количество документов: " + headers.size());
+        logger.info("Расчёт балансов по подстанции, количество документов: " + headers.size());
         for (BalanceSubstResultHeaderW h : headers) {
             logger.info("Header " + h.getId() + " started");
             balanceSubstService.calc(h.getId());
@@ -79,7 +79,7 @@ public class TaskExecutor {
         List<SegResultHeaderW> headers = segResultHeaderWRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
-        logger.info("Расчет баланса по сегменту сети, количество документов: " + headers.size());
+        logger.info("Расчёт баланса по сегменту сети, количество документов: " + headers.size());
         for (SegResultHeaderW header : headers) {
             logger.info("Header " + header.getId() + " started");
             segService.calc(header.getId());
@@ -91,7 +91,7 @@ public class TaskExecutor {
         List<RegResultHeaderW> headers = regResultHeaderWRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
-        logger.info("Расчет баланса ППиП по региону, количество документов: " + headers.size());
+        logger.info("Расчёт баланса ППиП по региону, количество документов: " + headers.size());
         for (RegResultHeaderW header : headers) {
             logger.info("Header " + header.getId() + " started");
             regService.calc(header.getId());
@@ -103,7 +103,7 @@ public class TaskExecutor {
         List<SourceResultHeaderW> headers = sourceResultHeaderWRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
-        logger.info("Расчет баланса энергоисточника, количество документов: " + headers.size());
+        logger.info("Расчёт баланса энергоисточника, количество документов: " + headers.size());
         for (SourceResultHeaderW header : headers) {
             logger.info("Header " + header.getId() + " started");
             sourceService.calc(header.getId());
@@ -115,7 +115,7 @@ public class TaskExecutor {
         List<InterResultHeaderW> headers = interResultHeaderWRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
-        logger.info("Расчет актов МГЛЭП, количество документов: " + headers.size());
+        logger.info("Расчёт актов МГЛЭП, количество документов: " + headers.size());
         for (InterResultHeaderW header : headers) {
             logger.info("Header " + header.getId() + " started");
             interService.calc(header.getId());
@@ -127,7 +127,7 @@ public class TaskExecutor {
         List<LossFactResultHeaderW> headers = lossFactResultHeaderWRepo.findAllByStatus(BatchStatusEnum.W);
         if (headers.size()==0) return;
 
-        logger.info("Расчет фактических потерь, количество документов: " + headers.size());
+        logger.info("Расчёт фактических потерь, количество документов: " + headers.size());
         for (LossFactResultHeaderW header : headers) {
             logger.info("Header " + header.getId() + " started");
             lossFactService.calc(header.getId());
