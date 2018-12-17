@@ -9,6 +9,7 @@ import calc.formula.service.MeteringReading;
 import calc.formula.service.MrService;
 import calc.repo.calc.BypassModeRepo;
 import calc.repo.calc.MeterHistoryRepo;
+import calc.repo.calc.UnderCountRepo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ public class MrServiceImpl implements MrService {
     private final AtTimeValueService atTimeValueService;
     private final MeterHistoryRepo meterHistoryRepo;
     private final BypassModeRepo bypassModeRepo;
+    private final UnderCountRepo underCountRepo;
 
     @Override
     public List<MeteringReading> calc(MeteringPoint meteringPoint, CalcContext context) {
@@ -67,6 +69,8 @@ public class MrServiceImpl implements MrService {
     }
 
     private List<MeteringReading> calcMeteringPoint(MeteringPoint meteringPoint, BypassMode bypassMode, CalcContext context) {
+        logger.trace("mp: " + meteringPoint.getCode());
+
         LocalDateTime startDate = context.getHeader().getStartDate().atStartOfDay();
         LocalDateTime endDate = context.getHeader().getEndDate().atStartOfDay().plusDays(1);
 
@@ -79,7 +83,10 @@ public class MrServiceImpl implements MrService {
         List<MeterHistory> meterHistories = meterHistoryRepo.findAllByMeteringPoint(meteringPoint.getId(), startDate, endDate);
         List<MeteringReading> resultLines = new ArrayList<>();
         for (Parameter param : parameters) {
+            logger.trace("  param: " + param.getCode());
+
             if (meterHistories.size() == 0) {
+                logger.trace("  meter history not found");
                 MeteringReading line = new MeteringReading();
                 line.setParam(param);
                 line.setUnit(param.getUnit());
@@ -92,6 +99,8 @@ public class MrServiceImpl implements MrService {
             }
 
             for (MeterHistory meterHistory : meterHistories) {
+                logger.trace("  meter history id: " + meterHistory.getId());
+
                 LocalDateTime meterStartDate = ofNullable(meterHistory.getStartDate()).orElse(LocalDateTime.MIN);
                 LocalDateTime meterEndDate = ofNullable(meterHistory.getEndDate()).orElse(LocalDateTime.MAX);
 
@@ -175,15 +184,23 @@ public class MrServiceImpl implements MrService {
                     }
                 }
 
-                if (meterHistory.getUndercount()!=null && meterHistory.getUndercount().getParameter().equals(param)) {
-                    if (meterHistory.getUndercount().getIsActive()) {
-                        line.setUnderCount(meterHistory.getUndercount());
-                        line.setUnderCountVal(meterHistory.getUndercount().getVal());
-                    }
-                }
+                Double underCountVal = underCountRepo.findAllByMeteringPoint(meteringPoint.getCode(), line.getStartMeteringDate(), line.getEndMeteringDate())
+                    .stream()
+                    .filter(t -> t.getParameter() != null)
+                    .filter(t -> t.getParameter().equals(param))
+                    .map(t -> t.getVal())
+                    .filter(t -> t != null)
+                    .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t2).orElse(0d))
+                    .orElse(null);
+
+                line.setUnderCountVal(underCountVal);
 
                 if (line.getEndMeteringDate().isAfter(line.getStartMeteringDate()))
                     resultLines.add(line);
+
+                logger.trace("  start val: " + line.getStartVal());
+                logger.trace("  end val: " + line.getEndVal());
+                logger.trace("  under count val: " + underCountVal);
             }
         }
         return resultLines;
@@ -191,11 +208,11 @@ public class MrServiceImpl implements MrService {
 
     private Double getBypassStartVal(BypassMode bypassMode, Parameter param) {
         return bypassMode.getValues()
-                .stream()
-                .filter(v -> v.getParameter().equals(param))
-                .map(v -> v.getStartValue())
-                .findFirst()
-                .orElse(null);
+            .stream()
+            .filter(v -> v.getParameter().equals(param))
+            .map(v -> v.getStartValue())
+            .findFirst()
+            .orElse(null);
     }
 
     private Double getBypassEndVal(BypassMode bypassMode, Parameter param) {
