@@ -51,10 +51,10 @@ public class CalcServiceImpl implements CalcService {
     @Override
     public CalcResult calcValue(MeteringPoint point, Parameter param, CalcContext context) {
         CalcProperty property = CalcProperty.builder()
-                .contextType(context.getDefContextType())
-                .determiningMethod(DeterminingMethodEnum.MPV)
-                .paramType(ParamTypeEnum.PT)
-                .build();
+            .contextType(context.getDefContextType())
+            .determiningMethod(DeterminingMethodEnum.MPV)
+            .paramType(ParamTypeEnum.PT)
+            .build();
 
         return calcValue(point, param, context, property);
     }
@@ -86,13 +86,13 @@ public class CalcServiceImpl implements CalcService {
             if (property.getProcessOrder() == ProcessOrderEnum.CALC) {
                 List<Formula> formulas = findFormulas(point, param, property.getParamType());
                 Formula formula = getFormula(formulas, context);
-                result = calcValue(formula, context, property);
+                result = calcFormula(formula, context, property);
             }
 
             if (property.getProcessOrder() == ProcessOrderEnum.CALC_READ) {
                 List<Formula> formulas = findFormulas(point, param, property.getParamType());
                 Formula formula = getFormula(formulas, context);
-                result = calcValue(formula, context, property);
+                result = calcFormula(formula, context, property);
                 if (result == null || result.getDoubleValue() == null)
                     result = readValue(point, param, context, property);
             }
@@ -102,7 +102,7 @@ public class CalcServiceImpl implements CalcService {
                 if (result == null || result.getDoubleValue() == null) {
                     List<Formula> formulas = findFormulas(point, param, property.getParamType());
                     Formula formula = getFormula(formulas, context);
-                    result = calcValue(formula, context, property);
+                    result = calcFormula(formula, context, property);
                 }
             }
         }
@@ -173,6 +173,26 @@ public class CalcServiceImpl implements CalcService {
 
     @Override
     public CalcResult calcValue(Formula formula, CalcContext context, CalcProperty property) {
+        if (formula != null) {
+            logger.trace("---------------------------------------------");
+            logger.trace("point: " + formula.getMeteringPoint().getCode());
+            logger.trace("pointType: " + formula.getMeteringPoint().getPointType());
+            logger.trace("param: " + formula.getParam().getCode());
+            logger.trace("paramType: " + property.getParamType());
+            logger.trace("periodType: " + context.getHeader().getPeriodType());
+            logger.trace("dataType: " + context.getHeader().getDataType());
+            logger.trace("startDate: " + context.getHeader().getStartDate());
+            logger.trace("endDate: " + context.getHeader().getEndDate());
+            logger.trace("processOrder: " + property.getProcessOrder());
+            logger.trace("formulaBehaviour: " + context.getFormulaBehaviour());
+            logger.trace("useDataTypePriority: " + context.isUseDataTypePriority());
+            logger.trace("nullPermissible: " + context.isNullPermissible());
+            logger.trace("traceEnabled: " + context.isTraceEnabled());
+        }
+        return calcFormula(formula, context, property);
+    }
+
+    private CalcResult calcFormula(Formula formula, CalcContext context, CalcProperty property) {
         context.getTraces().clear();
 
         if (formula == null)
@@ -265,8 +285,8 @@ public class CalcServiceImpl implements CalcService {
 
     private DoubleExpression getComplexExpression(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) {
         DoubleExpression expression = DoubleValueExpression.builder()
-                .value(null)
-                .build();
+            .value(null)
+            .build();
 
         if (param.getCode().equals("AB")) {
             DoubleExpression expression1 = getExpression(point, paramService.getParam("A+"), 1d, context, property);
@@ -364,8 +384,8 @@ public class CalcServiceImpl implements CalcService {
                 logger.trace("nested formula end");
 
                 UnaryOperator<DoubleExpression> operator = det.getSign().equals("-")
-                        ? operatorFactory.unary("minus")
-                        : operatorFactory.unary("nothing");
+                    ? operatorFactory.unary("minus")
+                    : operatorFactory.unary("nothing");
 
                 return expression.andThen(operator);
             }
@@ -566,7 +586,6 @@ public class CalcServiceImpl implements CalcService {
                 .service(transformerValueService)
                 .build();
 
-
             if (expression.doubleValue() == null) {
                 logger.trace("  expression: ReactorValueExpression");
                 return ReactorValueExpression.builder()
@@ -642,8 +661,6 @@ public class CalcServiceImpl implements CalcService {
 
             if (prop.getContextType() != ctx.getDefContextType()) {
                 Double val = ptExpression.doubleValue();
-                logger.trace("  val: " + val);
-
                 if (val == null && ctx.getDefContextType() == ContextTypeEnum.MR) {
                     logger.trace("  ctx: mr");
                     logger.trace("  expression: MrExpression");
