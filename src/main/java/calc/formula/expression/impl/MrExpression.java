@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+
+import static java.util.Optional.*;
 import static java.util.stream.Collectors.toSet;
 
 @Builder
@@ -47,7 +49,7 @@ public class MrExpression implements DoubleExpression {
         Double value = list.stream()
             .filter(t -> !t.getIsIgnore())
             .filter(t -> t.getParam().getCode().equals(parameterCode))
-            .map(t -> (Optional.ofNullable(t.getVal()).orElse(0d) + Optional.ofNullable(t.getUnderCountVal()).orElse(0d)) * Optional.ofNullable(rate).orElse(1d))
+            .map(t -> (ofNullable(t.getVal()).orElse(0d) + ofNullable(t.getUnderCountVal()).orElse(0d)) * ofNullable(rate).orElse(1d))
             .reduce((t1, t2) -> t1 + t2)
             .orElse(null);
 
