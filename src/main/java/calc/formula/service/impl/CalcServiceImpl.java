@@ -245,7 +245,6 @@ public class CalcServiceImpl implements CalcService {
         return result;
     }
 
-
     @Override
     public CalcResult readValue(MeteringPoint point, Parameter param, CalcContext context, CalcProperty property) {
         context.getTraces().clear();

@@ -148,9 +148,6 @@ public class SvrService {
                 e.printStackTrace();
             }
 
-            if (val != null)
-                val = abs(val);
-
             result.setVal(val);
             result.setDataType(dataType);
         }
