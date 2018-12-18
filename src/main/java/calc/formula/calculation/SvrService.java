@@ -67,7 +67,7 @@ public class SvrService {
                     .filter(t -> t.getIsCurrentRecord())
                     .filter(t -> t.getVal() != null)
                     .map(t -> t.getVal())
-                    .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t1).orElse(0d))
+                    .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t2).orElse(0d))
                     .orElse(0d);
             }
             else {
@@ -83,7 +83,7 @@ public class SvrService {
                     .filter(t -> !t.getIsTotal())
                     .filter(t -> t.getVal() != null)
                     .map(t -> t.getVal())
-                    .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t1).orElse(0d))
+                    .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t2).orElse(0d))
                     .orElse(0d);
             }
 
