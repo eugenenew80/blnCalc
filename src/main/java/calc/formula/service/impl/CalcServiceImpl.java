@@ -386,11 +386,15 @@ public class CalcServiceImpl implements CalcService {
                 DoubleExpression expression = buildExpression(formula, context, property);
                 logger.trace("nested formula end");
 
-                UnaryOperator<DoubleExpression> operator = det.getSign().equals("-")
+                UnaryOperator<DoubleExpression> signOperator = det.getSign().equals("-")
                     ? operatorFactory.unary("minus")
                     : operatorFactory.unary("nothing");
 
-                return expression.andThen(operator);
+                UnaryOperator<DoubleExpression> roundOperator = operatorFactory.unary("round-" + formula.getParam()
+                    .getDigitsRounding());
+
+                return expression.andThen(signOperator)
+                    .andThen(roundOperator);
             }
         }
 
