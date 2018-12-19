@@ -377,7 +377,7 @@ public class CalcServiceImpl implements CalcService {
             Formula formula = formulas != null && !formulas.isEmpty() ? formulas.get(0) : null;
 
             if (formula != null) {
-                logger.trace("nested formula start");
+                logger.trace("for var " + det.getFormulaVar().getVarName() + " nested formula start");
                 logger.trace("  point: " + formula.getMeteringPoint().getCode());
                 logger.trace("  pointType: " + formula.getMeteringPoint().getPointType().name());
                 logger.trace("  param: " + formula.getParam().getCode());
