@@ -44,6 +44,7 @@ public class CalcServiceImpl implements CalcService {
     private final PowerTransformerService powerTransformerService;
     private final PowerLineService powerLineService;
     private final DistributionService distributionService;
+    private final BalanceSubstResultUService uAvgService;
     private final OperatorFactory operatorFactory;
     private final ScriptEngine engine;
 
@@ -326,8 +327,11 @@ public class CalcServiceImpl implements CalcService {
             return DoubleValueExpression.builder().build();
 
         Map<String, DoubleExpression> attrs = new HashMap<>();
-        for (FormulaVar var : formula.getVars())
-            attrs.putIfAbsent(var.getVarName(), mapVar(var, context, property));
+        for (FormulaVar var : formula.getVars()) {
+            DoubleExpression varExpression = mapVar(var, context, property);
+            attrs.putIfAbsent(var.getVarName(), varExpression);
+            logger.trace("  " + formula.getText() + ", " + var.getVarName() + " = " + varExpression.doubleValue());
+        }
 
         return JsExpression.builder()
             .src(formula.getText())
@@ -565,6 +569,16 @@ public class CalcServiceImpl implements CalcService {
                     .context(ctx)
                     .build();
             }
+        }
+
+        if (param.getCode().equals("U") && ctx.getDefContextType() == ContextTypeEnum.MR) {
+            logger.trace("  expression: UavgExpression");
+            return UavgExpression.builder()
+                .meteringPointCode(mp.getCode())
+                .def(mp.getVoltageClass() != null ? mp.getVoltageClass().getValue() / 1000d : 0d)
+                .context(ctx)
+                .service(uAvgService)
+                .build();
         }
 
         if (param.getCode().equals("WL") && ctx.getDefContextType() == ContextTypeEnum.MR) {

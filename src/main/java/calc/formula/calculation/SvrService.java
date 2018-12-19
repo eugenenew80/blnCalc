@@ -134,6 +134,7 @@ public class SvrService {
 
             CalcProperty property = CalcProperty.builder()
                 .processOrder(ProcessOrderEnum.READ_CALC)
+                .determiningMethod(line.getMethod())
                 .build();
 
             Double val = null;
