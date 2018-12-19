@@ -390,8 +390,9 @@ public class CalcServiceImpl implements CalcService {
                     ? operatorFactory.unary("minus")
                     : operatorFactory.unary("nothing");
 
-                UnaryOperator<DoubleExpression> roundOperator = operatorFactory.unary("round-" + formula.getParam()
-                    .getDigitsRounding());
+                UnaryOperator<DoubleExpression> roundOperator = formula.getParam().getDigitsRounding() !=0
+                    ? operatorFactory.unary("round-" + formula.getParam().getDigitsRounding())
+                    : operatorFactory.unary("round");
 
                 return expression.andThen(signOperator)
                     .andThen(roundOperator);
