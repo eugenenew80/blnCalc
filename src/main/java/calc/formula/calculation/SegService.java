@@ -61,7 +61,6 @@ public class SegService {
             copyApps(header);
 
             header.setLastUpdateDate(LocalDateTime.now());
-            header.setIsActive(false);
 
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Seg calculation for header " + header.getId() + " completed");

@@ -58,7 +58,6 @@ public class SourceService {
             calcLines2(header, context);
 
             header.setLastUpdateDate(LocalDateTime.now());
-            header.setIsActive(false);
 
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Energy source balance for header " + header.getId() + " completed");

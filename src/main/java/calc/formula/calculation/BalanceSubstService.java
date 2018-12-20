@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static calc.util.Util.buildMsgParams;
+import static calc.util.Util.round;
 import static java.util.Optional.*;
 
 @Service
@@ -109,25 +110,16 @@ public class BalanceSubstService {
                 .orElse(0d);
 
             Parameter parAp = paramService.getParam("A+");
-            if (parAp != null) {
-                double rounding =  Math.pow(10, ofNullable(parAp.getDigitsRounding()).orElse(0));
-                if (total1 != null) total1 = Math.round(total1 * rounding) / rounding;
-            }
+            total1 = round(total1, parAp);
 
             Parameter parAm = paramService.getParam("A-");
-            if (parAm != null) {
-                double rounding =  Math.pow(10, ofNullable(parAm.getDigitsRounding()).orElse(0));
-                if (total2 != null) total2 = Math.round(total2 * rounding) / rounding;
-                if (total2 != null) total3 = Math.round(total3 * rounding) / rounding;
-                if (total4 != null) total4 = Math.round(total4 * rounding) / rounding;
-            }
+            total2 = round(total2, parAm);
+            total3 = round(total3, parAm);
+            total4 = round(total4, parAm);
 
             Parameter parWl = paramService.getParam("WL");
-            if (parWl != null) {
-                double rounding =  Math.pow(10, ofNullable(parWl.getDigitsRounding()).orElse(0));
-                if (total5 != null) total5 = Math.round(total5 * rounding) / rounding;
-                if (total6 != null) total6 = Math.round(total6 * rounding) / rounding;
-            }
+            total5 = round(total5, parWl);
+            total6 = round(total6, parWl);
 
             Double lossFact = total1 - total3 - total4;
             Double nbfVal   = total1 - total2 - total3 - total4 - total5 - total6;
@@ -144,7 +136,6 @@ public class BalanceSubstService {
             if (templateHeader.getMeteringPoint4() == null) messageService.addMessage(header, null, docCode, "BS_MP_SECTION4_NOT_FOUND", "раздел 4");
 
             header.setLastUpdateDate(LocalDateTime.now());
-            header.setIsActive(false);
             header.setDataType(DataTypeEnum.OPER);
 
             header.setMeteringPoint1(templateHeader.getMeteringPoint1());

@@ -66,7 +66,6 @@ public class RegService {
             calcLines4(header, context);
 
             header.setLastUpdateDate(LocalDateTime.now());
-            header.setIsActive(false);
 
             updateStatus(header, BatchStatusEnum.C);
             logger.info("Reg for header " + header.getId() + " completed");

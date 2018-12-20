@@ -124,7 +124,6 @@ public class LossFactService {
             header.setR32(r32);
 
             header.setLastUpdateDate(LocalDateTime.now());
-            header.setIsActive(false);
             updateStatus(header, BatchStatusEnum.C);
 
             logger.info("completed, headerId: " + header.getId());
