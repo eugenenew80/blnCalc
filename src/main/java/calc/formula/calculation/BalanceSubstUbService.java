@@ -86,10 +86,8 @@ public class BalanceSubstUbService {
                 workHours = ofNullable(workHours).orElse(0d);
                 workHours = round(workHours,1);
 
-                if (workHours.equals(0d)) {
+                if (workHours.equals(0d))
                     messageService.addMessage(header, ubLine.getId(), docCode, "UB_WORK_HOURS_NOT_FOUND", info);
-                    continue;
-                }
 
                 MeteringPoint inputMp = balanceSubstResultULineRepo.findAllByHeaderId(header.getId())
                     .stream()
@@ -197,7 +195,10 @@ public class BalanceSubstUbService {
                         Double wa = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? paramService.getParam("A+") : paramService.getParam("A-"), context);
                         Double wr = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? paramService.getParam("R+") :paramService.getParam("R-"), context);
 
-                        Double i1avgVal = sqrt(pow(wa, 2) + pow(wr, 2)) / (sqrt(3d) * uAvg * workHours);
+                        Double i1avgVal = 0d;
+                        if (workHours != 0d)
+                            i1avgVal = sqrt(pow(wa, 2) + pow(wr, 2)) / (sqrt(3d) * uAvg * workHours);
+
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
                         Double ttAcProc = ttType.getAccuracyClass().getValue();
 

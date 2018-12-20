@@ -255,6 +255,10 @@ public class RegService {
                 resultLineDet.setTotalVal(totalVal);
                 resultLineDet.setCreateBy(header.getCreateBy());
                 resultLineDet.setCreateDate(header.getCreateDate());
+
+                if (resultLine.getDetails() == null)
+                    resultLine.setDetails(new ArrayList<>());
+
                 resultLine.getDetails().add(resultLineDet);
             }
 

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(of= {"id"})
 @Entity
-@Table(name = "calc_balance_reg_result_lines_1")
+@Table(name = "calc_balance_reg_result_lines_1_tl")
 public class RegResultLine1Translate {
     @Id
     @SequenceGenerator(name="calc_balance_reg_result_lines_1_s", sequenceName = "calc_balance_reg_result_lines_1_s", allocationSize=1)
