@@ -137,7 +137,6 @@ public class BalanceSubstService {
 
             header.setLastUpdateDate(LocalDateTime.now());
             header.setDataType(DataTypeEnum.OPER);
-
             header.setMeteringPoint1(templateHeader.getMeteringPoint1());
             header.setMeteringPoint2(templateHeader.getMeteringPoint2());
             header.setMeteringPoint3(templateHeader.getMeteringPoint3());
