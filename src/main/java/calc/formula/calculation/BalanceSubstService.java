@@ -153,9 +153,7 @@ public class BalanceSubstService {
             header.setNbfProc(nbfProc);
             header.setNbDifVal(nbDifVal);
             header.setNbDifProc(nbDifProc);
-            header.setNbfProc(nbDifProc);
             header.setNbdVal(nbdVal);
-
             updateStatus(header, BatchStatusEnum.C);
         }
 
