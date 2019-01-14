@@ -188,5 +188,23 @@
         </dropColumn>
         <rollback/>
     </changeSet>
+
+    <changeSet id="calc-rus-553" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addUniqueConstraint
+                columnNames="header_id,val_date"
+                constraintName="un_plan_volume_ee_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                schemaName="apps"
+                tableName="plan_volume_ee_lines" />
+    </changeSet>
+
+    <changeSet id="calc-rus-554" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_balance_reg_result_headers</comment>
+        <dropColumn tableName="calc_balance_reg_result_headers" schemaName="apps">
+            <column name="calculation_type"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
 </databaseChangeLog>
 
