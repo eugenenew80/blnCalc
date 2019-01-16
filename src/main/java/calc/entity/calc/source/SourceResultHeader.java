@@ -77,7 +77,7 @@ public class SourceResultHeader  implements DocHeader {
     @Column(name = "ub_val")
     private Double ubVal;
 
-    @Column(name="calc_type")
+    @Column(name="data_type")
     @Enumerated(EnumType.STRING)
     private DataTypeEnum dataType;
 
