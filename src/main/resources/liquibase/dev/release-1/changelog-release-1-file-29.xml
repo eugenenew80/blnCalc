@@ -109,8 +109,6 @@
                 referencedColumnNames="id"
         />
     </changeSet>
-
-
     <changeSet id="calc-rus-545" logicalFilePath="path-independent" author="ruslan" context="dev">
         <comment>add column calc_distribution_result_l_top</comment>
         <addColumn schemaName="apps"
@@ -188,5 +186,187 @@
         </dropColumn>
         <rollback/>
     </changeSet>
+
+    <changeSet id="calc-rus-553" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <addUniqueConstraint
+                columnNames="header_id,val_date"
+                constraintName="un_plan_volume_ee_lines_1"
+                deferrable="true"
+                initiallyDeferred="true"
+                schemaName="apps"
+                tableName="plan_volume_ee_lines" />
+    </changeSet>
+
+    <changeSet id="calc-rus-554" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_balance_reg_result_headers</comment>
+        <dropColumn tableName="calc_balance_reg_result_headers" schemaName="apps">
+            <column name="calculation_type"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-555" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating table: calc_metering_point_setting_headers</comment>
+        <createTable tableName="calc_metering_point_setting_headers" schemaName="apps" remarks="Заголовок для настроек точек учета">
+            <column name="id" type="number" remarks="Идентификатор">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="contract_id" type="number" remarks="Идентификатор договора">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="customer_id" type="number" remarks="Идентификатор потребителя">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="org_id" type="number" remarks="Идентификатор филиала">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_date" type="TIMESTAMP" remarks="Дата создания">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_date" type="TIMESTAMP" remarks="Дата изменения">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="create_by" type="number" remarks="Автор">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_update_by" type="number" remarks="Автор изменения">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="calc-rus-556" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating primary key for table: calc_metering_point_setting_headers</comment>
+        <addPrimaryKey
+                columnNames="id"
+                constraintName="pk_calc_metering_point_setting_headers"
+                schemaName="apps"
+                tableName="calc_metering_point_setting_headers"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-557" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating sequence for table: calc_metering_point_setting_headers</comment>
+        <createSequence
+                incrementBy="1"
+                schemaName="apps"
+                sequenceName="calc_metering_point_setting_headers_s"
+                startValue="1"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-558" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_metering_point_setting_headers</comment>
+        <createIndex indexName="idx_calc_metering_point_setting_headers_1" schemaName="apps" tableName="calc_metering_point_setting_headers">
+            <column name="contract_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-559" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_setting_headers to cm_doc_keg_cte</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_point_setting_headers"
+                baseColumnNames="contract_id"
+                constraintName="fk_calc_metering_point_setting_headers_1"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_keg_cte"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-560" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_metering_point_setting_headers</comment>
+        <createIndex indexName="idx_calc_metering_point_setting_headers_2" schemaName="apps" tableName="calc_metering_point_setting_headers">
+            <column name="customer_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-561" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_setting_headers to dict_business_partners</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_point_setting_headers"
+                baseColumnNames="customer_id"
+                constraintName="fk_calc_metering_point_setting_headers_2"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_business_partners"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-562" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_metering_point_setting_headers</comment>
+        <createIndex indexName="idx_calc_metering_point_setting_headers_3" schemaName="apps" tableName="calc_metering_point_setting_headers">
+            <column name="org_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-563" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_setting_headers to dict_organizations</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_point_setting_headers"
+                baseColumnNames="org_id"
+                constraintName="fk_calc_metering_point_setting_headers_3"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_organizations"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-564" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_metering_point_settings</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_metering_point_settings">
+            <column name="header_id" type="number" remarks="Идентификатор заголовка"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-565" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_metering_point_settings</comment>
+        <createIndex indexName="idx_calc_metering_point_settings_6" schemaName="apps" tableName="calc_metering_point_settings">
+            <column name="header_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-566" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_metering_point_settings to calc_metering_point_setting_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_metering_point_settings"
+                baseColumnNames="header_id"
+                constraintName="fk_calc_metering_point_settings_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_point_setting_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-567" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_metering_point_setting_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_metering_point_setting_headers">
+            <column name="is_total" type="number" remarks="Итого по договору"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
