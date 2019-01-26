@@ -456,5 +456,61 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-574" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_loss_fact_headers </comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_loss_fact_headers">
+            <column name="hn_metering_point_id" type="number" remarks="Точка учета ХН филиала всего (питаемые из сети KEGOC и сторонних организаций)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-575" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_loss_fact_headers</comment>
+        <createIndex indexName="idx_calc_loss_fact_headers_6" schemaName="apps" tableName="calc_loss_fact_headers">
+            <column name="hn_metering_point_id"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-576" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_headers"
+                baseColumnNames="hn_metering_point_id"
+                constraintName="fk_calc_loss_fact_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-577" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_metering_point_setting_headers </comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_metering_point_setting_headers">
+            <column name="is_central" type="number" remarks="Централизованый договор"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-578" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_loss_fact_headers </comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_loss_fact_headers">
+            <column name="op_param_id" type="number" remarks="Параметр для отпуска потребителям"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-579" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_loss_fact_headers </comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_loss_fact_headers">
+            <column name="hn_param_id" type="number" remarks="Параметр для хозяйственных нужд"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
