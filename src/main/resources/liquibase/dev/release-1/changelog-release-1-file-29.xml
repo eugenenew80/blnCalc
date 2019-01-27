@@ -512,5 +512,36 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="calc-rus-580" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_service_values_reconciliations </comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_service_values_reconciliations">
+            <column name="setting_header" type="number" remarks="Заголовок настроек"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-581" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>creating index for table: calc_service_values_reconciliations</comment>
+        <createIndex indexName="idx_calc_service_values_reconciliations_10" schemaName="apps" tableName="calc_service_values_reconciliations">
+            <column name="setting_header"  type="number"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="calc-rus-582" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_service_values_reconciliations to calc_metering_point_setting_headers</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_service_values_reconciliations"
+                baseColumnNames="setting_header"
+                constraintName="fk_calc_service_values_reconciliations_10"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="calc_metering_point_setting_headers"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
