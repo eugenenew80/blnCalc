@@ -23,6 +23,10 @@ public class MeteringPointSetting {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "header_id")
+    private MeteringPointSettingHeader header;
+
+    @ManyToOne
     @JoinColumn(name = "contract_id")
     private Contract contract;
 

@@ -8,6 +8,7 @@ import calc.entity.calc.Organization;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
+import calc.entity.calc.source.SourceHeader;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
@@ -21,6 +22,10 @@ import java.time.LocalDateTime;
 public class SvrResultHeader implements DocHeader {
     @Id
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "setting_header")
+    private MeteringPointSettingHeader header;
 
     @ManyToOne
     @JoinColumn(name = "contract_id")
