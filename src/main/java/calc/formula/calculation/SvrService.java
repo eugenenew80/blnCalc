@@ -31,7 +31,6 @@ public class SvrService {
     private final SvrHeaderRepo svrHeaderRepo;
     private final SvrLineRepo svrLineRepo;
     private final SvrPartRepo svrPartRepo;
-    private final MeteringPointSettingRepo meteringPointSettingRepo;
     private final SvrNoteRepo svrNoteRepo;
     private final MeteringPointSettingNoteRepo mpsRepo;
 
@@ -105,11 +104,15 @@ public class SvrService {
     }
 
     private void calcLines(SvrResultHeader header, CalcContext context) {
+        /*
         List<MeteringPointSetting> lines = meteringPointSettingRepo.findAllByContractIdAndDate(
             header.getContract().getId(),
             header.getStartDate(),
             header.getEndDate()
         );
+        */
+
+        List<MeteringPointSetting> lines = header.getHeader().getLines();
 
         List<SvrResultLine> results = new ArrayList<>();
         for (MeteringPointSetting line : lines) {
@@ -126,6 +129,8 @@ public class SvrService {
             result.setTypeCode(line.getTypeCode());
             result.setOrganization(header.getOrganization());
             result.setIsTotal(line.getIsTotal());
+            result.setCreateBy(header.getCreateBy());
+            result.setCreateDate(LocalDateTime.now());
             copyTranslates(line, result);
             results.add(result);
 

@@ -10,6 +10,7 @@ import calc.entity.calc.enums.DataTypeEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -52,6 +53,12 @@ public class SvrResultLine implements DataTypeSupport {
     @Column(name="data_type")
     @Enumerated(EnumType.STRING)
     private DataTypeEnum dataType;
+
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
+
+    @Column(name = "create_by")
+    private Long createBy;
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<SvrResultLineTranslate> translates;
