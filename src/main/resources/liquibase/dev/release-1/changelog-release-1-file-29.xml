@@ -543,5 +543,46 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-583" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_metering_point_settings</comment>
+        <dropColumn tableName="calc_metering_point_settings" schemaName="apps">
+            <column name="org_id"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-584" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_metering_point_setting_headers</comment>
+        <dropColumn tableName="calc_metering_point_setting_headers" schemaName="apps">
+            <column name="is_total"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-585" logicalFilePath="path-independent" author="ruslan" context="dev" failOnError="false">
+        <comment>Drop columns from table: calc_metering_point_setting_headers</comment>
+        <dropColumn tableName="calc_metering_point_setting_headers" schemaName="apps">
+            <column name="is_central"/>
+        </dropColumn>
+        <rollback/>
+    </changeSet>
+
+    <changeSet id="calc-rus-586" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add not null constraint calc_metering_point_settings</comment>
+        <addNotNullConstraint
+                columnDataType="number"
+                columnName="header_id"
+                schemaName="apps"
+                tableName="calc_metering_point_settings"/>
+    </changeSet>
+
+    <changeSet id="calc-rus-587" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add not null constraint calc_metering_point_setting_headers</comment>
+        <addNotNullConstraint
+                columnDataType="number"
+                columnName="org_id"
+                schemaName="apps"
+                tableName="calc_metering_point_setting_headers"/>
+    </changeSet>
 </databaseChangeLog>
 
