@@ -34,14 +34,6 @@ public class MeteringPointSettingHeader {
     @JoinColumn(name = "org_id")
     private Organization org;
 
-    @Column(name = "is_total")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isTotal;
-
-    @Column(name = "is_central")
-    @Convert(converter = BooleanToIntConverter.class)
-    private Boolean isCentral;
-
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<MeteringPointSetting> lines;
 }

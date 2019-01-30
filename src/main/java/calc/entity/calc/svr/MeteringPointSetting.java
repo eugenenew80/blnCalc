@@ -55,10 +55,6 @@ public class MeteringPointSetting {
     @Enumerated(EnumType.STRING)
     private DeterminingMethodEnum method;
 
-    @ManyToOne
-    @JoinColumn(name = "org_id")
-    private Organization organization;
-
     @OneToMany(mappedBy = "pointSetting", fetch = FetchType.EAGER)
     private List<MeteringPointSettingTranslate> translates;
 }

@@ -116,8 +116,8 @@ public class SvrService {
 
         List<SvrResultLine> results = new ArrayList<>();
         for (MeteringPointSetting line : lines) {
-            if (line.getOrganization() != null && !line.getOrganization().equals(header.getOrganization()))
-                continue;
+            //if (line.getOrganization() != null && !line.getOrganization().equals(header.getOrganization()))
+            //    continue;
 
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = ofNullable(line.getParam()).orElse(paramService.getParam("AB"));
