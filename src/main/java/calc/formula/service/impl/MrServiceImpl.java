@@ -184,23 +184,26 @@ public class MrServiceImpl implements MrService {
                     }
                 }
 
-                Double underCountVal = underCountRepo.findAllByMeteringPoint(meteringPoint.getCode(), line.getStartMeteringDate(), line.getEndMeteringDate())
-                    .stream()
-                    .filter(t -> t.getParameter() != null)
-                    .filter(t -> t.getParameter().equals(param))
-                    .map(t -> t.getVal())
-                    .filter(t -> t != null)
-                    .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t2).orElse(0d))
-                    .orElse(null);
+                if (meterEndDate.isAfter(context.getHeader().getEndDate().atStartOfDay()) ) {
+                    Double underCountVal = underCountRepo.findAllByMeteringPoint(meteringPoint.getCode(), line.getStartMeteringDate(), line.getEndMeteringDate())
+                        .stream()
+                        .filter(t -> t.getParameter() != null)
+                        .filter(t -> t.getParameter().equals(param))
+                        .map(t -> t.getVal())
+                        .filter(t -> t != null)
+                        .reduce((t1, t2) -> ofNullable(t1).orElse(0d) + ofNullable(t2).orElse(0d))
+                        .orElse(null);
 
-                line.setUnderCountVal(underCountVal);
+                    line.setUnderCountVal(underCountVal);
+                    logger.trace("  undercount val: " + underCountVal);
+                }
 
                 if (line.getEndMeteringDate().isAfter(line.getStartMeteringDate()))
                     resultLines.add(line);
 
                 logger.trace("  start val: " + line.getStartVal());
                 logger.trace("  end val: " + line.getEndVal());
-                logger.trace("  under count val: " + underCountVal);
+
             }
         }
         return resultLines;

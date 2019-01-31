@@ -112,6 +112,8 @@ public class InterLineService {
 
                     result.setBoundaryVal(val);
                 }
+
+                resultDet.setBoundaryVal(result.getBoundaryVal());
             }
             else  {
                 for (Long direction : asList(1l, 2l)) {
