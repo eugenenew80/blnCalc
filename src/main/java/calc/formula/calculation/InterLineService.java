@@ -96,8 +96,8 @@ public class InterLineService {
                 if (line.getBoundMeteringPoint() == null)
                     messageService.addMessage(header, line.getLineNum(), docCode, "INTER_BOUND_MP_NOT_FOUND", params);
 
-                Parameter paramAp = inverseParam(paramService, paramService.getParam("A+"), line.getIsInverse());
-                Parameter paramAm = inverseParam(paramService, paramService.getParam("A-"), line.getIsInverse());
+                Parameter paramAp = paramService.getParam("A+");
+                Parameter paramAm = paramService.getParam("A-");
 
                 if (line.getBoundMeteringPoint() != null) {
                     CalcResult calc = calcService.calcValue(line.getBoundMeteringPoint(), paramAm, context);
@@ -108,12 +108,14 @@ public class InterLineService {
 
                     Double val = null;
                     if (val1 != null || val2 != null)
-                        val = ofNullable(val2).orElse(0d) - ofNullable(val).orElse(0d);
+                        val = ofNullable(val1).orElse(0d) - ofNullable(val2).orElse(0d);
 
-                    result.setBoundaryVal(val);
+                    result.setBoundaryVal(line.getIsInverse() && val != null  ?  val * -1d : val);
+
+                    resultDet.setVal1(val1);
+                    resultDet.setVal2(val2);
+                    resultDet.setBoundaryVal(val != null ? Math.abs(val) : val);
                 }
-
-                resultDet.setBoundaryVal(result.getBoundaryVal());
             }
             else  {
                 for (Long direction : asList(1l, 2l)) {
