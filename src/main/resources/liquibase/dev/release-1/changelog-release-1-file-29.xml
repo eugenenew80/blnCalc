@@ -584,5 +584,86 @@
                 schemaName="apps"
                 tableName="calc_metering_point_setting_headers"/>
     </changeSet>
+
+    <changeSet id="calc-rus-588" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_headers to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_headers"
+                baseColumnNames="op_param_id"
+                constraintName="fk_calc_loss_fact_headers_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-589" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_headers to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_headers"
+                baseColumnNames="hn_param_id"
+                constraintName="fk_calc_loss_fact_headers_8"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-590" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_loss_fact_result_headers </comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_loss_fact_result_headers">
+            <column name="op_param_id" type="number" remarks="Параметр для отпуска потребителям"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-591" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_loss_fact_result_headers </comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_loss_fact_result_headers">
+            <column name="hn_param_id" type="number" remarks="Параметр для хозяйственных нужд"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="calc-rus-592" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_headers to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_headers"
+                baseColumnNames="op_param_id"
+                constraintName="fk_calc_loss_fact_result_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-593" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_headers to media_parameters</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_headers"
+                baseColumnNames="hn_param_id"
+                constraintName="fk_calc_loss_fact_result_headers_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="media_parameters"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
 
