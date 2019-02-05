@@ -2,6 +2,7 @@ package calc.entity.calc.loss;
 
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
+import calc.entity.calc.Parameter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
@@ -45,4 +46,16 @@ public class LossFactHeader {
 
     @OneToMany(mappedBy = "header", fetch = FetchType.LAZY)
     private List<LossFactSec2Line> lines2;
+
+    @ManyToOne
+    @JoinColumn(name = "hn_metering_point_id")
+    private MeteringPoint hnMeteringPoint;
+
+    @ManyToOne
+    @JoinColumn(name = "op_param_id")
+    private Parameter opParam;
+
+    @ManyToOne
+    @JoinColumn(name = "hn_param_id")
+    private Parameter hnParam;
 }

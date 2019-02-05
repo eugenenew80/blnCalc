@@ -59,13 +59,15 @@ public class LossFactService {
             saveSec1Lines(sec1Lines);
             saveSec2Lines(sec2Lines);
 
-            MeteringPoint meteringPoint = header.getHeader().getMeteringPoint();
-            Map<String, String> msgParams = buildMsgParams(meteringPoint);
-
+            Map<String, String> msgParams = null;
             Double r321 = null;
             try {
-                Parameter param = paramService.getParam("AB");
-                r321 = getMrVal(meteringPoint, param, context);
+                if (header.getHeader().getMeteringPoint() != null) {
+                    MeteringPoint meteringPoint = header.getHeader().getMeteringPoint();
+                    Parameter param = ofNullable(header.getHeader().getOpParam()).orElse(paramService.getParam("AB"));
+                    buildMsgParams(meteringPoint);
+                    r321 = getMrVal(meteringPoint, param, context);
+                }
             }
             catch (CalcServiceException e) {
                 msgParams.putIfAbsent("err", e.getMessage());
@@ -97,14 +99,33 @@ public class LossFactService {
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
+
+            Double r324 = null;
+            try {
+                if (header.getHeader().getHnMeteringPoint() != null) {
+                    MeteringPoint meteringPoint = header.getHeader().getHnMeteringPoint();
+                    Parameter param = ofNullable(header.getHeader().getHnParam()).orElse(paramService.getParam("AB"));
+                    buildMsgParams(meteringPoint);
+                    r324 = getMrVal(meteringPoint, param, context);
+                }
+            }
+            catch (CalcServiceException e) {
+                msgParams.putIfAbsent("err", e.getMessage());
+                messageService.addMessage(header, null, docCode, e.getErrCode(), msgParams);
+            }
+
+            /*
             Double r324 = sec1Lines.stream()
                 .filter(t -> t.getSectionCode().equals("1.3"))
                 .map(t -> ofNullable(t.getAm()).orElse(0d) - ofNullable(t.getAp()).orElse(0d))
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
+            */
 
             Double r32 = ofNullable(r321).orElse(0d) +  r322 + r323 + r324;
-            Double r325 = r32 + totalAp;
+
+            //Double r325 = r32 + totalAp;
+            Double r325 = r32 + lossFact;
 
             Double r326 = ofNullable(r325).orElse(0d) != 0
                 ?  ofNullable(lossFact).orElse(0d) * 100 / ofNullable(r325).orElse(0d)
@@ -122,6 +143,9 @@ public class LossFactService {
             header.setR325(r325);
             header.setR326(r326);
             header.setR32(r32);
+            header.setHnMeteringPoint(header.getHeader().getHnMeteringPoint());
+            header.setOpParam(header.getHeader().getOpParam());
+            header.setHnParam(header.getHeader().getHnParam());
 
             header.setLastUpdateDate(LocalDateTime.now());
             updateStatus(header, BatchStatusEnum.C);
