@@ -665,5 +665,21 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-594" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column dict_metering_points</comment>
+        <addColumn schemaName="apps"
+                   tableName="dict_metering_points">
+            <column name="is_meter_factor_applied" type="number" remarks="Производить деление на расчетный коэффициент"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-595" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column media_at_time_values</comment>
+        <addColumn schemaName="apps"
+                   tableName="media_at_time_values">
+            <column name="is_meter_factor_applied" type="number" remarks="Производить деление на расчетный коэффициент"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
