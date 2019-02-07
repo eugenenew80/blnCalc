@@ -2,7 +2,9 @@ package calc.entity.calc.loss;
 
 import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.DocHeader;
+import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.Organization;
+import calc.entity.calc.Parameter;
 import calc.entity.calc.enums.BatchStatusEnum;
 import calc.entity.calc.enums.DataTypeEnum;
 import calc.entity.calc.enums.PeriodTypeEnum;
@@ -83,6 +85,18 @@ public class LossFactResultHeader  implements DocHeader {
 
     @Column(name = "loss_fact")
     private Double lossFact;
+
+    @ManyToOne
+    @JoinColumn(name = "hn_metering_point_id")
+    private MeteringPoint hnMeteringPoint;
+
+    @ManyToOne
+    @JoinColumn(name = "op_param_id")
+    private calc.entity.calc.Parameter opParam;
+
+    @ManyToOne
+    @JoinColumn(name = "hn_param_id")
+    private Parameter hnParam;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
