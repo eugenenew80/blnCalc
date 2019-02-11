@@ -695,7 +695,7 @@
         <addForeignKeyConstraint
                 baseTableSchemaName="apps"
                 baseTableName="calc_loss_fact_result_headers"
-                baseColumnNames="op_param_id"
+                baseColumnNames="hn_metering_point_id"
                 constraintName="fk_calc_loss_fact_result_headers_9"
                 deferrable="true"
                 onDelete="RESTRICT"
