@@ -665,5 +665,45 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-594" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column dict_metering_points</comment>
+        <addColumn schemaName="apps"
+                   tableName="dict_metering_points">
+            <column name="is_meter_factor_applied" type="number" remarks="Производить деление на расчетный коэффициент"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-595" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column media_at_time_values</comment>
+        <addColumn schemaName="apps"
+                   tableName="media_at_time_values">
+            <column name="is_meter_factor_applied" type="number" remarks="Производить деление на расчетный коэффициент"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-596" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_loss_fact_result_headers </comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_loss_fact_result_headers">
+            <column name="hn_metering_point_id" type="number" remarks="Точка учета ХН филиала всего (питаемые из сети KEGOC и сторонних организаций)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-597" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_loss_fact_result_headers to dict_metering_points</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_loss_fact_result_headers"
+                baseColumnNames="hn_metering_point_id"
+                constraintName="fk_calc_loss_fact_result_headers_9"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dict_metering_points"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
 
