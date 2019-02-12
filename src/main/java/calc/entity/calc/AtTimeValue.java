@@ -1,5 +1,6 @@
 package calc.entity.calc;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.enums.PeriodTypeEnum;
 import calc.entity.calc.enums.SourceEnum;
 import calc.formula.CalcResult;
@@ -56,6 +57,10 @@ public class AtTimeValue {
 	@Column(name = "source_code")
 	@Enumerated(EnumType.STRING)
 	private SourceEnum source;
+
+	@Column(name = "is_meter_factor_applied")
+	@Convert(converter = BooleanToIntConverter.class)
+	private Boolean isMeterFactorApplied;
 
 	public CalcResult toResult() {
 		CalcResult result = new CalcResult();

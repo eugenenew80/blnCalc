@@ -8,6 +8,4 @@ import java.util.List;
 @Repository
 public interface BalanceSubstResultBpLineRepo extends JpaRepository<BalanceSubstResultBpLine, Long> {
     List<BalanceSubstResultBpLine> findAllByHeaderId(Long headerId);
-
-    List<BalanceSubstResultBpLine> findAllByHeaderIdAndMeteringPointId(Long headerId, Long meteringPointId);
 }

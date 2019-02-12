@@ -122,7 +122,7 @@ public class LossFactService {
                 .orElse(0d);
             */
 
-            Double r32 = ofNullable(r321).orElse(0d) +  r322 + r323 + r324;
+            Double r32 = ofNullable(r321).orElse(0d) +  ofNullable(r322).orElse(0d) + ofNullable(r323).orElse(0d) + ofNullable(r324).orElse(0d);
 
             //Double r325 = r32 + totalAp;
             Double r325 = r32 + lossFact;

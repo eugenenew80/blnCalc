@@ -168,6 +168,10 @@ public class BalanceSubstMrService {
         List<BalanceSubstResultMrNote> notes = balanceSubstResultMrNoteRepo.findAllByHeaderId(header.getId());
         balanceSubstResultMrNoteRepo.delete(notes);
         balanceSubstResultMrNoteRepo.flush();
+
+        List<BalanceSubstResultBpLine> bpLines = balanceSubstResultBpLineRepo.findAllByHeaderId(header.getId());
+        balanceSubstResultBpLineRepo.delete(bpLines);
+        balanceSubstResultBpLineRepo.flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)

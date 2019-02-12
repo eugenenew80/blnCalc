@@ -38,7 +38,7 @@ public class AtTimeValueServiceImpl implements AtTimeValueService {
         Double factor = getFactor(meteringPointCode, per, context);
 
         for (AtTimeValue value : values)
-            if (value.getSourceType().getId().equals(1l) && value.getVal() != null)
+            if (value.getSourceType().getId().equals(1l) && value.getVal() != null && value.getIsMeterFactorApplied())
                 value.setVal(value.getVal() / factor);
 
         return values;
