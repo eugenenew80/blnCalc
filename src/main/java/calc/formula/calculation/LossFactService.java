@@ -90,7 +90,7 @@ public class LossFactService {
 
             Double r322 = sec1Lines.stream()
                 .filter(t -> t.getSectionCode().equals("1.1"))
-                .map(t -> ofNullable(t.getAp()).orElse(0d))
+                .map(t -> ofNullable(t.getAm()).orElse(0d))
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 

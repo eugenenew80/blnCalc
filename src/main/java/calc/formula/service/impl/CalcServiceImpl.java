@@ -631,17 +631,19 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (prop.getContextType() == ContextTypeEnum.ASP) {
-            logger.trace("  ctx: asp");
-            logger.trace("  expression: AspExpression");
-            AspExpression expression = AspExpression.builder()
-                .meteringPointCode(mp.getCode())
-                .parameterCode(param.getCode())
-                .rate(rate)
-                .context(ctx)
-                .service(aspService)
-                .build();
+            if ((param.getCode().equals("A+") || param.getCode().equals("A-") || param.getCode().equals("R+") || param.getCode().equals("R-") )) {
+                logger.trace("  ctx: asp");
+                logger.trace("  expression: AspExpression");
+                AspExpression expression = AspExpression.builder()
+                    .meteringPointCode(mp.getCode())
+                    .parameterCode(param.getCode())
+                    .rate(rate)
+                    .context(ctx)
+                    .service(aspService)
+                    .build();
 
-            return expression;
+                return expression;
+            }
         }
 
         if (prop.getContextType() == ContextTypeEnum.SEG) {
