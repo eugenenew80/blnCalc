@@ -705,5 +705,29 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-598" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_asp1_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_asp1_result_headers">
+            <column name="is_approved" type="number" remarks="Признак утвержден"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-599" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_asp1_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_asp1_result_headers">
+            <column name="approved_date" type="date" remarks="Дата утверждения"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-600" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_asp1_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_asp1_result_headers">
+            <column name="approved_by" type="number" remarks="Автор утверждения"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
