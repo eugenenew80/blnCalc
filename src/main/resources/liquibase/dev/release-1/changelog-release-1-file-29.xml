@@ -729,5 +729,30 @@
             <column name="approved_by" type="number" remarks="Автор утверждения"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="calc-rus-601" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_act_inter_pl_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_act_inter_pl_result_headers">
+            <column name="doc_type_code" type="varchar2(50)" remarks="Код типа документа"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-602" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_act_inter_pl_result_headers to dm_doc_types</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_act_inter_pl_result_headers"
+                baseColumnNames="doc_type_code"
+                constraintName="fk_calc_act_inter_pl_result_headers_7"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="dm_doc_types"
+                referencedColumnNames="code"
+        />
+    </changeSet>
+
 </databaseChangeLog>
 
