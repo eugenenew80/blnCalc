@@ -754,5 +754,52 @@
         />
     </changeSet>
 
+    <changeSet id="calc-rus-603" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_balance_segment_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_segment_headers">
+            <column name="contract_id" type="number" remarks="идентификатор договора"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-604" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_headers to cm_doc_keg_cte</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_headers"
+                baseColumnNames="contract_id"
+                constraintName="fk_calc_balance_segment_headers_6"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_keg_cte"
+                referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="calc-rus-605" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column calc_balance_segment_result_headers</comment>
+        <addColumn schemaName="apps"
+                   tableName="calc_balance_segment_result_headers">
+            <column name="contract_id" type="number" remarks="идентификатор договора"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="calc-rus-606" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>Creating foreign constraint: calc_balance_segment_result_headers to cm_doc_keg_cte</comment>
+        <addForeignKeyConstraint
+                baseTableSchemaName="apps"
+                baseTableName="calc_balance_segment_result_headers"
+                baseColumnNames="contract_id"
+                constraintName="fk_calc_balance_segment_result_headers_8"
+                deferrable="true"
+                onDelete="RESTRICT"
+                onUpdate="RESTRICT"
+                referencedTableSchemaName="apps"
+                referencedTableName="cm_doc_keg_cte"
+                referencedColumnNames="id"
+        />
+    </changeSet>
 </databaseChangeLog>
 
