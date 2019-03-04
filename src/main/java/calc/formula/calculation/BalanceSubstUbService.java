@@ -132,14 +132,18 @@ public class BalanceSubstUbService {
                     if (direction.equals("1") && !ubLine.getIsSection1()) continue;
                     if (direction.equals("2") && !ubLine.getIsSection2()) continue;
 
-                    Parameter param = ofNullable(ubLine.getParam()).orElse(direction.equals("1")
+                    Parameter paramA = ofNullable(ubLine.getParam()).orElse(direction.equals("1")
                         ? paramService.getParam("A+")
                         : paramService.getParam("A-"));
 
+                    Parameter paramR = paramA.getCode().equals("A+")
+                        ? paramService.getParam("R+")
+                        : paramService.getParam("R-");
+
                     if (meterHistories.size() == 0) {
-                        Double w  = getMrVal(mrLines, ubLine, null, param, context);
-                        Double wa = getMrVal(mrLines, ubLine, null, direction.equals("1") ? paramService.getParam("A+") : paramService.getParam("A-"), context);
-                        Double wr = getMrVal(mrLines, ubLine, null, direction.equals("1") ? paramService.getParam("R+") : paramService.getParam("R-"), context);
+                        Double w  = getMrVal(mrLines, ubLine, null, paramA, context);
+                        Double wa = getMrVal(mrLines, ubLine, null, paramA, context);
+                        Double wr = getMrVal(mrLines, ubLine, null, paramR, context);
 
                         BalanceSubstResultUbLine line = new BalanceSubstResultUbLine();
                         line.setHeader(header);
@@ -191,13 +195,17 @@ public class BalanceSubstUbService {
                             continue;
                         }
 
-                        Double w  = getMrVal(mrLines, ubLine, meterHistory, param, context);
-                        Double wa = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? paramService.getParam("A+") : paramService.getParam("A-"), context);
-                        Double wr = getMrVal(mrLines, ubLine, meterHistory, direction.equals("1") ? paramService.getParam("R+") :paramService.getParam("R-"), context);
+                        Long ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1l);
+
+                        Double w  = getMrVal(mrLines, ubLine, meterHistory, paramA, context);
+                        Double wa = getMrVal(mrLines, ubLine, meterHistory, paramA, context);
+                        Double wr = getMrVal(mrLines, ubLine, meterHistory, paramR, context);
 
                         Double i1avgVal = 0d;
                         if (workHours != 0d)
                             i1avgVal = sqrt(pow(wa, 2) + pow(wr, 2)) / (sqrt(3d) * uAvg * workHours);
+
+                        i1avgVal = i1avgVal / (ttNumber.equals(0l) ? 1 : ttNumber);
 
                         Double i1avgProc = i1avgVal / ttType.getRatedCurrent1() * 100d;
                         Double ttAcProc = ttType.getAccuracyClass().getValue();
@@ -219,7 +227,7 @@ public class BalanceSubstUbService {
                                 blProc = buProc <= 0.5 ? 0.25 : 0.5;
                         }
 
-                        Long ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1l);
+
                         String ttMountedOn = ttNumber > 1l ? meterHistory.getTtMountedOn() : null;
                         Double biProc = ttType != null ? bttProc * sqrt(ttNumber) : null;
                         Double bsoProc = ofNullable(eemType.getAccuracyClass().getValue()).orElse(0d);

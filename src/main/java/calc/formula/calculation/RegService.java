@@ -43,6 +43,12 @@ public class RegService {
     public boolean calc(Long headerId) {
         logger.info("Reg for header " + headerId + " started");
         RegResultHeader header = regResultHeaderRepo.findOne(headerId);
+
+        if (header == null) {
+            logger.error("headerId " + headerId + " not found");
+            return false;
+        }
+
         if (header.getStatus() != BatchStatusEnum.W)
             return false;
 
