@@ -131,12 +131,15 @@ public class PeriodTimeValueExpression implements DoubleExpression {
                 .orElse(null);
         }
 
+        if (doubleValue != null)
+            doubleValue = doubleValue * ofNullable(rate).orElse(1d);
+
         cachedValues = new Double[] {doubleValue};
         return cachedValues;
     }
 
     private Double sum(Double t1, Double t2) {
-        return (ofNullable(t1).orElse(0d) + ofNullable(t2).orElse(0d)) * ofNullable(rate).orElse(1d);
+        return (ofNullable(t1).orElse(0d) + ofNullable(t2).orElse(0d));
     }
 
     private DataTypeEnum getDataType(Map<DataTypeEnum, List<CalcResult>> map) {

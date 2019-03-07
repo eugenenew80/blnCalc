@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static calc.util.Util.round;
 import static java.util.Optional.*;
 import static java.util.stream.Collectors.toList;
 
@@ -56,12 +57,12 @@ public class MrServiceImpl implements MrService {
         for (MeteringReading line : resultLines) {
             if (line.getStartVal() != null || line.getEndVal() != null) {
                 Double delta = ofNullable(line.getEndVal()).orElse(0d) - ofNullable(line.getStartVal()).orElse(0d);
-                line.setDelta(Math.round(delta * 1000000d) / 1000000d);
+                line.setDelta(round(delta, 6));
             }
 
             if (line.getMeterRate() != null && line.getDelta() != null) {
-                Double val = line.getDelta() * line.getMeterRate();
-                line.setVal( Math.round(val) * 1d);
+                Double val = round(line.getDelta() * line.getMeterRate(), 6);
+                line.setVal(val);
             }
         }
 
