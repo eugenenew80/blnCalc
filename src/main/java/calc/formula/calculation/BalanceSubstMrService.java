@@ -76,6 +76,13 @@ public class BalanceSubstMrService {
                     Parameter param = inverseParam(paramService, t.getParam(), mrLine.getIsInverse());
                     Double val = round(t.getVal(), param);
 
+
+                    logger.trace(" mp code: " + meteringPoint.getCode());
+                    logger.trace(" param: " + param.getCode());
+                    logger.trace(" val before rounding: " + t.getVal());
+                    logger.trace(" val after rounding: " + val);
+
+
                     result.setHeader(header);
                     result.setMeteringPoint(meteringPoint);
                     result.setSection(section);

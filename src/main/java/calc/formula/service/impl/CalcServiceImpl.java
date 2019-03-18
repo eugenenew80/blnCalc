@@ -675,6 +675,7 @@ public class CalcServiceImpl implements CalcService {
             PeriodTimeValueExpression ptExpression = PeriodTimeValueExpression.builder()
                 .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
+                .rate(rate)
                 .service(periodTimeValueService)
                 .context(ctx)
                 .build();
