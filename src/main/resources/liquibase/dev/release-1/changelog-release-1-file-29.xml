@@ -801,5 +801,13 @@
                 referencedColumnNames="id"
         />
     </changeSet>
+
+    <changeSet id="calc-rus-605" logicalFilePath="path-independent" author="ruslan" context="dev">
+        <comment>add column mdfem_history</comment>
+        <addColumn schemaName="apps"
+                   tableName="mdfem_history">
+            <column name="meter_last_verification_date" type="number" remarks="Дата последней поверки счетчика"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
