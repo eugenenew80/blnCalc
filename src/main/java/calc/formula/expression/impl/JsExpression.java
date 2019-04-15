@@ -48,6 +48,11 @@ public class JsExpression implements DoubleExpression {
         for (String key : attributes.keySet()) {
             Double[] values = attributes.get(key).doubleValues();
             if (values.length>count) count = values.length;
+            if (values.length == 0) {
+                values = new Double[1];
+                logger.trace("key: " + key);
+                logger.trace("point codes: " + attributes.get(key).pointCodes());
+            }
             attrs.put(key, values);
         }
 

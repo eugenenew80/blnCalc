@@ -104,20 +104,15 @@ public class SvrService {
     }
 
     private void calcLines(SvrResultHeader header, CalcContext context) {
-        /*
-        List<MeteringPointSetting> lines = meteringPointSettingRepo.findAllByContractIdAndDate(
-            header.getContract().getId(),
-            header.getStartDate(),
-            header.getEndDate()
-        );
-        */
-
         List<MeteringPointSetting> lines = header.getHeader().getLines();
 
         List<SvrResultLine> results = new ArrayList<>();
         for (MeteringPointSetting line : lines) {
-            //if (line.getOrganization() != null && !line.getOrganization().equals(header.getOrganization()))
-            //    continue;
+            if (ofNullable(line.getStartDate()).orElse(context.getHeader().getStartDate()).isAfter(context.getHeader().getEndDate()))
+                continue;
+
+            if (ofNullable(line.getEndDate()).orElse(context.getHeader().getEndDate()).isBefore(context.getHeader().getStartDate()))
+                continue;
 
             MeteringPoint meteringPoint = line.getMeteringPoint();
             Parameter param = ofNullable(line.getParam()).orElse(paramService.getParam("AB"));
