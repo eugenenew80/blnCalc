@@ -4,6 +4,7 @@ import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.TemplateLine;
 import calc.entity.calc.MeteringPoint;
 import calc.entity.calc.PowerLine;
+import calc.entity.calc.enums.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
@@ -77,7 +78,7 @@ public class InterLine implements TemplateLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isInverse;
 
-    @Column(name = "is_include_in_total")
+    @Column(name = "is_include_in_total", insertable = false, updatable = false)
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isIncludeTotal;
 
@@ -86,4 +87,72 @@ public class InterLine implements TemplateLine {
 
     @Column(name = "end_date")
     private LocalDate endDate;
+
+    @Column(name = "is_include_in_total")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isIncludeInTotal;
+
+    @Column(name="mp1_status_code")
+    @Enumerated(EnumType.STRING)
+    private DeviceStatus mpStatus1;
+
+    @Column(name="dmv_in_mp1_code")
+    @Enumerated(EnumType.STRING)
+    private DefMethodValue defMethodValue1;
+
+    @Column(name = "display_all_modes_bypass1_id")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isDisplayAllModesBypass1;
+
+    @ManyToOne
+    @JoinColumn(name = "metering_point_bypass1_id")
+    private MeteringPoint meteringPointBypass1;
+
+    @Column(name="mp2_status_code")
+    @Enumerated(EnumType.STRING)
+    private DeviceStatus mpStatus2;
+
+    @Column(name="dmv_in_mp2_code")
+    @Enumerated(EnumType.STRING)
+    private DefMethodValue defMethodValue2;
+
+    @Column(name = "display_all_modes_bypass2_id")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isDisplayAllModesBypass2;
+
+    @ManyToOne
+    @JoinColumn(name = "metering_point_bypass2_id")
+    private MeteringPoint meteringPointBypass2;
+
+    @Column(name="dm_on_bound_code")
+    @Enumerated(EnumType.STRING)
+    private CalcMethodBound methodOnBound;
+
+    @Column(name="dm_of_losses_code")
+    @Enumerated(EnumType.STRING)
+    private DefMethodLoss defMethodLoss;
+
+    @Column(name = "avg_loss_factor")
+    private Double avgLossFactor;
+
+    @Column(name = "specific_power_losses")
+    private Double specificPowerLosses;
+
+    @Column(name = "loading_nonlinearity_factor")
+    private Double loadingNonlinearityFactor;
+
+    @Column(name = "mv_define_by_side")
+    private Long mvDefineBySide;
+
+    @Column(name="dm_of_loss_share_code")
+    @Enumerated(EnumType.STRING)
+    private DefMethodLossShare defMethodLossShare;
+
+    @Column(name = "is_inverse_mp1")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isInverse1;
+
+    @Column(name = "is_inverse_mp2")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isInverse2;
 }

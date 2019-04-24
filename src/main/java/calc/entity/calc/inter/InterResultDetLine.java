@@ -1,6 +1,10 @@
 package calc.entity.calc.inter;
 
+import calc.converter.jpa.BooleanToIntConverter;
 import calc.entity.calc.MeteringPoint;
+import calc.entity.calc.enums.DefMethodLoss;
+import calc.entity.calc.enums.DefMethodValue;
+import calc.entity.calc.enums.DeviceStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
@@ -57,7 +61,29 @@ public class InterResultDetLine {
     private Double lossProc2;
 
     @Column(name = "bound_val")
-    private Double boundaryVal;
+    private Double boundVal;
+
+    @Column(name = "loss_val_1x")
+    private Double lossVal1x;
+
+    @Column(name = "loss_val_2x")
+    private Double lossVal2x;
+
+    @Column(name="mp1_status_code")
+    @Enumerated(EnumType.STRING)
+    private DeviceStatus mpStatus1;
+
+    @Column(name="mp2_status_code")
+    @Enumerated(EnumType.STRING)
+    private DefMethodValue defMethodValue1;
+
+    @Column(name="actually_dm_of_losses_code")
+    @Enumerated(EnumType.STRING)
+    private DefMethodLoss actualDefMethodLoss;
+
+    @Column(name = "is_alternative_method")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isAlternativeMethod;
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
