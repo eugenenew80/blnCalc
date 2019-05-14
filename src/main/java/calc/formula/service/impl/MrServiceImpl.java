@@ -186,7 +186,13 @@ public class MrServiceImpl implements MrService {
                 }
 
                 if (meterEndDate.isAfter(context.getHeader().getEndDate().atStartOfDay()) ) {
-                    Double underCountVal = underCountRepo.findAllByMeteringPoint(meteringPoint.getCode(), line.getStartMeteringDate(), line.getEndMeteringDate())
+                    List<UnderCount> list = underCountRepo.findAllByMeteringPoint(meteringPoint.getCode(), line.getStartMeteringDate(), line.getEndMeteringDate());
+                    for (UnderCount c : list) {
+                        logger.trace("under count row: " + c.getId() + ", " + c.getMeteringPoint().getCode());
+                    }
+
+
+                    Double underCountVal = list
                         .stream()
                         .filter(t -> t.getParameter() != null)
                         .filter(t -> t.getParameter().equals(param))

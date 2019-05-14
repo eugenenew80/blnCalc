@@ -67,7 +67,7 @@ public class InterLineService {
 
 
     private void calcLines(InterResultHeader header, CalcContext context) {
-        Parameter paramWL = paramService.getParam("WL");
+
         List<InterResultLine> results = new ArrayList<>();
         for (InterLine line : header.getHeader().getLines()) {
             Map<String, String> params = buildMsgParams(line);
@@ -109,6 +109,9 @@ public class InterLineService {
 
                 MeteringPoint meteringPoint1 = direction == 1l ? line.getMeteringPoint1() : line.getMeteringPoint2();
                 MeteringPoint meteringPoint2 = direction == 1l ? line.getMeteringPoint2() : line.getMeteringPoint1();
+                MeteringPoint meteringPointOut1 = direction == 1l ? line.getMeteringPointOut1() : line.getMeteringPointOut2();
+                MeteringPoint meteringPointOut2 = direction == 1l ? line.getMeteringPointOut2() : line.getMeteringPointOut1();
+
 
                 DefMethodValue defMethodValue1 = direction == 1l ? ofNullable(line.getDefMethodValue1()).orElse(DefMethodValue.DMV_MP_IS_NOT_USED)
                                                                  : ofNullable(line.getDefMethodValue2()).orElse(DefMethodValue.DMV_MP_IS_NOT_USED);
@@ -129,7 +132,9 @@ public class InterLineService {
 
                 Parameter paramAm = paramService.getParam("A-");
                 Parameter paramAp = paramService.getParam("A+");
-
+                Parameter paramWL = paramService.getParam("WL");
+                Parameter paramWLp = paramService.getParam("WL+");
+                Parameter paramWLm = paramService.getParam("WL-");
 
                 if (meteringPoint1 == null)
                     messageService.addMessage(header, line.getLineNum(), docCode, "INTER_SRC_MP_NOT_FOUND", params);
@@ -215,20 +220,45 @@ public class InterLineService {
                     lossVal = w1 - w2;
 
 
+                //По методу DML_MD_ELSE_AVG_FACTOR
+                boolean faulty = false;
+                if (line.getDefMethodLoss() == DefMethodLoss.DML_MD_ELSE_AVG_FACTOR) {
+                    lossVal = w1 - w2;
+                    if (lossVal  < 0) {
+                        faulty = true;
+                        if (deviceStatus1 == DeviceStatus.MDS_IS_OK && deviceStatus2 == DeviceStatus.MDS_IS_OK)
+                            deviceStatus2 = DeviceStatus.MDS_IS_FAULTY;
+                    }
+                }
+
+
                 //По методу DML_AVG_FACTOR
-                if (line.getDefMethodLoss() == DefMethodLoss.DML_AVG_FACTOR) {
+                if (line.getDefMethodLoss() == DefMethodLoss.DML_AVG_FACTOR || (line.getDefMethodLoss() == DefMethodLoss.DML_MD_ELSE_AVG_FACTOR && faulty)) {
                     logger.debug("calculation losses by method DML_AVG_FACTOR");
 
-                    if (line.getMpStatus1() == DeviceStatus.MDS_IS_OK)
+                    if (deviceStatus1 == DeviceStatus.MDS_IS_OK)
                         lossVal = ofNullable(w1).orElse(0d) * ofNullable(line.getAvgLossFactor()).orElse(0d);
 
-                    if (line.getMpStatus2() == DeviceStatus.MDS_IS_OK)
+                    else if (deviceStatus2 == DeviceStatus.MDS_IS_OK)
                         lossVal = ofNullable(w2).orElse(0d) * ofNullable(line.getAvgLossFactor()).orElse(0d);
                 }
 
 
+
+                //По методу DML_MD_ELSE_WN_PLUS_WCD
+                faulty = false;
+                if (line.getDefMethodLoss() == DefMethodLoss.DML_MD_ELSE_WN_PLUS_WCD) {
+                    lossVal = w1 - w2;
+                    if (lossVal  < 0) {
+                        faulty = true;
+                        if (deviceStatus1 == DeviceStatus.MDS_IS_OK && deviceStatus2 == DeviceStatus.MDS_IS_OK)
+                            deviceStatus2 = DeviceStatus.MDS_IS_FAULTY;
+                    }
+                }
+
+
                 //По методу DML_WN_PLUS_WCD
-                if (line.getDefMethodLoss() == DefMethodLoss.DML_WN_PLUS_WCD) {
+                if (line.getDefMethodLoss() == DefMethodLoss.DML_WN_PLUS_WCD || (line.getDefMethodLoss() == DefMethodLoss.DML_MD_ELSE_WN_PLUS_WCD && faulty)) {
                     logger.debug("calculation losses by method DML_WN_PLUS_WCD");
 
                     Double r = PowerLineExpression.builder()
@@ -260,7 +290,7 @@ public class InterLineService {
                     if (defMethodValue1 == DefMethodValue.DMV_FIXED_VALUE || ( defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus1 == DeviceStatus.MDS_IS_OK ))
                         wp = w1;
                     else if (defMethodValue2 == DefMethodValue.DMV_FIXED_VALUE || ( defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus2 == DeviceStatus.MDS_IS_OK ))
-                        wp = w1;
+                        wp = w2;
 
 
                     Parameter paramU = paramService.getParam("U");
@@ -353,12 +383,20 @@ public class InterLineService {
 
 
                 //Определение долей потерь
+                //Определение перетока на границе раздела
+                CalcMethodBound methodOnBound = line.getMethodOnBound();
+                Double lossVal1 = null;
+                Double lossVal2 = null;
+                Double boundVal = null;
+
 
                 Double lossProc1 = null;
                 Double lossProc2 = null;
                 if (line.getDefMethodLossShare() == DefMethodLossShare.DMLS_PROCENT_SHARE) {
-                    lossProc1 = ofNullable(line.getProportion1()).orElse(0d);
-                    lossProc2 = ofNullable(line.getProportion2()).orElse(0d);
+                    //lossProc1 = ofNullable(line.getProportion1()).orElse(0d);
+                    //lossProc2 = ofNullable(line.getProportion2()).orElse(0d);
+                    lossProc1 = direction == 1l ? ofNullable(line.getProportion1()).orElse(0d) : ofNullable(line.getProportion2()).orElse(0d);
+                    lossProc2 = 100d - lossProc1;
                 }
 
                 if (line.getDefMethodLossShare() == DefMethodLossShare.DMLS_LENGTH_SHARE) {
@@ -367,17 +405,62 @@ public class InterLineService {
                     lossProc2 = 100d - lossProc1;
                 }
 
-                if (line.getDefMethodLossShare() == DefMethodLossShare.DMLS_FIX_VALUE_ON_SIDE1) {
+                if (line.getDefMethodLossShare() == DefMethodLossShare.DMLS_FIX_VALUE_ON_SIDE1 && line.getMeteringPointOut1() != null) {
+                    CalcProperty property = CalcProperty.builder()
+                        .contextType(ContextTypeEnum.DEFAULT)
+                        .processOrder(ProcessOrderEnum.READ)
+                        .build();
 
+                    CalcResult calc;
+
+                    calc = calcService.calcValue(line.getMeteringPointOut1(), paramWLp, context, property);
+                    Double wlp = calc != null ? calc.getDoubleValue() : null;
+
+                    calc = calcService.calcValue(line.getMeteringPointOut1(), paramWLm, context, property);
+                    Double wlm = calc != null ? calc.getDoubleValue() : null;
+
+                    calc = calcService.calcValue(line.getMeteringPointOut1(), paramWL, context, property);
+                    Double wl = calc != null ? calc.getDoubleValue() : null;
+
+                    if ( wlp!=null && wlm !=null && wl == null) {
+                        //Вывести Сообщение: Доля потерь стороны 1 было определено расчетным путем как сумма долей потерь
+                    }
+                    else if (wl != null && (wlp == null || wlm == null)) {
+                        //Вывести Сообщение: Доли потерь для стороны 1 были определены расчетным способом пропорционально объемам перетока в точке учета 1
+
+                        calc = calcService.calcValue(line.getMeteringPoint1(), paramAp, context, property);
+                        Double ap = calc != null ? calc.getDoubleValue() : null;
+                        ap = ofNullable(ap).orElse(0d);
+
+                        calc = calcService.calcValue(line.getMeteringPoint1(), paramAm, context, property);
+                        Double am = calc != null ? calc.getDoubleValue() : null;
+                        am = ofNullable(am).orElse(0d);
+
+                        Double ab = ap + am;
+
+                        if (ab != 0) {
+                            wlp = round(wl * ap / ab, paramWLp);
+                            wlm = wl - wlp;
+                        }
+                        else {
+                            wlp = null;
+                            wlm = null;
+                        }
+                    }
+
+                    wlp = ofNullable(wlp).orElse(0d);
+                    wlm = ofNullable(wlm).orElse(0d);
+                    if (direction.equals(1l)) {
+                        lossVal1 = wlm;
+                        lossVal2 = null;
+                    }
+                    else {
+                        lossVal1 = null;
+                        lossVal2 = wlp;
+                    }
                 }
 
 
-
-                //Определение перетока на границе раздела
-                CalcMethodBound methodOnBound = line.getMethodOnBound();
-                Double lossVal1 = null;
-                Double lossVal2 = null;
-                Double boundVal = null;
 
                 //по методу DMBP_SIDE1_AND_LOSS_SHARE
                 if (methodOnBound == CalcMethodBound.DMBP_SIDE1_AND_LOSS_SHARE) {
@@ -424,6 +507,15 @@ public class InterLineService {
                     if (boundVal != null)
                         boundVal = line.getIsInverse() ? boundVal * -1d : boundVal;
                 }
+
+                //по методу DMBP_SIDE1_AND_FIX_VALUE
+                if (methodOnBound == CalcMethodBound.DMBP_SIDE1_AND_FIX_VALUE) {
+                    if (direction == 1l)
+                        boundVal = ofNullable(w1).orElse(0d) - lossVal1;
+                    else
+                        boundVal = ofNullable(w2).orElse(0d) + lossVal2;
+                }
+
 
                 resultDet.setLossVal(lossVal);
 
