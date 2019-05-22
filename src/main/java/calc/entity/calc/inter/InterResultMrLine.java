@@ -82,6 +82,12 @@ public class InterResultMrLine {
     @JoinColumn(name = "under_count_id")
     private UnderCount undercount;
 
+
+    @Column(name = "include_in_calculation")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isForTotal;
+
+
     @Column(name = "create_date")
     private LocalDateTime createDate;
 

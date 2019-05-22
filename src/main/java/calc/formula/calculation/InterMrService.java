@@ -6,6 +6,7 @@ import calc.entity.calc.inter.*;
 import calc.formula.*;
 import calc.formula.exception.*;
 import calc.formula.service.*;
+import calc.repo.calc.BypassModeRepo;
 import calc.repo.calc.InterResultMrLineRepo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 import java.util.*;
 import static calc.util.Util.*;
 import static java.util.stream.Collectors.toList;
@@ -25,6 +28,7 @@ public class InterMrService {
     private final InterResultMrLineRepo interResultMrLineRepo;
     private final MrService mrService;
     private final MessageService messageService;
+    private final BypassModeRepo bypassModeRepo;
 
     public boolean calc(InterResultHeader header) {
         try {
@@ -36,15 +40,183 @@ public class InterMrService {
                 .defContextType(ContextTypeEnum.DEFAULT)
                 .build();
 
+
+            LocalDateTime startDate = context.getHeader().getStartDate().atStartOfDay();
+            LocalDateTime endDate = context.getHeader().getEndDate().atStartOfDay().plusDays(1);
+
+            List<InterResultMrLine> resultLines = new ArrayList<>();
+
+            //Display all modes - side 1
+            for (InterLine line : header.getHeader().getLines()) {
+                if (!line.getIsDisplayAllModesBypass1())
+                    continue;
+
+                MeteringPoint bypassMeteringPoint = line.getMeteringPointBypass1();
+                MeteringPoint meteringPoint = line.getMeteringPoint1();
+
+                List<BypassMode> bypassModes = bypassModeRepo.findAllByBypass(bypassMeteringPoint.getId(), startDate, endDate);
+
+                if (bypassModes.isEmpty()) {
+                    List<MeteringReading> meteringReadings = mrService.calc(bypassMeteringPoint, context);
+
+                    for (MeteringReading t : meteringReadings) {
+                        if (!(t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-")))
+                            continue;
+
+                        InterResultMrLine resultLine = new InterResultMrLine();
+                        resultLine.setHeader(header);
+                        resultLine.setMeteringPoint(meteringPoint);
+                        resultLine.setBypassMeteringPoint(bypassMeteringPoint);
+                        resultLine.setIsBypassSection(t.getIsBypassSection());
+                        resultLine.setParam(t.getParam());
+                        resultLine.setUnit(t.getUnit());
+                        resultLine.setStartMeteringDate(t.getStartMeteringDate());
+                        resultLine.setEndMeteringDate(t.getEndMeteringDate());
+                        resultLine.setStartVal(t.getStartVal());
+                        resultLine.setEndVal(t.getEndVal());
+                        resultLine.setDelta(t.getDelta());
+                        resultLine.setMeterRate(t.getMeterRate());
+                        resultLine.setVal(round(t.getVal(), t.getParam()));
+                        resultLine.setUnderCountVal(t.getUnderCountVal());
+                        resultLine.setUndercount(t.getUnderCount());
+                        resultLine.setIsForTotal(false);
+                        resultLines.add(resultLine);
+                    }
+                }
+
+                for (BypassMode bypassMode : bypassModes) {
+                    List<MeteringReading> meteringReadings = mrService.calc(bypassMode.getMeteringPoint(), context);
+
+                    for (MeteringReading t : meteringReadings) {
+                        if (!(t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-")))
+                            continue;
+
+                        if (t.getBypassMeteringPoint() == null)
+                            continue;
+
+                        if (t.getMeteringPoint().equals(meteringPoint))
+                            continue;
+
+                        if (!t.getBypassMeteringPoint().equals(bypassMeteringPoint))
+                            continue;
+
+                        InterResultMrLine resultLine = new InterResultMrLine();
+                        resultLine.setHeader(header);
+                        resultLine.setMeteringPoint(meteringPoint);
+                        resultLine.setBypassMeteringPoint(bypassMeteringPoint);
+                        resultLine.setBypassMode(t.getBypassMode());
+                        resultLine.setIsBypassSection(t.getIsBypassSection());
+                        resultLine.setParam(t.getParam());
+                        resultLine.setUnit(t.getUnit());
+                        resultLine.setStartMeteringDate(t.getStartMeteringDate());
+                        resultLine.setEndMeteringDate(t.getEndMeteringDate());
+                        resultLine.setStartVal(t.getStartVal());
+                        resultLine.setEndVal(t.getEndVal());
+                        resultLine.setDelta(t.getDelta());
+                        resultLine.setMeterRate(t.getMeterRate());
+                        resultLine.setVal(round(t.getVal(), t.getParam()));
+                        resultLine.setUnderCountVal(t.getUnderCountVal());
+                        resultLine.setUndercount(t.getUnderCount());
+                        resultLine.setIsForTotal(false);
+                        resultLines.add(resultLine);
+                    }
+                }
+            }
+
+
+            //Display all modes - side 2
+            for (InterLine line : header.getHeader().getLines()) {
+                if (!line.getIsDisplayAllModesBypass2())
+                    continue;
+
+                MeteringPoint bypassMeteringPoint = line.getMeteringPointBypass2();
+                MeteringPoint meteringPoint = line.getMeteringPoint2();
+
+                List<BypassMode> bypassModes = bypassModeRepo.findAllByBypass(bypassMeteringPoint.getId(), startDate, endDate);
+
+                if (bypassModes.isEmpty()) {
+                    List<MeteringReading> meteringReadings = mrService.calc(bypassMeteringPoint, context);
+
+                    for (MeteringReading t : meteringReadings) {
+                        if (!(t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-")))
+                            continue;
+
+                        InterResultMrLine resultLine = new InterResultMrLine();
+                        resultLine.setHeader(header);
+                        resultLine.setMeteringPoint(meteringPoint);
+                        resultLine.setBypassMeteringPoint(bypassMeteringPoint);
+                        resultLine.setIsBypassSection(t.getIsBypassSection());
+                        resultLine.setParam(t.getParam());
+                        resultLine.setUnit(t.getUnit());
+                        resultLine.setStartMeteringDate(t.getStartMeteringDate());
+                        resultLine.setEndMeteringDate(t.getEndMeteringDate());
+                        resultLine.setStartVal(t.getStartVal());
+                        resultLine.setEndVal(t.getEndVal());
+                        resultLine.setDelta(t.getDelta());
+                        resultLine.setMeterRate(t.getMeterRate());
+                        resultLine.setVal(round(t.getVal(), t.getParam()));
+                        resultLine.setUnderCountVal(t.getUnderCountVal());
+                        resultLine.setUndercount(t.getUnderCount());
+                        resultLine.setIsForTotal(false);
+                        resultLines.add(resultLine);
+                    }
+                }
+
+                for (BypassMode bypassMode : bypassModes) {
+                    List<MeteringReading> meteringReadings = mrService.calc(bypassMode.getMeteringPoint(), context);
+
+                    for (MeteringReading t : meteringReadings) {
+                        if (!(t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-")))
+                            continue;
+
+                        if (t.getBypassMeteringPoint() == null)
+                            continue;
+
+                        if (t.getMeteringPoint().equals(meteringPoint))
+                            continue;
+
+                        if (!t.getBypassMeteringPoint().equals(bypassMeteringPoint))
+                            continue;
+
+                        InterResultMrLine resultLine = new InterResultMrLine();
+                        resultLine.setHeader(header);
+                        resultLine.setMeteringPoint(meteringPoint);
+                        resultLine.setBypassMeteringPoint(bypassMeteringPoint);
+                        resultLine.setBypassMode(t.getBypassMode());
+                        resultLine.setIsBypassSection(t.getIsBypassSection());
+                        resultLine.setParam(t.getParam());
+                        resultLine.setUnit(t.getUnit());
+                        resultLine.setStartMeteringDate(t.getStartMeteringDate());
+                        resultLine.setEndMeteringDate(t.getEndMeteringDate());
+                        resultLine.setStartVal(t.getStartVal());
+                        resultLine.setEndVal(t.getEndVal());
+                        resultLine.setDelta(t.getDelta());
+                        resultLine.setMeterRate(t.getMeterRate());
+                        resultLine.setVal(round(t.getVal(), t.getParam()));
+                        resultLine.setUnderCountVal(t.getUnderCountVal());
+                        resultLine.setUndercount(t.getUnderCount());
+                        resultLine.setIsForTotal(false);
+                        resultLines.add(resultLine);
+                    }
+                }
+            }
+
+
+            //Physical metering points list
             List<MeteringPoint> points = header.getHeader().getLines()
                 .stream()
-                .flatMap(t -> Arrays.asList(t.getMeteringPoint1(), t.getMeteringPoint2(), t.getBoundMeteringPoint()).stream())
+                .flatMap(t ->
+                    Arrays.asList(
+                        t.getDefMethodValue1() == DefMethodValue.DMV_FIXED_VALUE ? null : t.getMeteringPoint1(),
+                        t.getDefMethodValue2() == DefMethodValue.DMV_FIXED_VALUE ? null : t.getMeteringPoint2(),
+                        t.getBoundMeteringPoint()).stream()
+                )
                 .filter(t -> t != null)
                 .filter(t -> t.getPointType() == PointTypeEnum.PMP)
                 .distinct()
                 .collect(toList());
 
-            List<InterResultMrLine> resultLines = new ArrayList<>();
+
             for (MeteringPoint meteringPoint : points) {
                 Map<String, String> msgParams = buildMsgParams(meteringPoint);
                 List<MeteringReading> meteringReadings;
@@ -81,9 +253,11 @@ public class InterMrService {
                     resultLine.setVal(round(t.getVal(), t.getParam()));
                     resultLine.setUnderCountVal(t.getUnderCountVal());
                     resultLine.setUndercount(t.getUnderCount());
+                    resultLine.setIsForTotal(true);
                     resultLines.add(resultLine);
                 }
             }
+
             deleteLines(header);
             saveLines(resultLines);
 

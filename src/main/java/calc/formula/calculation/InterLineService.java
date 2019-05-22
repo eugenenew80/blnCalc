@@ -30,6 +30,7 @@ public class InterLineService {
     private final InterResultLineRepo interResultLineRepo;
     private final InterResultNoteRepo interResultNoteRepo;
     private final InterResultAppRepo interResultAppRepo;
+    private final InterResultMrLineRepo interResultMrLineRepo;
     private final MessageService messageService;
     private final ParamService paramService;
     private final CalcService calcService;
@@ -69,6 +70,8 @@ public class InterLineService {
     private void calcLines(InterResultHeader header, CalcContext context) {
 
         List<InterResultLine> results = new ArrayList<>();
+        List<InterResultMrLine> mrResults = new ArrayList<>();
+
         for (InterLine line : header.getHeader().getLines()) {
             Map<String, String> params = buildMsgParams(line);
 
@@ -179,8 +182,18 @@ public class InterLineService {
                     val1 = calc != null ? calc.getDoubleValue() : null;
                     val1 = ofNullable(val1).orElse(0d);
                     w1 = val1;
-                }
 
+                    InterResultMrLine resultMrLine = new InterResultMrLine();
+                    resultMrLine.setHeader(header);
+                    resultMrLine.setMeteringPoint(meteringPoint1);
+                    resultMrLine.setParam(paramAm);
+                    resultMrLine.setUnit(paramAm.getUnit());
+                    resultMrLine.setStartMeteringDate(context.getHeader().getStartDate().atStartOfDay());
+                    resultMrLine.setEndMeteringDate(context.getHeader().getEndDate().atStartOfDay().plusDays(1));
+                    resultMrLine.setVal(round(w1, paramAm));
+                    resultMrLine.setIsForTotal(true);
+                    mrResults.add(resultMrLine);
+                }
 
 
                 //Определение объёмов для точки учёта 2
@@ -209,6 +222,17 @@ public class InterLineService {
                     val2 = calc != null ? calc.getDoubleValue() : null;
                     val2 = ofNullable(val2).orElse(0d);
                     w2 = val2;
+
+                    InterResultMrLine resultMrLine = new InterResultMrLine();
+                    resultMrLine.setHeader(header);
+                    resultMrLine.setMeteringPoint(meteringPoint2);
+                    resultMrLine.setParam(paramAp);
+                    resultMrLine.setUnit(paramAp.getUnit());
+                    resultMrLine.setStartMeteringDate(context.getHeader().getStartDate().atStartOfDay());
+                    resultMrLine.setEndMeteringDate(context.getHeader().getEndDate().atStartOfDay().plusDays(1));
+                    resultMrLine.setVal(round(w2, paramAp));
+                    resultMrLine.setIsForTotal(true);
+                    mrResults.add(resultMrLine);
                 }
 
 
@@ -552,7 +576,9 @@ public class InterLineService {
             result.setBoundaryVal(boundaryVal);
             results.add(result);
         }
+
         saveLines(results);
+        saveMrLines(mrResults);
     }
 
     /*
@@ -753,5 +779,12 @@ public class InterLineService {
         }
         interResultAppRepo.save(resultApps);
         interResultAppRepo.flush();
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, timeout = 60)
+    void saveMrLines(List<InterResultMrLine> resultLines) {
+        interResultMrLineRepo.save(resultLines);
+        interResultMrLineRepo.flush();
     }
 }
