@@ -51,6 +51,9 @@ public class InterMrService {
                 if (!line.getIsDisplayAllModesBypass1())
                     continue;
 
+                if (line.getMeteringPointBypass1() == null)
+                    continue;
+
                 MeteringPoint bypassMeteringPoint = line.getMeteringPointBypass1();
                 MeteringPoint meteringPoint = line.getMeteringPoint1();
 
@@ -67,6 +70,8 @@ public class InterMrService {
                         resultLine.setHeader(header);
                         resultLine.setMeteringPoint(meteringPoint);
                         resultLine.setBypassMeteringPoint(bypassMeteringPoint);
+                        resultLine.setMeter(t.getMeter());
+                        resultLine.setMeterHistory(t.getMeterHistory());
                         resultLine.setIsBypassSection(t.getIsBypassSection());
                         resultLine.setParam(t.getParam());
                         resultLine.setUnit(t.getUnit());
@@ -85,16 +90,15 @@ public class InterMrService {
                 }
 
                 for (BypassMode bypassMode : bypassModes) {
-                    List<MeteringReading> meteringReadings = mrService.calc(bypassMode.getMeteringPoint(), context);
+                    if (bypassMode.getMeteringPoint().equals(meteringPoint))
+                        continue;
 
+                    List<MeteringReading> meteringReadings = mrService.calc(bypassMode.getMeteringPoint(), context);
                     for (MeteringReading t : meteringReadings) {
                         if (!(t.getParam().getCode().equals("A+") || t.getParam().getCode().equals("A-")))
                             continue;
 
                         if (t.getBypassMeteringPoint() == null)
-                            continue;
-
-                        if (t.getMeteringPoint().equals(meteringPoint))
                             continue;
 
                         if (!t.getBypassMeteringPoint().equals(bypassMeteringPoint))
@@ -104,6 +108,8 @@ public class InterMrService {
                         resultLine.setHeader(header);
                         resultLine.setMeteringPoint(meteringPoint);
                         resultLine.setBypassMeteringPoint(bypassMeteringPoint);
+                        resultLine.setMeter(t.getMeter());
+                        resultLine.setMeterHistory(t.getMeterHistory());
                         resultLine.setBypassMode(t.getBypassMode());
                         resultLine.setIsBypassSection(t.getIsBypassSection());
                         resultLine.setParam(t.getParam());
@@ -129,6 +135,9 @@ public class InterMrService {
                 if (!line.getIsDisplayAllModesBypass2())
                     continue;
 
+                if (line.getMeteringPointBypass2() == null)
+                    continue;
+
                 MeteringPoint bypassMeteringPoint = line.getMeteringPointBypass2();
                 MeteringPoint meteringPoint = line.getMeteringPoint2();
 
@@ -145,6 +154,8 @@ public class InterMrService {
                         resultLine.setHeader(header);
                         resultLine.setMeteringPoint(meteringPoint);
                         resultLine.setBypassMeteringPoint(bypassMeteringPoint);
+                        resultLine.setMeter(t.getMeter());
+                        resultLine.setMeterHistory(t.getMeterHistory());
                         resultLine.setIsBypassSection(t.getIsBypassSection());
                         resultLine.setParam(t.getParam());
                         resultLine.setUnit(t.getUnit());
@@ -182,6 +193,8 @@ public class InterMrService {
                         resultLine.setHeader(header);
                         resultLine.setMeteringPoint(meteringPoint);
                         resultLine.setBypassMeteringPoint(bypassMeteringPoint);
+                        resultLine.setMeter(t.getMeter());
+                        resultLine.setMeterHistory(t.getMeterHistory());
                         resultLine.setBypassMode(t.getBypassMode());
                         resultLine.setIsBypassSection(t.getIsBypassSection());
                         resultLine.setParam(t.getParam());

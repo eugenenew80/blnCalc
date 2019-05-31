@@ -46,6 +46,7 @@ public class InterMrExpression implements DoubleExpression {
         Double value = list.stream()
             .filter(t -> t.getParam() != null)
             .filter(t -> t.getParam().getCode().equals(parameterCode))
+            .filter(t -> t.getIsForTotal())
             .map(t -> (ofNullable(t.getVal()).orElse(0d) + ofNullable(t.getUnderCountVal()).orElse(0d)) * ofNullable(rate).orElse(1d))
             .reduce((t1, t2) -> t1 + t2)
             .orElse(null);
