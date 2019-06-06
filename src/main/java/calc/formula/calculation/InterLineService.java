@@ -316,12 +316,12 @@ public class InterLineService {
                     if (defMethodValue1 == DefMethodValue.DMV_FIXED_VALUE || ( defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus1 == DeviceStatus.MDS_IS_OK )) {
                         wp = w1;
                         mpFaulty = meteringPoint2;
-                        paramFaulty = paramAm;
+                        paramFaulty = paramAp;
                     }
                     else if (defMethodValue2 == DefMethodValue.DMV_FIXED_VALUE || ( defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus2 == DeviceStatus.MDS_IS_OK )) {
                         wp = w2;
                         mpFaulty = meteringPoint1;
-                        paramFaulty = paramAp;
+                        paramFaulty = paramAm;
                     }
 
 
