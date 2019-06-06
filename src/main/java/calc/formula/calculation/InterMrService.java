@@ -220,8 +220,8 @@ public class InterMrService {
                 .stream()
                 .flatMap(t ->
                     Arrays.asList(
-                        t.getDefMethodValue1() == DefMethodValue.DMV_FIXED_VALUE ? null : t.getMeteringPoint1(),
-                        t.getDefMethodValue2() == DefMethodValue.DMV_FIXED_VALUE ? null : t.getMeteringPoint2(),
+                        t.getDefMethodValue1() == DefMethodValue.DMV_FIXED_VALUE  || t.getDefMethodValue1() == DefMethodValue.DMV_OTHER_MP_AND_FULL_LOSSES ? null : t.getMeteringPoint1(),
+                        t.getDefMethodValue2() == DefMethodValue.DMV_FIXED_VALUE  || t.getDefMethodValue2() == DefMethodValue.DMV_OTHER_MP_AND_FULL_LOSSES ? null : t.getMeteringPoint2(),
                         t.getBoundMeteringPoint()).stream()
                 )
                 .filter(t -> t != null)

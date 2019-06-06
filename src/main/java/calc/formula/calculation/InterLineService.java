@@ -163,7 +163,7 @@ public class InterLineService {
 
                 //по методу DMV_FACT_BY_MD
                 if (defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD) {
-                    CalcResult calc = calcService.calcValue(meteringPoint1, paramAm, context);
+                    CalcResult calc = calcService.calcValue(meteringPoint1, line.getIsInverse1() ? paramAp : paramAm, context);
                     val1 = calc != null ? calc.getDoubleValue() : null;
                     val1 = ofNullable(val1).orElse(0d);
 
@@ -178,7 +178,7 @@ public class InterLineService {
                         .processOrder(ProcessOrderEnum.READ)
                         .build();
 
-                    CalcResult calc = calcService.calcValue(meteringPoint1, paramAm, context, property);
+                    CalcResult calc = calcService.calcValue(meteringPoint1, line.getIsInverse1() ? paramAp : paramAm, context, property);
                     val1 = calc != null ? calc.getDoubleValue() : null;
                     val1 = ofNullable(val1).orElse(0d);
                     w1 = val1;
@@ -202,11 +202,11 @@ public class InterLineService {
 
                 //по методу DMV_FACT_BY_MD (по приборам учета)
                 if (defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD) {
-                    CalcResult calc = calcService.calcValue(meteringPoint2, paramAp, context);
+                    CalcResult calc = calcService.calcValue(meteringPoint2, line.getIsInverse2() ? paramAm : paramAp, context);
                     val2 = calc != null ? calc.getDoubleValue() : null;
                     val2 = ofNullable(val2).orElse(0d);
 
-                    if (deviceStatus1 == DeviceStatus.MDS_IS_OK)
+                    if (deviceStatus2 == DeviceStatus.MDS_IS_OK)
                         w2 = val2;
                 }
 
@@ -218,7 +218,7 @@ public class InterLineService {
                         .processOrder(ProcessOrderEnum.READ)
                         .build();
 
-                    CalcResult calc = calcService.calcValue(meteringPoint2, paramAp, context, property);
+                    CalcResult calc = calcService.calcValue(meteringPoint2, line.getIsInverse2() ? paramAm : paramAp, context, property);
                     val2 = calc != null ? calc.getDoubleValue() : null;
                     val2 = ofNullable(val2).orElse(0d);
                     w2 = val2;
@@ -311,10 +311,18 @@ public class InterLineService {
                     kf = ofNullable(kf).orElse(0d);
 
                     Double wp = 0d;
-                    if (defMethodValue1 == DefMethodValue.DMV_FIXED_VALUE || ( defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus1 == DeviceStatus.MDS_IS_OK ))
+                    MeteringPoint mpFaulty = null;
+                    Parameter paramFaulty = null;
+                    if (defMethodValue1 == DefMethodValue.DMV_FIXED_VALUE || ( defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus1 == DeviceStatus.MDS_IS_OK )) {
                         wp = w1;
-                    else if (defMethodValue2 == DefMethodValue.DMV_FIXED_VALUE || ( defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus2 == DeviceStatus.MDS_IS_OK ))
+                        mpFaulty = meteringPoint2;
+                        paramFaulty = paramAm;
+                    }
+                    else if (defMethodValue2 == DefMethodValue.DMV_FIXED_VALUE || ( defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus2 == DeviceStatus.MDS_IS_OK )) {
                         wp = w2;
+                        mpFaulty = meteringPoint1;
+                        paramFaulty = paramAp;
+                    }
 
 
                     Parameter paramU = paramService.getParam("U");
@@ -369,18 +377,34 @@ public class InterLineService {
                     lossVal = round(wn + wk,0);
 
 
+                    Double wFaulty = null;
+
                     //Определение объёмов для точки учёта 1
 
                     //по методу DMV_OTHER_MP_AND_FULL_LOSSES
-                    if  (defMethodValue1 == DefMethodValue.DMV_OTHER_MP_AND_FULL_LOSSES)
+                    if  (defMethodValue1 == DefMethodValue.DMV_OTHER_MP_AND_FULL_LOSSES) {
                         w1 = w2 + lossVal;
+                        wFaulty = w1;
+                    }
 
                     //Определение объёмов для точки учёта 2
 
                     //по методу DMV_OTHER_MP_AND_FULL_LOSSES
-                    if  (defMethodValue2 == DefMethodValue.DMV_OTHER_MP_AND_FULL_LOSSES)
+                    if  (defMethodValue2 == DefMethodValue.DMV_OTHER_MP_AND_FULL_LOSSES) {
                         w2 = w1 - lossVal;
+                        wFaulty = w2;
+                    }
 
+                    InterResultMrLine resultMrLine = new InterResultMrLine();
+                    resultMrLine.setHeader(header);
+                    resultMrLine.setMeteringPoint(mpFaulty);
+                    resultMrLine.setParam(paramFaulty);
+                    resultMrLine.setUnit(paramFaulty.getUnit());
+                    resultMrLine.setStartMeteringDate(context.getHeader().getStartDate().atStartOfDay());
+                    resultMrLine.setEndMeteringDate(context.getHeader().getEndDate().atStartOfDay().plusDays(1));
+                    resultMrLine.setVal(round(wFaulty, paramFaulty));
+                    resultMrLine.setIsForTotal(true);
+                    mrResults.add(resultMrLine);
 
                     logger.debug("  direction: " + direction);
                     logger.debug("  powerLineId: " + line.getPowerLine().getId());
@@ -407,8 +431,7 @@ public class InterLineService {
 
 
                 //Определение долей потерь
-                //Определение перетока на границе раздела
-                CalcMethodBound methodOnBound = line.getMethodOnBound();
+
                 Double lossVal1 = null;
                 Double lossVal2 = null;
                 Double boundVal = null;
@@ -486,8 +509,26 @@ public class InterLineService {
 
 
 
+
+                //Определение перетока на границе раздела
+                CalcMethodBound methodOnBound = line.getMethodOnBound();
+                CalcMethodBound methodOnBoundD = methodOnBound;
+
+
+                //по методу DMBP_SIDE_OK_AND_LOSS_SHARE
+                if (methodOnBound == CalcMethodBound.DMBP_SIDE_OK_AND_LOSS_SHARE) {
+                    if ((defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus1 == DeviceStatus.MDS_IS_OK) || defMethodValue1 == DefMethodValue.DMV_FIXED_VALUE)
+                        methodOnBoundD = CalcMethodBound.DMBP_SIDE1_AND_LOSS_SHARE;
+                    else if ((defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus2 == DeviceStatus.MDS_IS_OK) || defMethodValue2 == DefMethodValue.DMV_FIXED_VALUE)
+                        methodOnBoundD = CalcMethodBound.DMBP_SIDE2_AND_LOSS_SHARE;
+                    else {
+                        //Добавить сообщение об ошибке
+                    }
+                }
+
+
                 //по методу DMBP_SIDE1_AND_LOSS_SHARE
-                if (methodOnBound == CalcMethodBound.DMBP_SIDE1_AND_LOSS_SHARE) {
+                if (methodOnBoundD == CalcMethodBound.DMBP_SIDE1_AND_LOSS_SHARE) {
                     if (direction == 1l) {
                         lossVal1 = round(ofNullable(lossProc1).orElse(0d) / 100d * ofNullable(lossVal).orElse(0d), paramWL);
                         lossVal2 = ofNullable(lossVal).orElse(0d) - lossVal1;
@@ -505,7 +546,7 @@ public class InterLineService {
                 }
 
                 //по методу DMBP_SIDE2_AND_LOSS_SHARE
-                if (methodOnBound == CalcMethodBound.DMBP_SIDE2_AND_LOSS_SHARE) {
+                if (methodOnBoundD == CalcMethodBound.DMBP_SIDE2_AND_LOSS_SHARE) {
                     if (direction == 2l) {
                         lossVal1 = round(ofNullable(lossProc1).orElse(0d) / 100d * ofNullable(lossVal).orElse(0d), paramWL);
                         lossVal2 = ofNullable(lossVal).orElse(0d) - lossVal1;
@@ -519,7 +560,7 @@ public class InterLineService {
                 }
 
                 //по методу DMBP_MP_ON_BORDER
-                if (methodOnBound == CalcMethodBound.DMBP_MP_ON_BORDER) {
+                if (methodOnBoundD == CalcMethodBound.DMBP_MP_ON_BORDER) {
                     CalcResult calc = calcService.calcValue(line.getBoundMeteringPoint(), paramAm, context);
                     Double valAm = calc != null ? calc.getDoubleValue() : null;
 
@@ -527,43 +568,75 @@ public class InterLineService {
                     Double valAp = calc != null ? calc.getDoubleValue() : null;
 
                     boundVal = direction == 1L ? valAm : valAp;
-
-                    if (boundVal != null)
-                        boundVal = line.getIsInverse() ? boundVal * -1d : boundVal;
                 }
 
                 //по методу DMBP_SIDE1_AND_FIX_VALUE
-                if (methodOnBound == CalcMethodBound.DMBP_SIDE1_AND_FIX_VALUE) {
+                if (methodOnBoundD == CalcMethodBound.DMBP_SIDE1_AND_FIX_VALUE) {
                     if (direction == 1l)
                         boundVal = ofNullable(w1).orElse(0d) - lossVal1;
                     else
                         boundVal = ofNullable(w2).orElse(0d) + lossVal2;
                 }
 
-
                 resultDet.setLossVal(lossVal);
 
                 if (direction == 1l) {
+                    Double lossVal1x = null;
+                    Double lossVal2x = null;
+                    if (methodOnBoundD != CalcMethodBound.DMBP_MP_ON_BORDER ) {
+
+                        Double v1 = w1;
+                        Double v2 = w2;
+                        if (defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus1 == DeviceStatus.MDS_IS_OK)
+                            v1 = val1;
+                        if (defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus2 == DeviceStatus.MDS_IS_OK)
+                            v2 = val2;
+
+                        if (meteringPoint1 != null)
+                            lossVal1x = ofNullable(v1).orElse(0d) - ofNullable(boundVal).orElse(0d);
+
+                        if (meteringPoint2 != null)
+                            lossVal2x = ofNullable(boundVal).orElse(0d) - ofNullable(v2).orElse(0d);
+                    }
+
                     resultDet.setVal1(w1);
                     resultDet.setVal2(w2);
-                    resultDet.setLossVal1x(val1);
-                    resultDet.setLossVal2x(val2);
+                    resultDet.setLossVal1x(lossVal1x);
+                    resultDet.setLossVal2x(lossVal2x);
                     resultDet.setLossProc1(lossProc1);
                     resultDet.setLossProc2(lossProc2);
                     resultDet.setLossVal1(lossVal1);
                     resultDet.setLossVal2(lossVal2);
                 }
                 else {
+                    Double lossVal1x = null;
+                    Double lossVal2x = null;
+                    if (methodOnBoundD != CalcMethodBound.DMBP_MP_ON_BORDER ) {
+
+                        Double v1 = w1;
+                        Double v2 = w2;
+                        if (defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus1 == DeviceStatus.MDS_IS_OK)
+                            v1 = val1;
+                        if (defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus2 == DeviceStatus.MDS_IS_OK)
+                            v2 = val2;
+
+                        if (meteringPoint2 != null)
+                            lossVal1x = ofNullable(boundVal).orElse(0d) - ofNullable(v2).orElse(0d);
+
+                        if (meteringPoint1 != null)
+                            lossVal2x = ofNullable(v1).orElse(0d) - ofNullable(boundVal).orElse(0d);
+                    }
+
                     resultDet.setVal1(w2);
                     resultDet.setVal2(w1);
-                    resultDet.setLossVal1x(val2);
-                    resultDet.setLossVal2x(val1);
+                    resultDet.setLossVal1x(lossVal1x);
+                    resultDet.setLossVal2x(lossVal2x);
                     resultDet.setLossProc1(lossProc2);
                     resultDet.setLossProc2(lossProc1);
                     resultDet.setLossVal1(lossVal2);
                     resultDet.setLossVal2(lossVal1);
                 }
-
+                resultDet.setIsAlternativeMethod(faulty);
                 resultDet.setBoundVal(boundVal);
             }
 
@@ -573,7 +646,25 @@ public class InterLineService {
                 .reduce((t1, t2) -> t1 + t2)
                 .orElse(0d);
 
+            if (boundaryVal != null)
+                boundaryVal = line.getIsInverse() ? boundaryVal * -1d : boundaryVal;
+
+
+            Double totalLosses1 = result.getDetails()
+                .stream()
+                .map(t -> ofNullable(t.getLossVal1()).orElse(0d) )
+                .reduce((t1, t2) -> t1 + t2)
+                .orElse(0d);
+
+            Double totalLosses2 = result.getDetails()
+                .stream()
+                .map(t -> ofNullable(t.getLossVal2()).orElse(0d) )
+                .reduce((t1, t2) -> t1 + t2)
+                .orElse(0d);
+
             result.setBoundaryVal(boundaryVal);
+            result.setTotalLossesOnSide1(totalLosses1);
+            result.setTotalLossesOnSide2(totalLosses2);
             results.add(result);
         }
 
