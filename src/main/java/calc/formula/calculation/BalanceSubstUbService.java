@@ -16,6 +16,9 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import static calc.util.Util.*;
 import static java.lang.Math.*;
@@ -75,7 +78,7 @@ public class BalanceSubstUbService {
                 Map<String, String> params = new HashMap<>();
                 params.put("point", meteringPoint.getCode());
 
-                Double workHours = WorkingHoursExpression.builder()
+                Double workHoursMp = WorkingHoursExpression.builder()
                     .objectType("mp")
                     .objectId(meteringPoint.getId())
                     .service(workingHoursService)
@@ -83,8 +86,10 @@ public class BalanceSubstUbService {
                     .build()
                     .doubleValue();
 
-                workHours = ofNullable(workHours).orElse(0d);
-                workHours = round(workHours,1);
+                workHoursMp = ofNullable(workHoursMp).orElse(0d);
+                workHoursMp = round(workHoursMp,1);
+
+                Double workHours = workHoursMp;
 
                 if (workHours.equals(0d))
                     messageService.addMessage(header, ubLine.getId(), docCode, "UB_WORK_HOURS_NOT_FOUND", info);
@@ -122,7 +127,7 @@ public class BalanceSubstUbService {
                 List<MeterHistory> meterHistories = mrLines.stream()
                     .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                     .filter(t -> t.getMeterHistory() != null)
-                    .filter(t -> t.getBypassMeteringPoint() == null)
+                    //.filter(t -> t.getBypassMeteringPoint() == null)
                     .filter(t -> !t.getIsIgnore())
                     .map(t -> t.getMeterHistory())
                     .distinct()
@@ -195,6 +200,38 @@ public class BalanceSubstUbService {
                             continue;
                         }
 
+
+                        List<BalanceSubstResultMrLine> bpMrLines = mrLines.stream()
+                            .filter(t -> t.getMeteringPoint().equals(meteringPoint))
+                            .filter(t -> t.getParam().equals(paramA))
+                            .filter(t -> t.getBypassMeteringPoint() != null)
+                            .filter(t -> t.getMeterHistory() != null)
+                            .filter(t -> t.getMeterHistory().equals(meterHistory))
+                            .collect(toList());
+
+                        MeteringPoint bpMeteringPoint = null;
+                        workHours = workHoursMp;
+                        if (!bpMrLines.isEmpty()) {
+                            logger.trace(" work hours calc for bypass metering point started");
+                            workHours = 0d;
+                            for (BalanceSubstResultMrLine bpMrLine : bpMrLines) {
+                                bpMeteringPoint = bpMrLine.getBypassMeteringPoint();
+
+                                LocalDateTime bpStartMeteringDate = bpMrLine.getStartMeteringDate();
+                                LocalDateTime bpEndMeteringDate = bpMrLine.getEndMeteringDate();
+
+                                Duration duration = Duration.between(bpStartMeteringDate, bpEndMeteringDate);
+                                Double h = duration.getSeconds() / 3600d;
+
+                                logger.trace(" startDateTime: " + bpStartMeteringDate);
+                                logger.trace(" endDateTime: " + bpEndMeteringDate);
+                                logger.trace(" h: " + h);
+
+                                workHours += h;
+                            }
+                            logger.trace(" work hours calc for bypass metering point complteted: " + workHours);
+                        }
+
                         Long ttNumber = ofNullable(meterHistory.getTtNumber()).orElse(1l);
 
                         Double w  = getMrVal(mrLines, ubLine, meterHistory, paramA, context);
@@ -247,6 +284,7 @@ public class BalanceSubstUbService {
                         BalanceSubstResultUbLine result = new BalanceSubstResultUbLine();
                         result.setHeader(header);
                         result.setMeteringPoint(meteringPoint);
+                        result.setBypassMeteringPoint(bpMeteringPoint);
                         result.setDirection(direction);
                         result.setW(w);
                         result.setWa(wa);
@@ -417,8 +455,8 @@ public class BalanceSubstUbService {
                 .filter(t -> t.getMeteringPoint().equals(meteringPoint))
                 .filter(t -> t.getParam().equals(param))
                 .filter(t -> t.getMeterHistory() != null)
-                .filter(t -> meterHistory == null || t.getMeterHistory().equals(meterHistory))
-                .filter(t -> t.getBypassMeteringPoint() == null)
+                .filter(t -> t.getMeterHistory().equals(meterHistory))
+                //.filter(t -> t.getBypassMeteringPoint() == null)
                 .filter(t -> !t.getIsIgnore())
                 .map(t -> ofNullable(t.getVal()).orElse(0d) + ofNullable(t.getUnderCountVal()).orElse(0d))
                 .reduce((t1, t2) -> t1 + t2)
