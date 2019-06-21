@@ -192,6 +192,8 @@ public class LossFactService {
             resultLine.setCreateBy(header.getLastUpdateBy());
             resultLine.setAp(ap);
             resultLine.setAm(am);
+
+            copyTranslates1(line, resultLine);
             resultLines.add(resultLine);
         }
         return resultLines;
@@ -227,10 +229,45 @@ public class LossFactService {
             resultLine.setCreateBy(header.getLastUpdateBy());
             resultLine.setAp(ap);
             resultLine.setAm(am);
+
+            copyTranslates2(line, resultLine);
             resultLines.add(resultLine);
         }
         return resultLines;
     }
+
+
+    private void copyTranslates1(LossFactSec1Line line, LossFactResultSec1Line resultLine) {
+        resultLine.setTranslates(ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
+        for (LossFactSec1LineTranslate lineTranslate : line.getTranslates()) {
+            LossFactResultSec1LineTranslate resultLineTranslate = new LossFactResultSec1LineTranslate();
+            resultLineTranslate.setLang(lineTranslate.getLang());
+            resultLineTranslate.setLine(resultLine);
+
+            resultLineTranslate.setName(lineTranslate.getName());
+            if (resultLineTranslate.getName() == null && resultLine.getMeteringPoint()!=null)
+                resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
+
+            resultLine.getTranslates().add(resultLineTranslate);
+        }
+    }
+
+
+    private void copyTranslates2(LossFactSec2Line line, LossFactResultSec2Line resultLine) {
+        resultLine.setTranslates(ofNullable(resultLine.getTranslates()).orElse(new ArrayList<>()));
+        for (LossFactSec2LineTranslate lineTranslate : line.getTranslates()) {
+            LossFactResultSec2LineTranslate resultLineTranslate = new LossFactResultSec2LineTranslate();
+            resultLineTranslate.setLang(lineTranslate.getLang());
+            resultLineTranslate.setLine(resultLine);
+
+            resultLineTranslate.setName(lineTranslate.getName());
+            if (resultLineTranslate.getName() == null && resultLine.getMeteringPoint()!=null)
+                resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
+
+            resultLine.getTranslates().add(resultLineTranslate);
+        }
+    }
+
 
     private Double getMrVal(MeteringPoint meteringPoint, Parameter param, CalcContext context) {
         if (meteringPoint == null || param == null)

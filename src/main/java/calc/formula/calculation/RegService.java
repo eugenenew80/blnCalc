@@ -320,7 +320,7 @@ public class RegService {
             resultLineTranslate.setLine(resultLine);
 
             resultLineTranslate.setName(lineTranslate.getName());
-            if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
+            if (resultLineTranslate.getName() == null && resultLine.getMeteringPoint()!=null)
                 resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
 
             resultLine.getTranslates().add(resultLineTranslate);
@@ -335,7 +335,7 @@ public class RegService {
             resultLineTranslate.setLine(resultLine);
 
             resultLineTranslate.setName(lineTranslate.getName());
-            if (resultLineTranslate == null && resultLine.getMeteringPoint()!=null)
+            if (resultLineTranslate.getName() == null && resultLine.getMeteringPoint()!=null)
                 resultLineTranslate.setName(resultLine.getMeteringPoint().getShortName());
 
             resultLine.getTranslates().add(resultLineTranslate);

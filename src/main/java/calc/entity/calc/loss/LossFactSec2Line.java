@@ -45,5 +45,5 @@ public class LossFactSec2Line {
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "line", fetch = FetchType.LAZY)
-    private List<LossFactSec1LineTranslate> translates;
+    private List<LossFactSec2LineTranslate> translates;
 }

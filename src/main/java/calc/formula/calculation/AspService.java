@@ -61,7 +61,7 @@ public class AspService {
             copyApps(header);
 
             header.setLastUpdateDate(LocalDateTime.now());
-            header.setDataType(DataTypeEnum.OPER);
+            //header.setDataType(DataTypeEnum.OPER);
 
             updateStatus(header, BatchStatusEnum.C);
             logger.info(docCode + " calculation for header " + header.getId() + " completed");

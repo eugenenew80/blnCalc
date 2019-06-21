@@ -98,6 +98,7 @@ public class InterLineService {
             result.setProportion2(line.getProportion2());
             result.setPowerLineLength1(line.getPowerLineLength1());
             result.setPowerLineLength2(line.getPowerLineLength2());
+            result.setIsInverse(line.getIsInverse());
             result.setIsInverse1(line.getIsInverse1());
             result.setIsInverse2(line.getIsInverse2());
             result.setIsIncludeTotal(line.getIsIncludeTotal());
@@ -260,17 +261,22 @@ public class InterLineService {
                 if (line.getDefMethodLoss() == DefMethodLoss.DML_AVG_FACTOR || (line.getDefMethodLoss() == DefMethodLoss.DML_MD_ELSE_AVG_FACTOR && faulty)) {
                     logger.debug("calculation losses by method DML_AVG_FACTOR");
 
-                    if (deviceStatus1 == DeviceStatus.MDS_IS_OK)
+                    if (deviceStatus1 == DeviceStatus.MDS_IS_OK) {
                         lossVal = ofNullable(w1).orElse(0d) * ofNullable(line.getAvgLossFactor()).orElse(0d);
+                        w2 = w1 - lossVal;
+                    }
 
-                    else if (deviceStatus2 == DeviceStatus.MDS_IS_OK)
+                    else if (deviceStatus2 == DeviceStatus.MDS_IS_OK) {
                         lossVal = ofNullable(w2).orElse(0d) * ofNullable(line.getAvgLossFactor()).orElse(0d);
+                        w1 = w2 + lossVal;
+                    }
+
+                    lossVal = round(lossVal, paramWL);
                 }
 
 
 
                 //По методу DML_MD_ELSE_WN_PLUS_WCD
-                faulty = false;
                 if (line.getDefMethodLoss() == DefMethodLoss.DML_MD_ELSE_WN_PLUS_WCD) {
                     lossVal = w1 - w2;
                     if (lossVal  < 0) {
@@ -629,8 +635,8 @@ public class InterLineService {
 
                     resultDet.setVal1(w2);
                     resultDet.setVal2(w1);
-                    resultDet.setLossVal1x(lossVal1x);
-                    resultDet.setLossVal2x(lossVal2x);
+                    resultDet.setLossVal1x(lossVal2x);
+                    resultDet.setLossVal2x(lossVal1x);
                     resultDet.setLossProc1(lossProc2);
                     resultDet.setLossProc2(lossProc1);
                     resultDet.setLossVal1(lossVal2);
