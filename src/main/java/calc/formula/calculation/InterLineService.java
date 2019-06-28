@@ -263,15 +263,15 @@ public class InterLineService {
 
                     if (deviceStatus1 == DeviceStatus.MDS_IS_OK) {
                         lossVal = ofNullable(w1).orElse(0d) * ofNullable(line.getAvgLossFactor()).orElse(0d);
+                        lossVal = round(lossVal, paramWL);
                         w2 = w1 - lossVal;
                     }
 
                     else if (deviceStatus2 == DeviceStatus.MDS_IS_OK) {
                         lossVal = ofNullable(w2).orElse(0d) * ofNullable(line.getAvgLossFactor()).orElse(0d);
+                        lossVal = round(lossVal, paramWL);
                         w1 = w2 + lossVal;
                     }
-
-                    lossVal = round(lossVal, paramWL);
                 }
 
 
@@ -593,9 +593,9 @@ public class InterLineService {
 
                         Double v1 = w1;
                         Double v2 = w2;
-                        if (defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus1 == DeviceStatus.MDS_IS_OK)
+                        if (defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD)
                             v1 = val1;
-                        if (defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus2 == DeviceStatus.MDS_IS_OK)
+                        if (defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD)
                             v2 = val2;
 
                         if (meteringPoint1 != null)
@@ -621,9 +621,9 @@ public class InterLineService {
 
                         Double v1 = w1;
                         Double v2 = w2;
-                        if (defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus1 == DeviceStatus.MDS_IS_OK)
+                        if (defMethodValue1 == DefMethodValue.DMV_FACT_BY_MD)
                             v1 = val1;
-                        if (defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD && deviceStatus2 == DeviceStatus.MDS_IS_OK)
+                        if (defMethodValue2 == DefMethodValue.DMV_FACT_BY_MD)
                             v2 = val2;
 
                         if (meteringPoint2 != null)
@@ -635,8 +635,8 @@ public class InterLineService {
 
                     resultDet.setVal1(w2);
                     resultDet.setVal2(w1);
-                    resultDet.setLossVal1x(lossVal2x);
-                    resultDet.setLossVal2x(lossVal1x);
+                    resultDet.setLossVal1x(lossVal1x);
+                    resultDet.setLossVal2x(lossVal2x);
                     resultDet.setLossProc1(lossProc2);
                     resultDet.setLossProc2(lossProc1);
                     resultDet.setLossVal1(lossVal2);

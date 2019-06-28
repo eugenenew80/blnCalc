@@ -650,12 +650,12 @@ public class CalcServiceImpl implements CalcService {
             logger.trace("  ctx: seg");
             logger.trace("  expression: SegExpression");
             return SegExpression.builder()
-                .meteringPointCode(mp.getCode())
-                .parameterCode(param.getCode())
-                .rate(rate)
-                .context(ctx)
-                .service(segService)
-                .build();
+                    .meteringPointCode(mp.getCode())
+                    .parameterCode(param.getCode())
+                    .rate(rate)
+                    .context(ctx)
+                    .service(segService)
+                    .build();
         }
 
         if (prop.getContextType() == ContextTypeEnum.INTER_MR) {
