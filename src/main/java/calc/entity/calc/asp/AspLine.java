@@ -49,6 +49,10 @@ public class AspLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isBold;
 
+    @Column(name = "is_info")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isInfo;
+
     @Column(name = "start_date")
     private LocalDate startDate;
 

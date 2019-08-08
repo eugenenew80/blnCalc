@@ -334,12 +334,12 @@ public class InterLineService {
                     Parameter paramU = paramService.getParam("U");
                     Parameter paramTp = paramService.getParam("T+");
                     Parameter paramTm = paramService.getParam("T-");
-                    MeteringPoint mp = null;
+                    MeteringPoint mpForDefineTandU = null;
 
                     Long mvDefineBySide = line.getMvDefineBySide();
 
                     if (mvDefineBySide != null)
-                         mp = mvDefineBySide.equals(1l) ? line.getMeteringPoint1() : line.getMeteringPoint2();
+                         mpForDefineTandU = mvDefineBySide.equals(1l) ? line.getMeteringPoint1() : line.getMeteringPoint2();
 
                     CalcProperty property = CalcProperty.builder()
                         .contextType(ContextTypeEnum.DEFAULT)
@@ -349,32 +349,35 @@ public class InterLineService {
                     Double u = null;
                     Double tp = null;
                     Double tm = null;
-                    if (mp != null) {
+                    if (mpForDefineTandU != null) {
                         if (paramU != null) {
-                            CalcResult calc = calcService.calcValue(mp, paramU, context, property);
+                            CalcResult calc = calcService.calcValue(mpForDefineTandU, paramU, context, property);
                             u = calc != null ? calc.getDoubleValue() : null;
                         }
 
                         if (paramTp !=null) {
-                            CalcResult calc = calcService.calcValue(mp, paramTp, context, property);
+                            CalcResult calc = calcService.calcValue(mpForDefineTandU, paramTp, context, property);
                             tp = calc != null ? calc.getDoubleValue() : null;
 
                         }
 
                         if (paramTm != null) {
-                            CalcResult calc = calcService.calcValue(mp, paramTm, context, property);
+                            CalcResult calc = calcService.calcValue(mpForDefineTandU, paramTm, context, property);
                             tm = calc != null ? calc.getDoubleValue() : null;
                         }
                     }
 
                     u = ofNullable(u).orElse(0d);
-                    tp = ofNullable(tp).orElse(0d);
                     tm = ofNullable(tm).orElse(0d);
-                    Double t = direction == 1l ? tp : tm;
+                    tp = ofNullable(tp).orElse(0d);
+
+                    Double t = ((direction == 1l && mpForDefineTandU.equals(meteringPoint1)) ||
+                                (direction == 2l && mpForDefineTandU.equals(meteringPoint2))) ?
+                                 tm : tp;
 
                     Double wn = null;
                     if (u != 0d && t !=0d)
-                        wn = pow(wp,2) / (pow(u,2) * t) * r * pow(kf,2);
+                        wn = pow(wp, 2) / (pow(u, 2) * t) * r * pow(kf, 2);
                     wn = ofNullable(wn).orElse(0d) / 1000d;
 
                     Double wk = p * t * l;
@@ -384,33 +387,37 @@ public class InterLineService {
 
 
                     Double wFaulty = null;
+                    boolean needSaveFaultyVolume = false;
+                    //Определение объемов в точках учета с нарушенным учетом
 
                     //Определение объёмов для точки учёта 1
-
                     //по методу DMV_OTHER_MP_AND_FULL_LOSSES
                     if  (defMethodValue1 == DefMethodValue.DMV_OTHER_MP_AND_FULL_LOSSES) {
                         w1 = w2 + lossVal;
                         wFaulty = w1;
+                        needSaveFaultyVolume = true;
                     }
 
                     //Определение объёмов для точки учёта 2
-
                     //по методу DMV_OTHER_MP_AND_FULL_LOSSES
                     if  (defMethodValue2 == DefMethodValue.DMV_OTHER_MP_AND_FULL_LOSSES) {
                         w2 = w1 - lossVal;
                         wFaulty = w2;
+                        needSaveFaultyVolume = true;
                     }
 
-                    InterResultMrLine resultMrLine = new InterResultMrLine();
-                    resultMrLine.setHeader(header);
-                    resultMrLine.setMeteringPoint(mpFaulty);
-                    resultMrLine.setParam(paramFaulty);
-                    resultMrLine.setUnit(paramFaulty.getUnit());
-                    resultMrLine.setStartMeteringDate(context.getHeader().getStartDate().atStartOfDay());
-                    resultMrLine.setEndMeteringDate(context.getHeader().getEndDate().atStartOfDay().plusDays(1));
-                    resultMrLine.setVal(round(wFaulty, paramFaulty));
-                    resultMrLine.setIsForTotal(true);
-                    mrResults.add(resultMrLine);
+                    if (needSaveFaultyVolume) {
+                        InterResultMrLine resultMrLine = new InterResultMrLine();
+                        resultMrLine.setHeader(header);
+                        resultMrLine.setMeteringPoint(mpFaulty);
+                        resultMrLine.setParam(paramFaulty);
+                        resultMrLine.setUnit(paramFaulty.getUnit());
+                        resultMrLine.setStartMeteringDate(context.getHeader().getStartDate().atStartOfDay());
+                        resultMrLine.setEndMeteringDate(context.getHeader().getEndDate().atStartOfDay().plusDays(1));
+                        resultMrLine.setVal(round(wFaulty, paramFaulty));
+                        resultMrLine.setIsForTotal(true);
+                        mrResults.add(resultMrLine);
+                    }
 
                     logger.debug("  direction: " + direction);
                     logger.debug("  powerLineId: " + line.getPowerLine().getId());
@@ -424,7 +431,7 @@ public class InterLineService {
                     logger.debug("  w2: " + w2);
                     logger.debug("  wp: " + wp);
                     logger.debug("  mvDefineBySide: " + mvDefineBySide);
-                    logger.debug("  mp: " + mp.getId());
+                    logger.debug("  mp: " + mpForDefineTandU.getId());
                     logger.debug("  u: " + u);
                     logger.debug("  tp: " + tp);
                     logger.debug("  tm: " + tm);

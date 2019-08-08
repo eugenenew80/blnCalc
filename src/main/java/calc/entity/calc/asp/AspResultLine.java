@@ -95,6 +95,10 @@ public class AspResultLine {
     @Convert(converter = BooleanToIntConverter.class)
     private Boolean isBold;
 
+    @Column(name = "is_info")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isInfo;
+
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<AspResultLineTranslate> translates;
 }

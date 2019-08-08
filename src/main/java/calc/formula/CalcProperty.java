@@ -27,4 +27,7 @@ public class CalcProperty {
     private ProcessOrderEnum processOrder = ProcessOrderEnum.CALC_READ;
 
     private ElectricityProducerGroup electricityGroup;
+
+    @Builder.Default
+    private int currentDeep =  0;
 }

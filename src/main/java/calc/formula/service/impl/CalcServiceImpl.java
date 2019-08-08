@@ -65,20 +65,22 @@ public class CalcServiceImpl implements CalcService {
         if (point == null || param == null || context == null || context.getHeader() == null)
             return null;
 
-        logger.trace("---------------------------------------------");
-        logger.trace("point: "                  + point.getCode());
-        logger.trace("pointType: "              + point.getPointType());
-        logger.trace("param: "                  + param.getCode());
-        logger.trace("paramType: "              + property.getParamType());
-        logger.trace("periodType: "             + context.getHeader().getPeriodType());
-        logger.trace("dataType: "               + context.getHeader().getDataType());
-        logger.trace("startDate: "              + context.getHeader().getStartDate());
-        logger.trace("endDate: "                + context.getHeader().getEndDate());
-        logger.trace("processOrder: "           + property.getProcessOrder());
-        logger.trace("formulaBehaviour: "       + context.getFormulaBehaviour());
-        logger.trace("useDataTypePriority: "    + context.isUseDataTypePriority());
-        logger.trace("nullPermissible: "        + context.isNullPermissible());
-        logger.trace("traceEnabled: "           + context.isTraceEnabled());
+        logger.debug("---------------------------------------------");
+        logger.debug("point: "                  + point.getCode());
+        logger.debug("pointType: "              + point.getPointType());
+        logger.debug("param: "                  + param.getCode());
+        logger.debug("paramType: "              + property.getParamType());
+        logger.debug("periodType: "             + context.getHeader().getPeriodType());
+        logger.debug("dataType: "               + context.getHeader().getDataType());
+        logger.debug("startDate: "              + context.getHeader().getStartDate());
+        logger.debug("endDate: "                + context.getHeader().getEndDate());
+        logger.debug("processOrder: "           + property.getProcessOrder());
+        logger.debug("formulaBehaviour: "       + context.getFormulaBehaviour());
+        logger.debug("useDataTypePriority: "    + context.isUseDataTypePriority());
+        logger.debug("nullPermissible: "        + context.isNullPermissible());
+        logger.debug("traceEnabled: "           + context.isTraceEnabled());
+
+        property.setCurrentDeep(0);
 
         CalcResult result = null;
         if (point.getPointType() == PointTypeEnum.PMP || property.getProcessOrder() == ProcessOrderEnum.READ)
@@ -115,7 +117,7 @@ public class CalcServiceImpl implements CalcService {
         if (context.isTraceEnabled())
             printCalcTrace(context);
 
-        logger.trace("---------------------------------------------");
+        logger.debug("---------------------------------------------");
         return result;
     }
 
@@ -175,20 +177,20 @@ public class CalcServiceImpl implements CalcService {
     @Override
     public CalcResult calcValue(Formula formula, CalcContext context, CalcProperty property) {
         if (formula != null) {
-            logger.trace("---------------------------------------------");
-            logger.trace("point: " + formula.getMeteringPoint().getCode());
-            logger.trace("pointType: " + formula.getMeteringPoint().getPointType());
-            logger.trace("param: " + formula.getParam().getCode());
-            logger.trace("paramType: " + property.getParamType());
-            logger.trace("periodType: " + context.getHeader().getPeriodType());
-            logger.trace("dataType: " + context.getHeader().getDataType());
-            logger.trace("startDate: " + context.getHeader().getStartDate());
-            logger.trace("endDate: " + context.getHeader().getEndDate());
-            logger.trace("processOrder: " + property.getProcessOrder());
-            logger.trace("formulaBehaviour: " + context.getFormulaBehaviour());
-            logger.trace("useDataTypePriority: " + context.isUseDataTypePriority());
-            logger.trace("nullPermissible: " + context.isNullPermissible());
-            logger.trace("traceEnabled: " + context.isTraceEnabled());
+            logger.debug("---------------------------------------------");
+            logger.debug("point: " + formula.getMeteringPoint().getCode());
+            logger.debug("pointType: " + formula.getMeteringPoint().getPointType());
+            logger.debug("param: " + formula.getParam().getCode());
+            logger.debug("paramType: " + property.getParamType());
+            logger.debug("periodType: " + context.getHeader().getPeriodType());
+            logger.debug("dataType: " + context.getHeader().getDataType());
+            logger.debug("startDate: " + context.getHeader().getStartDate());
+            logger.debug("endDate: " + context.getHeader().getEndDate());
+            logger.debug("processOrder: " + property.getProcessOrder());
+            logger.debug("formulaBehaviour: " + context.getFormulaBehaviour());
+            logger.debug("useDataTypePriority: " + context.isUseDataTypePriority());
+            logger.debug("nullPermissible: " + context.isNullPermissible());
+            logger.debug("traceEnabled: " + context.isTraceEnabled());
         }
         return calcFormula(formula, context, property);
     }
@@ -225,14 +227,14 @@ public class CalcServiceImpl implements CalcService {
             result.setPeriodType(context.getHeader().getPeriodType());
         }
 
-        logger.trace("result:");
-        logger.trace("  formulaId: " + result.getFormula().getId());
-        logger.trace("  src: " + result.getFormula().getText());
-        logger.trace("  point: " + result.getMeteringPoint().getCode());
-        logger.trace("  param: " + result.getParam().getCode());
-        logger.trace("  paramType: " + result.getParamType());
-        logger.trace("  meteringDate: " + result.getMeteringDate());
-        logger.trace("  periodType: " + result.getPeriodType());
+        logger.debug("result:");
+        logger.debug("  formulaId: " + result.getFormula().getId());
+        logger.debug("  src: " + result.getFormula().getText());
+        logger.debug("  point: " + result.getMeteringPoint().getCode());
+        logger.debug("  param: " + result.getParam().getCode());
+        logger.debug("  paramType: " + result.getParamType());
+        logger.debug("  meteringDate: " + result.getMeteringDate());
+        logger.debug("  periodType: " + result.getPeriodType());
 
         if (result.getPeriodType() != PeriodTypeEnum.H)
             logger.trace("  value: " + result.getDoubleValue());
@@ -378,12 +380,17 @@ public class CalcServiceImpl implements CalcService {
 
             if (formula != null) {
                 logger.trace("for var " + det.getFormulaVar().getVarName() + " nested formula start");
+                property.setCurrentDeep(property.getCurrentDeep() + 1);
+                logger.debug("  current deep: " + property.getCurrentDeep() + ", formula: " + formula.getId());
+
                 logger.trace("  point: " + formula.getMeteringPoint().getCode());
                 logger.trace("  pointType: " + formula.getMeteringPoint().getPointType().name());
                 logger.trace("  param: " + formula.getParam().getCode());
                 logger.trace("  paramType: " + formula.getParamType());
                 logger.trace("  formulaId: " + formula.getId());
                 DoubleExpression expression = buildExpression(formula, context, property);
+
+                property.setCurrentDeep(property.getCurrentDeep() - 1);
                 logger.trace("nested formula end");
 
                 UnaryOperator<DoubleExpression> signOperator = det.getSign().equals("-")
@@ -540,7 +547,7 @@ public class CalcServiceImpl implements CalcService {
 
         if (prop.getDeterminingMethod() == DeterminingMethodEnum.RDV) {
             if (prop.getGridType() == GridTypeEnum.OWN) {
-                logger.trace("  expression: DistributionExpression: own");
+                logger.debug("  expression: DistributionExpression: own");
                 DistributionExpression.builder()
                     .meteringPointCode(mp.getCode())
                     .parameterCode(param.getCode())
@@ -564,7 +571,7 @@ public class CalcServiceImpl implements CalcService {
             }
 
             if (prop.getGridType() == GridTypeEnum.TOTAL) {
-                logger.trace("  expression: DistributionExpression: total");
+                logger.debug("  expression: DistributionExpression: total");
                 DistributionExpression.builder()
                     .meteringPointCode(mp.getCode())
                     .parameterCode(param.getCode())
@@ -577,7 +584,7 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (param.getCode().equals("U") && ctx.getDefContextType() == ContextTypeEnum.MR) {
-            logger.trace("  expression: UavgExpression");
+            logger.debug("  expression: UavgExpression");
             return UavgExpression.builder()
                 .meteringPointCode(mp.getCode())
                 .def(mp.getVoltageClass() != null ? mp.getVoltageClass().getValue() / 1000d : 0d)
@@ -589,7 +596,7 @@ public class CalcServiceImpl implements CalcService {
         if (param.getCode().equals("WL") && ctx.getDefContextType() == ContextTypeEnum.MR) {
             Map<String, Double> cachedValues = ctx.getTransformerValues();
             if (cachedValues != null && cachedValues.containsKey(mp.getCode())) {
-                logger.trace("  expression: CachedValueExpression");
+                logger.debug("  expression: CachedValueExpression");
                 return DoubleValueExpression.builder()
                     .value(cachedValues.get(mp.getCode()))
                     .build();
@@ -605,7 +612,7 @@ public class CalcServiceImpl implements CalcService {
                 .build();
 
             if (expression.doubleValue() == null) {
-                logger.trace("  expression: ReactorValueExpression");
+                logger.debug("  expression: ReactorValueExpression");
                 return ReactorValueExpression.builder()
                     .meteringPointCode(mp.getCode())
                     .parameterCode(param.getCode())
@@ -619,8 +626,8 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (prop.getContextType() == ContextTypeEnum.MR || (ctx.getDefContextType() == ContextTypeEnum.MR && mp.getPointType() == PointTypeEnum.PMP)) {
-            logger.trace("  ctx: mr");
-            logger.trace("  expression: MrExpression");
+            logger.debug("  ctx: mr");
+            logger.debug("  expression: MrExpression");
             return MrExpression.builder()
                 .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
@@ -632,8 +639,8 @@ public class CalcServiceImpl implements CalcService {
 
         if (prop.getContextType() == ContextTypeEnum.ASP) {
             if ((param.getCode().equals("A+") || param.getCode().equals("A-") || param.getCode().equals("R+") || param.getCode().equals("R-") )) {
-                logger.trace("  ctx: asp");
-                logger.trace("  expression: AspExpression");
+                logger.debug("  ctx: asp");
+                logger.debug("  expression: AspExpression");
                 AspExpression expression = AspExpression.builder()
                     .meteringPointCode(mp.getCode())
                     .parameterCode(param.getCode())
@@ -648,7 +655,7 @@ public class CalcServiceImpl implements CalcService {
 
         if (prop.getContextType() == ContextTypeEnum.SEG) {
             logger.trace("  ctx: seg");
-            logger.trace("  expression: SegExpression");
+            logger.debug("  expression: SegExpression");
             return SegExpression.builder()
                     .meteringPointCode(mp.getCode())
                     .parameterCode(param.getCode())
@@ -659,8 +666,8 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (prop.getContextType() == ContextTypeEnum.INTER_MR) {
-            logger.trace("  ctx: inter");
-            logger.trace("  expression: InterExpression");
+            logger.debug("  ctx: inter");
+            logger.debug("  expression: InterExpression");
             return InterMrExpression.builder()
                 .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
@@ -671,7 +678,7 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (prop.getParamType() == ParamTypeEnum.PT) {
-            logger.trace("  expression: PeriodTimeValueExpression");
+            logger.debug("  expression: PeriodTimeValueExpression");
             PeriodTimeValueExpression ptExpression = PeriodTimeValueExpression.builder()
                 .meteringPointCode(mp.getCode())
                 .parameterCode(param.getCode())
@@ -699,7 +706,7 @@ public class CalcServiceImpl implements CalcService {
         }
 
         if (prop.getParamType() == ParamTypeEnum.AT || prop.getParamType() == ParamTypeEnum.ATS || prop.getParamType() == ParamTypeEnum.ATE) {
-            logger.trace("  expression: AtTimeValueExpression");
+            logger.debug("  expression: AtTimeValueExpression");
             String per = "end";
             if (prop.getParamType() == ParamTypeEnum.ATS)
                 per = "start";

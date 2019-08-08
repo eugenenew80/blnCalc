@@ -106,6 +106,7 @@ public class AspService {
                 result.setLineNum(line.getLineNum());
                 result.setTreatmentType(line.getTreatmentType());
                 result.setIsBold(line.getIsBold());
+                result.setIsInfo(line.getIsInfo());
                 result.setFormula(formula);
                 result.setMeteringPoint(line.getMeteringPoint());
                 result.setParam(line.getParam());
@@ -196,6 +197,7 @@ public class AspService {
                 result.setUndercount(t.getUnderCount());
                 result.setTreatmentType(line.getTreatmentType());
                 result.setIsBold(line.getIsBold());
+                result.setIsInfo(line.getIsInfo());
                 copyTranslates(line, result);
                 results.add(result);
             }
