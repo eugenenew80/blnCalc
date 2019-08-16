@@ -371,8 +371,8 @@ public class InterLineService {
                     tm = ofNullable(tm).orElse(0d);
                     tp = ofNullable(tp).orElse(0d);
 
-                    Double t = ((direction == 1l && mpForDefineTandU.equals(meteringPoint1)) ||
-                                (direction == 2l && mpForDefineTandU.equals(meteringPoint2))) ?
+                    Double t = ((direction == 1l && mpForDefineTandU.equals(line.getMeteringPoint1())) ||
+                                (direction == 2l && mpForDefineTandU.equals(line.getMeteringPoint2()))) ?
                                  tm : tp;
 
                     Double wn = null;
