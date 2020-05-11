@@ -134,7 +134,7 @@ public class BalanceSubstUbService {
                     .collect(toList());
 
                 if (meterHistories.size() == 0)
-                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_MP_IN_MRLINES_NOT_FOUND", info);
+                    messageService.addMessage(header, ubLine.getId(), docCode, "UB_MP_IN_MRLINES_NOT_FOUND", params);
 
                 for (String direction : Arrays.asList("1", "2")) {
                     if (direction.equals("1") && !ubLine.getIsSection1()) continue;
