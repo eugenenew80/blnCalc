@@ -168,9 +168,8 @@ public class BalanceSubstUbService {
                         TtType ttType = meterHistory.getTtType();
                         TnType tnType = meterHistory.getTnType();
                         EemType eemType = meterHistory.getMeter().getEemType();
-                        boolean tnInstalled = meterHistory.getIsTnInstalled() || !meterHistory.getIsTnDirectInclusion();
-                        boolean ttInstalled = meterHistory.getIsTtInstalled() || !meterHistory.getIsTtDirectInclusion();
-
+                        boolean tnInstalled = meterHistory.getIsTnInstalled();
+                        boolean ttInstalled = meterHistory.getIsTtInstalled();
 
                         if (eemType == null) {
                             messageService.addMessage(header, ubLine.getId(), docCode, "UB_EEM_TYPE_NOT_FOUND", info);
