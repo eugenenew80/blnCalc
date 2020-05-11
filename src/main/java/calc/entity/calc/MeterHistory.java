@@ -90,4 +90,12 @@ public class MeterHistory {
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private MeterHistory parent;
+
+    @Column(name = "is_tt_installed")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isTtInstalled;
+
+    @Column(name = "is_tn_installed")
+    @Convert(converter = BooleanToIntConverter.class)
+    private Boolean isTnInstalled;
 }

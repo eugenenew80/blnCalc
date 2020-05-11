@@ -164,9 +164,13 @@ public class BalanceSubstUbService {
                     }
 
                     for (MeterHistory meterHistory : meterHistories) {
+
                         TtType ttType = meterHistory.getTtType();
                         TnType tnType = meterHistory.getTnType();
                         EemType eemType = meterHistory.getMeter().getEemType();
+                        boolean tnInstalled = meterHistory.getIsTnInstalled() || !meterHistory.getIsTnDirectInclusion();
+                        boolean ttInstalled = meterHistory.getIsTtInstalled() || !meterHistory.getIsTtDirectInclusion();
+
 
                         if (eemType == null) {
                             messageService.addMessage(header, ubLine.getId(), docCode, "UB_EEM_TYPE_NOT_FOUND", info);
@@ -178,7 +182,7 @@ public class BalanceSubstUbService {
                             continue;
                         }
 
-                        if (ttType == null) {
+                        if (ttInstalled && ttType == null) {
                             messageService.addMessage(header, ubLine.getId(), docCode, "UB_TT_TYPE_NOT_FOUND", info);
                             continue;
                         }
@@ -193,7 +197,7 @@ public class BalanceSubstUbService {
                             continue;
                         }
 
-                        if (tnType == null && !meterHistory.getIsTnDirectInclusion()) {
+                        if (tnInstalled && tnType == null) {
                             messageService.addMessage(header, ubLine.getId(), docCode, "UB_TN_TYPE_NOT_FOUND", info);
                             continue;
                         }
